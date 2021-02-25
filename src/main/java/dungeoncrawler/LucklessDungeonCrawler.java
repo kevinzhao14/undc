@@ -1,4 +1,4 @@
-package com.luckless.dungeoncrawler;
+package dungeoncrawler;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
