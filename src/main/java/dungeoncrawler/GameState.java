@@ -2,6 +2,10 @@ package dungeoncrawler;
 
 import javafx.scene.Scene;
 
-public interface GameState {
-    Scene getScene();
+public abstract class GameState {
+    protected Scene scene;
+
+    Scene getScene() {
+        return scene;
+    }
 }
