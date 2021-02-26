@@ -5,7 +5,7 @@ import javafx.scene.Scene;
 public abstract class GameState {
     protected Scene scene;
 
-    Scene getScene() {
+    public Scene getScene() {
         return scene;
     }
 }
