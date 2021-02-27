@@ -7,7 +7,7 @@ package com.luckless.dungeoncrawler;
  * @author Kevin Zhao
  */
 public class DataManager {
-    private static Weapon[] weapons = new Weapon[]{
+    public static final Weapon[] WEAPONS = new Weapon[]{
             new Weapon("Axe", null, 10, 1),
             new Weapon("Sword", null, 10, 1),
             new Weapon("Mace", null, 10, 1)
@@ -56,7 +56,7 @@ public class DataManager {
          * 2 -
          */
         boolean validWeapon = false;
-        for (Weapon w : weapons) {
+        for (Weapon w : WEAPONS) {
             if (weapon == w) {
                 validWeapon = true;
                 break;
@@ -95,13 +95,5 @@ public class DataManager {
      */
     public Weapon getWeapon() {
         return weapon;
-    }
-
-    /**
-     * Getter for all weapons.
-     * @return all weapons
-     */
-    public static Weapon[] getWeapons() {
-        return weapons;
     }
 }
