@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-public class HomeScreen {
+public class HomeScreen extends GameState {
     private int width;
     private int height;
     private Button startButton;
@@ -17,6 +17,12 @@ public class HomeScreen {
         this.height = height;
         startButton = new Button("Start");
         startButton.setId("start-button");
+        //dummy code
+        startButton.setOnAction(event -> {
+            InitialPlayerConfigScreen config = new InitialPlayerConfigScreen(width, height);
+            //just placeholder code rn
+            LucklessDungeonCrawler.setState(config);
+        });
     }
     public Scene getScene() {
         Label label = new Label("Welcome to the Luckless Dungeon Crawler");
