@@ -7,17 +7,23 @@ package com.luckless.dungeoncrawler;
  * @author Kevin Zhao
  */
 public class DataManager {
+    private static Weapon[] weapons = new Weapon[]{
+            new Weapon("Axe", null, 10, 1),
+            new Weapon("Sword", null, 10, 1),
+            new Weapon("Mace", null, 10, 1)
+    };
+
     private String username;
-    private int difficulty;
-    private int weapon;
+    private Difficulty difficulty;
+    private Weapon weapon;
 
     /**
      * Basic constructor for creating a DataManager.
      */
     public DataManager() {
         username = "";
-        difficulty = -1;
-        weapon = -1;
+        difficulty = null;
+        weapon = null;
     }
 
     /**
@@ -28,7 +34,7 @@ public class DataManager {
      * @return Returns true if data is valid and saved successfully. Otherwise, false
      * @throws IllegalArgumentException Throws Exception if any field is invalid.
      */
-    public boolean newGame(String username, int difficulty, int weapon) {
+    public boolean newGame(String username, Difficulty difficulty, Weapon weapon) {
         //Checks for empty/whitespace-only username
         if (username == null || username.replaceAll("\\s", "").length() == 0) {
             throw new IllegalArgumentException("Username cannot be empty.");
@@ -39,7 +45,8 @@ public class DataManager {
          * 1 - Medium
          * 2 - Hard
          */
-        if (difficulty < 0 || difficulty > 2) {
+
+        if (difficulty == null) {
             throw new IllegalArgumentException("Difficulty must be Easy, Medium, or Hard.");
         }
 
@@ -48,7 +55,14 @@ public class DataManager {
          * 1 -
          * 2 -
          */
-        if (weapon < 0 || weapon > 2) {
+        boolean validWeapon = false;
+        for (Weapon w : weapons) {
+            if (weapon == w) {
+                validWeapon = true;
+                break;
+            }
+        }
+        if (!validWeapon) {
             throw new IllegalArgumentException("Invalid weapon selection.");
         }
 
@@ -71,7 +85,7 @@ public class DataManager {
      * Getter for the difficulty level.
      * @return The difficulty level
      */
-    public int getDifficulty() {
+    public Difficulty getDifficulty() {
         return difficulty;
     }
 
@@ -79,7 +93,15 @@ public class DataManager {
      * Getter for the weapon.
      * @return The weapon
      */
-    public int getWeapon() {
+    public Weapon getWeapon() {
         return weapon;
+    }
+
+    /**
+     * Getter for all weapons.
+     * @return all weapons
+     */
+    public static Weapon[] getWeapons() {
+        return weapons;
     }
 }
