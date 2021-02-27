@@ -1,9 +1,12 @@
 package com.luckless.dungeoncrawler;
 
+
 import java.util.ArrayList;
 
-import javafx.scene.Scene;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
@@ -91,8 +94,37 @@ public class InitPlayerConfigScreen extends GameState {
         //Add row3 to root
         root.add(row3, 1, 2);
 
+        nextButton.setOnAction(e -> {
+            String playerName = playerNameEntry.getText();
+            RadioButton selectedDifficulty = (RadioButton) difficultyGroup.getSelectedToggle();
+            RadioButton selectedWeapon = (RadioButton) weaponGroup.getSelectedToggle();
+            String weaponName = (selectedWeapon == null) ? null : selectedWeapon.getText();
+
+            Weapon weaponRef = null;
+            Difficulty difficultyRef;
+
+            for (Weapon w : DataManager.WEAPONS) {
+                if (w.getName().equals(selectedWeapon.getText())) {
+                    weaponRef = w;
+                    break;
+                }
+            }
+
+            difficultyRef = (selectedDifficulty == null) ? null : Difficulty.valueOf(selectedDifficulty.getText());
+
+            try {
+                if (LucklessDungeonCrawler.getDataManager().newGame(playerName, difficultyRef, weaponRef)) {
+                    //TODO: Implement later
+                }
+            } catch (IllegalArgumentException iae) {
+                Alert alert = new Alert(AlertType.ERROR, iae.getMessage());
+                alert.showAndWait();
+            }
+        });
+
         this.scene = new Scene(root, this.windowWidth, this.windowHeight);
+
+
     }
 
-    public String getEnteredPlayerName() {return this.playerNameEntry.getText();}
 }
