@@ -18,4 +18,6 @@ public class Weapon {
     public Weapon() {
         this("", null, 0, 0);
     }
+
+    public String getName() {return this.name;}
 }
