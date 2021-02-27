@@ -26,11 +26,12 @@ public class DataManager {
      * @param difficulty Difficulty level selected by the player
      * @param weapon Starting weapon selected by the player.
      * @return Returns true if data is valid and saved successfully. Otherwise, false
+     * @throws IllegalArgumentException Throws Exception if any field is invalid.
      */
     public boolean newGame(String username, int difficulty, int weapon) {
         //Checks for empty/whitespace-only username
         if (username == null || username.replaceAll("\\s", "").length() == 0) {
-            return false;
+            throw new IllegalArgumentException("Username cannot be empty.");
         }
 
         /* Possible values for difficulty:
@@ -39,7 +40,7 @@ public class DataManager {
          * 2 - Hard
          */
         if (difficulty < 0 || difficulty > 2) {
-            return false;
+            throw new IllegalArgumentException("Difficulty must be Easy, Medium, or Hard.");
         }
 
         /* Possible values for weapon:
@@ -48,7 +49,7 @@ public class DataManager {
          * 2 -
          */
         if (weapon < 0 || weapon > 2) {
-            return false;
+            throw new IllegalArgumentException("Invalid weapon selection.");
         }
 
         //save data
