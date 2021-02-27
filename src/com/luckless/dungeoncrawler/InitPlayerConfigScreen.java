@@ -1,4 +1,4 @@
-package view;
+package com.luckless.dungeoncrawler;
 
 import java.util.ArrayList;
 
@@ -10,34 +10,24 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class InitPlayerConfigScreen extends GameState {
     //Application Window dimensions
     private int windowHeight;
     private int windowWidth;
-    private Scene scene;
     private Button nextButton;
     private TextField playerNameEntry;
 
     //Stores the entered player name
     private String playerName;
 
-    //Placeholder for difficulty selection, like will be changed later
-    private enum Difficulty {EASY, MEDIUM, HARD};
-    //Placeholder for weapon type, likely will be changed later
-    private enum Weapon {AXE, BROADSWORD, CROSSBOW, MACE};
-
     public InitPlayerConfigScreen(int width, int height) {
         this.windowWidth = width;
         this.windowHeight = height;
         nextButton = new Button("Next");
         nextButton.setAlignment(Pos.CENTER);
-        this.scene = this.createScene();
-    }
 
-    private Scene createScene() {
         Label enterPlayerName = new Label("Enter player name:");
         playerNameEntry = new TextField();
         enterPlayerName.setAlignment(Pos.TOP_LEFT);
@@ -47,9 +37,9 @@ public class InitPlayerConfigScreen extends GameState {
         selectDifficulty.setAlignment(Pos.TOP_LEFT);
         ToggleGroup difficultyGroup = new ToggleGroup();
         ArrayList<RadioButton> difficultyButtons = new ArrayList<>(
-                InitPlayerConfigScreen.Difficulty.values().length);
-        for (int i = 0; i < InitPlayerConfigScreen.Difficulty.values().length; i++) {
-            difficultyButtons.add(new RadioButton(InitPlayerConfigScreen.Difficulty.values()[i].name()));
+                Difficulty.values().length);
+        for (int i = 0; i < Difficulty.values().length; i++) {
+            difficultyButtons.add(new RadioButton(Difficulty.values()[i].name()));
             difficultyButtons.get(i).setToggleGroup(difficultyGroup);
         }
 
@@ -57,9 +47,9 @@ public class InitPlayerConfigScreen extends GameState {
         selectStarterWeapon.setAlignment(Pos.TOP_LEFT);
         ToggleGroup weaponGroup = new ToggleGroup();
         ArrayList<RadioButton> weaponButtons = new ArrayList<>(
-                InitPlayerConfigScreen.Weapon.values().length);
-        for (int i = 0; i < InitPlayerConfigScreen.Weapon.values().length; i++) {
-            weaponButtons.add(new RadioButton(InitPlayerConfigScreen.Weapon.values()[i].name()));
+                DataManager.WEAPONS.length);
+        for (int i = 0; i < DataManager.WEAPONS.length; i++) {
+            weaponButtons.add(new RadioButton(DataManager.WEAPONS[i].getName()));
             weaponButtons.get(i).setToggleGroup(weaponGroup);
         }
 
@@ -101,14 +91,8 @@ public class InitPlayerConfigScreen extends GameState {
         //Add row3 to root
         root.add(row3, 1, 2);
 
-        Scene scene = new Scene(root, this.windowWidth, this.windowHeight);
-        return scene;
+        this.scene = new Scene(root, this.windowWidth, this.windowHeight);
     }
-
-    //Implements the getScene() method from abstract class GameState
-    public Scene getScene() {return this.scene;}
-
-    public Button getNextButton() {return this.nextButton;}
 
     public String getEnteredPlayerName() {return this.playerNameEntry.getText();}
 }
