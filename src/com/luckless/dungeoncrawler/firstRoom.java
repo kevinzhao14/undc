@@ -1,60 +1,67 @@
-import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.*;
-import javafx.stage.Stage;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.control.Label;
 
-public class firstRoom extends Application {
+public class firstRoom extends GameState {
 
-    Label goldLabel;
-    Label roomLabel;
+
+
     private int width;
     private int height;
+    private int gold;
 
     // treasure
     // monsters
 
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        Stage mainWindow = primaryStage;
-        mainWindow.setTitle("game");
-        firstRoom screen = new firstRoom(1000, 500);
-        mainWindow.setScene(screen.getScene());
-        mainWindow.show();
-    }
 
     public firstRoom() {}
 
     public firstRoom(int width, int height) {
         this.width = width;
         this.height = height;
-        this.goldLabel = new Label();
-        this.roomLabel = new Label();
+
         // initialize treasure/monsters
-    }
-    public Scene getScene() {
+
+        /*
+        switch(DataManager.getDifficulty()) {
+            case EASY:
+                gold = 300;
+                break;
+            case MEDIUM:
+                gold = 200;
+                break;
+            default:
+                gold = 100;
+                break;
+        }
+
+         */
 
         StackPane stack = new StackPane();
-        Scene scene = new Scene(stack, width, height);
-        goldLabel.setText("Gold: 300");
-        roomLabel.setText("ROOM 1");
+        this.scene = new Scene(stack, width, height);
+        Label goldLabel = new Label("Gold: " + gold);
+        Label roomLabel = new Label("ROOM 1");
         GridPane layout = new GridPane();
         stack.getChildren().add(layout);
-        for (int i = 0; i < 10; i++) {
-            layout.getColumnConstraints().add(new ColumnConstraints(100));
+        for (int i = 0; i < width / 80; i++) {
+            layout.getColumnConstraints().add(new ColumnConstraints(80));
         }
-        for (int j = 0; j < 25; j++) {
-            layout.getRowConstraints().add(new RowConstraints(20));
+        for (int j = 0; j < height / 80; j++) {
+            layout.getRowConstraints().add(new RowConstraints(80));
         }
-        layout.add(goldLabel, 9, 0);
+        layout.add(goldLabel, 15, 0);
         layout.add(roomLabel, 0, 0);
-        layout.add(new Label("Exit 1"), 5, 3);
-        layout.add(new Label("Exit 2"), 1, 12);
-        layout.add(new Label("Exit 3"), 5, 23);
-        layout.add(new Label("Exit 4"), 9, 12);
+        layout.add(new Label("Exit 1"), 8, 1);
+        layout.add(new Label("Exit 2"), 1, 5);
+        layout.add(new Label("Exit 3"), 8, 8);
+        layout.add(new Label("Exit 4"), 15, 5);
 
-        return scene;
+    }
+    public Scene getScene() {
+        return super.getScene();
     }
 
 }
