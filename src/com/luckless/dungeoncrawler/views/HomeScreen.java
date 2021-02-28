@@ -20,10 +20,7 @@ public class HomeScreen extends GameState {
         //dummy code
         startButton.setOnAction(event -> {
             InitialPlayerConfigScreen config = new InitialPlayerConfigScreen(width, height);
-            //just placeholder code rn
-            Stage stage = new Stage();
-            stage.setScene(config);
-            LucklessDungeonCrawler.setState(stage);
+            LucklessDungeonCrawler.setState(config);
         });
     }
     public Scene getScene() {
