@@ -1,4 +1,4 @@
-package com.luckless.dungeoncrawler;
+package dungeoncrawler;
 
 
 import java.util.ArrayList;

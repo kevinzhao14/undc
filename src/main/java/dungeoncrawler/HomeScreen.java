@@ -1,4 +1,4 @@
-package views;
+package dungeoncrawler;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,9 +17,8 @@ public class HomeScreen extends GameState {
         this.height = height;
         startButton = new Button("Start");
         startButton.setId("start-button");
-        //dummy code
         startButton.setOnAction(event -> {
-            InitialPlayerConfigScreen config = new InitialPlayerConfigScreen(width, height);
+            InitPlayerConfigScreen config = new InitPlayerConfigScreen(width, height);
             LucklessDungeonCrawler.setState(config);
         });
     }
