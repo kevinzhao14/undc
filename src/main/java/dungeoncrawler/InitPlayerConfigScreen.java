@@ -104,7 +104,7 @@ public class InitPlayerConfigScreen extends GameState {
             Difficulty difficultyRef;
 
             for (Weapon w : DataManager.WEAPONS) {
-                if (w.getName().equals(selectedWeapon.getText())) {
+                if (w.getName().equals(weaponName)) {
                     weaponRef = w;
                     break;
                 }
@@ -114,7 +114,7 @@ public class InitPlayerConfigScreen extends GameState {
 
             try {
                 if (Controller.getDataManager().newGame(playerName, difficultyRef, weaponRef)) {
-                    //TODO: Implement later
+                    Controller.setState(new FirstRoom(width, height));
                 }
             } catch (IllegalArgumentException iae) {
                 Alert alert = new Alert(AlertType.ERROR, iae.getMessage());
