@@ -1,24 +1,30 @@
 package dungeoncrawler;
 
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class LucklessDungeonCrawler extends Application {
-    private static LucklessDungeonCrawler INSTANCE;
+public class Controller extends Application {
+    private static Controller INSTANCE;
 
     private Stage stage;
     private GameState state;
+    private DataManager dataManager;
 
+    /**
+     * Entrypoint for the game
+     *
+     * @param stage Stage to use, passed in by JavaFX
+     */
     public void start(Stage stage) {
         INSTANCE = this;
 
+        this.dataManager = new DataManager();
+
         this.stage = stage;
-        this.state = null; // placeholder gamestate, this should never be null
+        this.state = new HomeScreen(1280, 720); // placeholder gamestate, this should never be null
 
         stage.setTitle("Luckless Dungeon Crawler");
-        this.stage.setScene(new Scene(new Pane())); // placeholder scene
+        this.stage.setScene(this.state.getScene());
 
         stage.show();
     }
@@ -35,8 +41,19 @@ public class LucklessDungeonCrawler extends Application {
 
     /**
      * Get the current GameState which is showing on the JavaFX stage.
+     *
+     * @return current GameState
      */
     public static GameState getState() {
         return INSTANCE.state;
+    }
+
+    /**
+     * Returns the DataManager for the game
+     *
+     * @return the DataManager
+     */
+    public static DataManager getDataManager() {
+        return INSTANCE.dataManager;
     }
 }

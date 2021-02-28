@@ -1,4 +1,4 @@
-package com.luckless.dungeoncrawler;
+package dungeoncrawler;
 
 
 import java.util.ArrayList;
@@ -15,6 +15,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * Class implementation of the initial player configuration screen
+ * for the Team Luckless Dungeon Crawler game.
+ *
+ * @author Manas Harbola
+ * @version 1.0
+ * @userid mharbola3
+ */
 public class InitPlayerConfigScreen extends GameState {
     //Application Window dimensions
     private int windowHeight;
@@ -25,6 +33,23 @@ public class InitPlayerConfigScreen extends GameState {
     //Stores the entered player name
     private String playerName;
 
+    /**
+     * Constructor for creating instance of InitPlayerConfigScreen.
+     *
+     * Constructor generates a JavaFX Scene object of specified window size
+     * for the initial configuration screen, where the player selects their name,
+     * game difficulty, and starter weapon. This Scene is then set by the Controller
+     * object onto the Stage.
+     *
+     * Player specified name, difficulty, weapon, are all checked for validity
+     * when they are sent to the DataManager object for storing player configuration.
+     * If any of the three fields are invalid, a JavaFX ERROR Alert window is displayed
+     * to the player, prompting them on which field is invalid and must be fixed before
+     * proceeding into the game.
+     *
+     * @param width width of scene window, in pixels
+     * @param height height of the scene window, in pixels
+     */
     public InitPlayerConfigScreen(int width, int height) {
         this.windowWidth = width;
         this.windowHeight = height;
@@ -104,7 +129,7 @@ public class InitPlayerConfigScreen extends GameState {
             Difficulty difficultyRef;
 
             for (Weapon w : DataManager.WEAPONS) {
-                if (w.getName().equals(selectedWeapon.getText())) {
+                if (w.getName().equals(weaponName)) {
                     weaponRef = w;
                     break;
                 }
@@ -113,8 +138,8 @@ public class InitPlayerConfigScreen extends GameState {
             difficultyRef = (selectedDifficulty == null) ? null : Difficulty.valueOf(selectedDifficulty.getText());
 
             try {
-                if (LucklessDungeonCrawler.getDataManager().newGame(playerName, difficultyRef, weaponRef)) {
-                    //TODO: Implement later
+                if (Controller.getDataManager().newGame(playerName, difficultyRef, weaponRef)) {
+                    Controller.setState(new FirstRoom(width, height));
                 }
             } catch (IllegalArgumentException iae) {
                 Alert alert = new Alert(AlertType.ERROR, iae.getMessage());
@@ -123,8 +148,6 @@ public class InitPlayerConfigScreen extends GameState {
         });
 
         this.scene = new Scene(root, this.windowWidth, this.windowHeight);
-
-
     }
 
 }

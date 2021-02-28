@@ -1,4 +1,4 @@
-package views;
+package dungeoncrawler;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,8 +19,8 @@ public class HomeScreen extends GameState {
         startButton.setId("start-button");
         //dummy code
         startButton.setOnAction(event -> {
-            InitialPlayerConfigScreen config = new InitialPlayerConfigScreen(width, height);
-            LucklessDungeonCrawler.setState(config);
+            InitPlayerConfigScreen config = new InitPlayerConfigScreen(width, height);
+            Controller.setState(config);
         });
     }
     public Scene getScene() {
@@ -31,7 +31,7 @@ public class HomeScreen extends GameState {
         layout.setSpacing(10);
         StackPane root = new StackPane(layout);
         Scene scene = new Scene(root, width, height);
-        scene.getStylesheets().add("views/HomeScreenStyleSheet.css");
+        scene.getStylesheets().add("HomeScreenStyleSheet.css");
         return scene;
     }
 
