@@ -1,4 +1,4 @@
-package com.luckless.dungeoncrawler;
+package dungeoncrawler;
 
 /**
  * Class for storing and handling all session data.

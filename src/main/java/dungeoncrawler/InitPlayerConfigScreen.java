@@ -113,7 +113,7 @@ public class InitPlayerConfigScreen extends GameState {
             difficultyRef = (selectedDifficulty == null) ? null : Difficulty.valueOf(selectedDifficulty.getText());
 
             try {
-                if (LucklessDungeonCrawler.getDataManager().newGame(playerName, difficultyRef, weaponRef)) {
+                if (Controller.getDataManager().newGame(playerName, difficultyRef, weaponRef)) {
                     //TODO: Implement later
                 }
             } catch (IllegalArgumentException iae) {

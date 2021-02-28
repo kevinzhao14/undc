@@ -17,9 +17,10 @@ public class HomeScreen extends GameState {
         this.height = height;
         startButton = new Button("Start");
         startButton.setId("start-button");
+        //dummy code
         startButton.setOnAction(event -> {
             InitPlayerConfigScreen config = new InitPlayerConfigScreen(width, height);
-            LucklessDungeonCrawler.setState(config);
+            Controller.setState(config);
         });
     }
     public Scene getScene() {

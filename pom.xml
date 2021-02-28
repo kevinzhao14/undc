@@ -29,7 +29,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.5</version>
                 <configuration>
-                    <mainClass>LucklessDungeonCrawler</mainClass>
+                    <mainClass>dungeoncrawler.Controller</mainClass>
                 </configuration>
             </plugin>
         </plugins>

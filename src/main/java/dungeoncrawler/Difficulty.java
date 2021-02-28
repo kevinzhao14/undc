@@ -1,4 +1,4 @@
-package com.luckless.dungeoncrawler;
+package dungeoncrawler;
 
 public enum Difficulty {
     EASY,MEDIUM,HARD;

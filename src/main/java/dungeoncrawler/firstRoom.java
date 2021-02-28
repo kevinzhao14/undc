@@ -1,3 +1,5 @@
+package dungeoncrawler;
+
 import javafx.scene.Scene;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.RowConstraints;
@@ -5,8 +7,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.Label;
 
-public class firstRoom extends GameState {
-
+public class FirstRoom extends GameState {
 
 
     private int width;
@@ -17,9 +18,10 @@ public class firstRoom extends GameState {
     // monsters
 
 
-    public firstRoom() {}
+    public FirstRoom() {
+    }
 
-    public firstRoom(int width, int height) {
+    public FirstRoom(int width, int height) {
         this.width = width;
         this.height = height;
 
@@ -60,6 +62,7 @@ public class firstRoom extends GameState {
         layout.add(new Label("Exit 4"), 15, 5);
 
     }
+
     public Scene getScene() {
         return super.getScene();
     }

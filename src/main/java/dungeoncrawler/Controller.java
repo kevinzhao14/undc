@@ -5,20 +5,23 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class LucklessDungeonCrawler extends Application {
-    private static LucklessDungeonCrawler INSTANCE;
+public class Controller extends Application {
+    private static Controller INSTANCE;
 
     private Stage stage;
     private GameState state;
+    private DataManager dataManager;
 
     public void start(Stage stage) {
         INSTANCE = this;
 
+        this.dataManager = new DataManager();
+
         this.stage = stage;
-        this.state = null; // placeholder gamestate, this should never be null
+        this.state = new InitPlayerConfigScreen(1280, 720); // placeholder gamestate, this should never be null
 
         stage.setTitle("Luckless Dungeon Crawler");
-        this.stage.setScene(new Scene(new Pane())); // placeholder scene
+        this.stage.setScene(this.state.getScene()); // placeholder scene
 
         stage.show();
     }
@@ -38,5 +41,9 @@ public class LucklessDungeonCrawler extends Application {
      */
     public static GameState getState() {
         return INSTANCE.state;
+    }
+
+    public static DataManager getDataManager() {
+        return INSTANCE.dataManager;
     }
 }
