@@ -7,11 +7,19 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * HomeScreen Page for the Dungeon Crawler
+ */
 public class HomeScreen extends GameState {
     private int width;
     private int height;
     private Button startButton;
 
+    /**
+     * HomeScreen constructor which also sets the start button functionality
+     * @param width the width of the window
+     * @param height the height of the window
+     */
     public HomeScreen(int width, int height) {
         this.width = width;
         this.height = height;
@@ -23,6 +31,11 @@ public class HomeScreen extends GameState {
             Controller.setState(config);
         });
     }
+
+    /**
+     * creates the home screen scene
+     * @return the home screen scene
+     */
     public Scene getScene() {
         Label label = new Label("Welcome to the Luckless Dungeon Crawler");
         label.getStyleClass().add("title");
@@ -35,6 +48,9 @@ public class HomeScreen extends GameState {
         return scene;
     }
 
+    /**
+     * @return the start button
+     */
     public Button getStartButton() {
         return startButton;
     }
