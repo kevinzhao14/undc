@@ -1,6 +1,5 @@
 package dungeoncrawler;
 
-
 import java.util.ArrayList;
 
 import javafx.geometry.Pos;
@@ -135,7 +134,8 @@ public class InitPlayerConfigScreen extends GameState {
                 }
             }
 
-            difficultyRef = (selectedDifficulty == null) ? null : Difficulty.valueOf(selectedDifficulty.getText());
+            difficultyRef = (selectedDifficulty == null)
+                    ? null : Difficulty.valueOf(selectedDifficulty.getText());
 
             try {
                 if (Controller.getDataManager().newGame(playerName, difficultyRef, weaponRef)) {
