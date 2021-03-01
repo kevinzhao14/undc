@@ -1,10 +1,7 @@
 import dungeoncrawler.Controller;
-import dungeoncrawler.HomeScreen;
-import dungeoncrawler.InitPlayerConfigScreen;
 
 import javafx.stage.Stage;
 import org.junit.Test;
-import org.junit.Before;
 import org.junit.Assert;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.base.NodeMatchers;
@@ -21,12 +18,36 @@ public class InitPlayerConfigScreenTest extends ApplicationTest {
         testController.start(stage);
     }
 
-    /*
-    @Test
-    public void testTextField() {
 
+    @Test
+    public void testInvalidName() {
+        /*
+        Check if clicking next button shows alert window
+        if player enters invalid name, but selects valid
+        difficulty and weapon
+        */
+
+        clickOn("Start");
+
+        clickOn("Enter player name:");
+        WriteRobotImpl wr = new WriteRobotImpl(
+                new BaseRobotImpl(), new SleepRobotImpl(), new WindowFinderImpl());
+        wr.write("   ");
+        clickOn("EASY");
+        clickOn("Sword");
+        clickOn("Next");
+
+        try {
+            verifyThat("Error", NodeMatchers.isNotNull());
+        } catch (EmptyNodeQueryException e) {
+            e.printStackTrace();
+            //Indicate test case has failed
+            Assert.assertTrue(false);
+        }
+
+        //indicate test has passed
+        Assert.assertTrue(true);
     }
-    */
 
     @Test
     public void testNextButton() {
@@ -36,11 +57,11 @@ public class InitPlayerConfigScreenTest extends ApplicationTest {
         RadioButton are both selected
         */
         clickOn("Start");
-        verifyThat("Enter player name:", NodeMatchers.isNotNull());
 
         //Enter player name as "player1"
         clickOn("Enter player name:");
-        WriteRobotImpl wr = new WriteRobotImpl(new BaseRobotImpl(), new SleepRobotImpl(), new WindowFinderImpl());
+        WriteRobotImpl wr = new WriteRobotImpl(
+                new BaseRobotImpl(), new SleepRobotImpl(), new WindowFinderImpl());
         wr.write("player1");
         //select difficulty
         clickOn("EASY");
