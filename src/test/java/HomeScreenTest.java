@@ -21,6 +21,10 @@ public class HomeScreenTest extends ApplicationTest {
     }
 
     @Test
+    public void containsText() {
+        FxAssert.verifyThat("Welcome to the Luckless Dungeon Crawler", NodeMatchers.isNotNull());
+    }
+    @Test
     public void onButtonClick() {
         clickOn("Start");
         verifyThat("Select difficulty:", NodeMatchers.isNotNull());
