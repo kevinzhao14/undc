@@ -7,6 +7,14 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.Label;
 
+/**
+ * Class representation of the first level screen
+ * for the Team Luckless Dungeon Crawler game.
+ *
+ * @author Trenton Wong
+ * @version 1.0
+ * @userid twong66
+ */
 public class FirstRoom extends GameState {
 
 
@@ -14,33 +22,33 @@ public class FirstRoom extends GameState {
     private int height;
     private int gold;
 
-    // treasure
-    // monsters
 
-
-    public FirstRoom() {
-    }
-
+    /**
+     * Constructor of the first room that initializes the scene.
+     *
+     * @param width Horizontal width of the scene window
+     * @param height Vertical height of the scene window
+     */
     public FirstRoom(int width, int height) {
         this.width = width;
         this.height = height;
 
         // initialize treasure/monsters
 
-        /*
-        switch(DataManager.getDifficulty()) {
-            case EASY:
-                gold = 300;
-                break;
-            case MEDIUM:
-                gold = 200;
-                break;
-            default:
-                gold = 100;
-                break;
+
+        switch (Controller.getDataManager().getDifficulty()) {
+        case EASY:
+            gold = 300;
+            break;
+        case MEDIUM:
+            gold = 200;
+            break;
+        default:
+            gold = 100;
+            break;
         }
 
-         */
+
 
         StackPane stack = new StackPane();
         this.scene = new Scene(stack, width, height);
@@ -63,8 +71,23 @@ public class FirstRoom extends GameState {
 
     }
 
+    /**
+     * Returns the FirstRoom scene
+     *
+     * @return the scene of the first room
+     */
     public Scene getScene() {
         return super.getScene();
     }
+
+    /**
+     * Returns the starting amount of gold
+     *
+     * @return gold amount
+     */
+    public int getGold() {
+        return this.gold;
+    }
+
 
 }
