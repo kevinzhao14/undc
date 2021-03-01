@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Controller extends Application {
-    private static Controller INSTANCE;
+    private static Controller instance;
 
     private Stage stage;
     private GameState state;
@@ -16,7 +16,7 @@ public class Controller extends Application {
      * @param stage Stage to use, passed in by JavaFX
      */
     public void start(Stage stage) {
-        INSTANCE = this;
+        instance = this;
 
         this.dataManager = new DataManager();
 
@@ -35,8 +35,8 @@ public class Controller extends Application {
      * @param state scene to change to
      */
     public static void setState(GameState state) {
-        INSTANCE.state = state;
-        INSTANCE.stage.setScene(state.getScene());
+        instance.state = state;
+        instance.stage.setScene(state.getScene());
     }
 
     /**
@@ -45,7 +45,7 @@ public class Controller extends Application {
      * @return current GameState
      */
     public static GameState getState() {
-        return INSTANCE.state;
+        return instance.state;
     }
 
     /**
@@ -54,6 +54,6 @@ public class Controller extends Application {
      * @return the DataManager
      */
     public static DataManager getDataManager() {
-        return INSTANCE.dataManager;
+        return instance.dataManager;
     }
 }

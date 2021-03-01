@@ -21,12 +21,12 @@ public class DataManagerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testNewGame2() {
-            dataManager.newGame("username", null, dataManager.WEAPONS[0]);
+        dataManager.newGame("username", null, dataManager.WEAPONS[0]);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testNewGame3() {
-            dataManager.newGame("username", Difficulty.EASY, null);
+        dataManager.newGame("username", Difficulty.EASY, null);
     }
 
     @Test

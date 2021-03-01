@@ -8,9 +8,9 @@ package dungeoncrawler;
  */
 public class DataManager {
     public static final Weapon[] WEAPONS = new Weapon[]{
-            new Weapon("Axe", null, 10, 1),
-            new Weapon("Sword", null, 10, 1),
-            new Weapon("Mace", null, 10, 1)
+        new Weapon("Axe", null, 10, 1),
+        new Weapon("Sword", null, 10, 1),
+        new Weapon("Mace", null, 10, 1)
     };
 
     private String username;

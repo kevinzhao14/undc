@@ -1,6 +1,5 @@
 package dungeoncrawler;
 
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
@@ -40,5 +39,7 @@ public class Weapon {
      * Getter for the weapon's name.
      * @return The name of the weapon
      */
-    public String getName() {return this.name;}
+    public String getName() {
+        return this.name;
+    }
 }
