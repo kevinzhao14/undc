@@ -3,39 +3,19 @@ package dungeoncrawler;
 import javafx.scene.input.KeyCode;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-class BiMap<K,V> {
-
-    HashMap<K,V> map = new HashMap<K, V>();
-    HashMap<V,K> inversedMap = new HashMap<V, K>();
-
-    BiMap(K[] keys, V[] values) {
-        for (int i = 0; i < keys.length; i++) {
-            put(keys[i], values[i]);
-        }
-    }
-
-    void put(K k, V v) {
-        map.put(k, v);
-        inversedMap.put(v, k);
-    }
-
-    V get(K k) {
-        return map.get(k);
-    }
-
-    K getKey(V v) {
-        return inversedMap.get(v);
-    }
-
-}
-
+/**
+ * Class for managing and saving/loading user configuration data.
+ * @version 1.0
+ * @author Kevin Zhao
+ */
 public class Controls {
     /*
      * Please note: The use of F13-F24 is reserved for special/mouse keys. Mapping is as follows:
@@ -44,18 +24,18 @@ public class Controls {
      *      F15 - mouse wheel up
      *      F16 - mouse wheel down
      */
-    private static final BiMap<String, KeyCode> mouseKeys = new BiMap<>(
+    private static final BiMap<String, KeyCode> MOUSEKEYS = new BiMap<>(
             new String[]{
-                    "MOUSE1",
-                    "MOUSE2",
-                    "MWHEELUP",
-                    "MWHEELDOWN"
+                "MOUSE1",
+                "MOUSE2",
+                "MWHEELUP",
+                "MWHEELDOWN"
             },
             new KeyCode[]{
-                    KeyCode.F13,
-                    KeyCode.F14,
-                    KeyCode.F15,
-                    KeyCode.F16
+                KeyCode.F13,
+                KeyCode.F14,
+                KeyCode.F15,
+                KeyCode.F16
             }
     );
 
@@ -63,8 +43,8 @@ public class Controls {
     private HashMap<String, KeyCode> keyMap = new HashMap<>();
 
     /**
-     * Constructor.
-     * @param file File of the config file. By default it is "config/config.cfg", but field is included for debugging purposes
+     * Constructor for a Controls config object.
+     * @param file File for the save file.
      */
     public Controls(File file) {
         saveFile = file;
@@ -72,33 +52,49 @@ public class Controls {
         //If save file exists, then load data from file
         if (file.exists() && !file.isDirectory()) {
             loadConfig(file.getPath());
+        } else { //file doesn't exist, create new file and save
+            resetKeys();
+            try {
+                save();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
+
+    /**
+     * Default Constructor for a Controls object. Sets save file to config/config.cfg.
+     */
     public Controls() {
         this(new File("config/config.cfg"));
     }
 
     /**
-     * Loads a config file line-by-line.
-     * @param filePath Path of the config file to load.
+     * Loads a config file's data into the object data.
+     * @param filePath Path of the config file to load
      */
     private void loadConfig(String filePath) {
         try {
+            //file reader for reading the save file line by line
             BufferedReader loader = new BufferedReader(new FileReader(filePath));
             String line = loader.readLine();
             int lineNumber = 1;
 
+            //loop through each line in the file.
             while (line != null) {
+                //the command stored on the line
                 String[] lineData = line.split(" ");
 
-                //check for command
+                //check command validity and act
                 try {
                     switch (lineData[0]) {
-                        case "bind":
-                            loadKey(lineData);
-                            break;
-                        default:
-                            System.out.println("Unknown command on line " + lineNumber);
+                    case "": //empty line or bad spacing
+                        break;
+                    case "bind": //bind key
+                        loadKey(lineData);
+                        break;
+                    default:
+                        System.out.println("Unknown command on line " + lineNumber + ": \"" + lineData[0] + "\"");
                     }
                 } catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage() + " on line " + lineNumber);
@@ -108,8 +104,6 @@ public class Controls {
                 line = loader.readLine();
                 lineNumber++;
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -125,8 +119,9 @@ public class Controls {
         if (args.length != 3) {
             throw new IllegalArgumentException("Invalid command format");
         }
-        String key = args[1];
-        String control = args[2];
+        //<KEY> value and <CONTROL> value
+        String key = args[1].toUpperCase();
+        String control = args[2].toLowerCase();
         try {
             setKey(control, key);
         } catch (IllegalArgumentException e) {
@@ -136,7 +131,6 @@ public class Controls {
 
     /**
      * Resets controls. Also where all default controls/keymappings are stored.
-     * @return Returns true on success
      */
     public void resetKeys() {
         keyMap.clear();
@@ -157,8 +151,8 @@ public class Controls {
         keyMap.put("drop", KeyCode.G);
 
         //Inventory Controls
-        keyMap.put("nextInv", KeyCode.F15);
-        keyMap.put("prevInv", KeyCode.F16);
+        keyMap.put("nextinv", KeyCode.F15);
+        keyMap.put("previnv", KeyCode.F16);
         keyMap.put("slot1", KeyCode.DIGIT1);
         keyMap.put("slot2", KeyCode.DIGIT2);
         keyMap.put("slot3", KeyCode.DIGIT3);
@@ -169,22 +163,36 @@ public class Controls {
         keyMap.put("attack", KeyCode.F13);
         keyMap.put("attack2", KeyCode.F14);
         keyMap.put("reload", KeyCode.R);
+
+        try {
+            save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Saves keymappings to file. Generates new file if one doesn't exist.
-     * @return Returns true on success
+     * @throws IOException Throws exception for any file issues.
      */
-    private void save() throws IOException {
+    public void save() throws IOException {
         //if file doesn't exist, create it
         if (!saveFile.exists()) {
+            //make directory(s) if they don't exist
+            saveFile.getParentFile().mkdirs();
             saveFile.createNewFile();
         }
 
+        //generate a string with all the key binds
         String saveString = "";
         for (Map.Entry<String, KeyCode> e : keyMap.entrySet()) {
-            saveString += "\\nbind " + e.getKey() + " " + "v";
-        });
+            saveString += "bind " + e.getValue().toString().toLowerCase() + " " + e.getKey().toLowerCase() + "\n";
+        }
+
+        //write to file
+        BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile.getPath()));
+        writer.write(saveString);
+        writer.close();
     }
 
     /**
@@ -196,16 +204,26 @@ public class Controls {
         if (controlName == null) {
             throw new IllegalArgumentException("Control cannot be null.");
         }
+        //get the KeyCode associated with the control name. If null, then the bind doesn't exist.
         KeyCode foundCode = keyMap.get(controlName);
         if (foundCode == null) {
             throw new IllegalArgumentException("No such control.");
         }
 
         //if the keycode corresponds to a mouse button, then return the mouse button code
-        if (mouseKeys.getKey(foundCode) != null) {
-            return mouseKeys.getKey(foundCode);
+        if (MOUSEKEYS.getKey(foundCode) != null) {
+            //note the "key" in "getKey" refers to key in "key value pair", not "keycode"
+            return MOUSEKEYS.getKey(foundCode);
         }
         return foundCode.toString();
+    }
+
+    /**
+     * Prints the key mapping.
+     */
+    public void printMapping() {
+        System.out.println("Printing size " + keyMap.size());
+        keyMap.forEach((k, v) -> System.out.println(k + ", " + v));
     }
 
     /**
@@ -225,8 +243,8 @@ public class Controls {
         KeyCode code;
         try {
             //if the key is a mousebutton, get the KeyCode corresponding to it.
-            if (mouseKeys.get(key) != null) {
-                code = mouseKeys.get(key);
+            if (MOUSEKEYS.get(key) != null) {
+                code = MOUSEKEYS.get(key);
             } else {
                 code = KeyCode.valueOf(key);
             }
@@ -234,6 +252,73 @@ public class Controls {
             throw new IllegalArgumentException("Invalid key.");
         }
 
-        keyMap.replace(controlName, code);
+        //if the key is already mapped to another control, throw an exception
+        if (keyMap.get(controlName) != code && keyMap.containsValue(code)) {
+            throw new IllegalArgumentException("That key is already mapped to another control.");
+        }
+        //if the control is already mapped, overwrite it
+        if (keyMap.containsKey(controlName)) {
+            keyMap.replace(controlName, code);
+        } else {
+            keyMap.put(controlName, code);
+        }
+
+        try {
+            save();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to save properly");
+        }
     }
+}
+
+/**
+ * Bi-directional Map for storing mouse button to function key relationships.
+ * @param <K> Object type for keys
+ * @param <V> Object type for values
+ */
+class BiMap<K, V> {
+
+    private HashMap<K, V> map = new HashMap<>();
+    private HashMap<V, K> inversedMap = new HashMap<>();
+
+    /**
+     * Constructor for a Bi-Map.
+     * @param keys Array of Keys to load
+     * @param values Array of Values to load
+     */
+    BiMap(K[] keys, V[] values) {
+        for (int i = 0; i < keys.length; i++) {
+            put(keys[i], values[i]);
+        }
+    }
+
+    /**
+     * Puts the key-value pair into the map.
+     * @param k Key data
+     * @param v Value data
+     */
+    void put(K k, V v) {
+        map.put(k, v);
+        inversedMap.put(v, k);
+    }
+
+    /**
+     * Returns a Value from a Key.
+     * @param k Key object to search for
+     * @return Returns the associated value object
+     */
+    V get(K k) {
+        return map.get(k);
+    }
+
+    /**
+     * Returns a Key from a Value.
+     * @param v Value object to search for
+     * @return Returns the associated Key
+     */
+    K getKey(V v) {
+        return inversedMap.get(v);
+    }
+
 }
