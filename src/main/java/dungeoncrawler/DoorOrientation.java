@@ -1,5 +1,5 @@
 package dungeoncrawler;
 
 public enum DoorOrientation {
-    TOP, RIGHT, LEFT, BOTTOM
+    TOP, RIGHT, LEFT, BOTTOM;
 }
