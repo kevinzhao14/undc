@@ -1,6 +1,6 @@
 package dungeoncrawler;
 
-import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 
@@ -14,7 +14,7 @@ public class GameController {
     private Controls controls;
     private Room room;
     private Scene scene;
-    private Node player;
+    private ImageView player;
     private double posX, posY;
     private double velX, velY;
     private double accelX, accelY;
@@ -22,7 +22,7 @@ public class GameController {
     private long ticks;
     private double totalTime;
 
-    public GameController(Room room, Scene scene, Node player) {
+    public GameController(Room room, Scene scene, ImageView player) {
         if (room == null) {
             throw new IllegalArgumentException(
                     "Cannot assign null Room reference to GameController instance"
@@ -109,18 +109,113 @@ public class GameController {
         return Math.round(number * GameSettings.PRECISION) / GameSettings.PRECISION;
     }
 
+    private double getPx(double units) {
+        return units * GameSettings.PPU;
+    }
+
     class GameRunner extends TimerTask {
         public void run() {
+            ticks++;
+            double newPosX = posX + velX;
+            double newPosY = posY + velY;
 
+            boolean isValidPos = checkPos(posX, posY, newPosX, newPosY);
+            if (isValidPos) {
+                movePlayer(newPosX, newPosY);
+                if (atDoor(posX, posY, newPosX, newPosY)) {
+
+                }
+                posX = newPosX;
+                posY = newPosY;
+            }
         }
 
-        private boolean checkPos(double x, double y, double newX, double newY) {
 
-            return false;
+        private boolean checkPos(double x, double y, double newX, double newY) {
+            if (newX < 0.0 || newX > room.getWidth()) {
+                return false;
+            }
+            if (newY < 0.0 || newY > room.getHeight()) {
+                return false;
+            }
+
+            return true;
+        }
+
+        private boolean inRange(Obstacle o, double x, double y, double newX, double newY) {
+            if (o.getX() + o.getWidth() < Math.min(x, newX)
+                && o.getX() > Math.max(x, newX) + GameSettings.PLAYER_WIDTH) {
+                return false;
+            }
+            if (o.getY() + o.getHeight() < Math.min(y, newY)
+                && o.getY() > Math.max(y, newY) + GameSettings.PLAYER_HEIGHT) {
+                return false;
+            }
+            return true;
+        }
+
+        //TODO insert comments below in javadoc
+        //intX -> point of intersection in x-axis
+        //intY -> point of intersection in y-axis
+        private boolean checkObstacle(Obstacle o, double intX, double intY,
+                                      boolean left, boolean bottom) {
+            return true;
+        }
+
+        private boolean atDoor(double x, double y, double newX, double newY) {
+            //TODO: implement getDoors() method in Room class
+            Door[] doors = {
+                room.getTopDoor(),
+                room.getBottomDoor(),
+                room.getLeftDoor(),
+                room.getRightDoor()
+            };
+
+
+            for (Door d : doors) {
+                //Check if door is out of player movement vector rectangle
+                if (!inRange(d, x, y, newX, newY)) {
+                    continue;
+                }
+                //Get equation for intersection
+                double[]
+                //Check if player is inside door
+
+                if (checkObstacle(d, ))
+            }
         }
 
         private void movePlayer(double x, double y) {
+            //Update player position
+            player.setX(getPx(posX));
+            player.setY(scene.getHeight() - getPx(posY));
 
+            //Move camera, if needed
+            moveCamera();
+        }
+
+        //Implement if necessary
+        private void moveCamera() {
+        }
+
+        /**
+         *
+         * @param m slope of equation 1
+         * @param b y-intercept of equation 1
+         * @param a slope of equation 2
+         * @param c y-intercept of equation 2
+         * @return x and y coordinates of intersection
+         */
+        private double[] intersect(double m, double b, double a, double c) {
+            double x = (b - c) / (a - m);
+            double y = m * x + b;
+            return new double[]{x, y};
+        }
+
+        private double[] equation(double x0, double y0, double x1, double y1) {
+            double m = (y1 - y0) / (x1 - x0);
+            double b = y0 - m * x0;
+            return new double[]{m, b};
         }
     }
 }
