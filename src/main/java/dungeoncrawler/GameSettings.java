@@ -8,4 +8,8 @@ public static class GameSettings {
     //pixels per unit
     public static final double PPU = 5.0;
     public static final int PRECISION = 10000;
+
+    //Player width and height
+    public static final double PLAYER_WIDTH = 10;
+    public static final double PLAYER_HEIGHT = 10;
 }
