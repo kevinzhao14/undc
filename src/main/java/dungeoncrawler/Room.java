@@ -23,10 +23,10 @@ public class Room {
         this.type = roomType;
     }
 
-    public int getRoomHeight() {
+    public int getHeight() {
         return this.height;
     }
-    public int getRoomWidth() {
+    public int getWidth() {
         return this.width;
     }
     public Door getTopDoor() {
