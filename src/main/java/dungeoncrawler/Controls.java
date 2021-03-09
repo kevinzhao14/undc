@@ -320,5 +320,4 @@ class BiMap<K, V> {
     K getKey(V v) {
         return inversedMap.get(v);
     }
-
 }
