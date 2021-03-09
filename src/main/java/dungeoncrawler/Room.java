@@ -3,6 +3,8 @@ package dungeoncrawler;
 public class Room {
     private int height;
     private int width;
+    private int startX;
+    private int startY;
     private Obstacle[] obstacles;
     private Door topDoor;
     private Door bottomDoor;
@@ -28,6 +30,12 @@ public class Room {
     }
     public int getWidth() {
         return this.width;
+    }
+    public int getStartX() {
+        return this.startX;
+    }
+    public int getStartY() {
+        return this.startY;
     }
     public Door getTopDoor() {
         return this.topDoor;
