@@ -149,6 +149,10 @@ public class GameController {
                 pressLeft = false;
             }
             accelX = round(accelX);
+        } else if (key.equals(controls.getKey("pause"))) {
+            if (!isPress) {
+                pause();
+            }
         }
     }
 
