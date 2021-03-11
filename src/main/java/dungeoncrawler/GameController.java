@@ -164,8 +164,8 @@ public class GameController {
         public void run() {
             ticks++;
             long startTime = System.nanoTime();
-            double newPosX = posX + velX;
-            double newPosY = posY + velY;
+            double newPosX = round(posX + velX);
+            double newPosY = round(posY + velY);
 
             boolean isValidPos = checkPos(posX, posY, newPosX, newPosY);
             if (isValidPos) {
@@ -269,10 +269,15 @@ public class GameController {
                 double[] playerEquation = equation(x, y, newX, newY);
                 double[] intersects = getIntersect(d, playerEquation[0], playerEquation[1], moveUp, moveRight);
 
+                System.out.println("Intersect " + intersects);
+
                 //player intersects door
                 if (intersects != null) {
                     Room newRoom = d.getGoesTo();
-                    setRoom(newRoom);
+                    //TODO: Change Rooms
+                    System.out.println("Switching Rooms");
+                    pause();
+                    //setRoom(newRoom);
                     return true;
                 }
             }
@@ -302,6 +307,10 @@ public class GameController {
             if (moveUp) {
                 intY = (o.getY() - GameSettings.PLAYER_HEIGHT - b) / m;
             }
+            //moving vertically
+            if (m == Double.POSITIVE_INFINITY || m == Double.NEGATIVE_INFINITY) {
+                intY = b;
+            }
 
             //check if intersect is on the obstacle
             if (intY <= o.getX() + o.getWidth() || intY + GameSettings.PLAYER_WIDTH >= o.getX()) {
@@ -327,7 +336,7 @@ public class GameController {
         private void movePlayer(double x, double y) {
             //Update player position
             player.setX(getPx(x));
-            player.setY(getPx(room.getHeight()) - getPx(y - GameSettings.PLAYER_HEIGHT));
+            player.setY(getPx(room.getHeight() - y - GameSettings.PLAYER_HEIGHT));
 
             //Move camera, if needed
             moveCamera();
@@ -340,6 +349,11 @@ public class GameController {
         private double[] equation(double x0, double y0, double x1, double y1) {
             double m = (y1 - y0) / (x1 - x0);
             double b = y0 - m * x0;
+
+            //moving vertically
+            if (x0 == x1 && y0 != y1) {
+                b = x0;
+            }
             return new double[]{m, b};
         }
     }
