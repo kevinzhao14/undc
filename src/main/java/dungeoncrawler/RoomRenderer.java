@@ -7,7 +7,7 @@ import javafx.scene.shape.Rectangle;
 public class RoomRenderer {
     public static Scene drawRoom(Room room) {
         Group root = new Group();
-        Scene scene = new Scene(root, room.getRoomWidth(), room.getRoomHeight());
+        Scene scene = new Scene(root, room.getWidth(), room.getHeight());
         for (Obstacle obstacle : room.getObstacles()) {
             Rectangle r = new Rectangle(obstacle.getX(), obstacle.getY(), obstacle.getWidth(), obstacle.getHeight());
             root.getChildren().add(r);
