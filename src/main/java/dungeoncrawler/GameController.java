@@ -7,10 +7,16 @@ import javafx.scene.input.KeyCode;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Class for running the game. Does all the calculations and stuff.
+ *
+ * @author Kevin Zhao, Manas Harbola
+ * @version 1.0
+ */
 public class GameController {
     private Timer timer;
 
-    //TODO: Create Controls object in Controller
+    //TODO: Create Controls object in Controller - edit: maybe not?
     private Controls controls;
     private Room room;
     private Scene scene;
@@ -22,10 +28,15 @@ public class GameController {
     private long ticks;
     private double totalTime;
 
+    //bolean variables for tracking key holds/events
     private boolean pressLeft, pressRight;
     private boolean pressUp, pressDown;
     private boolean frictionX, frictionY;
 
+    /**
+     * Constructor for a GameController.
+     * @param player
+     */
     public GameController(ImageView player) {
         if (player == null) {
             throw new IllegalArgumentException(
@@ -37,6 +48,10 @@ public class GameController {
         this.controls = new Controls();
     }
 
+    /**
+     * Starts the game.
+     * @param room Current/first room
+     */
     public void start(Room room) {
         //Render room
         setRoom(room);
@@ -50,6 +65,10 @@ public class GameController {
         });
     }
 
+    /**
+     * Changes the room.
+     * @param newRoom Room to change to
+     */
     private void setRoom(Room newRoom) {
         if (isRunning) {
             pause();
@@ -63,6 +82,9 @@ public class GameController {
         pause();
     }
 
+    /**
+     * Resets all game values.
+     */
     private void reset() {
         posX = room.getStartX();
         posY = room.getStartY();
@@ -81,6 +103,9 @@ public class GameController {
         frictionY = false;
     }
 
+    /**
+     * Pauses/resumes the game.
+     */
     public void pause() {
         if (isRunning) {
             timer.cancel();
@@ -91,10 +116,18 @@ public class GameController {
         isRunning = !isRunning;
     }
 
+    /**
+     * Starts the game timer/clock.
+     */
     private void startTimer() {
         timer.schedule(new GameRunner(), 0, 1000 / GameSettings.FPS);
     }
 
+    /**
+     * Handler for key events.
+     * @param keyCode KeyCode of the key that was pressed
+     * @param isPress Whether the event is a press or release event
+     */
     private void handleKey(KeyCode keyCode, boolean isPress) {
         if (!isRunning) {
             return;
@@ -156,24 +189,42 @@ public class GameController {
         }
     }
 
+    /**
+     * Rounds a number to (precision) digits.
+     * @param number Number to round
+     * @return Returns the rounded number.
+     */
     private double round(double number) {
         return Math.round(number * GameSettings.PRECISION) / GameSettings.PRECISION;
     }
 
+    /**
+     * Converts game units to pixels for rendering.
+     * @param units Game units
+     * @return pixel equivalent
+     */
     private double getPx(double units) {
         return units * GameSettings.PPU;
     }
 
+    /**
+     * Class that is used to calculate stuff on each tick.
+     */
     class GameRunner extends TimerTask {
+        /**
+         * Primary runner method, controls the data calculations of each tick.
+         */
         public void run() {
             ticks++;
             long startTime = System.nanoTime();
             double newPosX = round(posX + velX);
             double newPosY = round(posY + velY);
 
+            //check if position is valid. If it is, move.
             boolean isValidPos = checkPos(posX, posY, newPosX, newPosY);
             if (isValidPos) {
                 movePlayer(newPosX, newPosY);
+                //check for door intersections
                 if (checkDoors(posX, posY, newPosX, newPosY)) {
                     return;
                 }
@@ -181,10 +232,13 @@ public class GameController {
                 posY = newPosY;
             }
 
+            //update velocity
             velX += accelX;
             velX = round(velX);
             velY += accelY;
             velY = round(velY);
+
+            //don't allow speed to exceed max
             if (Math.abs(velX) >= GameSettings.MAX_VEL) {
                 velX = (velX > 0 ? 1 : -1) * GameSettings.MAX_VEL;
                 //was moving before and decelerated to 0
@@ -213,7 +267,14 @@ public class GameController {
             double execTime = round((endTime - startTime) / 1000000.0);
         }
 
-
+        /**
+         * Method to check if a new position is valid.
+         * @param x current x value
+         * @param y current y value
+         * @param newX new x value
+         * @param newY new y value
+         * @return Returns whether the movement is valid
+         */
         private boolean checkPos(double x, double y, double newX, double newY) {
             if (newX < 0.0 || newX + GameSettings.PLAYER_WIDTH > room.getWidth()) {
                 return false;
@@ -225,6 +286,15 @@ public class GameController {
             return true;
         }
 
+        /**
+         * Checks if an object is in the range of the movement vector specified.
+         * @param o Object to check for
+         * @param x x position
+         * @param y y position
+         * @param newX new x position
+         * @param newY new y position
+         * @return Returns whether the object is in range of the player's movement
+         */
         private boolean inRange(Obstacle o, double x, double y, double newX, double newY) {
             /* Checks if the object is in range of the player's movement
              *          _________
@@ -247,6 +317,14 @@ public class GameController {
             return true;
         }
 
+        /**
+         * Checks if the player has entered any doors
+         * @param x x position
+         * @param y y position
+         * @param newX new x position
+         * @param newY y position
+         * @return Whether the player has entered a door
+         */
         private boolean checkDoors(double x, double y, double newX, double newY) {
             //TODO: implement getDoors() method in Room class
             Door[] doors = {
@@ -256,7 +334,7 @@ public class GameController {
                 room.getRightDoor()
             };
 
-
+            //loop through doors
             for (Door d : doors) {
                 if (d == null) {
                     continue;
@@ -273,8 +351,6 @@ public class GameController {
                 double[] playerEquation = equation(x, y, newX, newY);
                 double[] intersects = getIntersect(d, playerEquation[0], playerEquation[1], moveUp, moveRight);
 
-                System.out.println("Intersect " + intersects);
-
                 //player intersects door
                 if (intersects != null) {
                     Room newRoom = d.getGoesTo();
@@ -288,6 +364,15 @@ public class GameController {
             return false;
         }
 
+        /**
+         * Math method to calculate the intersection point of a line/vector and an object.
+         * @param o Object to check
+         * @param m Slope of the line
+         * @param b Y-intecept of the line
+         * @param moveUp Whether the player is moving up
+         * @param moveRight Whether the player is moving down
+         * @return
+         */
         private double[] getIntersect(Obstacle o, double m, double b, boolean moveUp, boolean moveRight) {
             /* Calculate x-coordinate intersection point on the y-axis
              *
@@ -311,7 +396,9 @@ public class GameController {
             if (moveUp) {
                 intY = (o.getY() - GameSettings.PLAYER_HEIGHT - b) / m;
             }
-            //moving vertically
+            //if the player is moving vertically, then slope and y-intercept will be infinity/undefined. If so, set
+            //the intY/x position of the intersect to the x coordinate of the movement vector, which will be stored
+            //in the y-intercept variable
             if (m == Double.POSITIVE_INFINITY || m == Double.NEGATIVE_INFINITY) {
                 intY = b;
             }
@@ -337,9 +424,16 @@ public class GameController {
             return null;
         }
 
+        /**
+         * Moves the player to the specified location.
+         * @param x x coordinate to move to
+         * @param y y coordinate to move to
+         */
         private void movePlayer(double x, double y) {
             //Update player position
             player.setX(getPx(x));
+
+            //convert game coordinates to JavaFX coordinates
             player.setY(getPx(room.getHeight() - y - GameSettings.PLAYER_HEIGHT));
 
             //Move camera, if needed
@@ -350,6 +444,14 @@ public class GameController {
         private void moveCamera() {
         }
 
+        /**
+         * Returns an equation for a specified vector
+         * @param x0 first x position
+         * @param y0 first y position
+         * @param x1 second x position
+         * @param y1 second y position
+         * @return array of the slope and the y-intercept of the line.
+         */
         private double[] equation(double x0, double y0, double x1, double y1) {
             double m = (y1 - y0) / (x1 - x0);
             double b = y0 - m * x0;
