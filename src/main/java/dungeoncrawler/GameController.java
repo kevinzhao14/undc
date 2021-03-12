@@ -3,8 +3,6 @@ package dungeoncrawler;
 import javafx.scene.image.ImageView;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,17 +22,11 @@ public class GameController {
     private long ticks;
     private double totalTime;
 
+    private boolean pressLeft, pressRight;
+    private boolean pressUp, pressDown;
+    private boolean frictionX, frictionY;
+
     public GameController(ImageView player) {
-        if (room == null) {
-            throw new IllegalArgumentException(
-                    "Cannot assign null Room reference to GameController instance"
-            );
-        }
-        if (scene == null) {
-            throw new IllegalArgumentException(
-                    "Cannot assign null Scene reference to GameController instance"
-            );
-        }
         if (player == null) {
             throw new IllegalArgumentException(
                     "Cannot assign null Player reference to GameController instance"
@@ -53,17 +45,22 @@ public class GameController {
         scene.setOnKeyPressed(e -> {
             handleKey(e.getCode(), true);
         });
-        scene.setOnKeyPressed(e -> {
+        scene.setOnKeyReleased(e -> {
             handleKey(e.getCode(), false);
         });
     }
 
     private void setRoom(Room newRoom) {
+        if (isRunning) {
+            pause();
+        }
         room = newRoom;
-        scene = RoomRenderer.drawRoom(newRoom, player);
+        scene = RoomRenderer.drawRoom(room, player);
         reset();
-        isRunning = true;
         Controller.setScene(scene);
+        player.setX(getPx(posX));
+        player.setY(scene.getHeight() - getPx(posY) - GameSettings.PLAYER_HEIGHT);
+        pause();
     }
 
     private void reset() {
@@ -76,6 +73,12 @@ public class GameController {
         isRunning = false;
         ticks = 0;
         totalTime = 0;
+        pressLeft = false;
+        pressRight = false;
+        pressUp = false;
+        pressDown = false;
+        frictionX = false;
+        frictionY = false;
     }
 
     public void pause() {
@@ -99,17 +102,57 @@ public class GameController {
         String key = keyCode.toString();
 
         if (key.equals(controls.getKey("up"))) {
-            accelY += (isPress && accelY < GameSettings.ACCEL ? 1 : -1) * GameSettings.ACCEL;
+            if (isPress) {
+                if (pressUp) {
+                    return;
+                }
+                accelY += GameSettings.ACCEL;
+                pressUp = true;
+            } else {
+                accelY -= GameSettings.ACCEL;
+                pressUp = false;
+            }
             accelY = round(accelY);
         } else if (key.equals(controls.getKey("down"))) {
-            accelY += (isPress && accelY > -GameSettings.ACCEL ? -1 : 1) * GameSettings.ACCEL;
+            if (isPress) {
+                if (pressDown) {
+                    return;
+                }
+                accelY -= GameSettings.ACCEL;
+                pressDown = true;
+            } else {
+                accelY += GameSettings.ACCEL;
+                pressDown = false;
+            }
             accelY = round(accelY);
         } else if (key.equals(controls.getKey("right"))) {
-            accelX += (isPress && accelX < GameSettings.ACCEL ? 1 : -1) * GameSettings.ACCEL;
+            if (isPress) {
+                if (pressRight) {
+                    return;
+                }
+                accelX += GameSettings.ACCEL;
+                pressRight = true;
+            } else {
+                accelX -= GameSettings.ACCEL;
+                pressRight = false;
+            }
             accelX = round(accelX);
         } else if (key.equals(controls.getKey("left"))) {
-            accelX += (isPress && accelX > -GameSettings.ACCEL ? -1 : 1) * GameSettings.ACCEL;
+            if (isPress) {
+                if (pressLeft) {
+                    return;
+                }
+                accelX -= GameSettings.ACCEL;
+                pressLeft = true;
+            } else {
+                accelX += GameSettings.ACCEL;
+                pressLeft = false;
+            }
             accelX = round(accelX);
+        } else if (key.equals(controls.getKey("pause"))) {
+            if (!isPress) {
+                pause();
+            }
         }
     }
 
@@ -124,24 +167,58 @@ public class GameController {
     class GameRunner extends TimerTask {
         public void run() {
             ticks++;
-            double newPosX = posX + velX;
-            double newPosY = posY + velY;
+            long startTime = System.nanoTime();
+            double newPosX = round(posX + velX);
+            double newPosY = round(posY + velY);
 
             boolean isValidPos = checkPos(posX, posY, newPosX, newPosY);
             if (isValidPos) {
                 movePlayer(newPosX, newPosY);
-                checkDoors(posX, posY, newPosX, newPosY);
+                if (checkDoors(posX, posY, newPosX, newPosY)) {
+                    return;
+                }
                 posX = newPosX;
                 posY = newPosY;
             }
+
+            velX += accelX;
+            velX = round(velX);
+            velY += accelY;
+            velY = round(velY);
+            if (Math.abs(velX) >= GameSettings.MAX_VEL) {
+                velX = (velX > 0 ? 1 : -1) * GameSettings.MAX_VEL;
+                //was moving before and decelerated to 0
+            } else if (frictionX && Math.abs(round(velX - accelX)) < Math.abs(accelX)) {
+                velX = 0;
+                accelX -= (accelX > 0 ? 1 : -1) * GameSettings.FRICTION;
+                frictionX = false;
+            }
+            if (Math.abs(velY) >= GameSettings.MAX_VEL) {
+                velY = (velY > 0 ? 1 : -1) * GameSettings.MAX_VEL;
+            } else if (frictionY && Math.abs(round(velY - accelY)) < Math.abs(accelY)) {
+                velY = 0;
+                accelY -= (accelY > 0 ? 1 : -1) * GameSettings.FRICTION;
+                frictionY = false;
+            }
+            //apply friction if not currently moving forward
+            if (accelX == 0 && velX != 0) {
+                frictionX = true;
+                accelX += (velX > 0 ? -1 : 1) * GameSettings.FRICTION;
+            }
+            if (accelY == 0 && velY != 0) {
+                frictionY = true;
+                accelY += (velY > 0 ? -1 : 1) * GameSettings.FRICTION;
+            }
+            long endTime = System.nanoTime();
+            double execTime = round((endTime - startTime) / 1000000.0);
         }
 
 
         private boolean checkPos(double x, double y, double newX, double newY) {
-            if (newX < 0.0 || newX > room.getWidth()) {
+            if (newX < 0.0 || newX + GameSettings.PLAYER_WIDTH > room.getWidth()) {
                 return false;
             }
-            if (newY < 0.0 || newY > room.getHeight()) {
+            if (newY < 0.0 || newY + GameSettings.PLAYER_HEIGHT > room.getHeight()) {
                 return false;
             }
 
@@ -170,7 +247,7 @@ public class GameController {
             return true;
         }
 
-        private void checkDoors(double x, double y, double newX, double newY) {
+        private boolean checkDoors(double x, double y, double newX, double newY) {
             //TODO: implement getDoors() method in Room class
             Door[] doors = {
                 room.getTopDoor(),
@@ -181,6 +258,9 @@ public class GameController {
 
 
             for (Door d : doors) {
+                if (d == null) {
+                    continue;
+                }
                 //Check if door is out of player movement vector rectangle
                 if (!inRange(d, x, y, newX, newY)) {
                     continue;
@@ -193,12 +273,19 @@ public class GameController {
                 double[] playerEquation = equation(x, y, newX, newY);
                 double[] intersects = getIntersect(d, playerEquation[0], playerEquation[1], moveUp, moveRight);
 
+                System.out.println("Intersect " + intersects);
+
                 //player intersects door
                 if (intersects != null) {
                     Room newRoom = d.getGoesTo();
-                    setRoom(newRoom);
+                    //TODO: Change Rooms
+                    System.out.println("Switching Rooms");
+                    pause();
+                    //setRoom(newRoom);
+                    return true;
                 }
             }
+            return false;
         }
 
         private double[] getIntersect(Obstacle o, double m, double b, boolean moveUp, boolean moveRight) {
@@ -224,6 +311,10 @@ public class GameController {
             if (moveUp) {
                 intY = (o.getY() - GameSettings.PLAYER_HEIGHT - b) / m;
             }
+            //moving vertically
+            if (m == Double.POSITIVE_INFINITY || m == Double.NEGATIVE_INFINITY) {
+                intY = b;
+            }
 
             //check if intersect is on the obstacle
             if (intY <= o.getX() + o.getWidth() || intY + GameSettings.PLAYER_WIDTH >= o.getX()) {
@@ -248,8 +339,8 @@ public class GameController {
 
         private void movePlayer(double x, double y) {
             //Update player position
-            player.setX(getPx(posX));
-            player.setY(scene.getHeight() - getPx(posY) - GameSettings.PLAYER_HEIGHT);
+            player.setX(getPx(x));
+            player.setY(getPx(room.getHeight() - y - GameSettings.PLAYER_HEIGHT));
 
             //Move camera, if needed
             moveCamera();
@@ -262,6 +353,11 @@ public class GameController {
         private double[] equation(double x0, double y0, double x1, double y1) {
             double m = (y1 - y0) / (x1 - x0);
             double b = y0 - m * x0;
+
+            //moving vertically
+            if (x0 == x1 && y0 != y1) {
+                b = x0;
+            }
             return new double[]{m, b};
         }
     }

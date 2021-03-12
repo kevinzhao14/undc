@@ -35,12 +35,13 @@ public class GameSettings {
      * system 1.
      */
     public static final int FPS = 60;
-    public static final double ACCEL = 1.0;
-    public static final double MAX_VEL = 5.0;
-    public static final double FRICTION = ACCEL;
+    //units per second
+    public static final double ACCEL = 10.0 / FPS;
+    public static final double MAX_VEL = 50.0 / FPS;
+    public static final double FRICTION = 15.0 / FPS;
     //pixels per unit
-    public static final double PPU = 5.0;
-    public static final int PRECISION = 10000;
+    public static final double PPU = 2.0;
+    public static final double PRECISION = 10000;
 
     //Player width and height
     public static final double PLAYER_WIDTH = 10;
