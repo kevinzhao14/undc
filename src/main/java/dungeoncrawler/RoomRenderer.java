@@ -12,7 +12,7 @@ public class RoomRenderer {
         player.setX(getPx(room.getStartX()));
         player.setY(getPx(room.getStartY()));
         Group root = new Group();
-        Scene scene = new Scene(root, room.getWidth(), room.getHeight());
+        Scene scene = new Scene(root, getPx(room.getWidth()), getPx(room.getHeight()));
         if(room.getObstacles() != null) {
             for (Obstacle obstacle : room.getObstacles()) {
                 Rectangle r = new Rectangle(getPx(obstacle.getX()), getPx(room.getHeight() - obstacle.getY() - obstacle.getHeight()), getPx(obstacle.getWidth()), getPx(obstacle.getHeight()));
