@@ -1,5 +1,11 @@
 package dungeoncrawler;
 
+/**
+ * Class that stores all of the game's settings.
+ *
+ * @author Kevin Zhao, Manas Harbola
+ * @version 1.0
+ */
 public class GameSettings {
     /*
      *      Player and Object coordinate system

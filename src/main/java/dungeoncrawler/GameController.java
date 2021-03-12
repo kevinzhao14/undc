@@ -35,7 +35,7 @@ public class GameController {
 
     /**
      * Constructor for a GameController.
-     * @param player
+     * @param player Player node
      */
     public GameController(ImageView player) {
         if (player == null) {
@@ -371,7 +371,7 @@ public class GameController {
          * @param b Y-intecept of the line
          * @param moveUp Whether the player is moving up
          * @param moveRight Whether the player is moving down
-         * @return
+         * @return Returns the x and y coordinate of the intersection point, null if no intersection
          */
         private double[] getIntersect(Obstacle o, double m, double b, boolean moveUp, boolean moveRight) {
             /* Calculate x-coordinate intersection point on the y-axis
@@ -440,7 +440,9 @@ public class GameController {
             moveCamera();
         }
 
-        //Implement if necessary
+        /**
+         * To be implemented.
+         */
         private void moveCamera() {
         }
 
