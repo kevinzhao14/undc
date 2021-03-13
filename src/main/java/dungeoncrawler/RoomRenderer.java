@@ -1,18 +1,28 @@
 package dungeoncrawler;
 
-import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
 
 
 public class RoomRenderer {
-    public static Scene drawRoom(Room room, ImageView player) {
+    public static Pane drawRoom(Room room, ImageView player) {
         player.setX(getPx(room.getStartX()));
         player.setY(getPx(room.getStartY()));
-        Group root = new Group();
-        Scene scene = new Scene(root, getPx(room.getWidth()), getPx(room.getHeight()));
+        Pane root = new Pane();
+        Pane scene = new Pane();
+        scene.getChildren().addAll(root);
+
+        root.setMaxHeight(getPx(room.getHeight()));
+        root.setPrefHeight(getPx(room.getHeight()));
+        root.setMinHeight(getPx(room.getHeight()));
+        root.setMaxWidth(getPx(room.getWidth()));
+        root.setPrefWidth(getPx(room.getWidth()));
+        root.setMinWidth(getPx(room.getWidth()));
+
+        scene.setStyle("-fx-padding: 50px");
+
         if(room.getObstacles() != null) {
             for (Obstacle obstacle : room.getObstacles()) {
                 Rectangle r = new Rectangle(getPx(obstacle.getX()), getPx(room.getHeight() - obstacle.getY() - obstacle.getHeight()), getPx(obstacle.getWidth()), getPx(obstacle.getHeight()));

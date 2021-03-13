@@ -74,9 +74,7 @@ public class GameController {
             pause();
         }
         room = newRoom;
-        scene = RoomRenderer.drawRoom(room, player);
         reset();
-        Controller.setScene(scene);
         player.setX(getPx(posX));
         player.setY(scene.getHeight() - getPx(posY) - GameSettings.PLAYER_HEIGHT);
         pause();
