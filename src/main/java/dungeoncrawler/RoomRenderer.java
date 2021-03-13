@@ -1,5 +1,6 @@
 package dungeoncrawler;
 
+import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
@@ -7,7 +8,7 @@ import javafx.scene.shape.Rectangle;
 
 
 public class RoomRenderer {
-    public static Pane drawRoom(Room room, ImageView player) {
+    public static Pane drawRoom(Scene scene, Room room, ImageView player) {
         player.setX(getPx(room.getStartX()));
         player.setY(getPx(room.getHeight() - room.getStartY() - GameSettings.PLAYER_HEIGHT));
         Pane root = new Pane();
@@ -20,7 +21,6 @@ public class RoomRenderer {
         root.setMaxWidth(getPx(room.getWidth()));
         root.setPrefWidth(getPx(room.getWidth()));
         root.setMinWidth(getPx(room.getWidth()));
-        //root.setStyle("-fx-background-color: gray");
 
         main.setStyle("-fx-padding: 50px");
 
@@ -49,7 +49,7 @@ public class RoomRenderer {
             Rectangle r = new Rectangle(getPx(room.getLeftDoor().getX()), getPx(room.getHeight() - room.getLeftDoor().getY() - room.getLeftDoor().getHeight()), getPx(room.getLeftDoor().getWidth()), getPx(room.getLeftDoor().getHeight()));
             root.getChildren().add(r);
         }
-        root.getStylesheets().add(room.getType().name() + ".css");
+        scene.getStylesheets().add(room.getType().name() + ".css");
         root.getChildren().add(player);
 
         return main;

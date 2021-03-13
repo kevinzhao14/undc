@@ -47,7 +47,7 @@ public class GameScreen extends GameState {
         room = newRoom;
         StackPane root = new StackPane();
         hud = new Pane();
-        root.getChildren().addAll(hud, RoomRenderer.drawRoom(room, player));
+        root.getChildren().addAll(hud, RoomRenderer.drawRoom(scene, room, player));
         scene.setRoot(root);
     }
 
