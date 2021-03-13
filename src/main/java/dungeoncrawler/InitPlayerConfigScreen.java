@@ -139,7 +139,9 @@ public class InitPlayerConfigScreen extends GameState {
 
             try {
                 if (Controller.getDataManager().newGame(playerName, difficultyRef, weaponRef)) {
-                    Controller.setState(new FirstRoom(width, height));
+                    GameScreen gameScreen = new GameScreen(width, height);
+                    Controller.setState(gameScreen);
+                    gameScreen.start();
                 }
             } catch (IllegalArgumentException iae) {
                 Alert alert = new Alert(AlertType.ERROR, iae.getMessage());
