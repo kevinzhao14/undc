@@ -58,7 +58,9 @@ public class Room {
      * @param roomObstacles Array of all obstacle locations inside Room object
      * @param roomType Style of the Room object
      */
-    public Room(int height, int width, int startX, int startY, Obstacle[] roomObstacles, RoomType roomType) {
+    public Room(int height, int width, int startX,
+                int startY, Obstacle[] roomObstacles,
+                RoomType roomType) {
         this(height, width, startX, startY, roomObstacles, null, null, null, null, roomType);
     }
     /**
