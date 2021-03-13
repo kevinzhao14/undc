@@ -44,7 +44,6 @@ public class GameController {
             );
         }
         this.player = player;
-        this.timer = new Timer();
         this.controls = new Controls();
     }
 
@@ -65,6 +64,10 @@ public class GameController {
         });
     }
 
+    public void setPlayer(ImageView player) {
+        this.player = player;
+    }
+
     /**
      * Changes the room.
      * @param newRoom Room to change to
@@ -74,9 +77,16 @@ public class GameController {
             pause();
         }
         room = newRoom;
+        if (Controller.getState() instanceof GameScreen) {
+            ((GameScreen) Controller.getState()).setRoom(newRoom);
+        } else {
+            pause();
+            System.out.println("Illegal GameState");
+        }
+        scene = Controller.getState().getScene();
         reset();
         player.setX(getPx(posX));
-        player.setY(scene.getHeight() - getPx(posY) - GameSettings.PLAYER_HEIGHT);
+        player.setY(room.getHeight() - getPx(posY) - GameSettings.PLAYER_HEIGHT);
         pause();
     }
 
@@ -110,7 +120,6 @@ public class GameController {
         } else {
             startTimer();
         }
-
         isRunning = !isRunning;
     }
 
@@ -118,6 +127,7 @@ public class GameController {
      * Starts the game timer/clock.
      */
     private void startTimer() {
+        timer = new Timer();
         timer.schedule(new GameRunner(), 0, 1000 / GameSettings.FPS);
     }
 
@@ -140,6 +150,9 @@ public class GameController {
                 accelY += GameSettings.ACCEL;
                 pressUp = true;
             } else {
+                if (!pressUp) {
+                    return;
+                }
                 accelY -= GameSettings.ACCEL;
                 pressUp = false;
             }
@@ -152,6 +165,9 @@ public class GameController {
                 accelY -= GameSettings.ACCEL;
                 pressDown = true;
             } else {
+                if (!pressDown) {
+                    return;
+                }
                 accelY += GameSettings.ACCEL;
                 pressDown = false;
             }
@@ -164,6 +180,9 @@ public class GameController {
                 accelX += GameSettings.ACCEL;
                 pressRight = true;
             } else {
+                if (!pressRight) {
+                    return;
+                }
                 accelX -= GameSettings.ACCEL;
                 pressRight = false;
             }
@@ -176,6 +195,9 @@ public class GameController {
                 accelX -= GameSettings.ACCEL;
                 pressLeft = true;
             } else {
+                if (!pressLeft) {
+                    return;
+                }
                 accelX += GameSettings.ACCEL;
                 pressLeft = false;
             }
@@ -352,10 +374,7 @@ public class GameController {
                 //player intersects door
                 if (intersects != null) {
                     Room newRoom = d.getGoesTo();
-                    //TODO: Change Rooms
-                    System.out.println("Switching Rooms");
-                    pause();
-                    //setRoom(newRoom);
+                    setRoom(newRoom);
                     return true;
                 }
             }

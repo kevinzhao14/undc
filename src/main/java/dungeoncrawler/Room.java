@@ -12,9 +12,11 @@ public class Room {
     private Door leftDoor;
     private RoomType type;
 
-    public Room (int height, int width, Obstacle[] roomObstacles,
+    public Room (int height, int width, int startX, int startY, Obstacle[] roomObstacles,
                  Door topDoor, Door bottomDoor, Door rightDoor,
                  Door leftDoor, RoomType roomType) {
+        this.startX = startX;
+        this.startY = startY;
         this.height = height;
         this.width = width;
         this.obstacles = roomObstacles;
@@ -25,8 +27,8 @@ public class Room {
         this.type = roomType;
     }
 
-    public Room (int height, int width, Obstacle[] roomObstacles, RoomType roomType) {
-        this(height, width, roomObstacles, null, null, null, null, roomType);
+    public Room (int height, int width, int startX, int startY, Obstacle[] roomObstacles, RoomType roomType) {
+        this(height, width, startX, startY, roomObstacles, null, null, null, null, roomType);
     }
 
     public void setTopDoor(Door d) {
