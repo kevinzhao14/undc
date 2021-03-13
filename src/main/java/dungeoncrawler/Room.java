@@ -25,6 +25,23 @@ public class Room {
         this.type = roomType;
     }
 
+    public Room (int height, int width, Obstacle[] roomObstacles, RoomType roomType) {
+        this(height, width, roomObstacles, null, null, null, null, roomType);
+    }
+
+    public void setTopDoor(Door d) {
+        this.topDoor = d;
+    }
+    public void setBottomDoor(Door d) {
+        this.bottomDoor = d;
+    }
+    public void setRightDoor(Door d) {
+        this.rightDoor = d;
+    }
+    public void setLeftDoor(Door d) {
+        this.leftDoor = d;
+    }
+
     public int getHeight() {
         return this.height;
     }
