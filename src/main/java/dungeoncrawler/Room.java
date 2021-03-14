@@ -20,36 +20,8 @@ public class Room {
     private RoomType type;
 
     /**
-     * Constructor for defining important Room features and door layouts.
-     *
-     * @param height Room height, in game units
-     * @param width Room width, in game units
-     * @param startX Initial x-position of player in room, in game units
-     * @param startY Initial y-position of player in room, in game units
-     * @param roomObstacles Array of all obstacle locations inside Room object
-     * @param topDoor Reference to Door object located at top wall of Room
-     * @param bottomDoor Reference to Door object located at bottom wall of Room
-     * @param rightDoor Reference to Door object located at right wall of Room
-     * @param leftDoor Reference to Door object located at left wall of Room
-     * @param roomType Style of the Room object
-     */
-    public Room(int height, int width, int startX, int startY, Obstacle[] roomObstacles,
-                 Door topDoor, Door bottomDoor, Door rightDoor,
-                 Door leftDoor, RoomType roomType) {
-        this.startX = startX;
-        this.startY = startY;
-        this.height = height;
-        this.width = width;
-        this.obstacles = roomObstacles;
-        this.topDoor = topDoor;
-        this.bottomDoor = bottomDoor;
-        this.rightDoor = rightDoor;
-        this.leftDoor = leftDoor;
-        this.type = roomType;
-    }
-
-    /**
-     * Secondary constructor for defining all Room features except Door layouts.
+     * Constructor for defining all Room features except Door layouts.
+     * Door references must be manually defined using their respective setter methods.
      *
      * @param height Room height, in game units
      * @param width Room width, in game units
@@ -61,7 +33,17 @@ public class Room {
     public Room(int height, int width, int startX,
                 int startY, Obstacle[] roomObstacles,
                 RoomType roomType) {
-        this(height, width, startX, startY, roomObstacles, null, null, null, null, roomType);
+        //this(height, width, startX, startY, roomObstacles, null, null, null, null, roomType);
+        this.startX = startX;
+        this.startY = startY;
+        this.height = height;
+        this.width = width;
+        this.obstacles = roomObstacles;
+        this.topDoor = null;
+        this.bottomDoor = null;
+        this.rightDoor = null;
+        this.leftDoor = null;
+        this.type = roomType;
     }
     /**
      * Setter method for top Door in Room.
