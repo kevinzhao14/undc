@@ -12,6 +12,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
+import java.io.FileNotFoundException;
+
 public class GameScreen extends GameState {
 
     private GameController game;
