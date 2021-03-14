@@ -11,14 +11,17 @@ package dungeoncrawler;
 public class DungeonLayout {
     private Room startingRoom;
     private Room exitRoom;
+    private Room[][] grid;
     /**
      * Constructor for initializing starting and ending Rooms in Dungeon map.
      * @param startingRoom Starting Room of current game instance
      * @param exitRoom Final Room of current game instance
+     * @param grid Grid of all the rooms in current game instance
      */
-    public DungeonLayout(Room startingRoom, Room exitRoom) {
+    public DungeonLayout(Room startingRoom, Room exitRoom, Room[][] grid) {
         this.startingRoom = startingRoom;
         this.exitRoom = exitRoom;
+        this.grid = grid;
     }
     /**
      * Getter method for accessing starting Room of Dungeon map.
@@ -34,4 +37,12 @@ public class DungeonLayout {
     public Room getExitRoom() {
         return this.exitRoom;
     }
+    /**
+     * Getter method of accessing the grid of rooms of the Dungeon map.
+     * @return the grid of rooms of the Dungeon map
+     */
+    public Room[][] getGrid() {
+        return this.grid;
+    }
+
 }

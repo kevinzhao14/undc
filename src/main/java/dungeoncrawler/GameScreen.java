@@ -127,6 +127,10 @@ public class GameScreen extends GameState {
         transition.play();
         transition.setOnFinished((e) -> createRoom());
     }
+    public DungeonLayout getLayout() {
+        //For testing purposes
+        return this.dungeonLayout;
+    }
 
     private void fadeIn(Pane pane) {
         FadeTransition transition = new FadeTransition();
