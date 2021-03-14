@@ -1,18 +1,19 @@
 package dungeoncrawler;
 
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-
-import java.io.FileNotFoundException;
 
 public class GameScreen extends GameState {
 
@@ -47,7 +48,7 @@ public class GameScreen extends GameState {
         game.start(room);
     }
 
-    public void setRoom(Room newRoom) {
+    public boolean setRoom(Room newRoom) {
         player = new ImageView("player-down.png");
         player.setFitHeight(GameSettings.PLAYER_HEIGHT * GameSettings.PPU);
         player.setFitWidth(GameSettings.PLAYER_WIDTH * GameSettings.PPU);
@@ -74,9 +75,25 @@ public class GameScreen extends GameState {
             break;
         }
         goldLabel.setTextFill(Color.WHITE);
-
-        root.getChildren().addAll(RoomRenderer.drawRoom(scene, room, player), hud);
+        boolean gameWon = false;
+        if (newRoom.equals(dungeonLayout.getExitRoom())) {
+            //yay we won
+            VBox box = new VBox();
+            Label winnerLabel = new Label("Congratulations! You have escaped from the dungeon!");
+            Button endButton = new Button("Exit Game");
+            endButton.setOnAction((e) -> {
+                Platform.exit();
+            });
+            box.getChildren().addAll(winnerLabel, endButton);
+            box.setAlignment(Pos.CENTER);
+            root.getChildren().addAll(hud, box);
+            gameWon = true;
+        } else {
+            root.getChildren().addAll(RoomRenderer.drawRoom(scene, room, player), hud);
+        }
         scene.setRoot(root);
+
+        return gameWon;
     }
 
 

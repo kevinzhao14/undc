@@ -50,6 +50,6 @@ public class GameSettings {
     public static final double PRECISION = 10000;
 
     //Player width and height
-    public static final double PLAYER_WIDTH = 10;
-    public static final double PLAYER_HEIGHT = 10;
+    public static final double PLAYER_WIDTH = 16.730038;
+    public static final double PLAYER_HEIGHT = PLAYER_WIDTH * 1.81818182;
 }

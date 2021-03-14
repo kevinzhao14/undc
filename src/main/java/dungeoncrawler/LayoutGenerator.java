@@ -19,11 +19,11 @@ public class LayoutGenerator {
     private static final int GRID_WIDTH = 15;
     private static final int GRID_HEIGHT = 15;
 
-    private static final int ROOM_HEIGHT = 200;
-    private static final int ROOM_WIDTH = (int) Math.round(ROOM_HEIGHT * 2.1780303);
+    public static final int ROOM_HEIGHT = 200;
+    public static final int ROOM_WIDTH = (int) Math.round(ROOM_HEIGHT * 2.1780303);
 
-    private static final int DOOR_HEIGHT = (int) Math.round(ROOM_HEIGHT * 0.399239544);
-    private static final int DOOR_WIDTH = (int) Math.round(DOOR_HEIGHT / 3.24242424);
+    public static final int DOOR_HEIGHT = (int) Math.round(ROOM_HEIGHT * 0.399239544);
+    public static final int DOOR_WIDTH = (int) Math.round(DOOR_HEIGHT / 3.24242424);
 
     private static final int pathMin = 6;
     private static final int pathMax = 10;
@@ -237,8 +237,8 @@ public class LayoutGenerator {
             for (int j = 0; j < GRID_HEIGHT; j++) {
                 if (i == GRID_WIDTH / 2 && j == GRID_HEIGHT / 2) {
                     col += "o ";
-                } else if (grid[i][j] != null) {
-                    if (grid[i][j].getType().equals(RoomType.EXITROOM)) {
+                } else if (grid[j][i] != null) {
+                    if (grid[j][i].getType().equals(RoomType.EXITROOM)) {
                         col += "e ";
                     } else {
                         col += "* ";

@@ -116,12 +116,18 @@ public class Room {
     public int getStartX() {
         return this.startX;
     }
+    public void setStartX(int startX) {
+        this.startX = startX;
+    }
     /**
      * Getter method for accessing player's starting y-position, in game units
      * @return player's initial y-position in Room, in game units
      */
     public int getStartY() {
         return this.startY;
+    }
+    public void setStartY(int startY) {
+        this.startY = startY;
     }
     /**
      * Getter method for accessing top Door object in Room

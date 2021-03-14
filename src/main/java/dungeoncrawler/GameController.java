@@ -78,7 +78,9 @@ public class GameController {
         }
         room = newRoom;
         if (Controller.getState() instanceof GameScreen) {
-            ((GameScreen) Controller.getState()).setRoom(newRoom);
+            if (((GameScreen) Controller.getState()).setRoom(newRoom)) {
+                return;
+            }
         } else {
             pause();
             System.out.println("Illegal GameState");
@@ -121,6 +123,14 @@ public class GameController {
             startTimer();
         }
         isRunning = !isRunning;
+    }
+
+    public void stop() {
+        if (!isRunning) {
+            return;
+        }
+        timer.cancel();
+        isRunning = false;
     }
 
     /**
@@ -374,6 +384,28 @@ public class GameController {
                 //player intersects door
                 if (intersects != null) {
                     Room newRoom = d.getGoesTo();
+                    Door newDoor;
+                    int newStartX;
+                    int newStartY;
+                    if (d.equals(room.getTopDoor())) {
+                        newDoor = newRoom.getBottomDoor();
+                        newStartX = newDoor.getX() + newDoor.getWidth() / 2;
+                        newStartY = newDoor.getY() + 10 + LayoutGenerator.DOOR_WIDTH;
+                    } else if (d.equals(room.getBottomDoor())) {
+                        newDoor = newRoom.getTopDoor();
+                        newStartX = newDoor.getX() + newDoor.getWidth() / 2;
+                        newStartY = (int)(newDoor.getY() - 10 - GameSettings.PLAYER_HEIGHT - LayoutGenerator.DOOR_WIDTH);
+                    } else if (d.equals(room.getRightDoor())) {
+                        newDoor = newRoom.getLeftDoor();
+                        newStartX = newDoor.getX() + 10 + LayoutGenerator.DOOR_WIDTH;
+                        newStartY = newDoor.getY() + newDoor.getHeight() / 2;
+                    } else {
+                        newDoor = newRoom.getRightDoor();
+                        newStartX = (int) (newDoor.getX() - 10 - GameSettings.PLAYER_WIDTH);
+                        newStartY = newDoor.getY() + newDoor.getHeight() / 2;
+                    }
+                    newRoom.setStartX(newStartX);
+                    newRoom.setStartY(newStartY);
                     setRoom(newRoom);
                     return true;
                 }
