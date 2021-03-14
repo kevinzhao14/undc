@@ -94,7 +94,8 @@ public class Controls {
                         loadKey(lineData);
                         break;
                     default:
-                        System.out.println("Unknown command on line " + lineNumber + ": \"" + lineData[0] + "\"");
+                        System.out.println("Unknown command on line "
+                                + lineNumber + ": \"" + lineData[0] + "\"");
                     }
                 } catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage() + " on line " + lineNumber);
@@ -110,8 +111,9 @@ public class Controls {
     }
 
     /**
-     * Handler for the "bind" config command. If a bind is invalid, such as invalid key or control, then it simply does
-     * nothing and prints an error. As a result, some controls may not be bound due to typos.
+     * Handler for the "bind" config command. If a bind is invalid, such as
+     * invalid key or control, then it simply does nothing and prints an error.
+     * As a result, some controls may not be bound due to typos.
      * @param args Args should be a 3-long String array with elements "bind", [KEY], and [CONTROL]
      */
     private void loadKey(String[] args) {
@@ -186,7 +188,8 @@ public class Controls {
         //generate a string with all the key binds
         String saveString = "";
         for (Map.Entry<String, KeyCode> e : keyMap.entrySet()) {
-            saveString += "bind " + e.getValue().toString().toLowerCase() + " " + e.getKey().toLowerCase() + "\n";
+            saveString += "bind " + e.getValue().toString().toLowerCase() + " "
+                    + e.getKey().toLowerCase() + "\n";
         }
 
         //write to file
