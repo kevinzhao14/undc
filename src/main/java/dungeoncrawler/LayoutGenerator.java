@@ -174,7 +174,7 @@ public class LayoutGenerator {
             }
         }
 
-        return new DungeonLayout(roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2], exitRoom);
+        return new DungeonLayout(roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2], exitRoom, roomGrid);
     }
 
 
