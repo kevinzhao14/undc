@@ -72,8 +72,6 @@ public class LayoutGenerator {
             exitPlaced = true;
             roomGrid[coords[0]][coords[1]] = exitRoom;
         }
-        System.out.println("top");
-        printGrid(roomGrid);
 
         // right path
 
@@ -92,8 +90,6 @@ public class LayoutGenerator {
             exitPlaced = true;
             roomGrid[coords[0]][coords[1]] = exitRoom;
         }
-        System.out.println("right");
-        printGrid(roomGrid);
 
         // down path
 
@@ -113,8 +109,6 @@ public class LayoutGenerator {
             exitPlaced = true;
             roomGrid[coords[0]][coords[1]] = exitRoom;
         }
-        System.out.println("bottom");
-        printGrid(roomGrid);
 
         // left path
 
@@ -139,7 +133,7 @@ public class LayoutGenerator {
             exitPlaced = true;
             roomGrid[coords[0]][coords[1]] = exitRoom;
         }
-        System.out.println("left");
+
         printGrid(roomGrid);
 
         /*

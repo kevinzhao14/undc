@@ -25,8 +25,6 @@ public class RoomRenderer {
      * @return a pane with all the room's doors and obstacles and treasures
      */
     public static Pane drawRoom (Scene scene, Room room, ImageView player) {
-        player.setX(getPx(room.getStartX()));
-        player.setY(getPx(room.getHeight() - room.getStartY() - GameSettings.PLAYER_HEIGHT));
         Pane root = new Pane();
         Pane main = new Pane();
         Pane bgPane = new Pane();

@@ -66,6 +66,7 @@ public class GameController {
 
     public void setPlayer(ImageView player) {
         this.player = player;
+        resetPos();
     }
 
     /**
@@ -85,19 +86,24 @@ public class GameController {
             pause();
             System.out.println("Illegal GameState");
         }
+    }
+    public void updateRoom() {
         scene = Controller.getState().getScene();
         reset();
-        player.setX(getPx(posX));
-        player.setY(room.getHeight() - getPx(posY) - GameSettings.PLAYER_HEIGHT);
+        resetPos();
         pause();
+    }
+    public void resetPos() {
+        posX = room.getStartX();
+        posY = room.getStartY();
+        player.setX(getPx(posX));
+        player.setY(getPx(room.getHeight() - posY - GameSettings.PLAYER_HEIGHT * 2));
     }
 
     /**
      * Resets all game values.
      */
     private void reset() {
-        posX = room.getStartX();
-        posY = room.getStartY();
         velX = 0.0;
         velY = 0.0;
         accelX = 0.0;
@@ -111,6 +117,7 @@ public class GameController {
         pressDown = false;
         frictionX = false;
         frictionY = false;
+        resetPos();
     }
 
     /**
@@ -251,8 +258,10 @@ public class GameController {
             double newPosY = round(posY + velY);
 
             //check if position is valid. If it is, move.
-            boolean isValidPos = checkPos(posX, posY, newPosX, newPosY);
-            if (isValidPos) {
+            double[] movePos = checkPos(posX, posY, newPosX, newPosY);
+            if (movePos != null) {
+                newPosX = movePos[0];
+                newPosY = movePos[1];
                 movePlayer(newPosX, newPosY);
                 //check for door intersections
                 if (checkDoors(posX, posY, newPosX, newPosY)) {
@@ -305,15 +314,15 @@ public class GameController {
          * @param newY new y value
          * @return Returns whether the movement is valid
          */
-        private boolean checkPos(double x, double y, double newX, double newY) {
+        private double[] checkPos(double x, double y, double newX, double newY) {
             if (newX < 0.0 || newX + GameSettings.PLAYER_WIDTH > room.getWidth()) {
-                return false;
+                return new double[]{(newX < 0 ? 0 : room.getWidth() - GameSettings.PLAYER_WIDTH), newY};
             }
             if (newY < 0.0 || newY + GameSettings.PLAYER_HEIGHT > room.getHeight()) {
-                return false;
+                return new double[]{newX, (newY < 0 ? 0 : room.getHeight() - GameSettings.PLAYER_HEIGHT)};
             }
 
-            return true;
+            return new double[]{newX, newY};
         }
 
         /**
@@ -385,27 +394,28 @@ public class GameController {
                 if (intersects != null) {
                     Room newRoom = d.getGoesTo();
                     Door newDoor;
-                    int newStartX;
-                    int newStartY;
+                    double newStartX;
+                    double newStartY;
                     if (d.equals(room.getTopDoor())) {
+                        System.out.println("top");
                         newDoor = newRoom.getBottomDoor();
-                        newStartX = newDoor.getX() + newDoor.getWidth() / 2;
-                        newStartY = newDoor.getY() + 10 + LayoutGenerator.DOORTOP_HEIGHT;
+                        newStartX = newDoor.getX() + newDoor.getWidth() / 2 - GameSettings.PLAYER_WIDTH / 2;
+                        newStartY = newDoor.getY() + LayoutGenerator.DOORBOTTOM_HEIGHT + 10;
                     } else if (d.equals(room.getBottomDoor())) {
                         newDoor = newRoom.getTopDoor();
-                        newStartX = newDoor.getX() + newDoor.getWidth() / 2;
-                        newStartY = (int)(newDoor.getY() - 10 - GameSettings.PLAYER_HEIGHT - LayoutGenerator.DOORBOTTOM_HEIGHT);
+                        newStartX = newDoor.getX() + newDoor.getWidth() / 2 - GameSettings.PLAYER_WIDTH / 2;
+                        newStartY = newDoor.getY() - GameSettings.PLAYER_HEIGHT;
                     } else if (d.equals(room.getRightDoor())) {
                         newDoor = newRoom.getLeftDoor();
                         newStartX = newDoor.getX() + 10 + LayoutGenerator.DOOR_WIDTH;
-                        newStartY = newDoor.getY() + newDoor.getHeight() / 2;
+                        newStartY = newDoor.getY() + newDoor.getHeight() / 5;
                     } else {
                         newDoor = newRoom.getRightDoor();
-                        newStartX = (int) (newDoor.getX() - 10 - GameSettings.PLAYER_WIDTH);
-                        newStartY = newDoor.getY() + newDoor.getHeight() / 2;
+                        newStartX = newDoor.getX() - 10 - GameSettings.PLAYER_WIDTH;
+                        newStartY = newDoor.getY() + newDoor.getHeight() / 5;
                     }
-                    newRoom.setStartX(newStartX);
-                    newRoom.setStartY(newStartY);
+                    newRoom.setStartX((int) newStartX);
+                    newRoom.setStartY((int) newStartY);
                     setRoom(newRoom);
                     return true;
                 }
@@ -483,7 +493,7 @@ public class GameController {
             player.setX(getPx(x));
 
             //convert game coordinates to JavaFX coordinates
-            player.setY(getPx(room.getHeight() - y - GameSettings.PLAYER_HEIGHT));
+            player.setY(getPx(room.getHeight() - y - GameSettings.PLAYER_HEIGHT * 2));
 
             //Move camera, if needed
             moveCamera();
