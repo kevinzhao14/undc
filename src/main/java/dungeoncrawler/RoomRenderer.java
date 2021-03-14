@@ -29,6 +29,7 @@ public class RoomRenderer {
         player.setY(getPx(room.getHeight() - room.getStartY() - GameSettings.PLAYER_HEIGHT));
         Pane root = new Pane();
         Pane main = new Pane();
+        Pane bgPane = new Pane();
         main.getChildren().addAll(root);
 
         root.setMaxHeight(getPx(room.getHeight()));
@@ -38,11 +39,12 @@ public class RoomRenderer {
         root.setPrefWidth(getPx(room.getWidth()));
         root.setMinWidth(getPx(room.getWidth()));
 
-        root.setStyle("-fx-border-color: blue");
+//        root.setStyle("-fx-border-color: blue");
 
-        main.setMaxHeight(getPx(room.getHeight()) * 1.36882129);
-        main.setPrefHeight(getPx(room.getHeight()) * 1.36882129);
-        main.setMinHeight(getPx(room.getHeight()) * 1.36882129);
+        //holds the dungeon image
+        main.setMaxHeight(getPx(room.getHeight()) * 1.36363636);
+        main.setPrefHeight(getPx(room.getHeight()) * 1.36363636);
+        main.setMinHeight(getPx(room.getHeight()) * 1.36363636);
         main.setMaxWidth(getPx(room.getWidth()) * 1.11111111);
         main.setPrefWidth(getPx(room.getWidth()) * 1.11111111);
         main.setMinWidth(getPx(room.getWidth()) * 1.11111111);
@@ -50,8 +52,8 @@ public class RoomRenderer {
         main.getStyleClass().add("rootPane");
 
         //shift room so that it's not touching the edge of the window
-        root.setTranslateX(getPx(room.getWidth()) * 0.0572916667);
-        root.setTranslateY(getPx(room.getHeight()) * 0.25095057);
+        root.setTranslateX(getPx(room.getWidth()) * 0.0555555556);
+        root.setTranslateY(getPx(room.getHeight()) * 0.238636364);
 
         main.setStyle("-fx-padding: 50px");
 
@@ -79,21 +81,17 @@ public class RoomRenderer {
             }
         }
         if (room.getTopDoor() != null) {
-            Image image = null;
-            ImageView imageView;
-            imageView = new ImageView("dungeon1-topdoor.png");
+            ImageView imageView = new ImageView("dungeon1-topdoor.png");
             imageView.setX(getPx(room.getTopDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getTopDoor().getY()
-                    - room.getTopDoor().getHeight()));
+                    - room.getTopDoor().getHeight()) + 1);
             imageView.setFitWidth(getPx(room.getTopDoor().getWidth()));
             imageView.setFitHeight(getPx(room.getTopDoor().getHeight()));
             root.getChildren().add(imageView);
         }
         if (room.getRightDoor() != null) {
-            Image image = null;
-            ImageView imageView;
-            imageView = new ImageView("dungeon1-rightdoor.png");
-            imageView.setX(getPx(room.getRightDoor().getX()));
+            ImageView imageView = new ImageView("dungeon1-rightdoor.png");
+            imageView.setX(getPx(room.getRightDoor().getX()) + 1);
             imageView.setY(getPx(room.getHeight() - room.getRightDoor().getY()
                     - room.getRightDoor().getHeight()));
             imageView.setFitWidth(getPx(room.getRightDoor().getWidth()));
@@ -101,21 +99,17 @@ public class RoomRenderer {
             root.getChildren().add(imageView);
         }
         if (room.getBottomDoor() != null) {
-            Image image = null;
-            ImageView imageView;
-            imageView = new ImageView("dungeon1-bottomdoor.png");
+            ImageView imageView = new ImageView("dungeon1-bottomdoor.png");
             imageView.setX(getPx(room.getBottomDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getBottomDoor().getY()
-                    - room.getBottomDoor().getHeight()));
+                    - room.getBottomDoor().getHeight()) + 2);
             imageView.setFitWidth(getPx(room.getBottomDoor().getWidth()));
             imageView.setFitHeight(getPx(room.getBottomDoor().getHeight()));
             root.getChildren().add(imageView);
         }
         if (room.getLeftDoor() != null) {
-            Image image = null;
-            ImageView imageView;
-            imageView = new ImageView("dungeon1-leftdoor.png");
-            imageView.setX(getPx(room.getLeftDoor().getX()));
+            ImageView imageView = new ImageView("dungeon1-leftdoor.png");
+            imageView.setX(getPx(room.getLeftDoor().getX()) - 1);
             imageView.setY(getPx(room.getHeight() - room.getLeftDoor().getY()
                     - room.getLeftDoor().getHeight()));
             imageView.setFitWidth(getPx(room.getLeftDoor().getWidth()));

@@ -19,11 +19,17 @@ public class LayoutGenerator {
     private static final int GRID_WIDTH = 15;
     private static final int GRID_HEIGHT = 15;
 
-    public static final int ROOM_HEIGHT = 200;
-    public static final int ROOM_WIDTH = (int) Math.round(ROOM_HEIGHT * 2.1780303);
+    public static final int ROOM_HEIGHT = 250;
+    public static final int ROOM_WIDTH = (int)(ROOM_HEIGHT * 2.1780303);
 
-    public static final int DOOR_HEIGHT = (int) Math.round(ROOM_HEIGHT * 0.399239544);
-    public static final int DOOR_WIDTH = (int) Math.round(DOOR_HEIGHT / 3.24242424);
+    public static final int DOOR_HEIGHT = (int)(ROOM_HEIGHT * 0.40530303);
+    public static final int DOOR_WIDTH = (int)(DOOR_HEIGHT * 0.308411215);
+
+    public static final int DOORTOP_HEIGHT = (int)(ROOM_HEIGHT * 0.246212121);
+    public static final int DOORTOP_WIDTH = (int)(DOORTOP_HEIGHT * 1.29230769);
+
+    public static final int DOORBOTTOM_HEIGHT = (int)(ROOM_HEIGHT * 0.125);
+    public static final int DOORBOTTOM_WIDTH = (int)(DOORBOTTOM_HEIGHT * 1.75757576);
 
     private static final int pathMin = 6;
     private static final int pathMax = 10;
@@ -156,12 +162,12 @@ public class LayoutGenerator {
                     }
                     if (roomGrid[i][j + 1] != null) {
                         roomGrid[i][j].setBottomDoor(
-                                new Door((ROOM_WIDTH - DOOR_HEIGHT) / 2, -DOOR_WIDTH + 1, DOOR_HEIGHT, DOOR_WIDTH,
+                                new Door((ROOM_WIDTH - DOORBOTTOM_WIDTH) / 2, -DOORBOTTOM_HEIGHT + 1, DOORBOTTOM_WIDTH, DOORBOTTOM_HEIGHT,
                                         roomGrid[i][j + 1], DoorOrientation.BOTTOM));
                     }
                     if (roomGrid[i][j - 1] != null) {
                         roomGrid[i][j].setTopDoor(
-                                new Door((ROOM_WIDTH - DOOR_HEIGHT) / 2, ROOM_HEIGHT - 1, DOOR_HEIGHT, DOOR_WIDTH,
+                                new Door((ROOM_WIDTH - DOORTOP_WIDTH) / 2, ROOM_HEIGHT - 1, DOORTOP_WIDTH, DOORTOP_HEIGHT,
                                         roomGrid[i][j - 1], DoorOrientation.TOP));
                     }
                 }

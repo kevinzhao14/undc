@@ -390,11 +390,11 @@ public class GameController {
                     if (d.equals(room.getTopDoor())) {
                         newDoor = newRoom.getBottomDoor();
                         newStartX = newDoor.getX() + newDoor.getWidth() / 2;
-                        newStartY = newDoor.getY() + 10 + LayoutGenerator.DOOR_WIDTH;
+                        newStartY = newDoor.getY() + 10 + LayoutGenerator.DOORTOP_HEIGHT;
                     } else if (d.equals(room.getBottomDoor())) {
                         newDoor = newRoom.getTopDoor();
                         newStartX = newDoor.getX() + newDoor.getWidth() / 2;
-                        newStartY = (int)(newDoor.getY() - 10 - GameSettings.PLAYER_HEIGHT - LayoutGenerator.DOOR_WIDTH);
+                        newStartY = (int)(newDoor.getY() - 10 - GameSettings.PLAYER_HEIGHT - LayoutGenerator.DOORBOTTOM_HEIGHT);
                     } else if (d.equals(room.getRightDoor())) {
                         newDoor = newRoom.getLeftDoor();
                         newStartX = newDoor.getX() + 10 + LayoutGenerator.DOOR_WIDTH;

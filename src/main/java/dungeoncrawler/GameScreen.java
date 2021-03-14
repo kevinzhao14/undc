@@ -91,6 +91,7 @@ public class GameScreen extends GameState {
         } else {
             root.getChildren().addAll(RoomRenderer.drawRoom(scene, room, player), hud);
         }
+        root.setStyle("-fx-background-color: #34311b");
         scene.setRoot(root);
 
         return gameWon;
