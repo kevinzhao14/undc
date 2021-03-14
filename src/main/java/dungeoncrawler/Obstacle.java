@@ -1,7 +1,4 @@
 package dungeoncrawler;
-
-import javafx.scene.shape.Rectangle;
-
 public class Obstacle {
 
     private int x;
