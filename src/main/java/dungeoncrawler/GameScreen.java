@@ -97,7 +97,10 @@ public class GameScreen extends GameState {
         return gameWon;
     }
 
-
+    public DungeonLayout getLayout() {
+        //For testing purposes
+        return this.dungeonLayout;
+    }
 
 
 
