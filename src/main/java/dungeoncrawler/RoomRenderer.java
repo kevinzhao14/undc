@@ -6,8 +6,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 
 /**
@@ -24,7 +22,7 @@ public class RoomRenderer {
      * @param player the current player sprite
      * @return a pane with all the room's doors and obstacles and treasures
      */
-    public static Pane drawRoom (Scene scene, Room room, ImageView player) {
+    public static Pane drawRoom(Scene scene, Room room, ImageView player) {
         player.setX(getPx(room.getStartX()));
         player.setY(getPx(room.getHeight() - room.getStartY() - GameSettings.PLAYER_HEIGHT));
         Pane root = new Pane();
@@ -38,8 +36,6 @@ public class RoomRenderer {
         root.setMaxWidth(getPx(room.getWidth()));
         root.setPrefWidth(getPx(room.getWidth()));
         root.setMinWidth(getPx(room.getWidth()));
-
-//        root.setStyle("-fx-border-color: blue");
 
         //holds the dungeon image
         main.setMaxHeight(getPx(room.getHeight()) * 1.36363636);
@@ -67,7 +63,8 @@ public class RoomRenderer {
                     ImageView imageView;
                     imageView = new ImageView("key.png");
                     imageView.setX(getPx(obstacle.getX()));
-                    imageView.setY(getPx(room.getHeight() - obstacle.getY() - obstacle.getHeight()));
+                    imageView.setY(getPx(room.getHeight() - obstacle.getY()
+                            - obstacle.getHeight()));
                     imageView.setFitWidth(getPx(obstacle.getWidth()));
                     imageView.setFitHeight(getPx(obstacle.getHeight()));
                     root.getChildren().add(imageView);

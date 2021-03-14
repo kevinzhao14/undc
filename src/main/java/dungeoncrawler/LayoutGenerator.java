@@ -20,19 +20,19 @@ public class LayoutGenerator {
     private static final int GRID_HEIGHT = 15;
 
     public static final int ROOM_HEIGHT = 250;
-    public static final int ROOM_WIDTH = (int)(ROOM_HEIGHT * 2.1780303);
+    public static final int ROOM_WIDTH = (int) (ROOM_HEIGHT * 2.1780303);
 
-    public static final int DOOR_HEIGHT = (int)(ROOM_HEIGHT * 0.40530303);
-    public static final int DOOR_WIDTH = (int)(DOOR_HEIGHT * 0.308411215);
+    public static final int DOOR_HEIGHT = (int) (ROOM_HEIGHT * 0.40530303);
+    public static final int DOOR_WIDTH = (int) (DOOR_HEIGHT * 0.308411215);
 
-    public static final int DOORTOP_HEIGHT = (int)(ROOM_HEIGHT * 0.246212121);
-    public static final int DOORTOP_WIDTH = (int)(DOORTOP_HEIGHT * 1.29230769);
+    public static final int DOORTOP_HEIGHT = (int) (ROOM_HEIGHT * 0.246212121);
+    public static final int DOORTOP_WIDTH = (int) (DOORTOP_HEIGHT * 1.29230769);
 
-    public static final int DOORBOTTOM_HEIGHT = (int)(ROOM_HEIGHT * 0.125);
-    public static final int DOORBOTTOM_WIDTH = (int)(DOORBOTTOM_HEIGHT * 1.75757576);
+    public static final int DOORBOTTOM_HEIGHT = (int) (ROOM_HEIGHT * 0.125);
+    public static final int DOORBOTTOM_WIDTH = (int) (DOORBOTTOM_HEIGHT * 1.75757576);
 
-    private static final int pathMin = 6;
-    private static final int pathMax = 10;
+    private static final int PATH_MIN = 6;
+    private static final int PATH_MAX = 10;
 
     public LayoutGenerator() {
 
@@ -152,22 +152,28 @@ public class LayoutGenerator {
             for (int j = 1; j < GRID_HEIGHT - 1; j++) {
                 if (roomGrid[i][j] != null) {
                     if (roomGrid[i + 1][j] != null) {
-                        roomGrid[i][j].setRightDoor(new Door(ROOM_WIDTH - 1, (ROOM_HEIGHT - DOOR_HEIGHT) / 2, DOOR_WIDTH, DOOR_HEIGHT,
+                        roomGrid[i][j].setRightDoor(
+                                new Door(ROOM_WIDTH - 1, (ROOM_HEIGHT - DOOR_HEIGHT) / 2,
+                                        DOOR_WIDTH, DOOR_HEIGHT,
                                 roomGrid[i + 1][j], DoorOrientation.RIGHT));
                     }
                     if (roomGrid[i - 1][j] != null) {
                         roomGrid[i][j].setLeftDoor(
-                                new Door(-DOOR_WIDTH + 1, (ROOM_HEIGHT - DOOR_HEIGHT) / 2, DOOR_WIDTH, DOOR_HEIGHT,
+                                new Door(-DOOR_WIDTH + 1, (ROOM_HEIGHT - DOOR_HEIGHT) / 2,
+                                        DOOR_WIDTH, DOOR_HEIGHT,
                                         roomGrid[i - 1][j], DoorOrientation.LEFT));
                     }
                     if (roomGrid[i][j + 1] != null) {
                         roomGrid[i][j].setBottomDoor(
-                                new Door((ROOM_WIDTH - DOORBOTTOM_WIDTH) / 2, -DOORBOTTOM_HEIGHT + 1, DOORBOTTOM_WIDTH, DOORBOTTOM_HEIGHT,
+                                new Door((ROOM_WIDTH - DOORBOTTOM_WIDTH) / 2,
+                                        -DOORBOTTOM_HEIGHT + 1,
+                                        DOORBOTTOM_WIDTH, DOORBOTTOM_HEIGHT,
                                         roomGrid[i][j + 1], DoorOrientation.BOTTOM));
                     }
                     if (roomGrid[i][j - 1] != null) {
                         roomGrid[i][j].setTopDoor(
-                                new Door((ROOM_WIDTH - DOORTOP_WIDTH) / 2, ROOM_HEIGHT - 1, DOORTOP_WIDTH, DOORTOP_HEIGHT,
+                                new Door((ROOM_WIDTH - DOORTOP_WIDTH) / 2, ROOM_HEIGHT - 1,
+                                        DOORTOP_WIDTH, DOORTOP_HEIGHT,
                                         roomGrid[i][j - 1], DoorOrientation.TOP));
                     }
                 }
@@ -219,16 +225,20 @@ public class LayoutGenerator {
              */
             switch (newDirection) {
             case 0:
-                grid[x][y - 1] = new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM);
+                grid[x][y - 1] = new Room(ROOM_HEIGHT, ROOM_WIDTH,
+                        100, 100, new Obstacle[5], RoomType.EMPTYROOM);
                 return new int[]{x, y - 1};
             case 1:
-                grid[x + 1][y] = new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM);
+                grid[x + 1][y] = new Room(ROOM_HEIGHT, ROOM_WIDTH,
+                        100, 100, new Obstacle[5], RoomType.EMPTYROOM);
                 return new int[]{x + 1, y};
             case 2:
-                grid[x][y + 1] = new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM);
+                grid[x][y + 1] = new Room(ROOM_HEIGHT, ROOM_WIDTH,
+                        100, 100, new Obstacle[5], RoomType.EMPTYROOM);
                 return new int[]{x, y + 1};
             default:
-                grid[x - 1][y] = new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM);
+                grid[x - 1][y] = new Room(ROOM_HEIGHT, ROOM_WIDTH,
+                        100, 100, new Obstacle[5], RoomType.EMPTYROOM);
                 return new int[]{x - 1, y};
             }
         } else {
