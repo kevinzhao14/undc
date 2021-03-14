@@ -9,5 +9,5 @@ package dungeoncrawler;
  * @version 1.0
  */
 public enum RoomType {
-    SHOP, TREASUREROOM, EMPTYROOM, NORMALROOM, BOSSROOM;
+    SHOP, TREASUREROOM, EMPTYROOM, NORMALROOM, BOSSROOM, EXITROOM;
 }
