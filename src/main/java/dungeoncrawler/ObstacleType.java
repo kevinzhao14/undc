@@ -1,5 +1,5 @@
 package dungeoncrawler;
 
 public enum ObstacleType {
-    BOULDER, KEY;
+    BOULDER, KEY, DOOR;
 }

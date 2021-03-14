@@ -6,7 +6,7 @@ public class Door extends Obstacle {
     private Room goesTo;
 
     public Door(int x, int y, int w, int h, Room r, DoorOrientation d) {
-        super(x, y, w, h);
+        super(x, y, w, h, ObstacleType.DOOR);
         this.goesTo = r;
         this.orientation = d;
 

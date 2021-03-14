@@ -38,6 +38,21 @@ public class RoomRenderer {
         root.setPrefWidth(getPx(room.getWidth()));
         root.setMinWidth(getPx(room.getWidth()));
 
+        root.setStyle("-fx-border-color: blue");
+
+        main.setMaxHeight(getPx(room.getHeight()) * 1.36882129);
+        main.setPrefHeight(getPx(room.getHeight()) * 1.36882129);
+        main.setMinHeight(getPx(room.getHeight()) * 1.36882129);
+        main.setMaxWidth(getPx(room.getWidth()) * 1.11111111);
+        main.setPrefWidth(getPx(room.getWidth()) * 1.11111111);
+        main.setMinWidth(getPx(room.getWidth()) * 1.11111111);
+
+        main.getStyleClass().add("rootPane");
+
+        //shift room so that it's not touching the edge of the window
+        root.setTranslateX(getPx(room.getWidth()) * 0.0572916667);
+        root.setTranslateY(getPx(room.getHeight()) * 0.25095057);
+
         main.setStyle("-fx-padding: 50px");
 
         if (room.getObstacles() != null) {
@@ -47,12 +62,8 @@ public class RoomRenderer {
                 }
                 if (obstacle.getType().name().equals("KEY")) {
                     Image image = null;
-                    try {
-                        image = new Image(new FileInputStream("key.png"));
-                    } catch (FileNotFoundException e) {
-                        System.out.println("File not found");
-                    }
-                    ImageView imageView = new ImageView(image);
+                    ImageView imageView;
+                    imageView = new ImageView("key.png");
                     imageView.setX(getPx(obstacle.getX()));
                     imageView.setY(getPx(room.getHeight() - obstacle.getY() - obstacle.getHeight()));
                     imageView.setFitWidth(getPx(obstacle.getWidth()));
@@ -69,12 +80,8 @@ public class RoomRenderer {
         }
         if (room.getTopDoor() != null) {
             Image image = null;
-            try {
-                image = new Image(new FileInputStream("dungeon1-topdoor.png"));
-            } catch (FileNotFoundException e) {
-                System.out.println("File not found");
-            }
-            ImageView imageView = new ImageView(image);
+            ImageView imageView;
+            imageView = new ImageView("dungeon1-topdoor.png");
             imageView.setX(getPx(room.getTopDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getTopDoor().getY()
                     - room.getTopDoor().getHeight()));
@@ -84,12 +91,8 @@ public class RoomRenderer {
         }
         if (room.getRightDoor() != null) {
             Image image = null;
-            try {
-                image = new Image(new FileInputStream("dungeon1-rightdoor.png"));
-            } catch (FileNotFoundException e) {
-                System.out.println("File not found");
-            }
-            ImageView imageView = new ImageView(image);
+            ImageView imageView;
+            imageView = new ImageView("dungeon1-rightdoor.png");
             imageView.setX(getPx(room.getRightDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getRightDoor().getY()
                     - room.getRightDoor().getHeight()));
@@ -99,12 +102,8 @@ public class RoomRenderer {
         }
         if (room.getBottomDoor() != null) {
             Image image = null;
-            try {
-                image = new Image(new FileInputStream("dungeon1-bottomdoor.png"));
-            } catch (FileNotFoundException e) {
-                System.out.println("File not found");
-            }
-            ImageView imageView = new ImageView(image);
+            ImageView imageView;
+            imageView = new ImageView("dungeon1-bottomdoor.png");
             imageView.setX(getPx(room.getBottomDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getBottomDoor().getY()
                     - room.getBottomDoor().getHeight()));
@@ -114,12 +113,8 @@ public class RoomRenderer {
         }
         if (room.getLeftDoor() != null) {
             Image image = null;
-            try {
-                image = new Image(new FileInputStream("dungeon1-leftdoor.png"));
-            } catch (FileNotFoundException e) {
-                System.out.println("File not found");
-            }
-            ImageView imageView = new ImageView(image);
+            ImageView imageView;
+            imageView = new ImageView("dungeon1-leftdoor.png");
             imageView.setX(getPx(room.getLeftDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getLeftDoor().getY()
                     - room.getLeftDoor().getHeight()));

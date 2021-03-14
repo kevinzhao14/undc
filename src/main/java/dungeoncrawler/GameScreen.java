@@ -23,7 +23,7 @@ public class GameScreen extends GameState {
     private BorderPane hud;
 
     public GameScreen(int width, int height) {
-        player = new ImageView("playerPlaceholder.png");
+        player = new ImageView("player-down.png");
         player.setFitHeight(GameSettings.PLAYER_HEIGHT * GameSettings.PPU);
         player.setFitWidth(GameSettings.PLAYER_WIDTH * GameSettings.PPU);
 
@@ -48,7 +48,7 @@ public class GameScreen extends GameState {
     }
 
     public void setRoom(Room newRoom) {
-        player = new ImageView("playerPlaceholder.png");
+        player = new ImageView("player-down.png");
         player.setFitHeight(GameSettings.PLAYER_HEIGHT * GameSettings.PPU);
         player.setFitWidth(GameSettings.PLAYER_WIDTH * GameSettings.PPU);
         game.setPlayer(player);

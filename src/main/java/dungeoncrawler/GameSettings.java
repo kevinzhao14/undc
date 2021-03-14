@@ -43,7 +43,7 @@ public class GameSettings {
     public static final int FPS = 60;
     //units per second
     public static final double ACCEL = 10.0 / FPS;
-    public static final double MAX_VEL = 50.0 / FPS;
+    public static final double MAX_VEL = 100.0 / FPS;
     public static final double FRICTION = 15.0 / FPS;
     //pixels per unit
     public static final double PPU = 2.0;
