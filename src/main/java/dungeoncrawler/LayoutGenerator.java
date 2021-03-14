@@ -46,6 +46,7 @@ public class LayoutGenerator {
         for (int i = 0; i < upPath - 1; i++) {
             coords = generateRoom(roomGrid, coords[0], coords[1]);
         }
+        printGrid(roomGrid);
 
         // right path
         roomGrid[GRID_WIDTH / 2 + 1][GRID_HEIGHT / 2] =
@@ -56,6 +57,7 @@ public class LayoutGenerator {
         for (int i = 0; i < rightPath - 1; i++) {
             coords = generateRoom(roomGrid, coords[0], coords[1]);
         }
+        printGrid(roomGrid);
 
         // down path
         roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2 - 1] =
@@ -67,11 +69,13 @@ public class LayoutGenerator {
             coords = generateRoom(roomGrid, coords[0], coords[1]);
         }
 
+
         // left path
         roomGrid[GRID_WIDTH / 2 - 1][GRID_HEIGHT / 2] =
                 new Room(400, 400, 100, 100,
                         new Obstacle[5], RoomType.EMPTYROOM);
         coords = generateRoom(roomGrid, GRID_WIDTH / 2 - 1, GRID_HEIGHT / 2);
+        System.out.println(coords);
         int leftPath = (int) (Math.random() * 7) + 4;
         for (int i = 0; i < leftPath - 1; i++) {
             coords = generateRoom(roomGrid, coords[0], coords[1]);
@@ -88,27 +92,28 @@ public class LayoutGenerator {
                     roomGrid[i][j].setRightDoor(
                             new Door(480, 245, 20, 10,
                                     roomGrid[i + 1][j], DoorOrientation.RIGHT));
-                }
-                if (roomGrid[i - 1][j] != null) {
-                    roomGrid[i][j].setLeftDoor(
-                            new Door(100, 245, 20, 10,
-                                    roomGrid[i - 1][j], DoorOrientation.LEFT));
-                }
-                if (roomGrid[i][j + 1] != null) {
-                    roomGrid[i][j].setBottomDoor(
-                            new Door(200,  500, 20, 10,
-                                    roomGrid[i][j + 1], DoorOrientation.BOTTOM));
-                }
-                if (roomGrid[i][j - 1] != null) {
-                    roomGrid[i][j].setTopDoor(
-                            new Door(200, 300, 20, 10,
-                                    roomGrid[i][j - 1], DoorOrientation.TOP));
+                    if (roomGrid[i + 1][j] != null) {
+                        roomGrid[i][j].setRightDoor(new Door(480, 245, 20, 10,
+                                roomGrid[i + 1][j], DoorOrientation.RIGHT));
+                    }
+                    if (roomGrid[i - 1][j] != null) {
+                        roomGrid[i][j].setLeftDoor(
+                                new Door(100, 245, 20, 10,
+                                        roomGrid[i - 1][j], DoorOrientation.LEFT));
+                    }
+                    if (roomGrid[i][j + 1] != null) {
+                        roomGrid[i][j].setBottomDoor(
+                                new Door(200, 500, 20, 10,
+                                        roomGrid[i][j + 1], DoorOrientation.BOTTOM));
+                    }
+                    if (roomGrid[i][j - 1] != null) {
+                        roomGrid[i][j].setTopDoor(
+                                new Door(200, 300, 20, 10,
+                                        roomGrid[i][j - 1], DoorOrientation.TOP));
+                    }
                 }
             }
         }
-
-
-
         return new DungeonLayout(roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2], null);
     }
 
@@ -120,11 +125,7 @@ public class LayoutGenerator {
      * @return the next coordinate
      */
     private static int[] generateRoom(Room[][] grid, int x, int y) {
-        boolean[] blockedDirections = new boolean[4];
-
-        for (int i = 0; i < 4; i++) {
-            blockedDirections[i] = false;
-        }
+        boolean[] blockedDirections = new boolean[]{false, false, false, false};
 
         if (y == 0 || grid[x][y - 1] != null) {
             blockedDirections[0] = true;
@@ -147,6 +148,11 @@ public class LayoutGenerator {
                 newDirection = (int) (Math.random() * 4);
             } while (blockedDirections[newDirection]);
 
+            /* 0 - up
+             * 1 - right
+             * 2 - down
+             * 3 - left
+             */
             switch (newDirection) {
             case 0:
                 grid[x][y - 1] = new Room(400, 400, 100, 100, new Obstacle[5], RoomType.EMPTYROOM);
@@ -165,6 +171,23 @@ public class LayoutGenerator {
             System.out.println("No available directions");
             return null;
         }
+    }
+
+    private static void printGrid(Room[][] grid) {
+        for (int i = 0; i < GRID_WIDTH; i++) {
+            String col = "";
+            for (int j = 0; j < GRID_HEIGHT; j++) {
+                if (i == GRID_WIDTH / 2 && j == GRID_HEIGHT / 2) {
+                    col += "o ";
+                } else if (grid[i][j] != null) {
+                    col += "* ";
+                } else {
+                    col += "_ ";
+                }
+            }
+            System.out.println(col);
+        }
+        System.out.println();
     }
 
 }

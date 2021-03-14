@@ -68,7 +68,6 @@ public class DataManager {
 
         //save data
         this.username = username.replaceAll("\\s{2,}", " ").trim();
-        System.out.println(this.username);
         this.difficulty = difficulty;
         this.weapon = weapon;
         return true;
