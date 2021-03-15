@@ -49,9 +49,13 @@ public class DoorTest extends ApplicationTest {
         clickOn("Next");
 
         GameScreen gs = (GameScreen) Controller.getState();
-        assertEquals(gs.getLayout().getStartingRoom().getBottomDoor().getOrientation(), DoorOrientation.BOTTOM);
-        assertEquals(gs.getLayout().getStartingRoom().getTopDoor().getOrientation(), DoorOrientation.TOP);
-        assertEquals(gs.getLayout().getStartingRoom().getLeftDoor().getOrientation(), DoorOrientation.LEFT);
-        assertEquals(gs.getLayout().getStartingRoom().getRightDoor().getOrientation(), DoorOrientation.RIGHT);
+        assertEquals(gs.getLayout().getStartingRoom().getBottomDoor().getOrientation(),
+                DoorOrientation.BOTTOM);
+        assertEquals(gs.getLayout().getStartingRoom().getTopDoor().getOrientation(),
+                DoorOrientation.TOP);
+        assertEquals(gs.getLayout().getStartingRoom().getLeftDoor().getOrientation(),
+                DoorOrientation.LEFT);
+        assertEquals(gs.getLayout().getStartingRoom().getRightDoor().getOrientation(),
+                DoorOrientation.RIGHT);
     }
 }
