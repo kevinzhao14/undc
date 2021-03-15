@@ -125,8 +125,10 @@ public class GameController {
      */
     public void pause() {
         if (isRunning) {
+            System.out.println("Game has been paused");
             timer.cancel();
         } else {
+            System.out.println("Game has been resumed");
             startTimer();
         }
         isRunning = !isRunning;
@@ -154,11 +156,17 @@ public class GameController {
      * @param isPress Whether the event is a press or release event
      */
     private void handleKey(KeyCode keyCode, boolean isPress) {
+        //Global key binds, regardless of game play/pause state
+        String key = keyCode.toString();
+        if (key.equals(controls.getKey("pause"))) {
+            if (!isPress) {
+                pause();
+            }
+        }
+
         if (!isRunning) {
             return;
         }
-        String key = keyCode.toString();
-
         if (key.equals(controls.getKey("up"))) {
             if (isPress) {
                 if (pressUp) {
@@ -219,10 +227,6 @@ public class GameController {
                 pressLeft = false;
             }
             accelX = round(accelX);
-        } else if (key.equals(controls.getKey("pause"))) {
-            if (!isPress) {
-                pause();
-            }
         }
     }
 
