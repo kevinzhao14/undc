@@ -19,17 +19,17 @@ public class LayoutGenerator {
     private static final int GRID_WIDTH = 15;
     private static final int GRID_HEIGHT = 15;
 
-    public static final int ROOM_HEIGHT = 250;
-    public static final int ROOM_WIDTH = (int) (ROOM_HEIGHT * 2.1780303);
+    public static final int ROOM_HEIGHT = 264;
+    public static final int ROOM_WIDTH = (int) Math.round(ROOM_HEIGHT * 2.18181818);
 
-    public static final int DOOR_HEIGHT = (int) (ROOM_HEIGHT * 0.40530303);
-    public static final int DOOR_WIDTH = (int) (DOOR_HEIGHT * 0.308411215);
+    public static final int DOOR_HEIGHT = (int) Math.round(ROOM_HEIGHT * 0.40530303);
+    public static final int DOOR_WIDTH = (int) Math.round(DOOR_HEIGHT * 0.308411215);
 
-    public static final int DOORTOP_HEIGHT = (int) (ROOM_HEIGHT * 0.246212121);
-    public static final int DOORTOP_WIDTH = (int) (DOORTOP_HEIGHT * 1.29230769);
+    public static final int DOORTOP_HEIGHT = (int) Math.round(ROOM_HEIGHT * 0.246212121);
+    public static final int DOORTOP_WIDTH = (int) Math.round(DOORTOP_HEIGHT * 1.29230769);
 
-    public static final int DOORBOTTOM_HEIGHT = (int) (ROOM_HEIGHT * 0.125);
-    public static final int DOORBOTTOM_WIDTH = (int) (DOORBOTTOM_HEIGHT * 1.75757576);
+    public static final int DOORBOTTOM_HEIGHT = (int) Math.round(ROOM_HEIGHT * 0.125);
+    public static final int DOORBOTTOM_WIDTH = (int) Math.round(DOORBOTTOM_HEIGHT * 1.75757576);
 
     private static final int PATH_MIN = 6;
     private static final int PATH_MAX = 10;
@@ -43,11 +43,13 @@ public class LayoutGenerator {
      * @return the layout
      */
     public static DungeonLayout generateLayout() {
+
         Room[][] roomGrid = new Room[GRID_WIDTH][GRID_HEIGHT];
 
         boolean exitPlaced = false;
         Room exitRoom = new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
                 new Obstacle[5], RoomType.EXITROOM);
+        int[] exitCoords = new int[]{GRID_WIDTH / 2, GRID_HEIGHT / 2};
 
         //starting room
         roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2] =
@@ -71,6 +73,7 @@ public class LayoutGenerator {
         if (upPath >= 6 && !exitPlaced && coords != null) {
             exitPlaced = true;
             roomGrid[coords[0]][coords[1]] = exitRoom;
+            exitCoords = coords;
         }
 
         // right path
@@ -89,6 +92,8 @@ public class LayoutGenerator {
         if (rightPath >= 6 && !exitPlaced && coords != null) {
             exitPlaced = true;
             roomGrid[coords[0]][coords[1]] = exitRoom;
+            exitCoords = coords;
+
         }
 
         // down path
@@ -108,6 +113,7 @@ public class LayoutGenerator {
         if (downPath >= 6 && !exitPlaced && coords != null) {
             exitPlaced = true;
             roomGrid[coords[0]][coords[1]] = exitRoom;
+            exitCoords = coords;
         }
 
         // left path
@@ -132,9 +138,16 @@ public class LayoutGenerator {
         if (leftPath >= 6 && !exitPlaced && coords != null) {
             exitPlaced = true;
             roomGrid[coords[0]][coords[1]] = exitRoom;
+            exitCoords = coords;
+        }
+
+        //check exit distance
+        if (!exitPlaced || (Math.abs(exitCoords[0] - GRID_WIDTH / 2) + Math.abs(exitCoords[1] - GRID_HEIGHT / 2)) < 6) {
+            return generateLayout();
         }
 
         printGrid(roomGrid);
+
 
         /*
         int x, int y, int w, int h, Room r, DoorOrientation d
@@ -148,13 +161,13 @@ public class LayoutGenerator {
                     if (roomGrid[i + 1][j] != null) {
                         roomGrid[i][j].setRightDoor(
                                 new Door(ROOM_WIDTH - 1, (ROOM_HEIGHT - DOOR_HEIGHT) / 2,
-                                        DOOR_WIDTH, DOOR_HEIGHT,
+                                        DOOR_WIDTH, DOOR_HEIGHT / 2,
                                 roomGrid[i + 1][j], DoorOrientation.RIGHT));
                     }
                     if (roomGrid[i - 1][j] != null) {
                         roomGrid[i][j].setLeftDoor(
                                 new Door(-DOOR_WIDTH + 1, (ROOM_HEIGHT - DOOR_HEIGHT) / 2,
-                                        DOOR_WIDTH, DOOR_HEIGHT,
+                                        DOOR_WIDTH, DOOR_HEIGHT / 2,
                                         roomGrid[i - 1][j], DoorOrientation.LEFT));
                     }
                     if (roomGrid[i][j + 1] != null) {

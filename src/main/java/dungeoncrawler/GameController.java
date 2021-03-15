@@ -397,7 +397,6 @@ public class GameController {
                     double newStartX;
                     double newStartY;
                     if (d.equals(room.getTopDoor())) {
-                        System.out.println("top");
                         newDoor = newRoom.getBottomDoor();
                         newStartX = newDoor.getX() + newDoor.getWidth() / 2 - GameSettings.PLAYER_WIDTH / 2;
                         newStartY = newDoor.getY() + LayoutGenerator.DOORBOTTOM_HEIGHT + 10;

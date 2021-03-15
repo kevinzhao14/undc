@@ -36,18 +36,20 @@ public class RoomRenderer {
         root.setMinWidth(getPx(room.getWidth()));
 
         //holds the dungeon image
-        main.setMaxHeight(getPx(room.getHeight()) * 1.36363636);
-        main.setPrefHeight(getPx(room.getHeight()) * 1.36363636);
-        main.setMinHeight(getPx(room.getHeight()) * 1.36363636);
-        main.setMaxWidth(getPx(room.getWidth()) * 1.11111111);
-        main.setPrefWidth(getPx(room.getWidth()) * 1.11111111);
-        main.setMinWidth(getPx(room.getWidth()) * 1.11111111);
+        double roomHeight = Math.round(getPx(room.getHeight()) * 1.36363636);
+        double roomWidth = Math.round(getPx(room.getWidth()) * 1.11111111);
+        main.setMaxHeight(roomHeight);
+        main.setPrefHeight(roomHeight);
+        main.setMinHeight(roomHeight);
+        main.setMaxWidth(roomWidth);
+        main.setPrefWidth(roomWidth);
+        main.setMinWidth(roomWidth);
 
         main.getStyleClass().add("rootPane");
 
-        //shift room so that it's not touching the edge of the window
-        root.setTranslateX(getPx(room.getWidth()) * 0.0555555556);
-        root.setTranslateY(getPx(room.getHeight()) * 0.238636364);
+        //shift game rectangle so that it's aligned with the background image
+        root.setTranslateX(Math.round(getPx(room.getWidth()) * 0.0555555556));
+        root.setTranslateY(Math.round(getPx(room.getHeight()) * 0.23863636363));
 
         main.setStyle("-fx-padding: 50px");
 
@@ -79,18 +81,18 @@ public class RoomRenderer {
             ImageView imageView = new ImageView("dungeon1-topdoor.png");
             imageView.setX(getPx(room.getTopDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getTopDoor().getY()
-                    - room.getTopDoor().getHeight()) + 1);
+                    - room.getTopDoor().getHeight()) + 2);
             imageView.setFitWidth(getPx(room.getTopDoor().getWidth()));
             imageView.setFitHeight(getPx(room.getTopDoor().getHeight()));
             root.getChildren().add(imageView);
         }
         if (room.getRightDoor() != null) {
             ImageView imageView = new ImageView("dungeon1-rightdoor.png");
-            imageView.setX(getPx(room.getRightDoor().getX()) + 1);
+            imageView.setX(getPx(room.getRightDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getRightDoor().getY()
-                    - room.getRightDoor().getHeight()));
+                    - room.getRightDoor().getHeight() * 2));
             imageView.setFitWidth(getPx(room.getRightDoor().getWidth()));
-            imageView.setFitHeight(getPx(room.getRightDoor().getHeight()));
+            imageView.setFitHeight(getPx(room.getRightDoor().getHeight()) * 2);
             root.getChildren().add(imageView);
         }
         if (room.getBottomDoor() != null) {
@@ -104,11 +106,11 @@ public class RoomRenderer {
         }
         if (room.getLeftDoor() != null) {
             ImageView imageView = new ImageView("dungeon1-leftdoor.png");
-            imageView.setX(getPx(room.getLeftDoor().getX()) - 1);
+            imageView.setX(getPx(room.getLeftDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getLeftDoor().getY()
-                    - room.getLeftDoor().getHeight()));
+                    - room.getLeftDoor().getHeight() * 2));
             imageView.setFitWidth(getPx(room.getLeftDoor().getWidth()));
-            imageView.setFitHeight(getPx(room.getLeftDoor().getHeight()));
+            imageView.setFitHeight(getPx(room.getLeftDoor().getHeight()) * 2);
             root.getChildren().add(imageView);
         }
         scene.getStylesheets().add(room.getType().name() + ".css");

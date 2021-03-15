@@ -68,6 +68,7 @@ public class GameScreen extends GameState {
         if (room.equals(dungeonLayout.getExitRoom())) {
             VBox box = new VBox();
             Label winnerLabel = new Label("Congratulations! You have escaped from the dungeon!");
+            winnerLabel.setStyle("-fx-text-fill: white");
             Button endButton = new Button("Exit Game");
             endButton.setOnAction((e) -> {
                 Platform.exit();

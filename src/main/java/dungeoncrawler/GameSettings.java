@@ -40,7 +40,7 @@ public class GameSettings {
      * Please note: All calculations except for actually moving JavaFX nodes should be calculated using
      * system 1.
      */
-    public static final int FPS = 60;
+    public static final int FPS = 200;
     //units per second
     public static final double ACCEL = 10.0 / FPS;
     public static final double MAX_VEL = 100.0 / FPS;
@@ -51,5 +51,5 @@ public class GameSettings {
 
     //Player width and height
     public static final double PLAYER_WIDTH = 16.730038;
-    public static final double PLAYER_HEIGHT = PLAYER_WIDTH * 1.81818182;
+    public static final double PLAYER_HEIGHT = PLAYER_WIDTH * 1.81818182 / 2;
 }
