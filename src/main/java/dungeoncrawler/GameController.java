@@ -58,6 +58,7 @@ public class GameController {
     public void start(Room room) {
         //Render room
         setRoom(room);
+        scene = Controller.getState().getScene();
 
         //Handle key events
         scene.setOnKeyPressed(e -> {
@@ -88,11 +89,10 @@ public class GameController {
             }
         } else {
             pause();
-            System.out.println("Illegal GameState");
+            throw new IllegalStateException("Illegal GameState");
         }
     }
     public void updateRoom() {
-        scene = Controller.getState().getScene();
         reset();
         resetPos();
         pause();
