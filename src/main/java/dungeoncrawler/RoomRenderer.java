@@ -22,7 +22,7 @@ public class RoomRenderer {
      * @param player the current player sprite
      * @return a pane with all the room's doors and obstacles and treasures
      */
-    public static Pane drawRoom (Scene scene, Room room, ImageView player) {
+    public static Pane drawRoom(Scene scene, Room room, ImageView player) {
         Pane root = new Pane();
         Pane main = new Pane();
         Pane bgPane = new Pane();

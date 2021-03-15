@@ -2,7 +2,6 @@ package dungeoncrawler;
 
 
 import javafx.animation.FadeTransition;
-import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -27,11 +26,6 @@ public class GameScreen extends GameState {
     private BorderPane hud;
 
     public GameScreen(int width, int height) {
-//        Room tempRoom2 = new Room(300, 300, 50, 50, new Obstacle[5], RoomType.EMPTYROOM);
-//        Door tempDoor = new Door(200, 300, 20, 10, tempRoom2, DoorOrientation.TOP);
-//        Room tempRoom = new Room(400, 400, 100, 100, new Obstacle[5], RoomType.EMPTYROOM);
-//        tempRoom.setTopDoor(tempDoor);
-
         dungeonLayout = LayoutGenerator.generateLayout();
         scene = new Scene(new Pane(), width, height);
     }
@@ -106,15 +100,15 @@ public class GameScreen extends GameState {
         lowerHUD.setPadding(new Insets(10, 10, 10, 10));
         lowerHUD.getChildren().add(goldLabel);
         switch (Controller.getDataManager().getDifficulty()) {
-            case EASY:
-                goldLabel.setText("Gold: 300");
-                break;
-            case MEDIUM:
-                goldLabel.setText("Gold: 200");
-                break;
-            default:
-                goldLabel.setText("Gold: 100");
-                break;
+        case EASY:
+            goldLabel.setText("Gold: 300");
+            break;
+        case MEDIUM:
+            goldLabel.setText("Gold: 200");
+            break;
+        default:
+            goldLabel.setText("Gold: 100");
+            break;
         }
         goldLabel.setTextFill(Color.WHITE);
     }

@@ -15,23 +15,27 @@ import java.util.TimerTask;
  */
 public class GameController {
     private Timer timer;
-
-    //TODO: Create Controls object in Controller - edit: maybe not?
     private Controls controls;
     private Room room;
     private Scene scene;
     private ImageView player;
-    private double posX, posY;
-    private double velX, velY;
-    private double accelX, accelY;
+    private double posX;
+    private double posY;
+    private double velX;
+    private double velY;
+    private double accelX;
+    private double accelY;
     private boolean isRunning;
     private long ticks;
     private double totalTime;
 
     //bolean variables for tracking key holds/events
-    private boolean pressLeft, pressRight;
-    private boolean pressUp, pressDown;
-    private boolean frictionX, frictionY;
+    private boolean pressLeft;
+    private boolean pressRight;
+    private boolean pressUp;
+    private boolean pressDown;
+    private boolean frictionX;
+    private boolean frictionY;
 
     /**
      * Constructor for a GameController.
@@ -369,7 +373,6 @@ public class GameController {
          * @return Whether the player has entered a door
          */
         private boolean checkDoors(double x, double y, double newX, double newY) {
-            //TODO: implement getDoors() method in Room class
             Door[] doors = {
                 room.getTopDoor(),
                 room.getBottomDoor(),
