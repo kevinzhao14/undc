@@ -240,7 +240,8 @@ public class GameController {
      * @return Returns the rounded number.
      */
     private double round(double number) {
-        return Math.round(number * GameSettings.PRECISION) / GameSettings.PRECISION;
+        return Math.round(number * GameSettings.PRECISION)
+                / GameSettings.PRECISION;
     }
 
     /**
@@ -324,10 +325,12 @@ public class GameController {
          */
         private double[] checkPos(double x, double y, double newX, double newY) {
             if (newX < 0.0 || newX + GameSettings.PLAYER_WIDTH > room.getWidth()) {
-                return new double[]{(newX < 0 ? 0 : room.getWidth() - GameSettings.PLAYER_WIDTH), newY};
+                return new double[]{(newX < 0 ? 0 : room.getWidth()
+                        - GameSettings.PLAYER_WIDTH), newY};
             }
             if (newY < 0.0 || newY + GameSettings.PLAYER_HEIGHT > room.getHeight()) {
-                return new double[]{newX, (newY < 0 ? 0 : room.getHeight() - GameSettings.PLAYER_HEIGHT)};
+                return new double[]{newX, (newY < 0 ? 0 : room.getHeight()
+                        - GameSettings.PLAYER_HEIGHT)};
             }
 
             return new double[]{newX, newY};
@@ -395,7 +398,8 @@ public class GameController {
 
                 //Get equation for intersection
                 double[] playerEquation = equation(x, y, newX, newY);
-                double[] intersects = getIntersect(d, playerEquation[0], playerEquation[1], moveUp, moveRight);
+                double[] intersects = getIntersect(d, playerEquation[0], playerEquation[1],
+                        moveUp, moveRight);
 
                 //player intersects door
                 if (intersects != null) {
@@ -405,11 +409,13 @@ public class GameController {
                     double newStartY;
                     if (d.equals(room.getTopDoor())) {
                         newDoor = newRoom.getBottomDoor();
-                        newStartX = newDoor.getX() + newDoor.getWidth() / 2 - GameSettings.PLAYER_WIDTH / 2;
+                        newStartX = newDoor.getX() + newDoor.getWidth() / 2
+                                - GameSettings.PLAYER_WIDTH / 2;
                         newStartY = newDoor.getY() + LayoutGenerator.DOORBOTTOM_HEIGHT + 10;
                     } else if (d.equals(room.getBottomDoor())) {
                         newDoor = newRoom.getTopDoor();
-                        newStartX = newDoor.getX() + newDoor.getWidth() / 2 - GameSettings.PLAYER_WIDTH / 2;
+                        newStartX = newDoor.getX() + newDoor.getWidth() / 2
+                                - GameSettings.PLAYER_WIDTH / 2;
                         newStartY = newDoor.getY() - GameSettings.PLAYER_HEIGHT;
                     } else if (d.equals(room.getRightDoor())) {
                         newDoor = newRoom.getLeftDoor();
@@ -438,7 +444,8 @@ public class GameController {
          * @param moveRight Whether the player is moving down
          * @return Returns the x and y coordinate of the intersection point, null if no intersection
          */
-        private double[] getIntersect(Obstacle o, double m, double b, boolean moveUp, boolean moveRight) {
+        private double[] getIntersect(Obstacle o, double m, double b, boolean moveUp,
+                                      boolean moveRight) {
             /* Calculate x-coordinate intersection point on the y-axis
              *
              *          v obstacle
@@ -449,21 +456,24 @@ public class GameController {
              *                  ^\
              *                    \ < movement vector
              *
-             * We have equation y = mx + b from playerEquation, which is the vector/line for the player's movement.
-             * Since the door is within the rectangle bound by the player's vector as calculated above, we know that
-             * any collisions are on the vector and not past it.
-             * We pass in the y value of either the top or bottom of the obstacle, depending on if the player is
-             * moving downward or upward. If horizontal, it defaults to downward, but it doesn't matter.
-             * We then substitute the y in "y = mx + b", along with the m and b values obtained earlier, and solve
-             * for x, resulting in an equation "x = (y - b) / m"
+             * We have equation y = mx + b from playerEquation, which is the vector/line for the
+             * player's movement. Since the door is within the rectangle bound by the player's
+             * vector as calculated above, we know that any collisions are on the vector and not
+             * past it.
+             * We pass in the y value of either the top or bottom of the obstacle, depending on if
+             * the player is moving downward or upward. If horizontal, it defaults to downward,
+             * but it doesn't matter.
+             * We then substitute the y in "y = mx + b", along with the m and b values obtained
+             * earlier, and solve for x, resulting in an equation "x = (y - b) / m"
              */
             double intY = (o.getY() + o.getHeight() - b) / m;
             if (moveUp) {
                 intY = (o.getY() - GameSettings.PLAYER_HEIGHT - b) / m;
             }
-            //if the player is moving vertically, then slope and y-intercept will be infinity/undefined. If so, set
-            //the intY/x position of the intersect to the x coordinate of the movement vector, which will be stored
-            //in the y-intercept variable
+            /* if the player is moving vertically, then slope and y-intercept will be
+             * infinity/undefined. If so, set the intY/x position of the intersect to the x
+             * coordinate of the movement vector, which will be stored in the y-intercept variable
+             */
             if (m == Double.POSITIVE_INFINITY || m == Double.NEGATIVE_INFINITY) {
                 intY = b;
             }
@@ -476,7 +486,7 @@ public class GameController {
 
             //Calculate y-coordinate intersection point on the x-axis, using y = mx + b
             double intX = m * (o.getX() + o.getWidth()) + b;
-            if (moveRight) { //intersect is the right side of the player to the left side of the obstacle
+            if (moveRight) { //intersect is the right side of player to the left side of obstacle
                 intX = m * (o.getX() - GameSettings.PLAYER_WIDTH) + b;
             }
 

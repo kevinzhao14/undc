@@ -37,8 +37,8 @@ public class GameSettings {
      * -----------------------------------
      *
      * Because of this, we need to convert our Y coordinates to JavaFX's Y coordinates.
-     * Please note: All calculations except for actually moving JavaFX nodes should be calculated using
-     * system 1.
+     * Please note: All calculations except for actually moving JavaFX nodes should be calculated
+     * using system 1.
      */
     public static final int FPS = 200;
     //units per second

@@ -142,7 +142,8 @@ public class LayoutGenerator {
         }
 
         //check exit distance
-        if (!exitPlaced || (Math.abs(exitCoords[0] - GRID_WIDTH / 2) + Math.abs(exitCoords[1] - GRID_HEIGHT / 2)) < 6) {
+        if (!exitPlaced || (Math.abs(exitCoords[0] - GRID_WIDTH / 2) + Math.abs(exitCoords[1]
+                - GRID_HEIGHT / 2)) < 6) {
             return generateLayout();
         }
 
