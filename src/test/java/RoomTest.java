@@ -1,5 +1,7 @@
-import dungeoncrawler.*;
-
+import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.gamestates.GameScreen;
+import dungeoncrawler.objects.DungeonLayout;
+import dungeoncrawler.objects.Room;
 import javafx.stage.Stage;
 import org.junit.Test;
 

@@ -1,4 +1,7 @@
-package dungeoncrawler;
+package dungeoncrawler.controllers;
+
+import dungeoncrawler.handlers.Difficulty;
+import dungeoncrawler.objects.Weapon;
 
 /**
  * Class for storing and handling all session data.

@@ -1,5 +1,6 @@
-package dungeoncrawler;
+package dungeoncrawler.gamestates;
 
+import dungeoncrawler.controllers.Controller;
 import javafx.scene.Scene;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.RowConstraints;

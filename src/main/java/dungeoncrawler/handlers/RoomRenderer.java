@@ -1,5 +1,7 @@
-package dungeoncrawler;
+package dungeoncrawler.handlers;
 
+import dungeoncrawler.objects.Obstacle;
+import dungeoncrawler.objects.Room;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

@@ -1,5 +1,7 @@
-package dungeoncrawler;
+package dungeoncrawler.controllers;
 
+import dungeoncrawler.gamestates.GameState;
+import dungeoncrawler.gamestates.HomeScreen;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

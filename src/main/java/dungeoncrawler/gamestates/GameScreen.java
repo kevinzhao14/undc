@@ -1,6 +1,13 @@
-package dungeoncrawler;
+package dungeoncrawler.gamestates;
 
 
+import dungeoncrawler.objects.DungeonLayout;
+import dungeoncrawler.handlers.GameSettings;
+import dungeoncrawler.handlers.LayoutGenerator;
+import dungeoncrawler.objects.Room;
+import dungeoncrawler.handlers.RoomRenderer;
+import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.controllers.GameController;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.geometry.Insets;

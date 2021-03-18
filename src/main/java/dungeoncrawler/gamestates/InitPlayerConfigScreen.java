@@ -1,7 +1,11 @@
-package dungeoncrawler;
+package dungeoncrawler.gamestates;
 
 import java.util.ArrayList;
 
+import dungeoncrawler.handlers.Difficulty;
+import dungeoncrawler.objects.Weapon;
+import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.controllers.DataManager;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;

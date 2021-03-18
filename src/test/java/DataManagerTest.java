@@ -1,5 +1,5 @@
-import dungeoncrawler.DataManager;
-import dungeoncrawler.Difficulty;
+import dungeoncrawler.controllers.DataManager;
+import dungeoncrawler.handlers.Difficulty;
 import org.junit.Before;
 import org.junit.Test;
 

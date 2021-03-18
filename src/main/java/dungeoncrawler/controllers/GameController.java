@@ -1,5 +1,12 @@
-package dungeoncrawler;
+package dungeoncrawler.controllers;
 
+import dungeoncrawler.handlers.Controls;
+import dungeoncrawler.objects.Door;
+import dungeoncrawler.gamestates.GameScreen;
+import dungeoncrawler.handlers.GameSettings;
+import dungeoncrawler.handlers.LayoutGenerator;
+import dungeoncrawler.objects.Obstacle;
+import dungeoncrawler.objects.Room;
 import javafx.scene.image.ImageView;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;

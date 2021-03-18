@@ -1,4 +1,5 @@
-package dungeoncrawler;
+package dungeoncrawler.objects;
+
 public class Obstacle {
 
     private int x;

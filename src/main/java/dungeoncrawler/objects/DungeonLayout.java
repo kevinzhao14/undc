@@ -1,4 +1,6 @@
-package dungeoncrawler;
+package dungeoncrawler.objects;
+
+import dungeoncrawler.objects.Room;
 
 /**
  * Class implementation of the DungeonLayout class. DungeonLayout will

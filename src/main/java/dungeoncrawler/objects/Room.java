@@ -1,4 +1,4 @@
-package dungeoncrawler;
+package dungeoncrawler.objects;
 
 /**
  * Room class implementation for handling game room

@@ -1,4 +1,4 @@
-package dungeoncrawler;
+package dungeoncrawler.objects;
 
 /**
  * RoomType enum for defining the Style of Room objects.

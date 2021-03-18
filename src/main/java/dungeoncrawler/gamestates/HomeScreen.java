@@ -1,5 +1,6 @@
-package dungeoncrawler;
+package dungeoncrawler.gamestates;
 
+import dungeoncrawler.controllers.Controller;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;

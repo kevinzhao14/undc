@@ -48,7 +48,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.5</version>
                 <configuration>
-                    <mainClass>dungeoncrawler.Controller</mainClass>
+                    <mainClass>dungeoncrawler.controllers.Controller</mainClass>
                 </configuration>
             </plugin>
         </plugins>

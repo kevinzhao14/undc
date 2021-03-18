@@ -1,4 +1,4 @@
-package dungeoncrawler;
+package dungeoncrawler.gamestates;
 
 import javafx.scene.Scene;
 

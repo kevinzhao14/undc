@@ -1,4 +1,4 @@
-package dungeoncrawler;
+package dungeoncrawler.handlers;
 
 /**
  * Class that stores all of the game's settings.

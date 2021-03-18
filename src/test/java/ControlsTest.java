@@ -1,4 +1,4 @@
-import dungeoncrawler.Controls;
+import dungeoncrawler.handlers.Controls;
 import org.junit.Before;
 import org.junit.Test;
 

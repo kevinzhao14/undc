@@ -1,6 +1,6 @@
-import dungeoncrawler.LayoutGenerator;
-import dungeoncrawler.DungeonLayout;
-import dungeoncrawler.Room;
+import dungeoncrawler.handlers.LayoutGenerator;
+import dungeoncrawler.objects.DungeonLayout;
+import dungeoncrawler.objects.Room;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;

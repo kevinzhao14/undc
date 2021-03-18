@@ -1,4 +1,4 @@
-package dungeoncrawler;
+package dungeoncrawler.objects;
 
 public class Door extends Obstacle {
 

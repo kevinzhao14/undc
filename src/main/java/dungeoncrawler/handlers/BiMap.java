@@ -1,4 +1,4 @@
-package dungeoncrawler;
+package dungeoncrawler.handlers;
 import java.util.HashMap;
 
 /**

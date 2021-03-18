@@ -1,4 +1,4 @@
-package dungeoncrawler;
+package dungeoncrawler.handlers;
 
 import javafx.scene.input.KeyCode;
 

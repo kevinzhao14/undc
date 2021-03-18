@@ -1,4 +1,4 @@
-import dungeoncrawler.Controller;
+import dungeoncrawler.controllers.Controller;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.junit.Test;

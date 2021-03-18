@@ -1,4 +1,11 @@
-package dungeoncrawler;
+package dungeoncrawler.handlers;
+
+import dungeoncrawler.objects.Door;
+import dungeoncrawler.objects.DoorOrientation;
+import dungeoncrawler.objects.DungeonLayout;
+import dungeoncrawler.objects.Obstacle;
+import dungeoncrawler.objects.Room;
+import dungeoncrawler.objects.RoomType;
 
 /**
  * Class that generates Layout of the Rooms

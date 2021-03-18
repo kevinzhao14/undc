@@ -1,6 +1,6 @@
-import dungeoncrawler.Controller;
-import dungeoncrawler.HomeScreen;
-import dungeoncrawler.InitPlayerConfigScreen;
+import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.gamestates.HomeScreen;
+import dungeoncrawler.gamestates.InitPlayerConfigScreen;
 import javafx.stage.Stage;
 import org.junit.Assert;
 import org.junit.Test;

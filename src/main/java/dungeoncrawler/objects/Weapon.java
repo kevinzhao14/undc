@@ -1,4 +1,4 @@
-package dungeoncrawler;
+package dungeoncrawler.objects;
 
 import javafx.scene.image.ImageView;
 

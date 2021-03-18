@@ -1,4 +1,4 @@
-import dungeoncrawler.Controller;
+import dungeoncrawler.controllers.Controller;
 import javafx.stage.Stage;
 import org.junit.Test;
 import org.testfx.api.FxAssert;

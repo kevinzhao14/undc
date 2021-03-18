@@ -1,4 +1,7 @@
-import dungeoncrawler.*;
+import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.controllers.DataManager;
+import dungeoncrawler.gamestates.FirstRoom;
+import dungeoncrawler.handlers.Difficulty;
 import javafx.stage.Stage;
 import org.junit.Assert;
 import org.junit.Test;

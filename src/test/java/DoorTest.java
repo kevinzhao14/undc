@@ -1,6 +1,6 @@
-import dungeoncrawler.Controller;
-import dungeoncrawler.DoorOrientation;
-import dungeoncrawler.GameScreen;
+import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.objects.DoorOrientation;
+import dungeoncrawler.gamestates.GameScreen;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package dungeoncrawler;
+package dungeoncrawler.handlers;
 
 /**
  * Enum representing the game's difficulty.
