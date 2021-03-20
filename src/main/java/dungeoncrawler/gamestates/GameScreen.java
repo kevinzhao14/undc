@@ -9,9 +9,11 @@ import dungeoncrawler.handlers.RoomRenderer;
 import dungeoncrawler.controllers.Controller;
 import dungeoncrawler.controllers.GameController;
 import javafx.animation.FadeTransition;
+import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -120,28 +122,34 @@ public class GameScreen extends GameState {
         goldLabel.setTextFill(Color.WHITE);
     }
 
-    private void fadeOut(Pane pane) {
-        FadeTransition transition = new FadeTransition();
-        transition.setDuration(Duration.millis(500));
-        transition.setNode(pane);
-        transition.setFromValue(1);
-        transition.setToValue(0.25);
-        transition.play();
-        transition.setOnFinished((e) -> createRoom());
-    }
     public DungeonLayout getLayout() {
         //For testing purposes
         return this.dungeonLayout;
     }
 
+    private void fadeOut(Pane pane) {
+        FadeTransition transition = new FadeTransition();
+        setFade(transition, pane, false);
+        transition.setOnFinished((e) -> createRoom());
+    }
+
     private void fadeIn(Pane pane) {
         FadeTransition transition = new FadeTransition();
-        transition.setDuration(Duration.millis(500));
-        transition.setNode(pane);
-        transition.setFromValue(0.25);
-        transition.setToValue(1);
-        transition.play();
+        setFade(transition, pane, true);
         transition.setOnFinished((e) -> game.updateRoom());
+    }
+
+    private void setFade(FadeTransition t, Node n, boolean fadeIn) {
+        t.setDuration(Duration.millis(500));
+        t.setNode(n);
+        if (fadeIn) {
+            t.setFromValue(0.25);
+            t.setToValue(1);
+        } else {
+            t.setFromValue(1);
+            t.setToValue(0.25);
+        }
+        t.play();
     }
 
 

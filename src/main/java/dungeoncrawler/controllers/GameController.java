@@ -36,7 +36,7 @@ public class GameController {
     private long ticks;
     private double totalTime;
 
-    //bolean variables for tracking key holds/events
+    //boolean variables for tracking event
     private boolean pressLeft;
     private boolean pressRight;
     private boolean pressUp;
@@ -68,14 +68,14 @@ public class GameController {
         scene = Controller.getState().getScene();
 
         //Handle key events
-        scene.setOnKeyPressed(e -> {
-            handleKey(e.getCode(), true);
-        });
-        scene.setOnKeyReleased(e -> {
-            handleKey(e.getCode(), false);
-        });
+        scene.setOnKeyPressed(e -> handleKey(e.getCode(), true));
+        scene.setOnKeyReleased(e -> handleKey(e.getCode(), false));
     }
 
+    /**
+     * Sets the player object of the game.
+     * @param player Player node
+     */
     public void setPlayer(ImageView player) {
         this.player = player;
         resetPos();
@@ -91,19 +91,25 @@ public class GameController {
         }
         room = newRoom;
         if (Controller.getState() instanceof GameScreen) {
-            if (((GameScreen) Controller.getState()).setRoom(newRoom)) {
-                return;
-            }
+            ((GameScreen) Controller.getState()).setRoom(newRoom);
         } else {
             pause();
             throw new IllegalStateException("Illegal GameState");
         }
     }
+
+    /**
+     * Updates data after room change.
+     */
     public void updateRoom() {
         reset();
         resetPos();
         pause();
     }
+
+    /**
+     * Resets the player's position to the starting position.
+     */
     public void resetPos() {
         posX = room.getStartX();
         posY = room.getStartY();
@@ -145,14 +151,6 @@ public class GameController {
         isRunning = !isRunning;
     }
 
-    public void stop() {
-        if (!isRunning) {
-            return;
-        }
-        timer.cancel();
-        isRunning = false;
-    }
-
     /**
      * Starts the game timer/clock.
      */
@@ -178,66 +176,41 @@ public class GameController {
         if (!isRunning) {
             return;
         }
+        int sign = 0;
+        boolean xval = false;
         if (key.equals(controls.getKey("up"))) {
-            if (isPress) {
-                if (pressUp) {
-                    return;
-                }
-                accelY += GameSettings.ACCEL;
-                pressUp = true;
-            } else {
-                if (!pressUp) {
-                    return;
-                }
-                accelY -= GameSettings.ACCEL;
-                pressUp = false;
+            if (isPress == pressUp) {
+                return;
             }
-            accelY = round(accelY);
+            sign = isPress ? 1 : -1;
+            pressUp = isPress;
         } else if (key.equals(controls.getKey("down"))) {
-            if (isPress) {
-                if (pressDown) {
-                    return;
-                }
-                accelY -= GameSettings.ACCEL;
-                pressDown = true;
-            } else {
-                if (!pressDown) {
-                    return;
-                }
-                accelY += GameSettings.ACCEL;
-                pressDown = false;
+            if (isPress == pressDown) {
+                return;
             }
-            accelY = round(accelY);
+            sign = isPress ? -1 : 1;
+            pressDown = isPress;
         } else if (key.equals(controls.getKey("right"))) {
-            if (isPress) {
-                if (pressRight) {
-                    return;
-                }
-                accelX += GameSettings.ACCEL;
-                pressRight = true;
-            } else {
-                if (!pressRight) {
-                    return;
-                }
-                accelX -= GameSettings.ACCEL;
-                pressRight = false;
+            if (isPress == pressRight) {
+                return;
             }
-            accelX = round(accelX);
+            sign = isPress ? 1 : -1;
+            pressRight = isPress;
+            xval = true;
         } else if (key.equals(controls.getKey("left"))) {
-            if (isPress) {
-                if (pressLeft) {
-                    return;
-                }
-                accelX -= GameSettings.ACCEL;
-                pressLeft = true;
-            } else {
-                if (!pressLeft) {
-                    return;
-                }
-                accelX += GameSettings.ACCEL;
-                pressLeft = false;
+            if (isPress == pressLeft) {
+                return;
             }
+            sign = isPress ? -1 : 1;
+            pressLeft = isPress;
+            xval = true;
+        }
+        if (xval) {
+            accelX += sign * GameSettings.ACCEL;
             accelX = round(accelX);
+        } else {
+            accelY += sign * GameSettings.ACCEL;
+            accelY = round(accelY);
         }
     }
 
@@ -247,8 +220,7 @@ public class GameController {
      * @return Returns the rounded number.
      */
     private double round(double number) {
-        return Math.round(number * GameSettings.PRECISION)
-                / GameSettings.PRECISION;
+        return Math.round(number * GameSettings.PRECISION) / GameSettings.PRECISION;
     }
 
     /**
@@ -339,7 +311,6 @@ public class GameController {
                 return new double[]{newX, (newY < 0 ? 0 : room.getHeight()
                         - GameSettings.PLAYER_HEIGHT)};
             }
-
             return new double[]{newX, newY};
         }
 
@@ -416,22 +387,22 @@ public class GameController {
                     double newStartY;
                     if (d.equals(room.getTopDoor())) {
                         newDoor = newRoom.getBottomDoor();
-                        newStartX = newDoor.getX() + newDoor.getWidth() / 2
+                        newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
                                 - GameSettings.PLAYER_WIDTH / 2;
                         newStartY = newDoor.getY() + LayoutGenerator.DOORBOTTOM_HEIGHT + 10;
                     } else if (d.equals(room.getBottomDoor())) {
                         newDoor = newRoom.getTopDoor();
-                        newStartX = newDoor.getX() + newDoor.getWidth() / 2
+                        newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
                                 - GameSettings.PLAYER_WIDTH / 2;
                         newStartY = newDoor.getY() - GameSettings.PLAYER_HEIGHT;
                     } else if (d.equals(room.getRightDoor())) {
                         newDoor = newRoom.getLeftDoor();
                         newStartX = newDoor.getX() + 10 + LayoutGenerator.DOOR_WIDTH;
-                        newStartY = newDoor.getY() + newDoor.getHeight() / 5;
+                        newStartY = newDoor.getY() + newDoor.getHeight() / 5.0;
                     } else {
                         newDoor = newRoom.getRightDoor();
                         newStartX = newDoor.getX() - 10 - GameSettings.PLAYER_WIDTH;
-                        newStartY = newDoor.getY() + newDoor.getHeight() / 5;
+                        newStartY = newDoor.getY() + newDoor.getHeight() / 5.0;
                     }
                     newRoom.setStartX((int) newStartX);
                     newRoom.setStartY((int) newStartY);
