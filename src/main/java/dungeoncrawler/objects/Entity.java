@@ -48,4 +48,11 @@ public abstract class Entity {
     public int getPosY() {
         return this.posY;
     }
+
+    public void setHealth(int newHealth) {
+        if (newHealth < 0 || newHealth > this.maxHealth) {
+            throw new IllegalArgumentException("Invalid new health");
+        }
+        this.health = newHealth;
+    }
 }
