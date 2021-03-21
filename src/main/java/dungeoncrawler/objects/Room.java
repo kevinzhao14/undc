@@ -12,7 +12,9 @@ public class Room {
     private int width;
     private int startX;
     private int startY;
+    private boolean visited;
     private Obstacle[] obstacles;
+    private Monster[] monsters;
     private Door topDoor;
     private Door bottomDoor;
     private Door rightDoor;
@@ -44,6 +46,9 @@ public class Room {
         this.rightDoor = null;
         this.leftDoor = null;
         this.type = roomType;
+
+        //Need to change this later
+        this.monsters = null;
     }
     /**
      * Setter method for top Door in Room.
@@ -76,6 +81,12 @@ public class Room {
      */
     public void setLeftDoor(Door d) {
         this.leftDoor = d;
+    }
+    /**
+     * Setter method for setting Room to visited
+     */
+    public void setVisited() {
+        this.visited = true;
     }
     /**
      * Getter method for accessing height of Room, in game units
@@ -140,6 +151,13 @@ public class Room {
         return this.leftDoor;
     }
     /**
+     * Getter method for determining if Room was visited yet by player
+     * @return whether Room has been visited by player or not
+     */
+    public boolean wasVisited() {
+        return this.visited;
+    }
+    /**
      * Getter method for accessing RoomType enum of Room
      * @return RoomType enum of Room
      */
@@ -152,5 +170,12 @@ public class Room {
      */
     public Obstacle[] getObstacles() {
         return this.obstacles;
+    }
+    /**
+     * Getter method for accessing all Monsters in Room
+     * @return array of Monsters in Room
+     */
+    public Monster[] getMonsters() {
+        return this.monsters;
     }
 }
