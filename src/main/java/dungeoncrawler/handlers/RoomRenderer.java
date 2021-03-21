@@ -1,5 +1,7 @@
 package dungeoncrawler.handlers;
 
+import dungeoncrawler.objects.Door;
+import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
 import dungeoncrawler.objects.Room;
 import javafx.scene.Scene;
@@ -79,46 +81,39 @@ public class RoomRenderer {
 
             }
         }
+        if (room.getMonsters() != null) {
+            for (Monster monster : room.getMonsters()) {
+               if (monster != null) {
+                   Rectangle m = new Rectangle(getPx(monster.getPosX()), getPx(room.getHeight() - monster.getPosY() - monster.getHeight()), getPx(monster.getWidth()), getPx(monster.getHeight()));
+               }
+            }
+        }
         if (room.getTopDoor() != null) {
-            ImageView imageView = new ImageView("dungeon1-topdoor.png");
-            imageView.setX(getPx(room.getTopDoor().getX()));
-            imageView.setY(getPx(room.getHeight() - room.getTopDoor().getY()
-                    - room.getTopDoor().getHeight()) + 2);
-            imageView.setFitWidth(getPx(room.getTopDoor().getWidth()));
-            imageView.setFitHeight(getPx(room.getTopDoor().getHeight()));
-            root.getChildren().add(imageView);
+            showDoor(room, root, room.getTopDoor(), "dungeon1-topdoor.png");
         }
         if (room.getRightDoor() != null) {
-            ImageView imageView = new ImageView("dungeon1-rightdoor.png");
-            imageView.setX(getPx(room.getRightDoor().getX()));
-            imageView.setY(getPx(room.getHeight() - room.getRightDoor().getY()
-                    - room.getRightDoor().getHeight() * 2));
-            imageView.setFitWidth(getPx(room.getRightDoor().getWidth()));
-            imageView.setFitHeight(getPx(room.getRightDoor().getHeight()) * 2);
-            root.getChildren().add(imageView);
+            showDoor(room, root, room.getRightDoor(), "dungeon1-rightdoor.png");
         }
         if (room.getBottomDoor() != null) {
-            ImageView imageView = new ImageView("dungeon1-bottomdoor.png");
-            imageView.setX(getPx(room.getBottomDoor().getX()));
-            imageView.setY(getPx(room.getHeight() - room.getBottomDoor().getY()
-                    - room.getBottomDoor().getHeight()) + 2);
-            imageView.setFitWidth(getPx(room.getBottomDoor().getWidth()));
-            imageView.setFitHeight(getPx(room.getBottomDoor().getHeight()));
-            root.getChildren().add(imageView);
+            showDoor(room, root, room.getBottomDoor(), "dungeon1-bottomdoor.png");
         }
         if (room.getLeftDoor() != null) {
-            ImageView imageView = new ImageView("dungeon1-leftdoor.png");
-            imageView.setX(getPx(room.getLeftDoor().getX()));
-            imageView.setY(getPx(room.getHeight() - room.getLeftDoor().getY()
-                    - room.getLeftDoor().getHeight() * 2));
-            imageView.setFitWidth(getPx(room.getLeftDoor().getWidth()));
-            imageView.setFitHeight(getPx(room.getLeftDoor().getHeight()) * 2);
-            root.getChildren().add(imageView);
+            showDoor(room, root, room.getLeftDoor(), "dungeon1-leftdoor.png");
         }
         scene.getStylesheets().add(room.getType().name() + ".css");
         root.getChildren().add(player);
 
         return main;
+    }
+
+    public static void showDoor(Room room, Pane root, Door door, String doorPNG) {
+        ImageView imageView = new ImageView(doorPNG);
+        imageView.setX(getPx(door.getX()) - 1);
+        imageView.setY(getPx(room.getHeight() - door.getY()
+                - door.getHeight()));
+        imageView.setFitWidth(getPx(door.getWidth()));
+        imageView.setFitHeight(getPx(door.getHeight()));
+        root.getChildren().add(imageView);
     }
 
     /**
