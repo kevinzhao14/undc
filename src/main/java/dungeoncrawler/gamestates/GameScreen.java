@@ -152,6 +152,22 @@ public class GameScreen extends GameState {
         t.play();
     }
 
-
+    public void gameOver() {
+        StackPane root = new StackPane();
+        VBox box = new VBox();
+        Label deathLabel = new Label("GAME OVER");
+        deathLabel.setStyle("-fx-text-fill: white");
+        Button restartButton = new Button("Restart");
+        Button endButton = new Button("Exit Game");
+        restartButton.setOnAction((e) -> {
+            // restart method
+        });
+        endButton.setOnAction((e) -> {
+            Platform.exit();
+        });
+        box.getChildren().addAll(deathLabel, endButton);
+        box.setAlignment(Pos.CENTER);
+        root.getChildren().addAll(hud, box);
+    }
 
 }
