@@ -20,7 +20,6 @@ public class Room {
     private Door rightDoor;
     private Door leftDoor;
     private RoomType type;
-
     /**
      * Constructor for defining all Room features except Door layouts.
      * Door references must be manually defined using their respective setter methods.
@@ -87,6 +86,13 @@ public class Room {
      */
     public void setVisited() {
         this.visited = true;
+    }
+    /**
+     * Setter method assigning Monsters to Room
+     * @param monsters array of Monsters we have to create
+     */
+    public void setMonsters(Monster[] monsters) {
+        this.monsters = monsters;
     }
     /**
      * Getter method for accessing height of Room, in game units
@@ -178,7 +184,6 @@ public class Room {
     public Monster[] getMonsters() {
         return this.monsters;
     }
-    public void setMonsters(Monster[] monsters) {
-        this.monsters = monsters;
-    }
+
+
 }

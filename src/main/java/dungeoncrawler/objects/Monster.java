@@ -14,11 +14,12 @@ public class Monster extends Entity {
     private int attackSpeed;
     private HBox healthBar;
 
-    public Monster(int maxHealth, int health, int attack,
-                   int height, int width, int posX, int posY,
-                   MonsterType type, int speed, int attackSpeed) {
+    public Monster(int maxHealth, int attack, int height,
+                   int width, MonsterType type, int speed,
+                   int attackSpeed) {
+
         //healthBar should be instantiated and assigned in this Monster constructor
-        super(maxHealth, health, attack, height, width, posX, posY);
+        super(maxHealth, attack, height, width);
         this.type = type;
         this.speed = speed;
         this.attackSpeed = attackSpeed;
