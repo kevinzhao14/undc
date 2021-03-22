@@ -178,4 +178,7 @@ public class Room {
     public Monster[] getMonsters() {
         return this.monsters;
     }
+    public void setMonsters(Monster[] monsters) {
+        this.monsters = monsters;
+    }
 }

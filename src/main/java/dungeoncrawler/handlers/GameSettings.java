@@ -52,4 +52,8 @@ public class GameSettings {
     //Player width and height
     public static final double PLAYER_WIDTH = 16.730038;
     public static final double PLAYER_HEIGHT = PLAYER_WIDTH * 1.81818182 / 2;
+
+    //monster settings
+    public static final int MIN_MONSTERS = 2;
+    public static final int MAX_MONSTERS = 6;
 }
