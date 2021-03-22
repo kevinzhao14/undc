@@ -16,15 +16,13 @@ public abstract class Entity {
     private int posX;
     private int posY;
 
-    public Entity(int maxHealth, int health, int attack,
-                  int height, int width, int posX, int posY) {
+    public Entity(int maxHealth, int attack,
+                  int height, int width) {
         this.maxHealth = maxHealth;
-        this.health = health;
+        this.health = maxHealth;
         this.attack = attack;
         this.height = height;
         this.width = width;
-        this.posX = posX;
-        this.posY = posY;
     }
 
     public int getMaxHealth() {
@@ -49,6 +47,12 @@ public abstract class Entity {
         return this.posY;
     }
 
+    public void setPosX(int newX) {
+        this.posX = newX;
+    }
+    public void setPosY(int newY) {
+        this.posY = newY;
+    }
     public void setHealth(int newHealth) {
         if (newHealth < 0 || newHealth > this.maxHealth) {
             throw new IllegalArgumentException("Invalid new health");
