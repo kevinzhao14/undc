@@ -20,7 +20,6 @@ public class Room {
     private Door rightDoor;
     private Door leftDoor;
     private RoomType type;
-
     /**
      * Constructor for defining all Room features except Door layouts.
      * Door references must be manually defined using their respective setter methods.
