@@ -89,6 +89,13 @@ public class Room {
         this.visited = true;
     }
     /**
+     * Setter method assigning Monsters to Room
+     * @param monsters array of Monsters we have to create
+     */
+    public void setMonsters(Monster[] monsters) {
+        this.monsters = monsters;
+    }
+    /**
      * Getter method for accessing height of Room, in game units
      * @return Room height, in game units
      */
@@ -178,7 +185,6 @@ public class Room {
     public Monster[] getMonsters() {
         return this.monsters;
     }
-    public void setMonsters(Monster[] monsters) {
-        this.monsters = monsters;
-    }
+
+
 }
