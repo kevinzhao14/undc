@@ -15,6 +15,7 @@ public abstract class Entity {
     private int width;
     private int posX;
     private int posY;
+    private double attackCooldown;
 
     public Entity(int maxHealth, int health, int attack,
                   int height, int width, int posX, int posY) {
@@ -54,5 +55,13 @@ public abstract class Entity {
             throw new IllegalArgumentException("Invalid new health");
         }
         this.health = newHealth;
+    }
+
+    public double getAttackCooldown() {
+        return attackCooldown;
+    }
+
+    public void setAttackCooldown(double attackCooldown) {
+        this.attackCooldown = attackCooldown;
     }
 }
