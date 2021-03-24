@@ -24,9 +24,9 @@ public class Monster extends Entity {
         this.attackSpeed = attackSpeed;
     }
 
-    public Monster(Monster m) {
-        this(m.getMaxHealth(), m.getAttack(), m.speed, m.attackSpeed, m.type, m.getHeight(),
-                m.getWidth());
+    public Monster(Monster m, double modifier) {
+        this((int) (m.getMaxHealth() * modifier), m.getAttack() * modifier, m.speed,
+                m.attackSpeed, m.type, m.getHeight(), m.getWidth());
     }
 
     //need to implement

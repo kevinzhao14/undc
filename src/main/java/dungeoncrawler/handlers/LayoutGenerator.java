@@ -281,7 +281,14 @@ public class LayoutGenerator {
         Monster[] monsters = new Monster[numMonsters];
         for (int i = 0; i < monsters.length; i++) {
             int n = (int)(Math.random() * 3);
-            monsters[i] = new Monster(Controller.getDataManager().MONSTERS[n]);
+            Difficulty diff = Controller.getDataManager().getDifficulty();
+            double modifier = 1;
+            if (diff == Difficulty.MEDIUM) {
+                modifier = GameSettings.MODIFIER_MEDIUM;
+            } else if (diff == Difficulty.HARD) {
+                modifier = GameSettings.MODIFIER_HARD;
+            }
+            monsters[i] = new Monster(Controller.getDataManager().MONSTERS[n], modifier);
         }
         room.setMonsters(monsters);
     }
