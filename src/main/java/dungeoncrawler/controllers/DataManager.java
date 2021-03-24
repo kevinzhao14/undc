@@ -4,6 +4,7 @@ import dungeoncrawler.handlers.Difficulty;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.MonsterType;
 import dungeoncrawler.objects.Weapon;
+import javafx.scene.image.ImageView;
 
 /**
  * Class for storing and handling all session data.
@@ -19,9 +20,9 @@ public class DataManager {
     };
 
     public static final Monster[] MONSTERS = new Monster[]{
-            new Monster(20, 5, 150, 0.5, MonsterType.FAST, 10, 10),
-            new Monster(40, 5, 100, 0.75, MonsterType.NORMAL, 15, 15),
-            new Monster(100, 10, 50, 2, MonsterType.TANK, 25, 25)
+            new Monster(20, 5, 150, 0.5, MonsterType.FAST, 10, 10, null),
+            new Monster(40, 5, 100, 0.75, MonsterType.NORMAL, 15, 15, null),
+            new Monster(100, 10, 50, 2, MonsterType.TANK, 25, 25, null)
     };
 
     private String username;

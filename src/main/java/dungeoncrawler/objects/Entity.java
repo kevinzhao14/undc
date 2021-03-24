@@ -1,5 +1,8 @@
 package dungeoncrawler.objects;
 
+
+import javafx.scene.image.ImageView;
+
 /**
  * Implementation of the Entity abstract class
  *
@@ -16,14 +19,15 @@ public abstract class Entity {
     private double posX;
     private double posY;
     private double attackCooldown;
+    private ImageView node;
 
-    public Entity(int maxHealth, double attack,
-                  int height, int width) {
+    public Entity(int maxHealth, double attack, int height, int width, ImageView node) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.attack = attack;
         this.height = height;
         this.width = width;
+        this.node = node;
     }
 
     public int getMaxHealth() {
@@ -67,5 +71,13 @@ public abstract class Entity {
 
     public void setAttackCooldown(double attackCooldown) {
         this.attackCooldown = attackCooldown;
+    }
+
+    public ImageView getNode() {
+        return node;
+    }
+
+    public void setNode(ImageView node) {
+        this.node = node;
     }
 }

@@ -1,5 +1,6 @@
 package dungeoncrawler.objects;
 
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
 /**
@@ -15,10 +16,10 @@ public class Monster extends Entity {
     private HBox healthBar;
 
     public Monster(int maxHealth, double attack, double speed, double attackSpeed, MonsterType type,
-                   int height, int width) {
+                   int height, int width, ImageView node) {
 
         //healthBar should be instantiated and assigned in this Monster constructor
-        super(maxHealth, attack, height, width);
+        super(maxHealth, attack, height, width, node);
         this.type = type;
         this.speed = speed;
         this.attackSpeed = attackSpeed;
@@ -26,7 +27,8 @@ public class Monster extends Entity {
 
     public Monster(Monster m, double modifier) {
         this((int) (m.getMaxHealth() * modifier), m.getAttack() * modifier, m.speed,
-                m.attackSpeed, m.type, m.getHeight(), m.getWidth());
+                m.attackSpeed, m.type, m.getHeight(), m.getWidth(),
+                new ImageView(m.getNode().getImage().getUrl()));
     }
 
     //need to implement
