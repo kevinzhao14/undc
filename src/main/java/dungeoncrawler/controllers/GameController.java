@@ -5,6 +5,7 @@ import dungeoncrawler.objects.Door;
 import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
+import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
 import dungeoncrawler.objects.Room;
 import javafx.scene.image.ImageView;
@@ -259,6 +260,16 @@ public class GameController {
                 posY = newPosY;
             }
 
+            //Manage Monsters
+            for (Monster m : room.getMonsters()) {
+                //check and move the monster
+                monsterMove(m);
+
+                //check and attack with the monster
+                monsterAttack(m);
+            }
+
+
             //update velocity
             velX += accelX;
             velX = round(velX);
@@ -290,6 +301,9 @@ public class GameController {
                 frictionY = true;
                 accelY += (velY > 0 ? -1 : 1) * GameSettings.FRICTION;
             }
+
+
+
             long endTime = System.nanoTime();
             double execTime = round((endTime - startTime) / 1000000.0);
         }
@@ -516,6 +530,14 @@ public class GameController {
                 b = x0;
             }
             return new double[]{m, b};
+        }
+
+        private void monsterMove(Monster m) {
+
+        }
+
+        private void monsterAttack(Monster m) {
+
         }
     }
 }

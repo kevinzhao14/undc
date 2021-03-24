@@ -1,5 +1,6 @@
 package dungeoncrawler.handlers;
 
+import dungeoncrawler.controllers.Controller;
 import dungeoncrawler.objects.Door;
 import dungeoncrawler.objects.DoorOrientation;
 import dungeoncrawler.objects.DungeonLayout;
@@ -279,27 +280,8 @@ public class LayoutGenerator {
         int numMonsters = (int)(Math.random() * (GameSettings.MAX_MONSTERS - GameSettings.MIN_MONSTERS + 1)) +  GameSettings.MIN_MONSTERS;
         Monster[] monsters = new Monster[numMonsters];
         for (int i = 0; i < monsters.length; i++) {
-            int monsterType = (int)(Math.random() * 3);
-            if (monsterType == 0) {
-                if (i == 0) {
-                    monsters[i] = new Monster(200,200, 10, 20, 20, ((100) % room.getWidth()), ((100) % room.getHeight()), MonsterType.TANK, 5, 5);
-                } else {
-                    monsters[i] = new Monster(200,200, 10, 20, 20, ((monsters[i - 1].getWidth() + 100) % room.getWidth()), ((monsters[i - 1].getHeight() + 100) % room.getHeight()), MonsterType.TANK, 5, 5);
-                }
-
-            } else if (monsterType == 1){
-                if (i == 0) {
-                    monsters[i] = new Monster(100,100, 15, 20, 20, ((100) % room.getWidth()), ((100) % room.getHeight()), MonsterType.NORMAL, 10, 10);
-                } else {
-                    monsters[i] = new Monster(100,100, 15, 20, 20, ((monsters[i -1].getWidth() + 100) % room.getWidth()), ((monsters[i - 1].getHeight() + 100) % room.getHeight()), MonsterType.NORMAL, 10, 10);
-                }
-            } else {
-                if (i == 0) {
-                    monsters[i] = new Monster(50,50, 10, 20, 20, ((100) % room.getWidth()), ((100) % room.getHeight()), MonsterType.FAST, 20, 20);
-                } else {
-                    monsters[i] = new Monster(50,50, 10, 20, 20, ((monsters[i - 1].getWidth() + 100) % room.getWidth()), ((monsters[i - 1].getHeight() + 100) % room.getHeight()), MonsterType.FAST, 20, 20);
-                }
-            }
+            int n = (int)(Math.random() * 3);
+            monsters[i] = new Monster(Controller.getDataManager().MONSTERS[n]);
         }
         room.setMonsters(monsters);
     }

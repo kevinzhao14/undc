@@ -1,6 +1,8 @@
 package dungeoncrawler.controllers;
 
 import dungeoncrawler.handlers.Difficulty;
+import dungeoncrawler.objects.Monster;
+import dungeoncrawler.objects.MonsterType;
 import dungeoncrawler.objects.Weapon;
 
 /**
@@ -14,6 +16,12 @@ public class DataManager {
         new Weapon("Axe", "axe.png", 8, 1),
         new Weapon("Sword", "sword.png", 4, 0.5),
         new Weapon("Mace", "mace.png", 6, 0.75)
+    };
+
+    public static final Monster[] MONSTERS = new Monster[]{
+            new Monster(20, 5, 150, 0.5, MonsterType.FAST, 10, 10),
+            new Monster(40, 5, 100, 0.75, MonsterType.NORMAL, 15, 15),
+            new Monster(100, 10, 50, 2, MonsterType.TANK, 25, 25)
     };
 
     private String username;

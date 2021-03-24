@@ -10,14 +10,14 @@ package dungeoncrawler.objects;
 public abstract class Entity {
     private final int maxHealth;
     private int health;
-    private int attack;
+    private double attack;
     private int height;
     private int width;
-    private int posX;
-    private int posY;
+    private double posX;
+    private double posY;
     private double attackCooldown;
 
-    public Entity(int maxHealth, int attack,
+    public Entity(int maxHealth, double attack,
                   int height, int width) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
@@ -32,7 +32,7 @@ public abstract class Entity {
     public int getHealth() {
         return this.health;
     }
-    public int getAttack() {
+    public double getAttack() {
         return this.attack;
     }
     public int getHeight() {
@@ -41,10 +41,10 @@ public abstract class Entity {
     public int getWidth() {
         return this.width;
     }
-    public int getPosX() {
+    public double getPosX() {
         return this.posX;
     }
-    public int getPosY() {
+    public double getPosY() {
         return this.posY;
     }
 

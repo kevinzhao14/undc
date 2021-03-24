@@ -56,4 +56,9 @@ public class GameSettings {
     //monster settings
     public static final int MIN_MONSTERS = 2;
     public static final int MAX_MONSTERS = 6;
+
+    //how close to a player a monster must be to move towards it
+    public static final int MONSTER_MOVE_RANGE = 100;
+    //how close to a player a monster must be to attack
+    public static final int MONSTER_ATTACK_RANGE = 10;
 }
