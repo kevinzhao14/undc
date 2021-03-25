@@ -83,9 +83,10 @@ public class Room {
     }
     /**
      * Setter method for setting Room to visited
+     * @param status whether the room has been visited or not
      */
-    public void setVisited() {
-        this.visited = true;
+    public void setVisited(boolean status) {
+        this.visited = status;
     }
     /**
      * Setter method assigning Monsters to Room
