@@ -36,6 +36,7 @@ public class GameController {
     private boolean isRunning;
     private long ticks;
     private double totalTime;
+    private boolean isAttacking;
 
     //boolean variables for tracking event
     private boolean pressLeft;
@@ -209,6 +210,9 @@ public class GameController {
             sign = isPress ? -1 : 1;
             pressLeft = isPress;
             xval = true;
+        } else if (key.equals(controls.getKey("attack")) || key.equals(controls.getKey("attack2"))) {
+            isAttacking = isPress;
+            System.out.println("attack pressed");
         }
         if (xval) {
             accelX += sign * GameSettings.ACCEL;
@@ -267,6 +271,24 @@ public class GameController {
                 player.setPosY(newPosY);
             }
 
+            player.setAttackCooldown(Math.max(0.0, player.getAttackCooldown() - 1000.0 / GameSettings.FPS));
+            if (isAttacking && player.getAttackCooldown() == 0.0) {
+                player.setAttackCooldown(1000.0);
+                for (Monster m : room.getMonsters()) {
+                    if (m != null && m.getHealth() > 0) {
+                        double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2) + Math.pow(player.getPosY() - m.getPosY(), 2));
+                        if (dist <= GameSettings.MONSTER_ATTACK_RANGE) {
+                            m.attackMonster((int) player.getAttack());
+                        }
+                    }
+                }
+
+            }
+            if (player.getAttackCooldown() > 0) {
+                System.out.println("Cooldown: " + player.getAttackCooldown());
+            }
+
+
             //Manage Monsters
             for (Monster m : room.getMonsters()) {
                 if (m == null) {
@@ -275,6 +297,8 @@ public class GameController {
                 //check and move the monster
                 monsterMove(m);
             }
+
+
 
             //update velocity
             velX += accelX;

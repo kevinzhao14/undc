@@ -34,8 +34,8 @@ public class Monster extends Entity {
     }
 
     //need to implement
-    public void attackMonster(int dmgAmt) {
-
+    public void attackMonster(double dmgAmt) {
+        this.setHealth(Math.max(0, (int) (this.getHealth() - dmgAmt)));
     }
 
     public double getReaction() {
