@@ -52,10 +52,10 @@ public abstract class Entity {
         return this.posY;
     }
 
-    public void setPosX(int newX) {
+    public void setPosX(double newX) {
         this.posX = newX;
     }
-    public void setPosY(int newY) {
+    public void setPosY(double newY) {
         this.posY = newY;
     }
     public void setHealth(int newHealth) {

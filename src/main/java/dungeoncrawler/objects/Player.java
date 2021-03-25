@@ -1,11 +1,13 @@
 package dungeoncrawler.objects;
 
+import javafx.scene.image.ImageView;
+
 public class Player extends Entity{
     private Weapon weapon;
     private int gold;
-    public Player(int maxHealth, int health, int attack,
-                  int height, int width, int posX, int posY, Weapon weapon) {
-        super(maxHealth, health, attack, height, width, posX, posY);
+    public Player(int maxHealth, double attack, int height, int width, int posX, int posY,
+                  Weapon weapon, ImageView node) {
+        super(maxHealth, attack, height, width, node);
         this.weapon = weapon;
     }
 
