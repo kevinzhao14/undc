@@ -5,8 +5,10 @@ import dungeoncrawler.objects.Door;
 import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
+import dungeoncrawler.objects.Entity;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
+import dungeoncrawler.objects.Player;
 import dungeoncrawler.objects.Room;
 import javafx.scene.image.ImageView;
 import javafx.scene.Scene;
@@ -26,9 +28,7 @@ public class GameController {
     private Controls controls;
     private Room room;
     private Scene scene;
-    private ImageView player;
-    private double posX;
-    private double posY;
+    private Player player;
     private double velX;
     private double velY;
     private double accelX;
@@ -49,13 +49,17 @@ public class GameController {
      * Constructor for a GameController.
      * @param player Player node
      */
-    public GameController(ImageView player) {
+    public GameController(Player player) {
         if (player == null) {
             throw new IllegalArgumentException(
                     "Cannot assign null Player reference to GameController instance"
             );
         }
         this.player = player;
+        this.controls = new Controls();
+    }
+
+    public GameController() {
         this.controls = new Controls();
     }
 
@@ -77,7 +81,7 @@ public class GameController {
      * Sets the player object of the game.
      * @param player Player node
      */
-    public void setPlayer(ImageView player) {
+    public void setPlayer(Player player) {
         this.player = player;
         resetPos();
     }
@@ -112,10 +116,10 @@ public class GameController {
      * Resets the player's position to the starting position.
      */
     public void resetPos() {
-        posX = room.getStartX();
-        posY = room.getStartY();
-        player.setX(getPx(posX));
-        player.setY(getPx(room.getHeight() - posY - GameSettings.PLAYER_HEIGHT * 2));
+        player.setPosX(room.getStartX());
+        player.setPosY(room.getStartY());
+        player.getNode().setX(getPx(player.getPosX()));
+        player.getNode().setY(getPx(room.getHeight() - player.getPosY() - player.getHeight() * 2));
     }
 
     /**
@@ -243,12 +247,15 @@ public class GameController {
         public void run() {
             ticks++;
             long startTime = System.nanoTime();
+            double posX = player.getPosX();
+            double posY = player.getPosY();
             double newPosX = round(posX + velX);
             double newPosY = round(posY + velY);
 
             //check if position is valid. If it is, move.
-            double[] movePos = checkPos(posX, posY, newPosX, newPosY);
-            if (movePos != null) {
+            double[] movePos = checkPos(posX, posY, newPosX, newPosY, player.getHeight(),
+                    player.getWidth());
+            if (movePos[0] != posX || movePos[1] != posY) {
                 newPosX = movePos[0];
                 newPosY = movePos[1];
                 movePlayer(newPosX, newPosY);
@@ -256,19 +263,18 @@ public class GameController {
                 if (checkDoors(posX, posY, newPosX, newPosY)) {
                     return;
                 }
-                posX = newPosX;
-                posY = newPosY;
+                player.setPosX(newPosX);
+                player.setPosY(newPosY);
             }
 
             //Manage Monsters
             for (Monster m : room.getMonsters()) {
+                if (m == null) {
+                    continue;
+                }
                 //check and move the monster
                 monsterMove(m);
-
-                //check and attack with the monster
-                monsterAttack(m);
             }
-
 
             //update velocity
             velX += accelX;
@@ -302,8 +308,6 @@ public class GameController {
                 accelY += (velY > 0 ? -1 : 1) * GameSettings.FRICTION;
             }
 
-
-
             long endTime = System.nanoTime();
             double execTime = round((endTime - startTime) / 1000000.0);
         }
@@ -316,14 +320,14 @@ public class GameController {
          * @param newY new y value
          * @return Returns whether the movement is valid
          */
-        private double[] checkPos(double x, double y, double newX, double newY) {
-            if (newX < 0.0 || newX + GameSettings.PLAYER_WIDTH > room.getWidth()) {
+        private double[] checkPos(double x, double y, double newX, double newY, double h, double w) {
+            if (newX < 0.0 || newX + w > room.getWidth()) {
                 return new double[]{(newX < 0 ? 0 : room.getWidth()
-                        - GameSettings.PLAYER_WIDTH), newY};
+                        - w), newY};
             }
-            if (newY < 0.0 || newY + GameSettings.PLAYER_HEIGHT > room.getHeight()) {
+            if (newY < 0.0 || newY + h > room.getHeight()) {
                 return new double[]{newX, (newY < 0 ? 0 : room.getHeight()
-                        - GameSettings.PLAYER_HEIGHT)};
+                        - h)};
             }
             return new double[]{newX, newY};
         }
@@ -337,7 +341,7 @@ public class GameController {
          * @param newY new y position
          * @return Returns whether the object is in range of the player's movement
          */
-        private boolean inRange(Obstacle o, double x, double y, double newX, double newY) {
+        private boolean inRange(Obstacle o, double x, double y, double newX, double newY, double h, double w) {
             /* Checks if the object is in range of the player's movement
              *          _________
              *          |[]     |
@@ -349,11 +353,11 @@ public class GameController {
              */
 
             if (o.getX() + o.getWidth() < Math.min(x, newX)
-                || o.getX() > Math.max(x, newX) + GameSettings.PLAYER_WIDTH) {
+                || o.getX() > Math.max(x, newX) + w) {
                 return false;
             }
             if (o.getY() + o.getHeight() < Math.min(y, newY)
-                || o.getY() > Math.max(y, newY) + GameSettings.PLAYER_HEIGHT) {
+                || o.getY() > Math.max(y, newY) + h) {
                 return false;
             }
             return true;
@@ -381,7 +385,7 @@ public class GameController {
                     continue;
                 }
                 //Check if door is out of player movement vector rectangle
-                if (!inRange(d, x, y, newX, newY)) {
+                if (!inRange(d, x, y, newX, newY, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_HEIGHT)) {
                     continue;
                 }
                 //player movement direction
@@ -391,7 +395,7 @@ public class GameController {
                 //Get equation for intersection
                 double[] playerEquation = equation(x, y, newX, newY);
                 double[] intersects = getIntersect(d, playerEquation[0], playerEquation[1],
-                        moveUp, moveRight);
+                        moveUp, moveRight, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH);
 
                 //player intersects door
                 if (intersects != null) {
@@ -437,7 +441,7 @@ public class GameController {
          * @return Returns the x and y coordinate of the intersection point, null if no intersection
          */
         private double[] getIntersect(Obstacle o, double m, double b, boolean moveUp,
-                                      boolean moveRight) {
+                                      boolean moveRight, double h, double w) {
             /* Calculate x-coordinate intersection point on the y-axis
              *
              *          v obstacle
@@ -460,7 +464,7 @@ public class GameController {
              */
             double intY = (o.getY() + o.getHeight() - b) / m;
             if (moveUp) {
-                intY = (o.getY() - GameSettings.PLAYER_HEIGHT - b) / m;
+                intY = (o.getY() - h - b) / m;
             }
             /* if the player is moving vertically, then slope and y-intercept will be
              * infinity/undefined. If so, set the intY/x position of the intersect to the x
@@ -471,7 +475,7 @@ public class GameController {
             }
 
             //check if intersect is on the obstacle
-            if (intY <= o.getX() + o.getWidth() || intY + GameSettings.PLAYER_WIDTH >= o.getX()) {
+            if (intY <= o.getX() + o.getWidth() || intY + w >= o.getX()) {
                 double coord = m * intY + b;
                 return new double[]{intY, coord};
             }
@@ -479,11 +483,11 @@ public class GameController {
             //Calculate y-coordinate intersection point on the x-axis, using y = mx + b
             double intX = m * (o.getX() + o.getWidth()) + b;
             if (moveRight) { //intersect is the right side of player to the left side of obstacle
-                intX = m * (o.getX() - GameSettings.PLAYER_WIDTH) + b;
+                intX = m * (o.getX() - w) + b;
             }
 
             //check if intersect is on the obstacle
-            if (intX <= o.getY() + o.getHeight() || intX + GameSettings.PLAYER_HEIGHT >= o.getY()) {
+            if (intX <= o.getY() + o.getHeight() || intX + h >= o.getY()) {
                 double coord = (intX - b) / m;
                 return new double[]{coord, intX};
             }
@@ -498,13 +502,19 @@ public class GameController {
          */
         private void movePlayer(double x, double y) {
             //Update player position
-            player.setX(getPx(x));
+            player.getNode().setX(getPx(x));
 
             //convert game coordinates to JavaFX coordinates
-            player.setY(getPx(room.getHeight() - y - GameSettings.PLAYER_HEIGHT * 2));
+            player.getNode().setY(getPx(room.getHeight() - y - player.getHeight() * 2));
 
             //Move camera, if needed
             moveCamera();
+        }
+
+        private void moveNode(Entity e, double x, double y) {
+            ImageView node = e.getNode();
+            node.setX(getPx(x));
+            node.setY(getPx(room.getHeight() - y - e.getHeight()));
         }
 
         /**
@@ -533,11 +543,69 @@ public class GameController {
         }
 
         private void monsterMove(Monster m) {
+            //calculate distance between player and monster
+            double ydiff = m.getPosY() - player.getPosY();
+            double xdiff = m.getPosX() - player.getPosX();
+            double d = round(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2)));
+            if (d < GameSettings.MONSTER_MOVE_RANGE) {
+                //move monster towards player
+                double angle = Math.atan(ydiff / xdiff);
+                double newPosX = m.getPosX() + Math.cos(angle) * m.getSpeed();
+                double newPosY = m.getPosY() + Math.sin(angle) * m.getSpeed();
 
+                //check collisions with obstacles
+                double[] newPos = checkPos(m.getPosX(), m.getPosY(), newPosX, newPosY,
+                        m.getHeight(), m.getWidth());
+                int count = 0;
+                while (newPos[0] == m.getPosX() && newPos[1] == m.getPosY() && count < 4) {
+                    angle += Math.PI / 2;
+                    newPosX = m.getPosX() + Math.cos(angle) * m.getSpeed();
+                    newPosY = m.getPosY() + Math.sin(angle) * m.getSpeed();
+
+                    //check collisions with obstacles
+                    newPos = checkPos(m.getPosX(), m.getPosY(), newPosX, newPosY,
+                            m.getHeight(), m.getWidth());
+                    count++;
+                }
+                if (count >= 4) {
+                    System.out.println("Error: Monster stuck.");
+                    return;
+                }
+
+                //TODO: check collisions with entities
+
+                //move monster
+                m.setPosX(newPos[0]);
+                m.setPosY(newPos[1]);
+
+                moveNode(m, newPos[0], newPos[1]);
+
+                //check for current attack
+                if (d <= GameSettings.MONSTER_ATTACK_RANGE) {
+                    if (checkAttack(m)) {
+                        //attack player
+                        System.out.println("Attacking player.");
+                    } else if (m.getReaction() <= 0) {
+                        //wind up attack
+                        m.setReaction(GameSettings.MONSTER_REACTION_TIME);
+                    }
+                }
+            }
         }
 
-        private void monsterAttack(Monster m) {
-
+        private boolean checkAttack(Monster m) {
+            if (m.getReaction() <= 0) {
+                return false;
+            }
+            double newTime = m.getReaction() - 1000 / GameSettings.FPS;
+            //time to attack
+            if (newTime <= 0) {
+                m.setReaction(0);
+                return true;
+            } else {
+                m.setReaction(newTime);
+                return false;
+            }
         }
     }
 }

@@ -68,7 +68,7 @@ public class LayoutGenerator {
         roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2] =
                 new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
                         new Obstacle[5], RoomType.EMPTYROOM);
-
+        roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2].setMonsters(new Monster[5]);
         int[] coords;
 
         // up path
@@ -290,6 +290,7 @@ public class LayoutGenerator {
             }
             monsters[i] = new Monster(Controller.getDataManager().MONSTERS[n], modifier);
         }
+        System.out.println("Seetting monsters for " + room);
         room.setMonsters(monsters);
     }
 

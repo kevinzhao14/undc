@@ -4,18 +4,19 @@ package dungeoncrawler.gamestates;
 import dungeoncrawler.objects.DungeonLayout;
 import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
+import dungeoncrawler.objects.Player;
 import dungeoncrawler.objects.Room;
 import dungeoncrawler.handlers.RoomRenderer;
 import dungeoncrawler.controllers.Controller;
 import dungeoncrawler.controllers.GameController;
 import javafx.animation.FadeTransition;
-import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -29,7 +30,7 @@ import javafx.util.Duration;
 public class GameScreen extends GameState {
 
     private GameController game;
-    private ImageView player;
+    private Player player;
     private DungeonLayout dungeonLayout;
     private Room room;
     private BorderPane hud;
@@ -40,7 +41,7 @@ public class GameScreen extends GameState {
     }
 
     public void start() {
-        game = new GameController(new ImageView());
+        game = new GameController();
         game.start(dungeonLayout.getStartingRoom());
     }
 
@@ -80,7 +81,7 @@ public class GameScreen extends GameState {
             box.setAlignment(Pos.CENTER);
             root.getChildren().addAll(hud, box);
         } else {
-            Pane roomPane = RoomRenderer.drawRoom(scene, room, player);
+            Pane roomPane = RoomRenderer.drawRoom(scene, room, player.getNode());
             root.getChildren().addAll(roomPane, hud);
             //set player position
             if (scene.getRoot().getChildrenUnmodifiable().size() > 0) {
@@ -94,9 +95,11 @@ public class GameScreen extends GameState {
     }
 
     private void createPlayer() {
-        player = new ImageView("player-down.png");
-        player.setFitHeight(GameSettings.PLAYER_HEIGHT * GameSettings.PPU * 2);
-        player.setFitWidth(GameSettings.PLAYER_WIDTH * GameSettings.PPU);
+        player = new Player(GameSettings.PLAYER_HEALTH, 1,
+                Controller.getDataManager().getWeapon());
+        player.setNode(new ImageView("player-down.png"));
+        player.getNode().setFitHeight(GameSettings.PLAYER_HEIGHT * GameSettings.PPU * 2);
+        player.getNode().setFitWidth(GameSettings.PLAYER_WIDTH * GameSettings.PPU);
         game.setPlayer(player);
     }
 

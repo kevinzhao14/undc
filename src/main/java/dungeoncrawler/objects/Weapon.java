@@ -25,7 +25,7 @@ public class Weapon {
      */
     public Weapon(String name, String spriteLocation, double damage, double attackSpeed) {
         this.name = name;
-        this.sprite = new ImageView(spriteLocation);
+        this.sprite = spriteLocation == null ? null : new ImageView(spriteLocation);
         this.damage = damage;
         this.attackSpeed = attackSpeed;
     }
@@ -35,6 +35,15 @@ public class Weapon {
      */
     public Weapon() {
         this("", null, 0, 0);
+    }
+
+    public Weapon copy() {
+        Weapon copy = new Weapon();
+        copy.name = this.name;
+        copy.sprite = this.sprite;
+        copy.damage = this.damage;
+        copy.attackSpeed = this.attackSpeed;
+        return copy;
     }
 
     /**

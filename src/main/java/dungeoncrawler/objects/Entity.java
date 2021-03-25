@@ -11,17 +11,17 @@ import javafx.scene.image.ImageView;
  */
 
 public abstract class Entity {
-    private final int maxHealth;
+    private int maxHealth;
     private int health;
     private double attack;
-    private int height;
-    private int width;
+    private double height;
+    private double width;
     private double posX;
     private double posY;
     private double attackCooldown;
     private ImageView node;
 
-    public Entity(int maxHealth, double attack, int height, int width, ImageView node) {
+    public Entity(int maxHealth, double attack, double height, double width, ImageView node) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.attack = attack;
@@ -39,10 +39,10 @@ public abstract class Entity {
     public double getAttack() {
         return this.attack;
     }
-    public int getHeight() {
+    public double getHeight() {
         return this.height;
     }
-    public int getWidth() {
+    public double getWidth() {
         return this.width;
     }
     public double getPosX() {

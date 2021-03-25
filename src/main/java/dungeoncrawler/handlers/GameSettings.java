@@ -49,9 +49,11 @@ public class GameSettings {
     public static final double PPU = 2.0;
     public static final double PRECISION = 10000;
 
-    //Player width and height
+    //Player stats
+    //hitbox
     public static final double PLAYER_WIDTH = 16.730038;
     public static final double PLAYER_HEIGHT = PLAYER_WIDTH * 1.81818182 / 2;
+    public static final int PLAYER_HEALTH = 100;
 
     //monster settings
     public static final int MIN_MONSTERS = 2;

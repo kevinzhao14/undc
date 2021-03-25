@@ -1,6 +1,7 @@
 package dungeoncrawler.controllers;
 
 import dungeoncrawler.handlers.Difficulty;
+import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.MonsterType;
 import dungeoncrawler.objects.Weapon;
@@ -20,9 +21,9 @@ public class DataManager {
     };
 
     public static final Monster[] MONSTERS = new Monster[]{
-            new Monster(20, 5, 150, 0.5, MonsterType.FAST, 10, 10, null),
-            new Monster(40, 5, 100, 0.75, MonsterType.NORMAL, 15, 15, null),
-            new Monster(100, 10, 50, 2, MonsterType.TANK, 25, 25, null)
+            new Monster(20, 5, 150 / GameSettings.FPS, 0.5, MonsterType.FAST, 10, 10, new ImageView("playerPlaceholder.png")),
+            new Monster(40, 5, 100 / GameSettings.FPS, 0.75, MonsterType.NORMAL, 15, 15, new ImageView("playerPlaceholder.png")),
+            new Monster(100, 10, 50 / GameSettings.FPS, 2, MonsterType.TANK, 25, 25, new ImageView("playerPlaceholder.png"))
     };
 
     private String username;
@@ -81,7 +82,7 @@ public class DataManager {
         //save data
         this.username = username.replaceAll("\\s{2,}", " ").trim();
         this.difficulty = difficulty;
-        this.weapon = weapon;
+        this.weapon = weapon.copy();
         return true;
     }
 
