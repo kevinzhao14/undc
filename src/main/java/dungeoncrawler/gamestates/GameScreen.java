@@ -4,6 +4,7 @@ package dungeoncrawler.gamestates;
 import dungeoncrawler.objects.DungeonLayout;
 import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
+import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Room;
 import dungeoncrawler.handlers.RoomRenderer;
 import dungeoncrawler.controllers.Controller;
@@ -161,6 +162,7 @@ public class GameScreen extends GameState {
         Button endButton = new Button("Exit Game");
         restartButton.setOnAction((e) -> {
             // restart method
+            restartGame();
         });
         endButton.setOnAction((e) -> {
             Platform.exit();
@@ -170,4 +172,44 @@ public class GameScreen extends GameState {
         root.getChildren().addAll(hud, box);
     }
 
+    /**
+     * Returns the game to the state right after player leaves InitPlayerConfigScreen
+     * and enters first room. The DungeonLayout remains the same, all visited rooms
+     * become unvisited, monsters are restored to original health, and
+     * player has original gold amt.
+      */
+    public void restartGame() {
+        //set all visited values to false in Room[][] grid
+        //set all monsters in visited rooms to max health
+        for (Room[] roomRow : dungeonLayout.getGrid()) {
+            for (Room room : roomRow) {
+                if (room != null && room.wasVisited()) {
+                    room.setVisited(false);
+                    for (Monster m : room.getMonsters()) {
+                        if (m != null) {
+                            m.setHealth(m.getMaxHealth());
+                        }
+                    }
+                }
+            }
+        }
+
+        //set player gold value to original amt - MAKE SURE TO UNCOMMENT LINES BELOW
+        /*
+        switch (Controller.getDataManager().getDifficulty()) {
+        case EASY:
+            player.setGold(300);
+            break;
+        case MEDIUM:
+            player.setGold(200);
+            break;
+        default:
+            player.setGold(100);
+            break;
+        }
+         */
+
+        //go to starting room
+        setRoom(dungeonLayout.getStartingRoom());
+    }
 }
