@@ -85,6 +85,7 @@ public class RoomRenderer {
             for (Monster monster : room.getMonsters()) {
                if (monster != null) {
                    Rectangle m = new Rectangle(getPx(monster.getPosX()), getPx(room.getHeight() - monster.getPosY() - monster.getHeight()), getPx(monster.getWidth()), getPx(monster.getHeight()));
+                   root.getChildren().add(m);
                }
             }
         }
