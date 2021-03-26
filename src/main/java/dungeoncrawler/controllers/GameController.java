@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 
 import java.sql.SQLOutput;
+import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -153,6 +154,7 @@ public class GameController {
     public void pause() {
         if (isRunning) {
             System.out.println("Game has been paused");
+            System.out.println("Average FPS in " + ticks + " ticks: " + round(1000.0 / (totalTime / ticks)));
             timer.cancel();
         } else {
             System.out.println("Game has been resumed");
@@ -337,7 +339,8 @@ public class GameController {
             }
 
             long endTime = System.nanoTime();
-            double execTime = round((endTime - startTime) / 1000000.0);
+            double execTime = round((endTime - startTime) / 1000000.0); //in milliseconds
+            totalTime += execTime;
         }
 
         /**
@@ -571,17 +574,37 @@ public class GameController {
         }
 
         private void monsterMove(Monster m) {
+            //check queue
+            LinkedList<double[]> removeList = new LinkedList<>();
+            for (double[] e : m.getMoveQueue()) {
+                e[0] -= 1000.0 / GameSettings.FPS;
+                //time to apply the move
+                if (e[0] <= 0) {
+                    m.setPosX(e[1]);
+                    m.setPosY(e[2]);
+                    moveNode(m, e[1], e[2]);
+
+                    //remove
+                    removeList.add(e);
+                }
+            }
+            for (double[] e : removeList) {
+                m.getMoveQueue().remove(e);
+            }
+            removeList = null;
+
             //calculate distance between player and monster
-            double mPosY = m.getPosY();
-            double mPosX = m.getPosX();
+            double[] mq = (m.getMoveQueue().size() > 0) ? m.getMoveQueue().getLast() : new double[]{0, m.getPosX(), m.getPosY()};
+            double mPosY = mq[2];
+            double mPosX = mq[1];
             double ydiff = mPosY - player.getPosY();
             double xdiff = mPosX - player.getPosX();
             double d = round(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2)));
             if (d <= GameSettings.MONSTER_MOVE_RANGE && d >= GameSettings.MONSTER_MOVE_MIN) {
                 //move monster towards player
                 double angle = Math.atan2(ydiff, xdiff) - Math.PI;
-                System.out.println("Player " + player.getPosX() + " " + player.getPosY());
-                System.out.println("Angle " + (180 / Math.PI * angle) + " " + ydiff + " " + xdiff);
+//                System.out.println("Player " + player.getPosX() + " " + player.getPosY());
+//                System.out.println("Angle " + (180 / Math.PI * angle) + " " + ydiff + " " + xdiff);
                 double newPosX = mPosX + Math.cos(angle) * m.getSpeed();
                 double newPosY = mPosY + Math.sin(angle) * m.getSpeed();
 
@@ -600,7 +623,7 @@ public class GameController {
 //                    newPos = checkPos(mPosX, mPosY, newPosX, newPosY, m.getHeight(), m.getWidth());
 //                    count++;
 //                }
-                System.out.println(d + " Moving: " + mPosX + ", " + mPosY + " to " + newPos[0] + ", " + newPos[1]);
+//                System.out.println(d + " Moving: " + mPosX + ", " + mPosY + " to " + newPos[0] + ", " + newPos[1]);
                 if (count >= 4) {
                     System.out.println("Error: Monster stuck.");
                     return;
@@ -609,10 +632,15 @@ public class GameController {
                 //TODO: check collisions with entities
 
                 //move monster
-                m.setPosX(newPos[0]);
-                m.setPosY(newPos[1]);
+//                m.setPosX(newPos[0]);
+//                m.setPosY(newPos[1]);
+//
+//                moveNode(m, newPos[0], newPos[1]);
 
-                moveNode(m, newPos[0], newPos[1]);
+                //add to queue
+                //double time = (m.getMoveQueue().size() == 0) ? GameSettings.MONSTER_REACTION_TIME : 0;
+                double[] moveItem = new double[]{GameSettings.MONSTER_REACTION_TIME, newPos[0], newPos[1]};
+                m.getMoveQueue().add(moveItem);
 
                 //check for current attack
                 if (d <= GameSettings.MONSTER_ATTACK_RANGE) {

@@ -3,6 +3,8 @@ package dungeoncrawler.objects;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
+import java.util.LinkedList;
+
 /**
  * Implementation of the Monster class
  *
@@ -15,6 +17,7 @@ public class Monster extends Entity {
     private double attackSpeed;
     private HBox healthBar;
     private double reaction;
+    private LinkedList<double[]> moveQueue;
 
     public Monster(int maxHealth, double attack, double speed, double attackSpeed, MonsterType type,
                    double height, double width, ImageView node) {
@@ -25,6 +28,7 @@ public class Monster extends Entity {
         this.speed = speed;
         this.attackSpeed = attackSpeed;
         this.reaction = -1;
+        moveQueue = new LinkedList<>();
     }
 
     public Monster(Monster m, double modifier) {
@@ -56,5 +60,9 @@ public class Monster extends Entity {
 
     public String toString() {
         return "Type: " + type + " | " + " | Speed: " + speed + " " + super.toString();
+    }
+
+    public LinkedList<double[]> getMoveQueue() {
+        return moveQueue;
     }
 }
