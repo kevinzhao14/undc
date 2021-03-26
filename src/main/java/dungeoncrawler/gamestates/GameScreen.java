@@ -25,6 +25,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 public class GameScreen extends GameState {
@@ -105,12 +106,28 @@ public class GameScreen extends GameState {
 
     private void createHud() {
         hud = new BorderPane();
-        Label goldLabel = new Label();
-        HBox lowerHUD = new HBox();
+        HBox lowerHUD = new HBox(300);
         hud.setBottom(lowerHUD);
         lowerHUD.setAlignment(Pos.CENTER);
-        lowerHUD.setPadding(new Insets(10, 10, 10, 10));
-        lowerHUD.getChildren().add(goldLabel);
+        lowerHUD.setPadding(new Insets(0, 150, 5, 10));
+
+        Label goldLabel = new Label("Gold: " + player.getGold());
+        Label healthLabel = new Label("Health: " + player.getHealth());
+        goldLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size:20; -fx-font-family:MS Comic Sans");
+        healthLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size:20; -fx-font-family:MS Comic Sans");
+
+
+        Rectangle healthBarTop = new Rectangle(player.getHealth(), 10);
+        healthBarTop.setFill(Color.LIMEGREEN);
+        Rectangle healthBarBottom = new Rectangle(100, 10);
+        healthBarBottom.setFill(Color.RED);
+        StackPane healthBar = new StackPane(healthBarBottom, healthBarTop);
+        healthBar.setAlignment(Pos.CENTER_LEFT);
+        HBox healthBox = new HBox(healthLabel, healthBar);
+        healthBox.setSpacing(15);
+
+        lowerHUD.getChildren().addAll(healthBox, goldLabel);
+        /*
         switch (Controller.getDataManager().getDifficulty()) {
         case EASY:
             goldLabel.setText("Gold: 300");
@@ -122,7 +139,9 @@ public class GameScreen extends GameState {
             goldLabel.setText("Gold: 100");
             break;
         }
-        goldLabel.setTextFill(Color.WHITE);
+
+         */
+
     }
 
     public DungeonLayout getLayout() {
