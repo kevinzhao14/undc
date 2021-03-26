@@ -40,7 +40,7 @@ public class GameSettings {
      * Please note: All calculations except for actually moving JavaFX nodes should be calculated
      * using system 1.
      */
-    public static final int FPS = 200;
+    public static final int FPS = 100;
     //units per second
     public static final double ACCEL = 10.0 / FPS;
     public static final double MAX_VEL = 100.0 / FPS;
@@ -56,15 +56,16 @@ public class GameSettings {
     public static final int PLAYER_HEALTH = 100;
 
     //monster settings
-    public static final int MIN_MONSTERS = 2;
-    public static final int MAX_MONSTERS = 6;
+    public static final int MIN_MONSTERS = 1;
+    public static final int MAX_MONSTERS = 1;
 
     //difficulty modifier
     public static final double MODIFIER_MEDIUM = 1.5;
     public static final double MODIFIER_HARD = 2;
 
     //how close to a player a monster must be to move towards it
-    public static final int MONSTER_MOVE_RANGE = 100;
+    public static final int MONSTER_MOVE_RANGE = 300;
+    public static final int MONSTER_MOVE_MIN = 2;
     //how close to a player a monster must be to attack
     public static final int MONSTER_ATTACK_RANGE = 10;
     //monster reaction time to a player being in range in milliseconds

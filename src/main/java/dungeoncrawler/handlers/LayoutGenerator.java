@@ -289,6 +289,11 @@ public class LayoutGenerator {
                 modifier = GameSettings.MODIFIER_HARD;
             }
             monsters[i] = new Monster(Controller.getDataManager().MONSTERS[n], modifier);
+
+            int monsterX = (int)(Math.random() * (room.getWidth() - 39)) + 20;
+            int monsterY = (int)(Math.random() * (room.getHeight() - 39)) + 20;
+            monsters[i].setPosX(monsterX);
+            monsters[i].setPosY(monsterY);
         }
         System.out.println("Seetting monsters for " + room);
         room.setMonsters(monsters);

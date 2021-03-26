@@ -80,4 +80,9 @@ public abstract class Entity {
     public void setNode(ImageView node) {
         this.node = node;
     }
+
+    public String toString() {
+        return "HP: " + health + "/" + maxHealth + " | Pos: " + posX + ", " + posY + " | Size: " +
+                height + ", " + width + " | Node: " + node;
+    }
 }

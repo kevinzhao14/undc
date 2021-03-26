@@ -14,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 
+import java.sql.SQLOutput;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -96,6 +97,9 @@ public class GameController {
             pause();
         }
         room = newRoom;
+        for (Monster m : room.getMonsters()) {
+            System.out.println(m);
+        }
         if (Controller.getState() instanceof GameScreen) {
             ((GameScreen) Controller.getState()).setRoom(newRoom);
         } else {
@@ -568,29 +572,35 @@ public class GameController {
 
         private void monsterMove(Monster m) {
             //calculate distance between player and monster
-            double ydiff = m.getPosY() - player.getPosY();
-            double xdiff = m.getPosX() - player.getPosX();
+            double mPosY = m.getPosY();
+            double mPosX = m.getPosX();
+            double ydiff = mPosY - player.getPosY();
+            double xdiff = mPosX - player.getPosX();
             double d = round(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2)));
-            if (d < GameSettings.MONSTER_MOVE_RANGE) {
+            if (d <= GameSettings.MONSTER_MOVE_RANGE && d >= GameSettings.MONSTER_MOVE_MIN) {
                 //move monster towards player
-                double angle = Math.atan(ydiff / xdiff);
-                double newPosX = m.getPosX() + Math.cos(angle) * m.getSpeed();
-                double newPosY = m.getPosY() + Math.sin(angle) * m.getSpeed();
+                double angle = Math.atan2(ydiff, xdiff) - Math.PI;
+                System.out.println("Player " + player.getPosX() + " " + player.getPosY());
+                System.out.println("Angle " + (180 / Math.PI * angle) + " " + ydiff + " " + xdiff);
+                double newPosX = mPosX + Math.cos(angle) * m.getSpeed();
+                double newPosY = mPosY + Math.sin(angle) * m.getSpeed();
 
                 //check collisions with obstacles
-                double[] newPos = checkPos(m.getPosX(), m.getPosY(), newPosX, newPosY,
+                double[] newPos = checkPos(mPosX, mPosY, newPosX, newPosY,
                         m.getHeight(), m.getWidth());
                 int count = 0;
-                while (newPos[0] == m.getPosX() && newPos[1] == m.getPosY() && count < 4) {
-                    angle += Math.PI / 2;
-                    newPosX = m.getPosX() + Math.cos(angle) * m.getSpeed();
-                    newPosY = m.getPosY() + Math.sin(angle) * m.getSpeed();
-
-                    //check collisions with obstacles
-                    newPos = checkPos(m.getPosX(), m.getPosY(), newPosX, newPosY,
-                            m.getHeight(), m.getWidth());
-                    count++;
-                }
+//                System.out.println(d + " Old: " + mPosX + " " + mPosY);
+//                while (newPos[0] == mPosX && newPos[1] == mPosY && count < 4) {
+//                    angle += Math.PI / 2;
+//                    newPosX = mPosX + Math.cos(angle) * m.getSpeed();
+//                    newPosY = mPosY + Math.sin(angle) * m.getSpeed();
+//                    System.out.println("Check " + count + " a " + angle + " new " + newPosX + " " + newPosY);
+//
+//                    //check collisions with obstacles
+//                    newPos = checkPos(mPosX, mPosY, newPosX, newPosY, m.getHeight(), m.getWidth());
+//                    count++;
+//                }
+                System.out.println(d + " Moving: " + mPosX + ", " + mPosY + " to " + newPos[0] + ", " + newPos[1]);
                 if (count >= 4) {
                     System.out.println("Error: Monster stuck.");
                     return;

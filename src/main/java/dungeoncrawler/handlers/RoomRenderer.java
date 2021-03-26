@@ -84,8 +84,13 @@ public class RoomRenderer {
         if (room.getMonsters() != null) {
             for (Monster monster : room.getMonsters()) {
                if (monster != null) {
-                   Rectangle m = new Rectangle(getPx(monster.getPosX()), getPx(room.getHeight() - monster.getPosY() - monster.getHeight()), getPx(monster.getWidth()), getPx(monster.getHeight()));
-                   root.getChildren().add(m);
+                   //Rectangle m = new Rectangle(getPx(monster.getPosX()), getPx(room.getHeight() - monster.getPosY() - monster.getHeight()), getPx(monster.getWidth()), getPx(monster.getHeight()));
+                   ImageView node = monster.getNode();
+                   node.setFitHeight(getPx(monster.getHeight()));
+                   node.setFitWidth(getPx(monster.getWidth()));
+                   node.setX(getPx(monster.getPosX()));
+                   node.setY(getPx(room.getHeight() - monster.getPosY() - monster.getHeight()));
+                   root.getChildren().add(node);
                }
             }
         }

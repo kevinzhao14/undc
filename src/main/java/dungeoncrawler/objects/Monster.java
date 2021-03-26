@@ -53,4 +53,8 @@ public class Monster extends Entity {
     public void setSpeed(double speed) {
         this.speed = speed;
     }
+
+    public String toString() {
+        return "Type: " + type + " | " + " | Speed: " + speed + " " + super.toString();
+    }
 }
