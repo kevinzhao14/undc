@@ -25,7 +25,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class GameScreen extends GameState {
 
@@ -136,20 +141,26 @@ public class GameScreen extends GameState {
         lowerHUD.setAlignment(Pos.CENTER);
         lowerHUD.setPadding(new Insets(0, 150, 5, 10));
 
+        scene.getStylesheets().add("http://fonts.googleapis.com/css?family=VT323");
+
         Label goldLabel = new Label("Gold: " + player.getGold());
-        Label healthLabel = new Label("Health: " + player.getHealth());
-        goldLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size:20; -fx-font-family:MS Comic Sans");
-        healthLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size:20; -fx-font-family:MS Comic Sans");
+        Label healthLabel = new Label("Health: ");
+        Label healthNumber = new Label(" " + player.getHealth() + " / " + "100.0");
 
 
-        Rectangle healthBarTop = new Rectangle(player.getHealth() / player.getMaxHealth() * 100, 10);
+        goldLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
+        healthLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
+        healthNumber.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
+
+
+        Rectangle healthBarTop = new Rectangle(player.getHealth() / player.getMaxHealth() * 150, 20);
         healthBarTop.setFill(Color.LIMEGREEN);
-        Rectangle healthBarBottom = new Rectangle(100, 10);
+        Rectangle healthBarBottom = new Rectangle(150, 20);
         healthBarBottom.setFill(Color.GRAY);
-        StackPane healthBar = new StackPane(healthBarBottom, healthBarTop);
+        StackPane healthBar = new StackPane(healthBarBottom, healthBarTop, healthNumber);
         healthBar.setAlignment(Pos.CENTER_LEFT);
         HBox healthBox = new HBox(healthLabel, healthBar);
-        healthBox.setSpacing(15);
+        healthBox.setSpacing(5);
 
         lowerHUD.getChildren().addAll(healthBox, goldLabel);
     }
