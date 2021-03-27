@@ -40,6 +40,10 @@ public class GameScreen extends GameState {
         scene = new Scene(new Pane(), width, height);
     }
 
+    public GameScreen(DungeonLayout existingDungeon, int width, int height) {
+        scene = new Scene(new Pane(), width, height);
+    }
+
     public void start() {
         game = new GameController();
         createPlayer();
@@ -194,9 +198,11 @@ public class GameScreen extends GameState {
         endButton.setOnAction((e) -> {
             Platform.exit();
         });
-        box.getChildren().addAll(deathLabel, endButton);
+        box.getChildren().addAll(deathLabel, restartButton, endButton);
         box.setAlignment(Pos.CENTER);
         root.getChildren().addAll(hud, box);
+        root.setStyle("-fx-background-color: #34311b");
+        scene.setRoot(root);
     }
 
     /**
@@ -220,6 +226,8 @@ public class GameScreen extends GameState {
                 }
             }
         }
+        //set player health to original amt
+        player.setHealth(player.getMaxHealth());
 
         //set player gold value to original amt - MAKE SURE TO UNCOMMENT LINES BELOW
         switch (Controller.getDataManager().getDifficulty()) {
