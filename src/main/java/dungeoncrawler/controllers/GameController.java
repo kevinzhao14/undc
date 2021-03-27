@@ -237,7 +237,7 @@ public class GameController {
         }
 
         //non-movement keys
-        if (key.equals(controls.getKey("attack"))) {
+        if (key.equals(controls.getKey("attack")) || key.equals(controls.getKey("attack2"))) {
             isAttacking = isPress;
         }
     }
@@ -297,14 +297,38 @@ public class GameController {
                     if (m != null && m.getHealth() > 0) {
                         double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2) + Math.pow(player.getPosY() - m.getPosY(), 2));
                         if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
+                            System.out.println("Attacking monster " + m);
                             m.attackMonster(player.getAttack() * player.getWeapon().getDamage());
+
+                            //Give gold to player after slaying a monster
+                            if (m.getHealth() == 0.0) {
+                                double modifier;
+                                switch (Controller.getDataManager().getDifficulty()) {
+                                    case MEDIUM:
+                                        modifier = GameSettings.MODIFIER_MEDIUM;
+                                        break;
+                                    case HARD:
+                                        modifier = GameSettings.MODIFIER_HARD;
+                                        break;
+                                    default:
+                                        modifier = 1.0;
+                                        break;
+                                }
+                                player.setGold(player.getGold() + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
+                                GameState screen = Controller.getState();
+                                //use run later to prevent any thread issues
+                                Platform.runLater(() -> {
+                                    if (screen instanceof GameScreen) {
+                                        ((GameScreen) screen).updateHud();
+                                    } else {
+                                        pause();
+                                        throw new IllegalStateException("Illegal Game State.");
+                                    }
+                                });
+                            }
                         }
                     }
                 }
-
-            }
-            if (player.getAttackCooldown() > 0) {
-                //System.out.println("Cooldown: " + player.getAttackCooldown());
             }
 
             //Manage Monsters
@@ -674,7 +698,7 @@ public class GameController {
                     m.setAttackCooldown(m.getAttackSpeed() * 1000);
                     //attack player
                     double newHealth = player.getHealth() - m.getAttack();
-                    player.setHealth((int) newHealth);
+                    player.setHealth((int) Math.max(0, newHealth));
                     GameState screen = Controller.getState();
                     //use run later to prevent any thread issues
                     Platform.runLater(() -> {
@@ -685,6 +709,24 @@ public class GameController {
                             throw new IllegalStateException("Illegal Game State.");
                         }
                     });
+
+                    //go to game over screen if player has died
+                    if (player.getHealth() == 0.0) {
+                        System.out.println("Player has died, going to game over screen");
+                        //use run later to prevent any thread issues
+                        Platform.runLater(() -> {
+                            if (screen instanceof GameScreen) {
+                                if (isRunning) {
+                                    pause();
+                                }
+                                room = ((GameScreen) screen).getLayout().getStartingRoom();
+                                ((GameScreen) screen).gameOver();
+                            } else {
+                                pause();
+                                throw new IllegalStateException("Illegal Game State.");
+                            }
+                        });
+                    }
                 }
             }
         }
