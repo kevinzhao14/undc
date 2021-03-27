@@ -438,9 +438,19 @@ public class GameController {
                 double[] intersects = getIntersect(d, playerEquation[0], playerEquation[1],
                         moveUp, moveRight, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH);
 
-                //player intersects door
+                //player intersects door, move to new room
                 if (intersects != null) {
                     Room newRoom = d.getGoesTo();
+
+                    //check if not visited & if there are still monsters
+                    if (!newRoom.wasVisited()) {
+                        for (Monster m : room.getMonsters()) {
+                            if (m != null && m.getHealth() > 0) {
+                                return false;
+                            }
+                        }
+                    }
+
                     Door newDoor;
                     double newStartX;
                     double newStartY;

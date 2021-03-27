@@ -49,6 +49,9 @@ public class GameScreen extends GameState {
         //set new room
         room = newRoom;
 
+        //set visited
+        room.setVisited(true);
+
         //fade out old room
         Pane root = (Pane) scene.getRoot();
         if (root.getChildren().size() > 0) {
