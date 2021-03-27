@@ -100,7 +100,7 @@ public class GameController {
      */
     public void setPlayer(Player player) {
         this.player = player;
-        resetPos();
+        //resetPos();
     }
 
     /**
@@ -113,7 +113,7 @@ public class GameController {
         }
         room = newRoom;
         if (Controller.getState() instanceof GameScreen) {
-            ((GameScreen) Controller.getState()).setRoom(newRoom);
+            Platform.runLater(() -> ((GameScreen) Controller.getState()).setRoom(newRoom));
         } else {
             pause();
             throw new IllegalStateException("Illegal GameState");

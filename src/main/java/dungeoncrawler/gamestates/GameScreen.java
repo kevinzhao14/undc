@@ -42,6 +42,18 @@ public class GameScreen extends GameState {
 
     public void start() {
         game = new GameController();
+        createPlayer();
+        switch (Controller.getDataManager().getDifficulty()) {
+            case EASY:
+                player.setGold(300);
+                break;
+            case MEDIUM:
+                player.setGold(200);
+                break;
+            default:
+                player.setGold(100);
+                break;
+        }
         game.start(dungeonLayout.getStartingRoom());
     }
 
@@ -68,7 +80,8 @@ public class GameScreen extends GameState {
         StackPane root = new StackPane();
 
         //create player and hud
-        createPlayer();
+//        createPlayer();
+        game.resetPos();
         createHud();
 
         //if won, set scene as win screen
@@ -128,28 +141,13 @@ public class GameScreen extends GameState {
         Rectangle healthBarTop = new Rectangle(player.getHealth() / player.getMaxHealth() * 100, 10);
         healthBarTop.setFill(Color.LIMEGREEN);
         Rectangle healthBarBottom = new Rectangle(100, 10);
-        healthBarBottom.setFill(Color.RED);
+        healthBarBottom.setFill(Color.GRAY);
         StackPane healthBar = new StackPane(healthBarBottom, healthBarTop);
         healthBar.setAlignment(Pos.CENTER_LEFT);
         HBox healthBox = new HBox(healthLabel, healthBar);
         healthBox.setSpacing(15);
 
         lowerHUD.getChildren().addAll(healthBox, goldLabel);
-        /*
-        switch (Controller.getDataManager().getDifficulty()) {
-        case EASY:
-            goldLabel.setText("Gold: 300");
-            break;
-        case MEDIUM:
-            goldLabel.setText("Gold: 200");
-            break;
-        default:
-            goldLabel.setText("Gold: 100");
-            break;
-        }
-
-         */
-
     }
 
     public DungeonLayout getLayout() {
