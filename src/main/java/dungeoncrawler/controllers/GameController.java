@@ -426,7 +426,7 @@ public class GameController {
                     continue;
                 }
                 //Check if door is out of player movement vector rectangle
-                if (!inRange(d, x, y, newX, newY, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_HEIGHT)) {
+                if (!inRange(d, x, y, newX, newY, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH)) {
                     continue;
                 }
                 //player movement direction
@@ -437,6 +437,7 @@ public class GameController {
                 double[] playerEquation = equation(x, y, newX, newY);
                 double[] intersects = getIntersect(d, playerEquation[0], playerEquation[1],
                         moveUp, moveRight, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH);
+
 
                 //player intersects door, move to new room
                 if (intersects != null) {
