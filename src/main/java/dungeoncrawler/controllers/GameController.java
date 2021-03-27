@@ -1,5 +1,6 @@
 package dungeoncrawler.controllers;
 
+import dungeoncrawler.gamestates.GameState;
 import dungeoncrawler.handlers.Controls;
 import dungeoncrawler.objects.Door;
 import dungeoncrawler.gamestates.GameScreen;
@@ -10,9 +11,11 @@ import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
 import dungeoncrawler.objects.Player;
 import dungeoncrawler.objects.Room;
+import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 
 import java.sql.SQLOutput;
 import java.util.LinkedList;
@@ -38,7 +41,6 @@ public class GameController {
     private boolean isRunning;
     private long ticks;
     private double totalTime;
-    private boolean isAttacking;
 
     //boolean variables for tracking event
     private boolean pressLeft;
@@ -47,6 +49,7 @@ public class GameController {
     private boolean pressDown;
     private boolean frictionX;
     private boolean frictionY;
+    private boolean isAttacking;
 
     /**
      * Constructor for a GameController.
@@ -76,8 +79,19 @@ public class GameController {
         scene = Controller.getState().getScene();
 
         //Handle key events
-        scene.setOnKeyPressed(e -> handleKey(e.getCode(), true));
-        scene.setOnKeyReleased(e -> handleKey(e.getCode(), false));
+        scene.setOnKeyPressed(e -> handleKey(e.getCode().toString(), true));
+        scene.setOnKeyReleased(e -> handleKey(e.getCode().toString(), false));
+        scene.setOnMousePressed(e -> handleKey(mouseButton(e.getButton()), true));
+        scene.setOnMouseReleased(e -> handleKey(mouseButton(e.getButton()), false));
+    }
+
+    private String mouseButton(MouseButton button) {
+        if (button == MouseButton.PRIMARY) {
+            return "MOUSE1";
+        } else if (button == MouseButton.SECONDARY) {
+            return "MOUSE2";
+        }
+        return "";
     }
 
     /**
@@ -98,9 +112,6 @@ public class GameController {
             pause();
         }
         room = newRoom;
-        for (Monster m : room.getMonsters()) {
-            System.out.println(m);
-        }
         if (Controller.getState() instanceof GameScreen) {
             ((GameScreen) Controller.getState()).setRoom(newRoom);
         } else {
@@ -137,8 +148,8 @@ public class GameController {
         accelX = 0.0;
         accelY = 0.0;
         isRunning = false;
-        ticks = 0;
-        totalTime = 0;
+        //ticks = 0;
+        //totalTime = 0;
         pressLeft = false;
         pressRight = false;
         pressUp = false;
@@ -173,12 +184,11 @@ public class GameController {
 
     /**
      * Handler for key events.
-     * @param keyCode KeyCode of the key that was pressed
+     * @param key KeyCode of the key that was pressed
      * @param isPress Whether the event is a press or release event
      */
-    private void handleKey(KeyCode keyCode, boolean isPress) {
+    private void handleKey(String key, boolean isPress) {
         //Global key binds, regardless of game play/pause state
-        String key = keyCode.toString();
         if (key.equals(controls.getKey("pause"))) {
             if (!isPress) {
                 pause();
@@ -188,6 +198,7 @@ public class GameController {
         if (!isRunning) {
             return;
         }
+        //movement keys
         int sign = 0;
         boolean xval = false;
         if (key.equals(controls.getKey("up"))) {
@@ -216,9 +227,6 @@ public class GameController {
             sign = isPress ? -1 : 1;
             pressLeft = isPress;
             xval = true;
-        } else if (key.equals(controls.getKey("attack")) || key.equals(controls.getKey("attack2"))) {
-            isAttacking = isPress;
-            System.out.println("attack pressed");
         }
         if (xval) {
             accelX += sign * GameSettings.ACCEL;
@@ -226,6 +234,11 @@ public class GameController {
         } else {
             accelY += sign * GameSettings.ACCEL;
             accelY = round(accelY);
+        }
+
+        //non-movement keys
+        if (key.equals(controls.getKey("attack"))) {
+            isAttacking = isPress;
         }
     }
 
@@ -279,32 +292,29 @@ public class GameController {
 
             player.setAttackCooldown(Math.max(0.0, player.getAttackCooldown() - 1000.0 / GameSettings.FPS));
             if (isAttacking && player.getAttackCooldown() == 0.0) {
-                player.setAttackCooldown(1000.0);
+                player.setAttackCooldown(1000 * player.getWeapon().getAttackSpeed());
                 for (Monster m : room.getMonsters()) {
                     if (m != null && m.getHealth() > 0) {
                         double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2) + Math.pow(player.getPosY() - m.getPosY(), 2));
-                        if (dist <= GameSettings.MONSTER_ATTACK_RANGE) {
-                            m.attackMonster((int) player.getAttack());
+                        if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
+                            m.attackMonster(player.getAttack() * player.getWeapon().getDamage());
                         }
                     }
                 }
 
             }
             if (player.getAttackCooldown() > 0) {
-                System.out.println("Cooldown: " + player.getAttackCooldown());
+                //System.out.println("Cooldown: " + player.getAttackCooldown());
             }
-
 
             //Manage Monsters
             for (Monster m : room.getMonsters()) {
-                if (m == null) {
+                if (m == null || m.getHealth() <= 0) {
                     continue;
                 }
                 //check and move the monster
                 monsterMove(m);
             }
-
-
 
             //update velocity
             velX += accelX;
@@ -641,31 +651,49 @@ public class GameController {
                 //double time = (m.getMoveQueue().size() == 0) ? GameSettings.MONSTER_REACTION_TIME : 0;
                 double[] moveItem = new double[]{GameSettings.MONSTER_REACTION_TIME, newPos[0], newPos[1]};
                 m.getMoveQueue().add(moveItem);
+            }
+            ydiff = m.getPosY() - player.getPosY();
+            xdiff = m.getPosX() - player.getPosX();
+            d = round(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2)));
 
-                //check for current attack
-                if (d <= GameSettings.MONSTER_ATTACK_RANGE) {
-                    if (checkAttack(m)) {
-                        //attack player
-                        System.out.println("Attacking player.");
-                    } else if (m.getReaction() <= 0) {
-                        //wind up attack
-                        m.setReaction(GameSettings.MONSTER_REACTION_TIME);
-                    }
+            //check for current attack
+            if (d <= GameSettings.MONSTER_ATTACK_RANGE) {
+                if (checkAttack(m)) {
+                    //set attack cooldown
+                    m.setAttackCooldown(m.getAttackSpeed() * 1000);
+                    //attack player
+                    double newHealth = player.getHealth() - m.getAttack();
+                    player.setHealth((int) newHealth);
+                    GameState screen = Controller.getState();
+                    //use run later to prevent any thread issues
+                    Platform.runLater(() -> {
+                        if (screen instanceof GameScreen) {
+                            ((GameScreen) screen).updateHud();
+                        } else {
+                            pause();
+                            throw new IllegalStateException("Illegal Game State.");
+                        }
+                    });
                 }
             }
         }
 
         private boolean checkAttack(Monster m) {
-            if (m.getReaction() <= 0) {
+//            System.out.println(m.getReaction() + " " + m.getAttackCooldown());
+            if (m.getReaction() <= 0 && m.getAttackCooldown() <= 0) {
+                m.setReaction(GameSettings.MONSTER_REACTION_TIME);
                 return false;
             }
-            double newTime = m.getReaction() - 1000 / GameSettings.FPS;
-            //time to attack
-            if (newTime <= 0) {
+            double newCooldown = m.getAttackCooldown() - 1000.0 / GameSettings.FPS;
+            double newTime = m.getReaction() - 1000.0 / GameSettings.FPS;
+            m.setAttackCooldown(newCooldown);
+            m.setReaction(newTime);
+
+            if (newTime <= 0 && newCooldown <= 0) {
+                m.setAttackCooldown(0);
                 m.setReaction(0);
                 return true;
             } else {
-                m.setReaction(newTime);
                 return false;
             }
         }

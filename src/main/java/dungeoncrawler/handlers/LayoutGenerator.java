@@ -295,7 +295,6 @@ public class LayoutGenerator {
             monsters[i].setPosX(monsterX);
             monsters[i].setPosY(monsterY);
         }
-        System.out.println("Seetting monsters for " + room);
         room.setMonsters(monsters);
     }
 

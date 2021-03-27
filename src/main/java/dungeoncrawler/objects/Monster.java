@@ -17,6 +17,7 @@ public class Monster extends Entity {
     private double attackSpeed;
     private HBox healthBar;
     private double reaction;
+    private double attackCooldown;
     private LinkedList<double[]> moveQueue;
 
     public Monster(int maxHealth, double attack, double speed, double attackSpeed, MonsterType type,
@@ -39,7 +40,10 @@ public class Monster extends Entity {
 
     //need to implement
     public void attackMonster(double dmgAmt) {
-        this.setHealth(Math.max(0, (int) (this.getHealth() - dmgAmt)));
+        this.setHealth(Math.max(0, this.getHealth() - dmgAmt));
+        if (getHealth() <= 0) {
+            System.out.println("Monster slain.");
+        }
     }
 
     public double getReaction() {
@@ -54,15 +58,25 @@ public class Monster extends Entity {
         return speed;
     }
 
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
-
     public String toString() {
-        return "Type: " + type + " | " + " | Speed: " + speed + " " + super.toString();
+        return "Type: " + type + " | Speed: " + speed + " | Attack: " + getAttack() + " " + attackSpeed + " " + super.toString();
     }
 
     public LinkedList<double[]> getMoveQueue() {
         return moveQueue;
+    }
+
+    @Override
+    public double getAttackCooldown() {
+        return attackCooldown;
+    }
+
+    @Override
+    public void setAttackCooldown(double attackCooldown) {
+        this.attackCooldown = attackCooldown;
+    }
+
+    public double getAttackSpeed() {
+        return attackSpeed;
     }
 }

@@ -54,6 +54,7 @@ public class GameSettings {
     public static final double PLAYER_WIDTH = 16.730038;
     public static final double PLAYER_HEIGHT = PLAYER_WIDTH * 1.81818182 / 2;
     public static final int PLAYER_HEALTH = 100;
+    public static final int PLAYER_ATTACK_RANGE = 10;
 
     //monster settings
     public static final int MIN_MONSTERS = 1;

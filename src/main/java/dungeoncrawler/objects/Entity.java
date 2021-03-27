@@ -12,7 +12,7 @@ import javafx.scene.image.ImageView;
 
 public abstract class Entity {
     private int maxHealth;
-    private int health;
+    private double health;
     private double attack;
     private double height;
     private double width;
@@ -33,7 +33,7 @@ public abstract class Entity {
     public int getMaxHealth() {
         return maxHealth;
     }
-    public int getHealth() {
+    public double getHealth() {
         return this.health;
     }
     public double getAttack() {
@@ -58,7 +58,7 @@ public abstract class Entity {
     public void setPosY(double newY) {
         this.posY = newY;
     }
-    public void setHealth(int newHealth) {
+    public void setHealth(double newHealth) {
         if (newHealth < 0 || newHealth > this.maxHealth) {
             throw new IllegalArgumentException("Invalid new health");
         }

@@ -1,6 +1,5 @@
 package dungeoncrawler.gamestates;
 
-
 import dungeoncrawler.objects.DungeonLayout;
 import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
@@ -95,6 +94,12 @@ public class GameScreen extends GameState {
         scene.setRoot(root);
     }
 
+    public void updateHud() {
+        createHud();
+        Pane root = (Pane) scene.getRoot();
+        root.getChildren().set(1, hud);
+    }
+
     private void createPlayer() {
         player = new Player(GameSettings.PLAYER_HEALTH, 1,
                 Controller.getDataManager().getWeapon());
@@ -117,7 +122,7 @@ public class GameScreen extends GameState {
         healthLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size:20; -fx-font-family:MS Comic Sans");
 
 
-        Rectangle healthBarTop = new Rectangle(player.getHealth(), 10);
+        Rectangle healthBarTop = new Rectangle(player.getHealth() / player.getMaxHealth() * 100, 10);
         healthBarTop.setFill(Color.LIMEGREEN);
         Rectangle healthBarBottom = new Rectangle(100, 10);
         healthBarBottom.setFill(Color.RED);
@@ -216,7 +221,6 @@ public class GameScreen extends GameState {
         }
 
         //set player gold value to original amt - MAKE SURE TO UNCOMMENT LINES BELOW
-        /*
         switch (Controller.getDataManager().getDifficulty()) {
         case EASY:
             player.setGold(300);
@@ -228,7 +232,6 @@ public class GameScreen extends GameState {
             player.setGold(100);
             break;
         }
-         */
 
         //go to starting room
         setRoom(dungeonLayout.getStartingRoom());
