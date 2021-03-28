@@ -15,15 +15,15 @@ import javafx.scene.image.ImageView;
  */
 public class DataManager {
     public static final Weapon[] WEAPONS = new Weapon[]{
-        new Weapon("Axe", "axe.png", 16, 1),
-        new Weapon("Sword", "sword.png", 8, 0.5),
-        new Weapon("Mace", "mace.png", 12, 0.75)
+        new Weapon("Axe", "weapons/axe.png", 16, 1),
+        new Weapon("Sword", "weapons/sword.png", 8, 0.5),
+        new Weapon("Mace", "weapons/mace.png", 12, 0.75)
     };
 
     public static final Monster[] MONSTERS = new Monster[]{
-            new Monster(20, 4, 150.0 / GameSettings.FPS, 0.5, MonsterType.FAST, 10, 10, new ImageView("playerPlaceholder.png")),
-            new Monster(40, 5, 100.0 / GameSettings.FPS, 0.75, MonsterType.NORMAL, 15, 15, new ImageView("playerPlaceholder.png")),
-            new Monster(100, 10, 50.0 / GameSettings.FPS, 2, MonsterType.TANK, 25, 25, new ImageView("playerPlaceholder.png"))
+            new Monster(20, 4, 150.0 / GameSettings.FPS, 0.5, MonsterType.FAST, 22, 18, new ImageView("monsters/monster-fast.png"), 1, 1),
+            new Monster(40, 5, 100.0 / GameSettings.FPS, 0.75, MonsterType.NORMAL, 48, 25, new ImageView("monsters/monster-normal.png"), 1, 1),
+            new Monster(100, 10, 50.0 / GameSettings.FPS, 2, MonsterType.TANK, 31, 46, new ImageView("monsters/monster-tank.png"), 1, 1)
     };
 
     private String username;

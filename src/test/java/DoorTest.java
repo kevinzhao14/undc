@@ -31,10 +31,10 @@ public class DoorTest extends ApplicationTest {
         clickOn("EASY");
         clickOn("Sword");
         clickOn("Next");
-        FxAssert.verifyThat(new ImageView("dungeon1-topdoor.png"), NodeMatchers.isNotNull());
-        FxAssert.verifyThat(new ImageView("dungeon1-bottomdoor.png"), NodeMatchers.isNotNull());
-        FxAssert.verifyThat(new ImageView("dungeon1-rightdoor.png"), NodeMatchers.isNotNull());
-        FxAssert.verifyThat(new ImageView("dungeon1-leftdoor.png"), NodeMatchers.isNotNull());
+        FxAssert.verifyThat(new ImageView("textures/dungeon1-topdoor.png"), NodeMatchers.isNotNull());
+        FxAssert.verifyThat(new ImageView("textures/dungeon1-bottomdoor.png"), NodeMatchers.isNotNull());
+        FxAssert.verifyThat(new ImageView("textures/dungeon1-rightdoor.png"), NodeMatchers.isNotNull());
+        FxAssert.verifyThat(new ImageView("textures/dungeon1-leftdoor.png"), NodeMatchers.isNotNull());
     }
 
     @Test

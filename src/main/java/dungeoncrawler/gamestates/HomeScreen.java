@@ -45,7 +45,7 @@ public class HomeScreen extends GameState {
         layout.setSpacing(10);
         StackPane root = new StackPane(layout);
         Scene scene = new Scene(root, width, height);
-        scene.getStylesheets().add("HomeScreenStyleSheet.css");
+        scene.getStylesheets().add("styles/HomeScreenStyleSheet.css");
         return scene;
     }
 

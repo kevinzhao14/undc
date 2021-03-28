@@ -31,7 +31,7 @@ public class RoomRendererTest extends ApplicationTest {
         clickOn("EASY");
         clickOn("Sword");
         clickOn("Next");
-        FxAssert.verifyThat(new ImageView("player.png"), NodeMatchers.isNotNull());
+        FxAssert.verifyThat(new ImageView("player/player.png"), NodeMatchers.isNotNull());
 
     }
 
@@ -45,7 +45,7 @@ public class RoomRendererTest extends ApplicationTest {
         clickOn("EASY");
         clickOn("Sword");
         clickOn("Next");
-        assertEquals(c.getState().getScene().getStylesheets().get(0), "EMPTYROOM.css");
+        assertEquals(c.getState().getScene().getStylesheets().get(0), "styles/EMPTYROOM.css");
     }
 
 }
