@@ -1,4 +1,6 @@
 import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.controllers.GameController;
+import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
 import dungeoncrawler.objects.DungeonLayout;
 import dungeoncrawler.objects.Monster;
@@ -29,7 +31,7 @@ public class MonsterGenerationTest extends ApplicationTest {
         for (int i = 0; i < roomGrid.length; i++) {
             for (int j = 0; j < roomGrid[i].length; j++) {
                 if (roomGrid[i][j] != null) {
-                    assertTrue((roomGrid[i][j].getMonsters().length >= 1) && (roomGrid[i][j].getMonsters().length <= 2));
+                    assertTrue((roomGrid[i][j].getMonsters().length >= GameSettings.MIN_MONSTERS) && (roomGrid[i][j].getMonsters().length <= GameSettings.MAX_MONSTERS));
                 }
             }
         }
