@@ -2,7 +2,6 @@ package dungeoncrawler.objects;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.media.MediaException;
 
 import java.util.LinkedList;
 
