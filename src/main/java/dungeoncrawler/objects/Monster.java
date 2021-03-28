@@ -2,6 +2,7 @@ package dungeoncrawler.objects;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.media.MediaException;
 
 import java.util.LinkedList;
 
@@ -77,5 +78,9 @@ public class Monster extends Entity {
 
     public double getAttackSpeed() {
         return attackSpeed;
+    }
+
+    public MonsterType getType() {
+        return this.type;
     }
 }
