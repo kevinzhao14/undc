@@ -277,4 +277,8 @@ public class GameScreen extends GameState {
         //go to starting room
         setRoom(dungeonLayout.getStartingRoom());
     }
+    // for testing
+    public Player getPlayer() {
+        return player;
+    }
 }
