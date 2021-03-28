@@ -331,12 +331,20 @@ public class GameController {
             }
 
             //Manage Monsters
-            for (Monster m : room.getMonsters()) {
-                if (m == null || m.getHealth() <= 0) {
+            for (int i = 0; i < room.getMonsters().length; i++) {
+                Monster m = room.getMonsters()[i];
+                if (m == null || m.getDeathProgress() <= 0) {
+                    continue;
+                }
+                if (m.getHealth() <= 0 && m.getDeathProgress() > 0) {
+                    m.setDeathProgress(m.getDeathProgress() - .005);
+                    m.getNode().setOpacity(m.getDeathProgress());
                     continue;
                 }
                 //check and move the monster
-                monsterMove(m);
+                if (m.getHealth() > 0) {
+                    monsterMove(m);
+                }
             }
 
             //update velocity

@@ -86,6 +86,7 @@ public class RoomRenderer {
                if (monster != null && monster.getHealth() > 0) {
                    //Rectangle m = new Rectangle(getPx(monster.getPosX()), getPx(room.getHeight() - monster.getPosY() - monster.getHeight()), getPx(monster.getWidth()), getPx(monster.getHeight()));
                    ImageView node = monster.getNode();
+                   node.setOpacity(monster.getDeathProgress());
                    node.setFitHeight(getPx(monster.getHeight()));
                    node.setFitWidth(getPx(monster.getWidth()));
                    node.setX(getPx(monster.getPosX()));

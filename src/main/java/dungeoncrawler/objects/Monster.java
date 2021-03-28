@@ -19,6 +19,8 @@ public class Monster extends Entity {
     private double reaction;
     private LinkedList<double[]> moveQueue;
 
+    private double deathProgress = 1; // -> 0
+
     public Monster(int maxHealth, double attack, double speed, double attackSpeed, MonsterType type,
                    double height, double width, ImageView node) {
 
@@ -43,6 +45,14 @@ public class Monster extends Entity {
         if (getHealth() <= 0) {
             System.out.println("Monster slain.");
         }
+    }
+
+    public double getDeathProgress() {
+        return deathProgress;
+    }
+
+    public void setDeathProgress(double deathProgress) {
+        this.deathProgress = deathProgress;
     }
 
     public double getReaction() {

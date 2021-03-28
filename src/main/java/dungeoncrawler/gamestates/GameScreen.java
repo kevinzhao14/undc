@@ -25,12 +25,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.util.Duration;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+
 
 public class GameScreen extends GameState {
 
@@ -38,7 +35,7 @@ public class GameScreen extends GameState {
     private Player player;
     private DungeonLayout dungeonLayout;
     private Room room;
-    private BorderPane hud;
+    private StackPane hud;
 
     public GameScreen(int width, int height) {
         dungeonLayout = LayoutGenerator.generateLayout();
@@ -64,6 +61,7 @@ public class GameScreen extends GameState {
                 break;
         }
         game.start(dungeonLayout.getStartingRoom());
+        scene.getStylesheets().add("http://fonts.googleapis.com/css?family=VT323");
     }
 
     public boolean setRoom(Room newRoom) {
@@ -135,23 +133,20 @@ public class GameScreen extends GameState {
     }
 
     private void createHud() {
-        hud = new BorderPane();
+        hud = new StackPane();
+        BorderPane display = new BorderPane();
         HBox lowerHUD = new HBox(300);
-        hud.setBottom(lowerHUD);
+        display.setBottom(lowerHUD);
         lowerHUD.setAlignment(Pos.CENTER);
-        lowerHUD.setPadding(new Insets(0, 150, 5, 10));
-
-        scene.getStylesheets().add("http://fonts.googleapis.com/css?family=VT323");
+        lowerHUD.setPadding(new Insets(0, 150, 15, 10));
 
         Label goldLabel = new Label("Gold: " + player.getGold());
         Label healthLabel = new Label("Health: ");
         Label healthNumber = new Label(" " + player.getHealth() + " / " + "100.0");
 
-
         goldLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
         healthLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
         healthNumber.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
-
 
         Rectangle healthBarTop = new Rectangle(player.getHealth() / player.getMaxHealth() * 150, 20);
         healthBarTop.setFill(Color.LIMEGREEN);
@@ -163,6 +158,8 @@ public class GameScreen extends GameState {
         healthBox.setSpacing(5);
 
         lowerHUD.getChildren().addAll(healthBox, goldLabel);
+
+        hud.getChildren().add(display);
     }
 
     public DungeonLayout getLayout() {
@@ -195,25 +192,45 @@ public class GameScreen extends GameState {
         t.play();
     }
 
+    private void partialFadeIn(Node n) {
+        FadeTransition transition = new FadeTransition();
+        transition.setNode(n);
+        transition.setFromValue(0.1);
+        transition.setToValue(0.5);
+        transition.play();
+    }
+
     public void gameOver() {
         StackPane root = new StackPane();
-        VBox box = new VBox();
+        VBox box = new VBox(40);
+
+        Rectangle backdrop = new Rectangle(scene.getWidth(), scene.getHeight());
+        backdrop.setFill(Color.BLACK);
+
         Label deathLabel = new Label("GAME OVER");
-        deathLabel.setStyle("-fx-text-fill: white");
+        deathLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
+
         Button restartButton = new Button("Restart");
         Button endButton = new Button("Exit Game");
+
+        restartButton.setMinWidth(600);
+        endButton.setMinWidth(600);
+
+        restartButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+        endButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+
         restartButton.setOnAction((e) -> {
-            // restart method
             restartGame();
         });
         endButton.setOnAction((e) -> {
             Platform.exit();
         });
+
         box.getChildren().addAll(deathLabel, restartButton, endButton);
         box.setAlignment(Pos.CENTER);
-        root.getChildren().addAll(hud, box);
-        root.setStyle("-fx-background-color: #34311b");
-        scene.setRoot(root);
+        root.getChildren().addAll(backdrop, box);
+        hud.getChildren().add(root);
+        partialFadeIn(backdrop);
     }
 
     /**
