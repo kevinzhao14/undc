@@ -59,6 +59,7 @@ public class InitPlayerConfigScreen extends GameState {
         nextButton = new Button("Next");
         nextButton.setAlignment(Pos.CENTER);
 
+
         Label enterPlayerName = new Label("Enter player name:");
         playerNameEntry = new TextField();
         enterPlayerName.setAlignment(Pos.TOP_LEFT);
@@ -153,7 +154,21 @@ public class InitPlayerConfigScreen extends GameState {
             }
         });
 
+
         this.scene = new Scene(root, this.windowWidth, this.windowHeight);
+
+        scene.getStylesheets().add("http://fonts.googleapis.com/css?family=VT323");
+        enterPlayerName.setStyle("-fx-font-family:VT323; -fx-font-size:20");
+        selectDifficulty.setStyle("-fx-font-family:VT323; -fx-font-size:20");
+        selectStarterWeapon.setStyle("-fx-font-family:VT323; -fx-font-size:20");
+        for (RadioButton r : difficultyButtons) {
+            r.setStyle("-fx-font-family:VT323; -fx-font-size:20");
+        }
+        for (RadioButton r : weaponButtons) {
+            r.setStyle("-fx-font-family:VT323; -fx-font-size:20");
+        }
+        nextButton.setStyle("-fx-font-family:VT323; -fx-font-size:20");
+
     }
 
 }
