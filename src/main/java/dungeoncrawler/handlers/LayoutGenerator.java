@@ -5,13 +5,9 @@ import dungeoncrawler.objects.Door;
 import dungeoncrawler.objects.DoorOrientation;
 import dungeoncrawler.objects.DungeonLayout;
 import dungeoncrawler.objects.Monster;
-import dungeoncrawler.objects.MonsterType;
 import dungeoncrawler.objects.Obstacle;
 import dungeoncrawler.objects.Room;
 import dungeoncrawler.objects.RoomType;
-
-import java.util.Random;
-
 /**
  * Class that generates Layout of the Rooms
  * @author Ishaan Guha, Trenton Wong
@@ -55,22 +51,19 @@ public class LayoutGenerator {
      * @return the layout
      */
     public static DungeonLayout generateLayout() {
-
         Room[][] roomGrid = new Room[GRID_WIDTH][GRID_HEIGHT];
-
         boolean exitPlaced = false;
         Room exitRoom = new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
                 new Obstacle[5], RoomType.EXITROOM);
         setMonsters(exitRoom);
         int[] exitCoords = new int[]{GRID_WIDTH / 2, GRID_HEIGHT / 2};
-
         //starting room
         roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2] =
                 new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
                         new Obstacle[5], RoomType.EMPTYROOM);
-        roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2].setMonsters(new Monster[GameSettings.MIN_MONSTERS]);
+        roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2]
+                .setMonsters(new Monster[GameSettings.MIN_MONSTERS]);
         int[] coords;
-
         // up path
         roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2 + 1] =
                 new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
@@ -137,7 +130,7 @@ public class LayoutGenerator {
         roomGrid[GRID_WIDTH / 2 - 1][GRID_HEIGHT / 2] =
                 new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
                         new Obstacle[5], RoomType.EMPTYROOM);
-        setMonsters(roomGrid[GRID_WIDTH / 2 -1][GRID_HEIGHT / 2]);
+        setMonsters(roomGrid[GRID_WIDTH / 2 - 1][GRID_HEIGHT / 2]);
         coords = generateRoom(roomGrid, GRID_WIDTH / 2 - 1, GRID_HEIGHT / 2, 3);
 
         int leftPath;
@@ -276,11 +269,18 @@ public class LayoutGenerator {
         }
     }
 
+    /**
+     * Adds monsters to a room
+     * @param room the room to add the monsters to
+     */
     public static void setMonsters(Room room) {
-        int numMonsters = (int)(Math.random() * (GameSettings.MAX_MONSTERS - GameSettings.MIN_MONSTERS + 1)) +  GameSettings.MIN_MONSTERS;
+        int numMonsters =
+                (int)(Math.random()
+                        * (GameSettings.MAX_MONSTERS - GameSettings.MIN_MONSTERS + 1))
+                        +  GameSettings.MIN_MONSTERS;
         Monster[] monsters = new Monster[numMonsters];
         for (int i = 0; i < monsters.length; i++) {
-            int n = (int)(Math.random() * 3);
+            int n = (int) (Math.random() * 3);
             Difficulty diff = Controller.getDataManager().getDifficulty();
             double modifier = 1;
             if (diff == Difficulty.MEDIUM) {
@@ -290,14 +290,18 @@ public class LayoutGenerator {
             }
             monsters[i] = new Monster(Controller.getDataManager().MONSTERS[n], modifier);
 
-            int monsterX = (int)(Math.random() * (room.getWidth() - 39)) + 20;
-            int monsterY = (int)(Math.random() * (room.getHeight() - 39)) + 20;
+            int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
+            int monsterY = (int) (Math.random() * (room.getHeight() - 39)) + 20;
             monsters[i].setPosX(monsterX);
             monsters[i].setPosY(monsterY);
         }
         room.setMonsters(monsters);
     }
 
+    /**
+     * Prints out a representation of the Layout
+     * @param grid the grid to print out.
+     */
     private static void printGrid(Room[][] grid) {
         for (int i = 0; i < GRID_WIDTH; i++) {
             String col = "";

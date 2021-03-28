@@ -1,6 +1,4 @@
 package dungeoncrawler.handlers;
-
-import dungeoncrawler.objects.Door;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
 import dungeoncrawler.objects.Room;
@@ -83,16 +81,15 @@ public class RoomRenderer {
         }
         if (room.getMonsters() != null) {
             for (Monster monster : room.getMonsters()) {
-               if (monster != null && monster.getHealth() > 0) {
-                   //Rectangle m = new Rectangle(getPx(monster.getPosX()), getPx(room.getHeight() - monster.getPosY() - monster.getHeight()), getPx(monster.getWidth()), getPx(monster.getHeight()));
-                   ImageView node = monster.getNode();
-                   node.setOpacity(monster.getDeathProgress());
-                   node.setFitHeight(getPx(monster.getHeight() / monster.getSpriteHeight()));
-                   node.setFitWidth(getPx(monster.getWidth() / monster.getSpriteWidth()));
-                   node.setX(getPx(monster.getPosX()));
-                   node.setY(getPx(room.getHeight() - monster.getPosY() - monster.getHeight()));
-                   root.getChildren().add(node);
-               }
+                if (monster != null && monster.getHealth() > 0) {
+                    ImageView node = monster.getNode();
+                    node.setOpacity(monster.getDeathProgress());
+                    node.setFitHeight(getPx(monster.getHeight() / monster.getSpriteHeight()));
+                    node.setFitWidth(getPx(monster.getWidth() / monster.getSpriteWidth()));
+                    node.setX(getPx(monster.getPosX()));
+                    node.setY(getPx(room.getHeight() - monster.getPosY() - monster.getHeight()));
+                    root.getChildren().add(node);
+                }
             }
         }
         if (room.getTopDoor() != null) {
@@ -135,16 +132,6 @@ public class RoomRenderer {
         root.getChildren().add(player);
 
         return main;
-    }
-
-    public static void showDoor(Room room, Pane root, Door door, String doorPNG) {
-        ImageView imageView = new ImageView(doorPNG);
-        imageView.setX(getPx(door.getX()) - 1);
-        imageView.setY(getPx(room.getHeight() - door.getY()
-                - door.getHeight()));
-        imageView.setFitWidth(getPx(door.getWidth()));
-        imageView.setFitHeight(getPx(door.getHeight()));
-        root.getChildren().add(imageView);
     }
 
     /**
