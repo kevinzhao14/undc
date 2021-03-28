@@ -57,8 +57,8 @@ public class GameSettings {
     public static final int PLAYER_ATTACK_RANGE = 20;
 
     //monster generation settings
-    public static final int MIN_MONSTERS = 1;
-    public static final int MAX_MONSTERS = 1;
+    public static final int MIN_MONSTERS = 20;
+    public static final int MAX_MONSTERS = 20;
 
     //monster kill reward settings
     public static final double MONSTER_KILL_GOLD = 20;
@@ -69,7 +69,7 @@ public class GameSettings {
 
     //how close to a player a monster must be to move towards it
     public static final int MONSTER_MOVE_RANGE = 300;
-    public static final int MONSTER_MOVE_MIN = 2;
+    public static final int MONSTER_MOVE_MIN = 10;
     //how close to a player a monster must be to attack
     public static final int MONSTER_ATTACK_RANGE = 10;
     //monster reaction time to a player being in range in milliseconds

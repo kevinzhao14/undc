@@ -65,7 +65,7 @@ public class RoomRenderer {
                 if (obstacle.getType().name().equals("KEY")) {
                     Image image = null;
                     ImageView imageView;
-                    imageView = new ImageView("key.png");
+                    imageView = new ImageView("items/key.png");
                     imageView.setX(getPx(obstacle.getX()));
                     imageView.setY(getPx(room.getHeight() - obstacle.getY()
                             - obstacle.getHeight()));
@@ -87,8 +87,8 @@ public class RoomRenderer {
                    //Rectangle m = new Rectangle(getPx(monster.getPosX()), getPx(room.getHeight() - monster.getPosY() - monster.getHeight()), getPx(monster.getWidth()), getPx(monster.getHeight()));
                    ImageView node = monster.getNode();
                    node.setOpacity(monster.getDeathProgress());
-                   node.setFitHeight(getPx(monster.getHeight()));
-                   node.setFitWidth(getPx(monster.getWidth()));
+                   node.setFitHeight(getPx(monster.getHeight() / monster.getSpriteHeight()));
+                   node.setFitWidth(getPx(monster.getWidth() / monster.getSpriteWidth()));
                    node.setX(getPx(monster.getPosX()));
                    node.setY(getPx(room.getHeight() - monster.getPosY() - monster.getHeight()));
                    root.getChildren().add(node);
@@ -96,7 +96,7 @@ public class RoomRenderer {
             }
         }
         if (room.getTopDoor() != null) {
-            ImageView imageView = new ImageView("dungeon1-topdoor.png");
+            ImageView imageView = new ImageView("textures/dungeon1-topdoor.png");
             imageView.setX(getPx(room.getTopDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getTopDoor().getY()
                     - room.getTopDoor().getHeight()) + 2);
@@ -105,7 +105,7 @@ public class RoomRenderer {
             root.getChildren().add(imageView);
         }
         if (room.getRightDoor() != null) {
-            ImageView imageView = new ImageView("dungeon1-rightdoor.png");
+            ImageView imageView = new ImageView("textures/dungeon1-rightdoor.png");
             imageView.setX(getPx(room.getRightDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getRightDoor().getY()
                     - room.getRightDoor().getHeight() * 2));
@@ -114,7 +114,7 @@ public class RoomRenderer {
             root.getChildren().add(imageView);
         }
         if (room.getBottomDoor() != null) {
-            ImageView imageView = new ImageView("dungeon1-bottomdoor.png");
+            ImageView imageView = new ImageView("textures/dungeon1-bottomdoor.png");
             imageView.setX(getPx(room.getBottomDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getBottomDoor().getY()
                     - room.getBottomDoor().getHeight()) + 2);
@@ -123,7 +123,7 @@ public class RoomRenderer {
             root.getChildren().add(imageView);
         }
         if (room.getLeftDoor() != null) {
-            ImageView imageView = new ImageView("dungeon1-leftdoor.png");
+            ImageView imageView = new ImageView("textures/dungeon1-leftdoor.png");
             imageView.setX(getPx(room.getLeftDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getLeftDoor().getY()
                     - room.getLeftDoor().getHeight() * 2));
@@ -131,7 +131,7 @@ public class RoomRenderer {
             imageView.setFitHeight(getPx(room.getLeftDoor().getHeight()) * 2);
             root.getChildren().add(imageView);
         }
-        scene.getStylesheets().add(room.getType().name() + ".css");
+        scene.getStylesheets().add("styles/" + room.getType().name() + ".css");
         root.getChildren().add(player);
 
         return main;
