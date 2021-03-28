@@ -248,6 +248,10 @@ public class GameScreen extends GameState {
                     room.setVisited(false);
                     for (Monster m : room.getMonsters()) {
                         if (m != null) {
+                            int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
+                            int monsterY = (int) (Math.random() * (room.getHeight() - 39)) + 20;
+                            m.setPosX(monsterX);
+                            m.setPosY(monsterY);
                             m.setHealth(m.getMaxHealth());
                         }
                     }
