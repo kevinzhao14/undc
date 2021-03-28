@@ -54,14 +54,14 @@ public class GameSettings {
     public static final double PLAYER_WIDTH = 16.730038;
     public static final double PLAYER_HEIGHT = PLAYER_WIDTH * 1.81818182 / 2;
     public static final int PLAYER_HEALTH = 100;
-    public static final int PLAYER_ATTACK_RANGE = 35;
+    public static final int PLAYER_ATTACK_RANGE = 20;
 
     //monster generation settings
     public static final int MIN_MONSTERS = 1;
     public static final int MAX_MONSTERS = 1;
 
     //monster kill reward settings
-    public static final double MONSTER_KILL_GOLD = 30;
+    public static final double MONSTER_KILL_GOLD = 20;
 
     //difficulty modifier
     public static final double MODIFIER_MEDIUM = 1.5;

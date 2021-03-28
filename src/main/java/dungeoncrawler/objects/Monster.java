@@ -17,7 +17,6 @@ public class Monster extends Entity {
     private double attackSpeed;
     private HBox healthBar;
     private double reaction;
-    private double attackCooldown;
     private LinkedList<double[]> moveQueue;
 
     public Monster(int maxHealth, double attack, double speed, double attackSpeed, MonsterType type,
@@ -64,16 +63,6 @@ public class Monster extends Entity {
 
     public LinkedList<double[]> getMoveQueue() {
         return moveQueue;
-    }
-
-    @Override
-    public double getAttackCooldown() {
-        return attackCooldown;
-    }
-
-    @Override
-    public void setAttackCooldown(double attackCooldown) {
-        this.attackCooldown = attackCooldown;
     }
 
     public double getAttackSpeed() {

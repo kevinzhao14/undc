@@ -165,7 +165,7 @@ public class GameController {
     public void pause() {
         if (isRunning) {
             System.out.println("Game has been paused");
-            System.out.println("Average FPS in " + ticks + " ticks: " + round(1000.0 / (totalTime / ticks)));
+            //System.out.println("Average FPS in " + ticks + " ticks: " + round(1000.0 / (totalTime / ticks)));
             timer.cancel();
         } else {
             System.out.println("Game has been resumed");
@@ -297,7 +297,6 @@ public class GameController {
                     if (m != null && m.getHealth() > 0) {
                         double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2) + Math.pow(player.getPosY() - m.getPosY(), 2));
                         if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
-                            System.out.println("Attacking monster " + m);
                             m.attackMonster(player.getAttack() * player.getWeapon().getDamage());
 
                             //Give gold to player after slaying a monster
@@ -648,8 +647,6 @@ public class GameController {
             if (d <= GameSettings.MONSTER_MOVE_RANGE && d >= GameSettings.MONSTER_MOVE_MIN) {
                 //move monster towards player
                 double angle = Math.atan2(ydiff, xdiff) - Math.PI;
-//                System.out.println("Player " + player.getPosX() + " " + player.getPosY());
-//                System.out.println("Angle " + (180 / Math.PI * angle) + " " + ydiff + " " + xdiff);
                 double newPosX = mPosX + Math.cos(angle) * m.getSpeed();
                 double newPosY = mPosY + Math.sin(angle) * m.getSpeed();
 
@@ -657,18 +654,6 @@ public class GameController {
                 double[] newPos = checkPos(mPosX, mPosY, newPosX, newPosY,
                         m.getHeight(), m.getWidth());
                 int count = 0;
-//                System.out.println(d + " Old: " + mPosX + " " + mPosY);
-//                while (newPos[0] == mPosX && newPos[1] == mPosY && count < 4) {
-//                    angle += Math.PI / 2;
-//                    newPosX = mPosX + Math.cos(angle) * m.getSpeed();
-//                    newPosY = mPosY + Math.sin(angle) * m.getSpeed();
-//                    System.out.println("Check " + count + " a " + angle + " new " + newPosX + " " + newPosY);
-//
-//                    //check collisions with obstacles
-//                    newPos = checkPos(mPosX, mPosY, newPosX, newPosY, m.getHeight(), m.getWidth());
-//                    count++;
-//                }
-//                System.out.println(d + " Moving: " + mPosX + ", " + mPosY + " to " + newPos[0] + ", " + newPos[1]);
                 if (count >= 4) {
                     System.out.println("Error: Monster stuck.");
                     return;
@@ -676,14 +661,7 @@ public class GameController {
 
                 //TODO: check collisions with entities
 
-                //move monster
-//                m.setPosX(newPos[0]);
-//                m.setPosY(newPos[1]);
-//
-//                moveNode(m, newPos[0], newPos[1]);
-
                 //add to queue
-                //double time = (m.getMoveQueue().size() == 0) ? GameSettings.MONSTER_REACTION_TIME : 0;
                 double[] moveItem = new double[]{GameSettings.MONSTER_REACTION_TIME, newPos[0], newPos[1]};
                 m.getMoveQueue().add(moveItem);
             }
@@ -712,7 +690,6 @@ public class GameController {
 
                     //go to game over screen if player has died
                     if (player.getHealth() == 0.0) {
-                        System.out.println("Player has died, going to game over screen");
                         //use run later to prevent any thread issues
                         Platform.runLater(() -> {
                             if (screen instanceof GameScreen) {
@@ -732,7 +709,6 @@ public class GameController {
         }
 
         private boolean checkAttack(Monster m) {
-//            System.out.println(m.getReaction() + " " + m.getAttackCooldown());
             if (m.getReaction() <= 0 && m.getAttackCooldown() <= 0) {
                 m.setReaction(GameSettings.MONSTER_REACTION_TIME);
                 return false;
