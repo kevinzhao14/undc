@@ -7,7 +7,7 @@ public class Player extends Entity{
     private Weapon weapon;
     private int gold;
     public Player(int maxHealth, double attack, Weapon weapon) {
-        super(maxHealth, attack, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH, null);
+        super(maxHealth, attack, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH, null, 0, 0);
         this.weapon = weapon;
         this.gold = 0;
     }

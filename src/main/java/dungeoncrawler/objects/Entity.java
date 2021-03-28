@@ -20,14 +20,18 @@ public abstract class Entity {
     private double posY;
     private double attackCooldown;
     private ImageView node;
+    private double spriteWidth;
+    private double spriteHeight;
 
-    public Entity(int maxHealth, double attack, double height, double width, ImageView node) {
+    public Entity(int maxHealth, double attack, double height, double width, ImageView node, double spriteHeight, double spriteWidth) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.attack = attack;
         this.height = height;
         this.width = width;
         this.node = node;
+        this.spriteHeight = spriteHeight;
+        this.spriteWidth = spriteWidth;
     }
 
     public int getMaxHealth() {
@@ -84,5 +88,13 @@ public abstract class Entity {
     public String toString() {
         return "HP: " + health + "/" + maxHealth + " | Pos: " + posX + ", " + posY + " | Size: " +
                 height + ", " + width + " | Node: " + node;
+    }
+
+    public double getSpriteWidth() {
+        return spriteWidth;
+    }
+
+    public double getSpriteHeight() {
+        return spriteHeight;
     }
 }
