@@ -14,10 +14,8 @@ import dungeoncrawler.objects.Room;
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 
-import java.sql.SQLOutput;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -165,7 +163,8 @@ public class GameController {
     public void pause() {
         if (isRunning) {
             System.out.println("Game has been paused");
-            //System.out.println("Average FPS in " + ticks + " ticks: " + round(1000.0 / (totalTime / ticks)));
+            //System.out.println("Average FPS in " + ticks + " ticks: "
+            // + round(1000.0 / (totalTime / ticks)));
             timer.cancel();
         } else {
             System.out.println("Game has been resumed");
@@ -290,12 +289,14 @@ public class GameController {
                 player.setPosY(newPosY);
             }
 
-            player.setAttackCooldown(Math.max(0.0, player.getAttackCooldown() - 1000.0 / GameSettings.FPS));
+            player.setAttackCooldown(Math.max(0.0,
+                    player.getAttackCooldown() - 1000.0 / GameSettings.FPS));
             if (isAttacking && player.getAttackCooldown() == 0.0) {
                 player.setAttackCooldown(1000 * player.getWeapon().getAttackSpeed());
                 for (Monster m : room.getMonsters()) {
                     if (m != null && m.getHealth() > 0) {
-                        double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2) + Math.pow(player.getPosY() - m.getPosY(), 2));
+                        double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2)
+                                + Math.pow(player.getPosY() - m.getPosY(), 2));
                         if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
                             m.attackMonster(player.getAttack() * player.getWeapon().getDamage());
 
@@ -303,17 +304,18 @@ public class GameController {
                             if (m.getHealth() == 0.0) {
                                 double modifier;
                                 switch (Controller.getDataManager().getDifficulty()) {
-                                    case MEDIUM:
-                                        modifier = GameSettings.MODIFIER_MEDIUM;
-                                        break;
-                                    case HARD:
-                                        modifier = GameSettings.MODIFIER_HARD;
-                                        break;
-                                    default:
-                                        modifier = 1.0;
-                                        break;
+                                case MEDIUM:
+                                    modifier = GameSettings.MODIFIER_MEDIUM;
+                                    break;
+                                case HARD:
+                                    modifier = GameSettings.MODIFIER_HARD;
+                                    break;
+                                default:
+                                    modifier = 1.0;
+                                    break;
                                 }
-                                player.setGold(player.getGold() + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
+                                player.setGold(player.getGold()
+                                        + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
                                 GameState screen = Controller.getState();
                                 //use run later to prevent any thread issues
                                 Platform.runLater(() -> {
@@ -390,9 +392,12 @@ public class GameController {
          * @param y current y value
          * @param newX new x value
          * @param newY new y value
+         * @param h height
+         * @param w width
          * @return Returns whether the movement is valid
          */
-        private double[] checkPos(double x, double y, double newX, double newY, double h, double w) {
+        private double[] checkPos(double x, double y, double newX,
+                                  double newY, double h, double w) {
             if (newX < 0.0 || newX + w > room.getWidth()) {
                 return new double[]{(newX < 0 ? 0 : room.getWidth()
                         - w), newY};
@@ -411,9 +416,12 @@ public class GameController {
          * @param y y position
          * @param newX new x position
          * @param newY new y position
+         * @param h height
+         * @param w width
          * @return Returns whether the object is in range of the player's movement
          */
-        private boolean inRange(Obstacle o, double x, double y, double newX, double newY, double h, double w) {
+        private boolean inRange(Obstacle o, double x, double y,
+                                double newX, double newY, double h, double w) {
             /* Checks if the object is in range of the player's movement
              *          _________
              *          |[]     |
@@ -457,7 +465,8 @@ public class GameController {
                     continue;
                 }
                 //Check if door is out of player movement vector rectangle
-                if (!inRange(d, x, y, newX, newY, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH)) {
+                if (!inRange(d, x, y, newX, newY,
+                        GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH)) {
                     continue;
                 }
                 //player movement direction
@@ -521,6 +530,8 @@ public class GameController {
          * @param b Y-intecept of the line
          * @param moveUp Whether the player is moving up
          * @param moveRight Whether the player is moving down
+         * @param h height
+         * @param w width
          * @return Returns the x and y coordinate of the intersection point, null if no intersection
          */
         private double[] getIntersect(Obstacle o, double m, double b, boolean moveUp,
@@ -646,7 +657,8 @@ public class GameController {
             removeList = null;
 
             //calculate distance between player and monster
-            double[] mq = (m.getMoveQueue().size() > 0) ? m.getMoveQueue().getLast() : new double[]{0, m.getPosX(), m.getPosY()};
+            double[] mq = (m.getMoveQueue().size() > 0)
+                    ? m.getMoveQueue().getLast() : new double[]{0, m.getPosX(), m.getPosY()};
             double mPosY = mq[2];
             double mPosX = mq[1];
             double ydiff = mPosY - player.getPosY();
@@ -667,10 +679,9 @@ public class GameController {
                     return;
                 }
 
-                //TODO: check collisions with entities
-
                 //add to queue
-                double[] moveItem = new double[]{GameSettings.MONSTER_REACTION_TIME, newPos[0], newPos[1]};
+                double[] moveItem =
+                        new double[]{GameSettings.MONSTER_REACTION_TIME, newPos[0], newPos[1]};
                 m.getMoveQueue().add(moveItem);
             }
             ydiff = m.getPosY() - player.getPosY();

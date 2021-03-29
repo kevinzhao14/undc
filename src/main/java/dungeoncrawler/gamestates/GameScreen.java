@@ -50,15 +50,15 @@ public class GameScreen extends GameState {
         game = new GameController();
         createPlayer();
         switch (Controller.getDataManager().getDifficulty()) {
-            case EASY:
-                player.setGold(300);
-                break;
-            case MEDIUM:
-                player.setGold(200);
-                break;
-            default:
-                player.setGold(100);
-                break;
+        case EASY:
+            player.setGold(300);
+            break;
+        case MEDIUM:
+            player.setGold(200);
+            break;
+        default:
+            player.setGold(100);
+            break;
         }
         game.start(dungeonLayout.getStartingRoom());
         scene.getStylesheets().add("http://fonts.googleapis.com/css?family=VT323");
@@ -87,7 +87,7 @@ public class GameScreen extends GameState {
         StackPane root = new StackPane();
 
         //create player and hud
-//        createPlayer();
+        //createPlayer();
         game.resetPos();
         createHud();
 
@@ -148,7 +148,8 @@ public class GameScreen extends GameState {
         healthLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
         healthNumber.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
 
-        Rectangle healthBarTop = new Rectangle(player.getHealth() / player.getMaxHealth() * 150, 20);
+        Rectangle healthBarTop =
+                new Rectangle(player.getHealth() / player.getMaxHealth() * 150, 20);
         healthBarTop.setFill(Color.LIMEGREEN);
         Rectangle healthBarBottom = new Rectangle(150, 20);
         healthBarBottom.setFill(Color.GRAY);

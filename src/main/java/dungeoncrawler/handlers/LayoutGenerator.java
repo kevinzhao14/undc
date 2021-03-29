@@ -275,7 +275,7 @@ public class LayoutGenerator {
      */
     public static void setMonsters(Room room) {
         int numMonsters =
-                (int)(Math.random()
+                (int) (Math.random()
                         * (GameSettings.MAX_MONSTERS - GameSettings.MIN_MONSTERS + 1))
                         +  GameSettings.MIN_MONSTERS;
         Monster[] monsters = new Monster[numMonsters];
