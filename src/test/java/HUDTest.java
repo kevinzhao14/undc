@@ -1,8 +1,6 @@
 import dungeoncrawler.controllers.Controller;
 import dungeoncrawler.gamestates.GameScreen;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import org.junit.Assert;
@@ -10,14 +8,12 @@ import org.junit.Test;
 import org.testfx.api.FxAssert;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.base.NodeMatchers;
-import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextMatchers;
 import org.testfx.robot.impl.BaseRobotImpl;
 import org.testfx.robot.impl.SleepRobotImpl;
 import org.testfx.robot.impl.WriteRobotImpl;
 import org.testfx.service.finder.impl.WindowFinderImpl;
 
-import static org.junit.Assert.assertEquals;
 
 public class HUDTest extends ApplicationTest {
 
