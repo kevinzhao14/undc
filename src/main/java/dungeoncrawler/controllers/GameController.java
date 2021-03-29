@@ -63,6 +63,9 @@ public class GameController {
         this.controls = new Controls();
     }
 
+    /**
+     * Secondary constructor for no player
+     */
     public GameController() {
         this.controls = new Controls();
     }
@@ -83,6 +86,11 @@ public class GameController {
         scene.setOnMouseReleased(e -> handleKey(mouseButton(e.getButton()), false));
     }
 
+    /**
+     * Handles mousebutton events and returns the appropriate button name.
+     * @param button MouseButton event
+     * @return Returns the corresponding button name
+     */
     private String mouseButton(MouseButton button) {
         if (button == MouseButton.PRIMARY) {
             return "MOUSE1";
@@ -298,7 +306,8 @@ public class GameController {
                         double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2)
                                 + Math.pow(player.getPosY() - m.getPosY(), 2));
                         if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
-                            m.attackMonster(player.getAttack() * player.getWeapon().getDamage());
+                            m.attackMonster(player.getAttack()
+                                    * player.getWeapon().getDamage());
 
                             //Give gold to player after slaying a monster
                             if (m.getHealth() == 0.0) {
@@ -605,6 +614,12 @@ public class GameController {
             moveCamera();
         }
 
+        /**
+         * Moves a specified entity node.
+         * @param e Entity to move
+         * @param x X coordinate to move to
+         * @param y Y coordinate to move to
+         */
         private void moveNode(Entity e, double x, double y) {
             ImageView node = e.getNode();
             node.setX(getPx(x));
@@ -636,6 +651,10 @@ public class GameController {
             return new double[]{m, b};
         }
 
+        /**
+         * Monster AI for calculating movement and attacking.
+         * @param m Monster to calculate for
+         */
         private void monsterMove(Monster m) {
             //check queue
             LinkedList<double[]> removeList = new LinkedList<>();
@@ -727,6 +746,11 @@ public class GameController {
             }
         }
 
+        /**
+         * Checks if a monster can attack or not.
+         * @param m Monster to check
+         * @return Returns if the monster is able to attack
+         */
         private boolean checkAttack(Monster m) {
             if (m.getReaction() <= 0 && m.getAttackCooldown() <= 0) {
                 m.setReaction(GameSettings.MONSTER_REACTION_TIME);

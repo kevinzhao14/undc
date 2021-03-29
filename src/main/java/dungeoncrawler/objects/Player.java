@@ -1,13 +1,12 @@
 package dungeoncrawler.objects;
 
 import dungeoncrawler.handlers.GameSettings;
-import javafx.scene.image.ImageView;
 
-public class Player extends Entity{
+public class Player extends Entity {
     private Weapon weapon;
     private int gold;
     public Player(int maxHealth, double attack, Weapon weapon) {
-        super(maxHealth, attack, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH, null, 0, 0);
+        super(maxHealth, attack, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH, null);
         this.weapon = weapon;
         this.gold = 0;
     }

@@ -45,7 +45,8 @@ public class HomeScreen extends GameState {
         layout.setSpacing(10);
         StackPane root = new StackPane(layout);
         Scene scene = new Scene(root, width, height);
-        scene.getStylesheets().addAll("styles/HomeScreenStyleSheet.css", "http://fonts.googleapis.com/css?family=VT323");
+        scene.getStylesheets().addAll("styles/HomeScreenStyleSheet.css",
+                "http://fonts.googleapis.com/css?family=VT323");
         label.setStyle("-fx-font-family:VT323; -fx-font-size: 30");
         startButton.setStyle("-fx-font-family:VT323; -fx-font-size:20");
         return scene;
