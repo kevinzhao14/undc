@@ -58,11 +58,11 @@ public class LayoutGenerator {
         setMonsters(exitRoom);
         int[] exitCoords = new int[]{GRID_WIDTH / 2, GRID_HEIGHT / 2};
         //starting room
-        roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2] =
-                new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
-                        new Obstacle[5], RoomType.EMPTYROOM);
-        roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2]
-                .setMonsters(new Monster[GameSettings.MIN_MONSTERS]);
+        Room startRoom = new Room(ROOM_HEIGHT, ROOM_WIDTH, (int)((ROOM_WIDTH
+                - GameSettings.PLAYER_WIDTH) / 2.0), (int)(ROOM_HEIGHT / 2.0
+                - GameSettings.PLAYER_HEIGHT), new Obstacle[0], RoomType.EMPTYROOM);
+        startRoom.setMonsters(new Monster[GameSettings.MIN_MONSTERS]);
+        roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2] = startRoom;
         int[] coords;
         // up path
         roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2 + 1] =
