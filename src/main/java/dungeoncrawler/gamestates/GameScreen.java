@@ -15,6 +15,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -36,14 +37,17 @@ public class GameScreen extends GameState {
     private DungeonLayout dungeonLayout;
     private Room room;
     private StackPane hud;
+    private Canvas canvas;
 
     public GameScreen(int width, int height) {
         dungeonLayout = LayoutGenerator.generateLayout();
         scene = new Scene(new Pane(), width, height);
+        canvas = new Canvas();
     }
 
     public GameScreen(DungeonLayout existingDungeon, int width, int height) {
         scene = new Scene(new Pane(), width, height);
+        canvas = new Canvas();
     }
 
     public void start() {
@@ -104,7 +108,7 @@ public class GameScreen extends GameState {
             box.setAlignment(Pos.CENTER);
             root.getChildren().addAll(hud, box);
         } else {
-            Pane roomPane = RoomRenderer.drawRoom(scene, room, player.getNode());
+            Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
             root.getChildren().addAll(roomPane, hud);
             //set player position
             if (scene.getRoot().getChildrenUnmodifiable().size() > 0) {
@@ -126,9 +130,9 @@ public class GameScreen extends GameState {
     private void createPlayer() {
         player = new Player(GameSettings.PLAYER_HEALTH, 1,
                 Controller.getDataManager().getWeapon());
-        player.setNode(new ImageView("player/player-down.png"));
-        player.getNode().setFitHeight(GameSettings.PLAYER_HEIGHT * GameSettings.PPU * 2);
-        player.getNode().setFitWidth(GameSettings.PLAYER_WIDTH * GameSettings.PPU);
+        player.setNode("player/player-down.png");
+//        player.getNode().setFitHeight(GameSettings.PLAYER_HEIGHT * GameSettings.PPU * 2);
+//        player.getNode().setFitWidth(GameSettings.PLAYER_WIDTH * GameSettings.PPU);
         game.setPlayer(player);
     }
 
@@ -277,8 +281,17 @@ public class GameScreen extends GameState {
         //go to starting room
         setRoom(dungeonLayout.getStartingRoom());
     }
+
+    public void refresh() {
+        RoomRenderer.drawFrame(canvas, room, player);
+    }
+
     // for testing
     public Player getPlayer() {
         return player;
+    }
+
+    public Canvas getCanvas() {
+        return canvas;
     }
 }

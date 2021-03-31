@@ -2,6 +2,7 @@ package dungeoncrawler.controllers;
 
 import dungeoncrawler.gamestates.GameState;
 import dungeoncrawler.handlers.Controls;
+import dungeoncrawler.handlers.RoomRenderer;
 import dungeoncrawler.objects.Door;
 import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.handlers.GameSettings;
@@ -135,8 +136,9 @@ public class GameController {
     public void resetPos() {
         player.setPosX(room.getStartX());
         player.setPosY(room.getStartY());
-        player.getNode().setX(getPx(player.getPosX()));
-        player.getNode().setY(getPx(room.getHeight() - player.getPosY() - player.getHeight() * 2));
+        refresh();
+//        player.getNode().setX(getPx(player.getPosX()));
+//        player.getNode().setY(getPx(room.getHeight() - player.getPosY() - player.getHeight() * 2));
     }
 
     /**
@@ -165,7 +167,7 @@ public class GameController {
     public void pause() {
         if (isRunning) {
             System.out.println("Game has been paused");
-            //System.out.println("Average FPS in " + ticks + " ticks: " + round(1000.0 / (totalTime / ticks)));
+            System.out.println("Average FPS in " + ticks + " ticks: " + round(1000.0 / (totalTime / ticks)));
             timer.cancel();
         } else {
             System.out.println("Game has been resumed");
@@ -178,6 +180,7 @@ public class GameController {
      * Starts the game timer/clock.
      */
     private void startTimer() {
+        refresh();
         timer = new Timer();
         timer.schedule(new GameRunner(), 0, 1000 / GameSettings.FPS);
     }
@@ -260,6 +263,17 @@ public class GameController {
         return units * GameSettings.PPU;
     }
 
+    private void refresh() {
+        GameState state = Controller.getState();
+        if (state instanceof GameScreen) {
+            Platform.runLater(() -> {
+                RoomRenderer.drawFrame(((GameScreen) state).getCanvas(), room, player);
+            });
+        } else {
+            throw new IllegalStateException("Invalid Game State!");
+        }
+    }
+
     /**
      * Class that is used to calculate stuff on each tick.
      */
@@ -281,7 +295,7 @@ public class GameController {
             if (movePos[0] != posX || movePos[1] != posY) {
                 newPosX = movePos[0];
                 newPosY = movePos[1];
-                movePlayer(newPosX, newPosY);
+//                movePlayer(newPosX, newPosY);
                 //check for door intersections
                 if (checkDoors(posX, posY, newPosX, newPosY)) {
                     return;
@@ -338,7 +352,7 @@ public class GameController {
                 }
                 if (m.getHealth() <= 0 && m.getDeathProgress() > 0) {
                     m.setDeathProgress(m.getDeathProgress() - .005);
-                    m.getNode().setOpacity(m.getDeathProgress());
+//                    m.getNode().setOpacity(m.getDeathProgress());
                     continue;
                 }
                 //check and move the monster
@@ -346,6 +360,8 @@ public class GameController {
                     monsterMove(m);
                 }
             }
+
+            refresh();
 
             //update velocity
             velX += accelX;
@@ -585,19 +601,19 @@ public class GameController {
          */
         private void movePlayer(double x, double y) {
             //Update player position
-            player.getNode().setX(getPx(x));
+//            player.getNode().setX(getPx(x));
 
             //convert game coordinates to JavaFX coordinates
-            player.getNode().setY(getPx(room.getHeight() - y - player.getHeight() * 2));
+//            player.getNode().setY(getPx(room.getHeight() - y - player.getHeight() * 2));
 
             //Move camera, if needed
             moveCamera();
         }
 
         private void moveNode(Entity e, double x, double y) {
-            ImageView node = e.getNode();
-            node.setX(getPx(x));
-            node.setY(getPx(room.getHeight() - y - e.getHeight()));
+//            ImageView node = e.getNode();
+//            node.setX(getPx(x));
+//            node.setY(getPx(room.getHeight() - y - e.getHeight()));
         }
 
         /**

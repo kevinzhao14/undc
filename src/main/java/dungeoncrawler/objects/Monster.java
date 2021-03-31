@@ -22,7 +22,7 @@ public class Monster extends Entity {
     private double deathProgress = 1; // -> 0
 
     public Monster(int maxHealth, double attack, double speed, double attackSpeed, MonsterType type,
-                   double height, double width, ImageView node, double sH, double sW) {
+                   double height, double width, String node, double sH, double sW) {
 
         //healthBar should be instantiated and assigned in this Monster constructor
         super(maxHealth, attack, height, width, node, sH, sW);
@@ -36,7 +36,7 @@ public class Monster extends Entity {
     public Monster(Monster m, double modifier) {
         this((int) (m.getMaxHealth() * modifier), m.getAttack() * modifier, m.speed,
                 m.attackSpeed, m.type, m.getHeight(), m.getWidth(),
-                new ImageView(m.getNode().getImage().getUrl()), m.getSpriteHeight(), m.getSpriteWidth());
+                m.getNode(), m.getSpriteHeight(), m.getSpriteWidth());
     }
 
     //need to implement

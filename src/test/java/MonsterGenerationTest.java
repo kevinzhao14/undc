@@ -42,19 +42,16 @@ public class MonsterGenerationTest extends ApplicationTest {
                         Monster[] monsters = roomGrid[i][j].getMonsters();
                         for (Monster monster : monsters) {
                             if (monster != null && monster.getType() == MonsterType.FAST) {
-                                assertEquals(monster.getNode().getImage().getUrl()
-                                                .substring(monster.getNode().getImage()
-                                                        .getUrl().length() - 26),
+                                assertEquals(monster.getNode()
+                                                .substring(monster.getNode().length() - 26),
                                         "/monsters/monster-fast.png");
                             } else if (monster != null && monster.getType() == MonsterType.TANK) {
-                                assertEquals(monster.getNode().getImage().getUrl()
-                                                .substring(monster.getNode().getImage()
-                                                        .getUrl().length() - 26),
+                                assertEquals(monster.getNode()
+                                                .substring(monster.getNode().length() - 26),
                                         "/monsters/monster-tank.png");
                             } else if (monster != null && monster.getType() == MonsterType.NORMAL) {
-                                assertEquals(monster.getNode().getImage().getUrl()
-                                                .substring(monster.getNode().getImage()
-                                                        .getUrl().length() - 28),
+                                assertEquals(monster.getNode()
+                                                .substring(monster.getNode().length() - 28),
                                         "/monsters/monster-normal.png");
                             }
                         }

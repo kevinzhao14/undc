@@ -74,4 +74,6 @@ public class GameSettings {
     public static final int MONSTER_ATTACK_RANGE = 10;
     //monster reaction time to a player being in range in milliseconds
     public static final int MONSTER_REACTION_TIME = 300;
+
+    public static final int CANVAS_PADDING = 50;
 }
