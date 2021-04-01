@@ -58,14 +58,14 @@ public class RestartGameTest2 extends ApplicationTest {
         //verify that player has default gold state
         int defaultGold;
         switch (c.getDataManager().getDifficulty()) {
-            case EASY:
-                defaultGold = 300;
-                break;
-            case MEDIUM:
-                defaultGold = 200;
-                break;
-            default:
-                defaultGold = 100;
+        case EASY:
+            defaultGold = 300;
+            break;
+        case MEDIUM:
+            defaultGold = 200;
+            break;
+        default:
+            defaultGold = 100;
         }
         assertEquals(p.getGold(), defaultGold);
     }
