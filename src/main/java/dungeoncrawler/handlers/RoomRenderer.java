@@ -132,7 +132,8 @@ public class RoomRenderer {
                 if (obstacle.getType().name().equals("KEY")) {
                     img = new Image("items/key.png");
                 } else {
-                    img = new Image("items/" + obstacle.getType().toString().toLowerCase() + ".png");
+                    img = new Image("items/" + obstacle.getType().toString().toLowerCase()
+                            + ".png");
                 }
                 drawImg(gc, img, h, w, x, y);
 
@@ -168,11 +169,13 @@ public class RoomRenderer {
         drawImg(gc, img, h, w, x, y);
     }
 
-    private static void drawImg(GraphicsContext gc, Image img, double h, double w, double x, double y) {
+    private static void drawImg(GraphicsContext gc, Image img, double h, double w, double x,
+                                double y) {
         gc.drawImage(img, x + GameSettings.CANVAS_PADDING, y + GameSettings.CANVAS_PADDING, w, h);
     }
 
-    private static void drawHealthbar(GraphicsContext gc, double h, double w, double x, double y, double percent) {
+    private static void drawHealthbar(GraphicsContext gc, double h, double w, double x, double y,
+                                      double percent) {
         //draw health bar
         int pad = GameSettings.CANVAS_PADDING;
         gc.setFill(Color.GREEN);

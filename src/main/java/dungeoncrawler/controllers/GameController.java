@@ -358,7 +358,8 @@ public class GameController {
                                 player.setGold(player.getGold()
                                         + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
                                 GameState screen = Controller.getState();
-                                m.setOpacity(1 - (1000.0 / (GameSettings.MONSTER_FADE_TIME * GameSettings.FPS)));
+                                m.setOpacity(1 - (1000.0 / (GameSettings.MONSTER_FADE_TIME
+                                        * GameSettings.FPS)));
                                 //use run later to prevent any thread issues
                                 Platform.runLater(() -> {
                                     if (screen instanceof GameScreen) {
