@@ -310,6 +310,19 @@ public class GameController {
                 newPosX = movePos[0];
                 newPosY = movePos[1];
 
+                //set player sprite
+                int dir;
+                if (newPosX < posX) {
+                    dir = 0;
+                } else if (newPosX > posX) {
+                    dir = 2;
+                } else if (newPosY > posY) {
+                    dir = 1;
+                } else {
+                    dir = 3;
+                }
+                player.setDirection(dir);
+
                 //check for door intersections
                 if (checkDoors(posX, posY, newPosX, newPosY)) {
                     return;
