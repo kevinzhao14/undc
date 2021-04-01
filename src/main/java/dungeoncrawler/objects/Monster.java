@@ -1,6 +1,5 @@
 package dungeoncrawler.objects;
 
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
 import java.util.LinkedList;
@@ -21,21 +20,35 @@ public class Monster extends Entity {
     private double opacity;
 
     public Monster(int maxHealth, double attack, double speed, double attackSpeed, MonsterType type,
-                   double height, double width, String node) {
+                   double height, double width) {
 
         //healthBar should be instantiated and assigned in this Monster constructor
-        super(maxHealth, attack, height, width, node);
+        super(maxHealth, attack, height, width, null);
         this.type = type;
         this.speed = speed;
         this.attackSpeed = attackSpeed;
         this.reaction = -1;
         moveQueue = new LinkedList<>();
         opacity = 1;
+        switch (type) {
+        case FAST:
+            setNode("monsters/monster-fast.png");
+            break;
+        case NORMAL:
+            setNode("monsters/monster-normal.png");
+            break;
+        case TANK:
+            setNode("monsters/monster-tank.png");
+            break;
+        default:
+            setNode("monsters/monster-normal.png");
+            break;
+        }
     }
 
     public Monster(Monster m, double modifier) {
         this((int) (m.getMaxHealth() * modifier), m.getAttack() * modifier, m.speed,
-                m.attackSpeed, m.type, m.getHeight(), m.getWidth(), m.getNode());
+                m.attackSpeed, m.type, m.getHeight(), m.getWidth());
     }
 
     //need to implement

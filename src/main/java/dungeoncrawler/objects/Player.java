@@ -3,12 +3,12 @@ package dungeoncrawler.objects;
 import dungeoncrawler.handlers.GameSettings;
 import javafx.scene.image.Image;
 
-public class Player extends Entity{
+public class Player extends Entity {
     private static Image[] sprites = new Image[]{
-            new Image("player/player-left.png"),
-            new Image("player/player-up.png"),
-            new Image("player/player-right.png"),
-            new Image("player/player-down.png")
+        new Image("player/player-left.png"),
+        new Image("player/player-up.png"),
+        new Image("player/player-right.png"),
+        new Image("player/player-down.png")
     };
 
     private Weapon weapon;

@@ -7,13 +7,11 @@ import dungeoncrawler.objects.Door;
 import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
-import dungeoncrawler.objects.Entity;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
 import dungeoncrawler.objects.Player;
 import dungeoncrawler.objects.Room;
 import javafx.application.Platform;
-import javafx.scene.image.ImageView;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 
@@ -108,7 +106,6 @@ public class GameController {
      */
     public void setPlayer(Player player) {
         this.player = player;
-        //resetPos();
     }
 
     /**
@@ -144,8 +141,6 @@ public class GameController {
         player.setPosX(room.getStartX());
         player.setPosY(room.getStartY());
         refresh();
-//        player.getNode().setX(getPx(player.getPosX()));
-//        player.getNode().setY(getPx(room.getHeight() - player.getPosY() - player.getHeight() * 2));
     }
 
     /**
@@ -158,8 +153,6 @@ public class GameController {
         accelY = 0.0;
         isRunning = false;
         isStopped = false;
-        //ticks = 0;
-        //totalTime = 0;
         pressLeft = false;
         pressRight = false;
         pressUp = false;
@@ -636,34 +629,6 @@ public class GameController {
         }
 
         /**
-         * Moves the player to the specified location.
-         * @param x x coordinate to move to
-         * @param y y coordinate to move to
-         */
-        private void movePlayer(double x, double y) {
-            //Update player position
-//            player.getNode().setX(getPx(x));
-
-            //convert game coordinates to JavaFX coordinates
-//            player.getNode().setY(getPx(room.getHeight() - y - player.getHeight() * 2));
-
-            //Move camera, if needed
-            moveCamera();
-        }
-
-        /**
-         * Moves a specified entity node.
-         * @param e Entity to move
-         * @param x X coordinate to move to
-         * @param y Y coordinate to move to
-         */
-        private void moveNode(Entity e, double x, double y) {
-//            ImageView node = e.getNode();
-//            node.setX(getPx(x));
-//            node.setY(getPx(room.getHeight() - y - e.getHeight()));
-        }
-
-        /**
          * To be implemented.
          */
         private void moveCamera() {
@@ -701,7 +666,6 @@ public class GameController {
                 if (e[0] <= 0) {
                     m.setPosX(e[1]);
                     m.setPosY(e[2]);
-                    moveNode(m, e[1], e[2]);
 
                     //remove
                     removeList.add(e);
@@ -710,7 +674,6 @@ public class GameController {
             for (double[] e : removeList) {
                 m.getMoveQueue().remove(e);
             }
-            removeList = null;
 
             //calculate distance between player and monster
             double[] mq = (m.getMoveQueue().size() > 0)

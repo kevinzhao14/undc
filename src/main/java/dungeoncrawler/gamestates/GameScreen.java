@@ -18,7 +18,6 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -131,8 +130,6 @@ public class GameScreen extends GameState {
         player = new Player(GameSettings.PLAYER_HEALTH, 1,
                 Controller.getDataManager().getWeapon());
         player.setDirection(3);
-//        player.getNode().setFitHeight(GameSettings.PLAYER_HEIGHT * GameSettings.PPU * 2);
-//        player.getNode().setFitWidth(GameSettings.PLAYER_WIDTH * GameSettings.PPU);
         game.setPlayer(player);
     }
 
