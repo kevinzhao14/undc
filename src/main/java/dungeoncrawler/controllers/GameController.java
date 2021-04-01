@@ -40,6 +40,7 @@ public class GameController {
     private double accelX;
     private double accelY;
     private boolean isRunning;
+    private boolean isStopped;
     private long ticks;
     private double totalTime;
 
@@ -110,13 +111,13 @@ public class GameController {
      */
     private void setRoom(Room newRoom) {
         if (isRunning) {
-            pause();
+            stop();
         }
         room = newRoom;
         if (Controller.getState() instanceof GameScreen) {
             Platform.runLater(() -> ((GameScreen) Controller.getState()).setRoom(newRoom));
         } else {
-            pause();
+            stop();
             throw new IllegalStateException("Illegal GameState");
         }
     }
@@ -150,6 +151,7 @@ public class GameController {
         accelX = 0.0;
         accelY = 0.0;
         isRunning = false;
+        isStopped = false;
         //ticks = 0;
         //totalTime = 0;
         pressLeft = false;
@@ -173,7 +175,16 @@ public class GameController {
             System.out.println("Game has been resumed");
             startTimer();
         }
+        if (!isRunning && isStopped) {
+            isStopped = false;
+        }
         isRunning = !isRunning;
+    }
+    public void stop() {
+        isRunning = true;
+        pause();
+        isStopped = true;
+        System.out.println("Game has been stopped.");
     }
 
     /**
@@ -191,6 +202,9 @@ public class GameController {
      * @param isPress Whether the event is a press or release event
      */
     private void handleKey(String key, boolean isPress) {
+        if (isStopped) {
+            return;
+        }
         //Global key binds, regardless of game play/pause state
         if (key.equals(controls.getKey("pause"))) {
             if (!isPress) {
@@ -295,7 +309,7 @@ public class GameController {
             if (movePos[0] != posX || movePos[1] != posY) {
                 newPosX = movePos[0];
                 newPosY = movePos[1];
-//                movePlayer(newPosX, newPosY);
+
                 //check for door intersections
                 if (checkDoors(posX, posY, newPosX, newPosY)) {
                     return;
@@ -312,7 +326,6 @@ public class GameController {
                         double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2) + Math.pow(player.getPosY() - m.getPosY(), 2));
                         if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
                             m.attackMonster(player.getAttack() * player.getWeapon().getDamage());
-
                             //Give gold to player after slaying a monster
                             if (m.getHealth() == 0.0) {
                                 double modifier;
@@ -329,6 +342,7 @@ public class GameController {
                                 }
                                 player.setGold(player.getGold() + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
                                 GameState screen = Controller.getState();
+                                m.setOpacity(1 - (1000.0 / (GameSettings.MONSTER_FADE_TIME * GameSettings.FPS)));
                                 //use run later to prevent any thread issues
                                 Platform.runLater(() -> {
                                     if (screen instanceof GameScreen) {
@@ -347,12 +361,7 @@ public class GameController {
             //Manage Monsters
             for (int i = 0; i < room.getMonsters().length; i++) {
                 Monster m = room.getMonsters()[i];
-                if (m == null || m.getDeathProgress() <= 0) {
-                    continue;
-                }
-                if (m.getHealth() <= 0 && m.getDeathProgress() > 0) {
-                    m.setDeathProgress(m.getDeathProgress() - .005);
-//                    m.getNode().setOpacity(m.getDeathProgress());
+                if (m == null || m.getHealth() == 0) {
                     continue;
                 }
                 //check and move the monster

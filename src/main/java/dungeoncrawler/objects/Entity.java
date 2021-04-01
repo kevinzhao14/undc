@@ -89,6 +89,10 @@ public abstract class Entity {
         return node;
     }
 
+    public void setImage(Image image) {
+        this.node = image;
+    }
+
     public String toString() {
         return "HP: " + health + "/" + maxHealth + " | Pos: " + posX + ", " + posY + " | Size: " +
                 height + ", " + width + " | Node: " + node;

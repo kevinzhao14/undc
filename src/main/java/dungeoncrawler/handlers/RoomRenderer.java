@@ -111,6 +111,7 @@ public class RoomRenderer {
     public static void drawFrame(Canvas c, Room room, Player player) {
         //clear canvas
         GraphicsContext gc = c.getGraphicsContext2D();
+        gc.setGlobalAlpha(1);
 
         //draw player
         double x = getPx(player.getPosX());
@@ -146,14 +147,17 @@ public class RoomRenderer {
             }
         }
         if (room.getMonsters() != null) {
-            for (Monster monster : room.getMonsters()) {
-                if (monster != null && monster.getHealth() > 0) {
-//                    node.setOpacity(monster.getDeathProgress());
-                    h = getPx(monster.getHeight() / monster.getSpriteHeight());
-                    w = getPx(monster.getWidth() / monster.getSpriteWidth());
-                    x = getPx(monster.getPosX());
-                    y = getPx(room.getHeight() - monster.getPosY() - monster.getHeight());
-                    drawImg(c, monster.getImage(), h, w, x, y);
+            for (Monster m : room.getMonsters()) {
+                if (m != null && (m.getHealth() > 0 || m.getOpacity() > 0)) {
+                    h = getPx(m.getHeight() / m.getSpriteHeight());
+                    w = getPx(m.getWidth() / m.getSpriteWidth());
+                    x = getPx(m.getPosX());
+                    y = getPx(room.getHeight() - m.getPosY() - m.getHeight());
+                    c.getGraphicsContext2D().setGlobalAlpha(m.getOpacity());
+                    drawImg(c, m.getImage(), h, w, x, y);
+                    if (m.getOpacity() < 1) {
+                        m.setOpacity(m.getOpacity() - (1000.0 / (GameSettings.MONSTER_FADE_TIME * GameSettings.FPS)));
+                    }
                 }
             }
         }

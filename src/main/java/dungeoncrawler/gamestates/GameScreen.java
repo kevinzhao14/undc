@@ -130,7 +130,7 @@ public class GameScreen extends GameState {
     private void createPlayer() {
         player = new Player(GameSettings.PLAYER_HEALTH, 1,
                 Controller.getDataManager().getWeapon());
-        player.setNode("player/player-down.png");
+        player.setDirection(3);
 //        player.getNode().setFitHeight(GameSettings.PLAYER_HEIGHT * GameSettings.PPU * 2);
 //        player.getNode().setFitWidth(GameSettings.PLAYER_WIDTH * GameSettings.PPU);
         game.setPlayer(player);
