@@ -9,8 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Rectangle;
-
+import javafx.scene.paint.Color;
 
 
 /**
@@ -135,7 +134,7 @@ public class RoomRenderer {
                 } else {
                     img = new Image("items/" + obstacle.getType().toString().toLowerCase() + ".png");
                 }
-                drawImg(c, img, h, w, x, y);
+                drawImg(gc, img, h, w, x, y);
 
             }
         }
@@ -147,9 +146,13 @@ public class RoomRenderer {
                     x = getPx(m.getPosX());
                     y = getPx(room.getHeight() - m.getPosY() - m.getHeight());
                     c.getGraphicsContext2D().setGlobalAlpha(m.getOpacity());
-                    drawImg(c, m.getImage(), h, w, x, y);
+                    drawImg(gc, m.getImage(), h, w, x, y);
+                    drawHealthbar(gc, GameSettings.MONSTER_HEALTHBAR_HEIGHT, w, x, y
+                            - GameSettings.MONSTER_HEALTHBAR_HEIGHT - 10, m.getHealth()
+                            / m.getMaxHealth());
                     if (m.getOpacity() < 1) {
-                        m.setOpacity(m.getOpacity() - (1000.0 / (GameSettings.MONSTER_FADE_TIME * GameSettings.FPS)));
+                        m.setOpacity(m.getOpacity() - (1000.0 / (GameSettings.MONSTER_FADE_TIME
+                                * GameSettings.FPS)));
                     }
                 }
             }
@@ -162,12 +165,20 @@ public class RoomRenderer {
         h = getPx(player.getHeight() * 2);
         w = getPx(player.getWidth());
         img = player.getImage();
-        drawImg(c, img, h, w, x, y);
+        drawImg(gc, img, h, w, x, y);
     }
 
-    private static void drawImg(Canvas c, Image img, double h, double w, double x, double y) {
-        GraphicsContext gc = c.getGraphicsContext2D();
+    private static void drawImg(GraphicsContext gc, Image img, double h, double w, double x, double y) {
         gc.drawImage(img, x + GameSettings.CANVAS_PADDING, y + GameSettings.CANVAS_PADDING, w, h);
+    }
+
+    private static void drawHealthbar(GraphicsContext gc, double h, double w, double x, double y, double percent) {
+        //draw health bar
+        int pad = GameSettings.CANVAS_PADDING;
+        gc.setFill(Color.GREEN);
+        gc.fillRect(x + pad, y + pad, percent * w, h);
+        gc.setFill(Color.GRAY);
+        gc.fillRect(x + percent * w + pad, y + pad, (1 - percent) * w, h);
     }
 
     /**

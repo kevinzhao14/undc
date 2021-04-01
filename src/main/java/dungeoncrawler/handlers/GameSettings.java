@@ -76,5 +76,8 @@ public class GameSettings {
     public static final int MONSTER_REACTION_TIME = 300;
     public static final int MONSTER_FADE_TIME = 400;
 
+    //pixels
+    public static final int MONSTER_HEALTHBAR_HEIGHT = 10;
+
     public static final int CANVAS_PADDING = 50;
 }
