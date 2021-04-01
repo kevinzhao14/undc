@@ -71,23 +71,5 @@ public class RestartGameTest extends ApplicationTest {
         }
     }
 
-    @Test
-    public void testPlayerIsRestored() {
-        //verify that player has max health
-        assertEquals(p.getHealth(), p.getMaxHealth(), 0);
 
-        //verify that player has default gold state
-        int defaultGold;
-        switch (c.getDataManager().getDifficulty()) {
-        case EASY:
-            defaultGold = 300;
-            break;
-        case MEDIUM:
-            defaultGold = 200;
-            break;
-        default:
-            defaultGold = 100;
-        }
-        assertEquals(p.getGold(), defaultGold);
-    }
 }
