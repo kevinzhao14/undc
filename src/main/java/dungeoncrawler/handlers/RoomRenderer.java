@@ -111,22 +111,15 @@ public class RoomRenderer {
     public static void drawFrame(Canvas c, Room room, Player player) {
         //clear canvas
         GraphicsContext gc = c.getGraphicsContext2D();
+        gc.clearRect(0, 0, c.getWidth(), c.getHeight());
         gc.setGlobalAlpha(1);
 
-        //draw player
-        double x = getPx(player.getPosX());
-        double y = getPx(room.getHeight() - player.getPosY() - player.getHeight() * 2);
-        double h = getPx(player.getHeight() * 2);
-        double w = getPx(player.getWidth());
-        Image img = player.getImage();
-        gc.clearRect(0, 0, c.getWidth(), c.getHeight());
-        drawImg(c, img, h, w, x, y);
+        double x;
+        double y;
+        double h;
+        double w;
+        Image img;
 
-        x = 0;
-        y = 0;
-        h = 10;
-        w = 10;
-        img = null;
         //draw obstacles
         if (room.getObstacles() != null) {
             for (Obstacle obstacle : room.getObstacles()) {
@@ -161,6 +154,15 @@ public class RoomRenderer {
                 }
             }
         }
+
+        //draw player
+        gc.setGlobalAlpha(1);
+        x = getPx(player.getPosX());
+        y = getPx(room.getHeight() - player.getPosY() - player.getHeight() * 2);
+        h = getPx(player.getHeight() * 2);
+        w = getPx(player.getWidth());
+        img = player.getImage();
+        drawImg(c, img, h, w, x, y);
     }
 
     private static void drawImg(Canvas c, Image img, double h, double w, double x, double y) {
