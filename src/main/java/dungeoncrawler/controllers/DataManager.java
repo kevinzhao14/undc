@@ -21,12 +21,12 @@ public class DataManager {
     };
 
     public static final Monster[] MONSTERS = new Monster[]{
-        new Monster(20, 4, 150.0 / GameSettings.FPS, 0.5, MonsterType.FAST, 22, 18,
-                new ImageView("monsters/monster-fast.png"), 1, 1),
-        new Monster(40, 5, 100.0 / GameSettings.FPS, 0.75, MonsterType.NORMAL, 48, 25,
-                new ImageView("monsters/monster-normal.png"), 1, 1),
-        new Monster(100, 10, 50.0 / GameSettings.FPS, 2, MonsterType.TANK, 31, 46,
-                new ImageView("monsters/monster-tank.png"), 1, 1)
+            new Monster(20, 4, 150.0 / GameSettings.FPS, 0.5, MonsterType.FAST, 22, 18,
+                    "monsters/monster-fast.png"),
+            new Monster(40, 5, 100.0 / GameSettings.FPS, 0.75, MonsterType.NORMAL, 48, 25,
+                    "monsters/monster-normal.png"),
+            new Monster(80, 10, 50.0 / GameSettings.FPS, 2, MonsterType.TANK, 31, 46,
+                    "monsters/monster-tank.png")
     };
 
     private String username;

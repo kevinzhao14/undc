@@ -2,6 +2,7 @@ package dungeoncrawler.controllers;
 
 import dungeoncrawler.gamestates.GameState;
 import dungeoncrawler.handlers.Controls;
+import dungeoncrawler.handlers.RoomRenderer;
 import dungeoncrawler.objects.Door;
 import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.handlers.GameSettings;
@@ -37,6 +38,7 @@ public class GameController {
     private double accelX;
     private double accelY;
     private boolean isRunning;
+    private boolean isStopped;
     private long ticks;
     private double totalTime;
 
@@ -115,13 +117,13 @@ public class GameController {
      */
     private void setRoom(Room newRoom) {
         if (isRunning) {
-            pause();
+            stop();
         }
         room = newRoom;
         if (Controller.getState() instanceof GameScreen) {
             Platform.runLater(() -> ((GameScreen) Controller.getState()).setRoom(newRoom));
         } else {
-            pause();
+            stop();
             throw new IllegalStateException("Illegal GameState");
         }
     }
@@ -141,8 +143,9 @@ public class GameController {
     public void resetPos() {
         player.setPosX(room.getStartX());
         player.setPosY(room.getStartY());
-        player.getNode().setX(getPx(player.getPosX()));
-        player.getNode().setY(getPx(room.getHeight() - player.getPosY() - player.getHeight() * 2));
+        refresh();
+//        player.getNode().setX(getPx(player.getPosX()));
+//        player.getNode().setY(getPx(room.getHeight() - player.getPosY() - player.getHeight() * 2));
     }
 
     /**
@@ -154,6 +157,7 @@ public class GameController {
         accelX = 0.0;
         accelY = 0.0;
         isRunning = false;
+        isStopped = false;
         //ticks = 0;
         //totalTime = 0;
         pressLeft = false;
@@ -171,20 +175,30 @@ public class GameController {
     public void pause() {
         if (isRunning) {
             System.out.println("Game has been paused");
-            //System.out.println("Average FPS in " + ticks + " ticks: "
-            // + round(1000.0 / (totalTime / ticks)));
+            System.out.println("Average FPS in " + ticks + " ticks: " + round(1000.0
+                    / (totalTime / ticks)));
             timer.cancel();
         } else {
             System.out.println("Game has been resumed");
             startTimer();
         }
+        if (!isRunning && isStopped) {
+            isStopped = false;
+        }
         isRunning = !isRunning;
+    }
+    public void stop() {
+        isRunning = true;
+        pause();
+        isStopped = true;
+        System.out.println("Game has been stopped.");
     }
 
     /**
      * Starts the game timer/clock.
      */
     private void startTimer() {
+        refresh();
         timer = new Timer();
         timer.schedule(new GameRunner(), 0, 1000 / GameSettings.FPS);
     }
@@ -195,6 +209,9 @@ public class GameController {
      * @param isPress Whether the event is a press or release event
      */
     private void handleKey(String key, boolean isPress) {
+        if (isStopped) {
+            return;
+        }
         //Global key binds, regardless of game play/pause state
         if (key.equals(controls.getKey("pause"))) {
             if (!isPress) {
@@ -267,6 +284,17 @@ public class GameController {
         return units * GameSettings.PPU;
     }
 
+    private void refresh() {
+        GameState state = Controller.getState();
+        if (state instanceof GameScreen) {
+            Platform.runLater(() -> {
+                RoomRenderer.drawFrame(((GameScreen) state).getCanvas(), room, player);
+            });
+        } else {
+            throw new IllegalStateException("Invalid Game State!");
+        }
+    }
+
     /**
      * Class that is used to calculate stuff on each tick.
      */
@@ -288,7 +316,20 @@ public class GameController {
             if (movePos[0] != posX || movePos[1] != posY) {
                 newPosX = movePos[0];
                 newPosY = movePos[1];
-                movePlayer(newPosX, newPosY);
+
+                //set player sprite
+                int dir;
+                if (newPosX < posX) {
+                    dir = 0;
+                } else if (newPosX > posX) {
+                    dir = 2;
+                } else if (newPosY > posY) {
+                    dir = 1;
+                } else {
+                    dir = 3;
+                }
+                player.setDirection(dir);
+
                 //check for door intersections
                 if (checkDoors(posX, posY, newPosX, newPosY)) {
                     return;
@@ -306,9 +347,7 @@ public class GameController {
                         double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2)
                                 + Math.pow(player.getPosY() - m.getPosY(), 2));
                         if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
-                            m.attackMonster(player.getAttack()
-                                    * player.getWeapon().getDamage());
-
+                            m.attackMonster(player.getAttack() * player.getWeapon().getDamage());
                             //Give gold to player after slaying a monster
                             if (m.getHealth() == 0.0) {
                                 double modifier;
@@ -326,6 +365,7 @@ public class GameController {
                                 player.setGold(player.getGold()
                                         + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
                                 GameState screen = Controller.getState();
+                                m.setOpacity(1 - (1000.0 / (GameSettings.MONSTER_FADE_TIME * GameSettings.FPS)));
                                 //use run later to prevent any thread issues
                                 Platform.runLater(() -> {
                                     if (screen instanceof GameScreen) {
@@ -344,12 +384,7 @@ public class GameController {
             //Manage Monsters
             for (int i = 0; i < room.getMonsters().length; i++) {
                 Monster m = room.getMonsters()[i];
-                if (m == null || m.getDeathProgress() <= 0) {
-                    continue;
-                }
-                if (m.getHealth() <= 0 && m.getDeathProgress() > 0) {
-                    m.setDeathProgress(m.getDeathProgress() - .005);
-                    m.getNode().setOpacity(m.getDeathProgress());
+                if (m == null || m.getHealth() == 0) {
                     continue;
                 }
                 //check and move the monster
@@ -357,6 +392,8 @@ public class GameController {
                     monsterMove(m);
                 }
             }
+
+            refresh();
 
             //update velocity
             velX += accelX;
@@ -605,10 +642,10 @@ public class GameController {
          */
         private void movePlayer(double x, double y) {
             //Update player position
-            player.getNode().setX(getPx(x));
+//            player.getNode().setX(getPx(x));
 
             //convert game coordinates to JavaFX coordinates
-            player.getNode().setY(getPx(room.getHeight() - y - player.getHeight() * 2));
+//            player.getNode().setY(getPx(room.getHeight() - y - player.getHeight() * 2));
 
             //Move camera, if needed
             moveCamera();
@@ -621,9 +658,9 @@ public class GameController {
          * @param y Y coordinate to move to
          */
         private void moveNode(Entity e, double x, double y) {
-            ImageView node = e.getNode();
-            node.setX(getPx(x));
-            node.setY(getPx(room.getHeight() - y - e.getHeight()));
+//            ImageView node = e.getNode();
+//            node.setX(getPx(x));
+//            node.setY(getPx(room.getHeight() - y - e.getHeight()));
         }
 
         /**

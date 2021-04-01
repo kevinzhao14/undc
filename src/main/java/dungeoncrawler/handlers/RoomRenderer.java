@@ -1,8 +1,11 @@
 package dungeoncrawler.handlers;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
+import dungeoncrawler.objects.Player;
 import dungeoncrawler.objects.Room;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -21,21 +24,23 @@ public class RoomRenderer {
      * draws the room, adding all the doors, obstacles, and treasures
      * @param scene The room's scene
      * @param room The room to draw
-     * @param player the current player sprite
+     * @param canvas Canvas to draw on
      * @return a pane with all the room's doors and obstacles and treasures
      */
-    public static Pane drawRoom(Scene scene, Room room, ImageView player) {
+    public static Pane drawRoom(Scene scene, Room room, Canvas canvas) {
         Pane root = new Pane();
         Pane main = new Pane();
         Pane bgPane = new Pane();
         main.getChildren().addAll(root);
 
-        root.setMaxHeight(getPx(room.getHeight()));
-        root.setPrefHeight(getPx(room.getHeight()));
-        root.setMinHeight(getPx(room.getHeight()));
-        root.setMaxWidth(getPx(room.getWidth()));
-        root.setPrefWidth(getPx(room.getWidth()));
-        root.setMinWidth(getPx(room.getWidth()));
+        double rootHeight = getPx(room.getHeight());
+        double rootWidth = getPx(room.getWidth());
+        root.setMaxHeight(rootHeight);
+        root.setPrefHeight(rootHeight);
+        root.setMinHeight(rootHeight);
+        root.setMaxWidth(rootWidth);
+        root.setPrefWidth(rootWidth);
+        root.setMinWidth(rootWidth);
 
         //holds the dungeon image
         double roomHeight = Math.round(getPx(room.getHeight()) * 1.36363636);
@@ -53,45 +58,14 @@ public class RoomRenderer {
         root.setTranslateX(Math.round(getPx(room.getWidth()) * 0.0555555556));
         root.setTranslateY(Math.round(getPx(room.getHeight()) * 0.23863636363));
 
+        //add canvas to root
+        canvas.setHeight(rootHeight + GameSettings.CANVAS_PADDING * 2);
+        canvas.setWidth(rootWidth + GameSettings.CANVAS_PADDING * 2);
+        canvas.setTranslateX(-GameSettings.CANVAS_PADDING);
+        canvas.setTranslateY(-GameSettings.CANVAS_PADDING);
+
         main.setStyle("-fx-padding: 50px");
 
-        if (room.getObstacles() != null) {
-            for (Obstacle obstacle : room.getObstacles()) {
-                if (obstacle == null) {
-                    continue;
-                }
-                if (obstacle.getType().name().equals("KEY")) {
-                    Image image = null;
-                    ImageView imageView;
-                    imageView = new ImageView("items/key.png");
-                    imageView.setX(getPx(obstacle.getX()));
-                    imageView.setY(getPx(room.getHeight() - obstacle.getY()
-                            - obstacle.getHeight()));
-                    imageView.setFitWidth(getPx(obstacle.getWidth()));
-                    imageView.setFitHeight(getPx(obstacle.getHeight()));
-                    root.getChildren().add(imageView);
-                } else {
-                    Rectangle r = new Rectangle(getPx(obstacle.getX()),
-                            getPx(room.getHeight() - obstacle.getY() - obstacle.getHeight()),
-                            getPx(obstacle.getWidth()), getPx(obstacle.getHeight()));
-                    root.getChildren().add(r);
-                }
-
-            }
-        }
-        if (room.getMonsters() != null) {
-            for (Monster monster : room.getMonsters()) {
-                if (monster != null && monster.getHealth() > 0) {
-                    ImageView node = monster.getNode();
-                    node.setOpacity(monster.getDeathProgress());
-                    node.setFitHeight(getPx(monster.getHeight() / monster.getSpriteHeight()));
-                    node.setFitWidth(getPx(monster.getWidth() / monster.getSpriteWidth()));
-                    node.setX(getPx(monster.getPosX()));
-                    node.setY(getPx(room.getHeight() - monster.getPosY() - monster.getHeight()));
-                    root.getChildren().add(node);
-                }
-            }
-        }
         if (room.getTopDoor() != null) {
             ImageView imageView = new ImageView("textures/dungeon1-topdoor.png");
             imageView.setX(getPx(room.getTopDoor().getX()));
@@ -129,9 +103,71 @@ public class RoomRenderer {
             root.getChildren().add(imageView);
         }
         scene.getStylesheets().add("styles/" + room.getType().name() + ".css");
-        root.getChildren().add(player);
+        root.getChildren().add(canvas);
 
         return main;
+    }
+
+    public static void drawFrame(Canvas c, Room room, Player player) {
+        //clear canvas
+        GraphicsContext gc = c.getGraphicsContext2D();
+        gc.clearRect(0, 0, c.getWidth(), c.getHeight());
+        gc.setGlobalAlpha(1);
+
+        double x;
+        double y;
+        double h;
+        double w;
+        Image img;
+
+        //draw obstacles
+        if (room.getObstacles() != null) {
+            for (Obstacle obstacle : room.getObstacles()) {
+                if (obstacle == null) {
+                    continue;
+                }
+                x = getPx(obstacle.getX());
+                y = getPx(room.getHeight() - obstacle.getY() - obstacle.getHeight());
+                w = getPx(obstacle.getWidth());
+                h = getPx(obstacle.getHeight());
+                if (obstacle.getType().name().equals("KEY")) {
+                    img = new Image("items/key.png");
+                } else {
+                    img = new Image("items/" + obstacle.getType().toString().toLowerCase() + ".png");
+                }
+                drawImg(c, img, h, w, x, y);
+
+            }
+        }
+        if (room.getMonsters() != null) {
+            for (Monster m : room.getMonsters()) {
+                if (m != null && (m.getHealth() > 0 || m.getOpacity() > 0)) {
+                    h = getPx(m.getHeight() / m.getSpriteHeight());
+                    w = getPx(m.getWidth() / m.getSpriteWidth());
+                    x = getPx(m.getPosX());
+                    y = getPx(room.getHeight() - m.getPosY() - m.getHeight());
+                    c.getGraphicsContext2D().setGlobalAlpha(m.getOpacity());
+                    drawImg(c, m.getImage(), h, w, x, y);
+                    if (m.getOpacity() < 1) {
+                        m.setOpacity(m.getOpacity() - (1000.0 / (GameSettings.MONSTER_FADE_TIME * GameSettings.FPS)));
+                    }
+                }
+            }
+        }
+
+        //draw player
+        gc.setGlobalAlpha(1);
+        x = getPx(player.getPosX());
+        y = getPx(room.getHeight() - player.getPosY() - player.getHeight() * 2);
+        h = getPx(player.getHeight() * 2);
+        w = getPx(player.getWidth());
+        img = player.getImage();
+        drawImg(c, img, h, w, x, y);
+    }
+
+    private static void drawImg(Canvas c, Image img, double h, double w, double x, double y) {
+        GraphicsContext gc = c.getGraphicsContext2D();
+        gc.drawImage(img, x + GameSettings.CANVAS_PADDING, y + GameSettings.CANVAS_PADDING, w, h);
     }
 
     /**

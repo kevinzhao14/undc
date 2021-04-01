@@ -1,7 +1,7 @@
 package dungeoncrawler.objects;
 
 
-import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
 
 /**
  * Implementation of the Entity abstract class
@@ -19,17 +19,17 @@ public abstract class Entity {
     private double posX;
     private double posY;
     private double attackCooldown;
-    private ImageView node;
+    private Image node;
     private double spriteWidth;
     private double spriteHeight;
 
-    public Entity(int maxHealth, double attack, double height, double width, ImageView node) {
+    public Entity(int maxHealth, double attack, double height, double width, String node) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.attack = attack;
         this.height = height;
         this.width = width;
-        this.node = node;
+        this.node = (node == null) ? null : new Image(node);
         this.spriteHeight = 1;
         this.spriteWidth = 1;
     }
@@ -77,12 +77,20 @@ public abstract class Entity {
         this.attackCooldown = attackCooldown;
     }
 
-    public ImageView getNode() {
+    public String getNode() {
+        return node.getUrl();
+    }
+
+    public void setNode(String node) {
+        this.node = new Image(node);
+    }
+
+    public Image getImage() {
         return node;
     }
 
-    public void setNode(ImageView node) {
-        this.node = node;
+    public void setImage(Image image) {
+        this.node = image;
     }
 
     public String toString() {

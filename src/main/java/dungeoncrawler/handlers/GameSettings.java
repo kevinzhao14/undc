@@ -58,7 +58,7 @@ public class GameSettings {
 
     //monster generation settings
     public static final int MIN_MONSTERS = 1;
-    public static final int MAX_MONSTERS = 2;
+    public static final int MAX_MONSTERS = 1;
 
     //monster kill reward settings
     public static final double MONSTER_KILL_GOLD = 20;
@@ -74,4 +74,7 @@ public class GameSettings {
     public static final int MONSTER_ATTACK_RANGE = 10;
     //monster reaction time to a player being in range in milliseconds
     public static final int MONSTER_REACTION_TIME = 300;
+    public static final int MONSTER_FADE_TIME = 400;
+
+    public static final int CANVAS_PADDING = 50;
 }

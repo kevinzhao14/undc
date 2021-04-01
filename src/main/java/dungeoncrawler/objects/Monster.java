@@ -18,11 +18,10 @@ public class Monster extends Entity {
     private HBox healthBar;
     private double reaction;
     private LinkedList<double[]> moveQueue;
-
-    private double deathProgress = 1; // -> 0
+    private double opacity;
 
     public Monster(int maxHealth, double attack, double speed, double attackSpeed, MonsterType type,
-                   double height, double width, ImageView node) {
+                   double height, double width, String node) {
 
         //healthBar should be instantiated and assigned in this Monster constructor
         super(maxHealth, attack, height, width, node);
@@ -31,12 +30,12 @@ public class Monster extends Entity {
         this.attackSpeed = attackSpeed;
         this.reaction = -1;
         moveQueue = new LinkedList<>();
+        opacity = 1;
     }
 
     public Monster(Monster m, double modifier) {
         this((int) (m.getMaxHealth() * modifier), m.getAttack() * modifier, m.speed,
-                m.attackSpeed, m.type, m.getHeight(), m.getWidth(),
-                new ImageView(m.getNode().getImage().getUrl()));
+                m.attackSpeed, m.type, m.getHeight(), m.getWidth(), m.getNode());
     }
 
     //need to implement
@@ -45,14 +44,6 @@ public class Monster extends Entity {
         if (getHealth() <= 0) {
             System.out.println("Monster slain.");
         }
-    }
-
-    public double getDeathProgress() {
-        return deathProgress;
-    }
-
-    public void setDeathProgress(double deathProgress) {
-        this.deathProgress = deathProgress;
     }
 
     public double getReaction() {
@@ -82,5 +73,13 @@ public class Monster extends Entity {
 
     public MonsterType getType() {
         return this.type;
+    }
+
+    public double getOpacity() {
+        return opacity;
+    }
+
+    public void setOpacity(double opacity) {
+        this.opacity = opacity;
     }
 }

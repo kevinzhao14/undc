@@ -1,8 +1,16 @@
 package dungeoncrawler.objects;
 
 import dungeoncrawler.handlers.GameSettings;
+import javafx.scene.image.Image;
 
-public class Player extends Entity {
+public class Player extends Entity{
+    private static Image[] sprites = new Image[]{
+            new Image("player/player-left.png"),
+            new Image("player/player-up.png"),
+            new Image("player/player-right.png"),
+            new Image("player/player-down.png")
+    };
+
     private Weapon weapon;
     private int gold;
     public Player(int maxHealth, double attack, Weapon weapon) {
@@ -14,14 +22,15 @@ public class Player extends Entity {
     public Weapon getWeapon() {
         return this.weapon;
     }
-    public void setWeapon(Weapon weapon) {
-        this.weapon = weapon;
-    }
 
     public int getGold() {
         return this.gold;
     }
     public void setGold(int gold) {
         this.gold = gold;
+    }
+
+    public void setDirection(int dir) {
+        this.setImage(sprites[dir]);
     }
 }
