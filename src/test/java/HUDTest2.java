@@ -1,20 +1,17 @@
 import dungeoncrawler.controllers.Controller;
 import dungeoncrawler.gamestates.GameScreen;
-import javafx.scene.control.Label;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import org.junit.Assert;
 import org.junit.Test;
 import org.testfx.api.FxAssert;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.base.NodeMatchers;
-import org.testfx.matcher.control.TextMatchers;
 import org.testfx.robot.impl.BaseRobotImpl;
 import org.testfx.robot.impl.SleepRobotImpl;
 import org.testfx.robot.impl.WriteRobotImpl;
 import org.testfx.service.finder.impl.WindowFinderImpl;
 
-
-public class HUDTest extends ApplicationTest {
+public class HUDTest2 extends ApplicationTest {
 
     private Controller c;
 
@@ -24,9 +21,8 @@ public class HUDTest extends ApplicationTest {
         c.start(stage);
     }
 
-
     @Test
-    public void testDeath() {
+    public void testHealthBar() {
         clickOn("Start");
         clickOn("Enter player name:");
         WriteRobotImpl r = new WriteRobotImpl(
@@ -36,13 +32,11 @@ public class HUDTest extends ApplicationTest {
         clickOn("Sword");
         clickOn("Next");
 
-        ((GameScreen) c.getState()).getPlayer().setHealth(0);
-        FxAssert.verifyThat(new Label("GAME OVER"), NodeMatchers.isNotNull());
-        Assert.assertNotNull(TextMatchers.hasText("GAME OVER"));
+        double health = ((GameScreen) c.getState()).getPlayer().getHealth();
+        double maxHealth = ((GameScreen) c.getState()).getPlayer().getMaxHealth();
+
+        FxAssert.verifyThat(new Rectangle((health / maxHealth) * 150, 20),
+                NodeMatchers.isNotNull());
     }
-
-
-
-
 
 }
