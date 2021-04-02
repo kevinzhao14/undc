@@ -13,10 +13,13 @@ public class Player extends Entity {
 
     private Weapon weapon;
     private int gold;
+    private Inventory inventory;
+
     public Player(int maxHealth, double attack, Weapon weapon) {
         super(maxHealth, attack, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH, null);
         this.weapon = weapon;
         this.gold = 0;
+        this.inventory = new Inventory(GameSettings.INVENTORY_ROWS, GameSettings.INVENTORY_COLUMNS);
     }
 
     public Weapon getWeapon() {
@@ -33,4 +36,9 @@ public class Player extends Entity {
     public void setDirection(int dir) {
         this.setImage(sprites[dir]);
     }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
 }
