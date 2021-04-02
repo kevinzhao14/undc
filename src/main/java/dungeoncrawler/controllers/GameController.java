@@ -50,20 +50,6 @@ public class GameController {
     private boolean isAttacking;
 
     /**
-     * Constructor for a GameController.
-     * @param player Player node
-     */
-    public GameController(Player player) {
-        if (player == null) {
-            throw new IllegalArgumentException(
-                    "Cannot assign null Player reference to GameController instance"
-            );
-        }
-        this.player = player;
-        this.controls = new Controls();
-    }
-
-    /**
      * Secondary constructor for no player
      */
     public GameController() {
@@ -75,6 +61,8 @@ public class GameController {
      * @param room Current/first room
      */
     public void start(Room room) {
+        reset();
+
         //Render room
         setRoom(room);
         scene = Controller.getState().getScene();
@@ -121,7 +109,7 @@ public class GameController {
             Platform.runLater(() -> ((GameScreen) Controller.getState()).setRoom(newRoom));
         } else {
             stop();
-            throw new IllegalStateException("Illegal GameState");
+            System.out.println("Error: Illegal GameState");
         }
     }
 
@@ -129,8 +117,6 @@ public class GameController {
      * Updates data after room change.
      */
     public void updateRoom() {
-        reset();
-        resetPos();
         pause();
     }
 
@@ -159,7 +145,6 @@ public class GameController {
         pressDown = false;
         frictionX = false;
         frictionY = false;
-        resetPos();
     }
 
     /**
@@ -202,18 +187,11 @@ public class GameController {
      * @param isPress Whether the event is a press or release event
      */
     private void handleKey(String key, boolean isPress) {
-        if (isStopped) {
-            return;
-        }
         //Global key binds, regardless of game play/pause state
         if (key.equals(controls.getKey("pause"))) {
             if (!isPress) {
                 pause();
             }
-        }
-
-        if (!isRunning) {
-            return;
         }
         //movement keys
         int sign = 0;
@@ -266,15 +244,6 @@ public class GameController {
      */
     private double round(double number) {
         return Math.round(number * GameSettings.PRECISION) / GameSettings.PRECISION;
-    }
-
-    /**
-     * Converts game units to pixels for rendering.
-     * @param units Game units
-     * @return pixel equivalent
-     */
-    private double getPx(double units) {
-        return units * GameSettings.PPU;
     }
 
     private void refresh() {

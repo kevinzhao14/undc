@@ -44,11 +44,6 @@ public class GameScreen extends GameState {
         canvas = new Canvas();
     }
 
-    public GameScreen(DungeonLayout existingDungeon, int width, int height) {
-        scene = new Scene(new Pane(), width, height);
-        canvas = new Canvas();
-    }
-
     public void start() {
         game = new GameController();
         createPlayer();
@@ -90,7 +85,6 @@ public class GameScreen extends GameState {
         StackPane root = new StackPane();
 
         //create player and hud
-        //createPlayer();
         game.resetPos();
         createHud();
 
@@ -109,7 +103,6 @@ public class GameScreen extends GameState {
         } else {
             Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
             root.getChildren().addAll(roomPane, hud);
-            //set player position
             if (scene.getRoot().getChildrenUnmodifiable().size() > 0) {
                 fadeIn(roomPane);
             } else {
