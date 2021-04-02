@@ -56,6 +56,9 @@ public class GameSettings {
     public static final int PLAYER_HEALTH = 100;
     public static final int PLAYER_ATTACK_RANGE = 20;
 
+    public static final int INVENTORY_ROWS = 2;
+    public static final int INVENTORY_COLUMNS = 5;
+
     //monster generation settings
     public static final int MIN_MONSTERS = 1;
     public static final int MAX_MONSTERS = 1;
