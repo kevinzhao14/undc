@@ -1,13 +1,14 @@
 package dungeoncrawler.objects;
 
+import javafx.scene.image.Image;
+
 /**
  * Class for handling all weapon types.
  *
  * @version 1.0
  * @author Kevin Zhao
  */
-public class Weapon extends Item{
-    private String name;
+public class Weapon extends Item {
     //damage per hit
     private double damage;
     //number of seconds between hits
@@ -19,9 +20,12 @@ public class Weapon extends Item{
      * @param spriteLocation Sprite of the weapon
      * @param damage Damage dealt per hit
      * @param attackSpeed Attack speed of the weapon, in seconds per attack
+     * @param droppable whether Weapon is droppable or not
      */
-    public Weapon(String name, String spriteLocation, double damage, double attackSpeed) {
-        super(spriteLocation, name);
+    public Weapon(String name, String spriteLocation, double damage, double attackSpeed, boolean droppable) {
+        //super(spriteLocation, name);
+        super(new Image(spriteLocation), name, 1, droppable);
+        //this.sprite = spriteLocation == null ? null : new ImageView(spriteLocation);
         this.damage = damage;
         this.attackSpeed = attackSpeed;
     }
@@ -30,23 +34,11 @@ public class Weapon extends Item{
      * Empty constructor for a weapon.
      */
     public Weapon() {
-        this("", null, 0, 0);
+        this("", null, 0, 0, false);
     }
 
     public Weapon copy() {
-        Weapon copy = new Weapon();
-        copy.name = this.name;
-        copy.damage = this.damage;
-        copy.attackSpeed = this.attackSpeed;
-        return copy;
-    }
-
-    /**
-     * Getter for the weapon's name.
-     * @return The name of the weapon
-     */
-    public String getName() {
-        return this.name;
+        return new Weapon(getName(), getSprite().getUrl(), damage, attackSpeed, isDroppable());
     }
 
     public double getAttackSpeed() {
