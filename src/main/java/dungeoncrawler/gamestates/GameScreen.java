@@ -288,4 +288,7 @@ public class GameScreen extends GameState {
     public GameController getGame() {
         return game;
     }
+    public Room getRoom() {
+        return room;
+    }
 }
