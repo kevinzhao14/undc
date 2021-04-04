@@ -305,46 +305,8 @@ public class GameController {
             if (isAttacking && player.getAttackCooldown() == 0.0) {
                 player.setAttackCooldown(1000 * player.getWeapon().getAttackSpeed());
                 for (Monster m : room.getMonsters()) {
-                    //if (m != null && m.getHealth() > 0) {
                     if (m != null) {
                         m.attackMonster(player, player.getAttack() * player.getWeapon().getDamage());
-                        /*
-                        double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2)
-                                + Math.pow(player.getPosY() - m.getPosY(), 2));
-                        if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
-                            m.attackMonster(player.getAttack() * player.getWeapon().getDamage());
-                            //Give gold to player after slaying a monster
-                            if (m.getHealth() == 0.0) {
-                                double modifier;
-                                switch (Controller.getDataManager().getDifficulty()) {
-                                case MEDIUM:
-                                    modifier = GameSettings.MODIFIER_MEDIUM;
-                                    break;
-                                case HARD:
-                                    modifier = GameSettings.MODIFIER_HARD;
-                                    break;
-                                default:
-                                    modifier = 1.0;
-                                    break;
-                                }
-                                player.setGold(player.getGold()
-                                        + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
-                                GameState screen = Controller.getState();
-                                m.setOpacity(1 - (1000.0 / (GameSettings.MONSTER_FADE_TIME
-                                        * GameSettings.FPS)));
-                                //use run later to prevent any thread issues
-                                Platform.runLater(() -> {
-                                    if (screen instanceof GameScreen) {
-                                        ((GameScreen) screen).updateHud();
-                                    } else {
-                                        pause();
-                                        throw new IllegalStateException("Illegal Game State.");
-                                    }
-                                });
-                            }
-                        }
-                         */
-
                     }
                 }
             }
