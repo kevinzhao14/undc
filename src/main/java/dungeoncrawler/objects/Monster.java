@@ -55,14 +55,6 @@ public class Monster extends Entity {
                 m.attackSpeed, m.type, m.getHeight(), m.getWidth());
     }
 
-    //need to implement
-    public void attackMonster(double dmgAmt) {
-        this.setHealth(Math.max(0, this.getHealth() - dmgAmt));
-        if (getHealth() <= 0) {
-            System.out.println("Monster slain.");
-        }
-    }
-
     public void attackMonster(Player player, double damageAmount) {
         if (this.getHealth() > 0) {
             double dist = Math.sqrt(Math.pow(player.getPosX() - this.getPosX(), 2)
