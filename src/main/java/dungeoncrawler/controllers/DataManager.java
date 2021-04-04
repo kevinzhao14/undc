@@ -2,6 +2,7 @@ package dungeoncrawler.controllers;
 
 import dungeoncrawler.handlers.Difficulty;
 import dungeoncrawler.handlers.GameSettings;
+import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.MonsterType;
 import dungeoncrawler.objects.Weapon;
@@ -18,6 +19,9 @@ public class DataManager {
         new Weapon("Mace", "weapons/mace.png", 12, 0.75, false),
         new Weapon("Sword", "weapons/sword.png", 8, 0.5, false)
     };
+
+    //NEED TO FILL IN FOR Monster.dropItems() method
+    public static final Item[] DROPPABLE_ITEMS = new Item[] {};
 
     public static final Monster[] MONSTERS = new Monster[]{
         new Monster(20, 4, 150.0 / GameSettings.FPS, 0.5, MonsterType.FAST, 22, 18),
