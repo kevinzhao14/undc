@@ -23,6 +23,8 @@ public abstract class Item {
         name = itemName;
     }
 
+    public abstract Item copy();
+
     public void setSprite(Image img) {
         sprite = img;
     }
