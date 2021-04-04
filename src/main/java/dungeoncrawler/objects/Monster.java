@@ -141,9 +141,10 @@ public class Monster extends Entity {
                 randDist = maxRadius * generator.nextDouble();
                 //generate randAngle
                 randAngle = 2 * Math.PI * generator.nextDouble();
+
                 //calculate x and y
-                x = randDist * Math.cos(randAngle);
-                y = randDist * Math.sin(randAngle);
+                x = getPosX() + (randDist * Math.cos(randAngle));
+                y = getPosY() + (randDist * Math.sin(randAngle));
 
                 isValidLocation = (x > 0.0 && x < roomWidth && y > 0.0 && y < roomHeight);
             }
