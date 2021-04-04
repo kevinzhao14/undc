@@ -5,14 +5,14 @@ import javafx.scene.image.Image;
 public class Bomb extends Item {
     private double damage;
     private double radius;
-    private double fuseRoom;
+    private double fuse;
 
     public Bomb(String name, String spriteLocation, int stackSize,
                 double damage, double radius, double fuseRoom) {
         super(new Image(spriteLocation), name, stackSize, true);
         this.damage = damage;
         this.radius = radius;
-        this.fuseRoom = fuseRoom;
+        this.fuse = fuse;
     }
 
     public double getDamage() {
@@ -28,9 +28,9 @@ public class Bomb extends Item {
         this.radius = radius;
     }
     public double getFuseRoom() {
-        return this.fuseRoom;
+        return this.fuse;
     }
-    public void setFuseRoom(double fuseRoom) {
-        this.fuseRoom = fuseRoom;
+    public void setFuseRoom(double fuse) {
+        this.fuse = fuse;
     }
 }
