@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.scene.layout.HBox;
 
 import java.util.LinkedList;
+import java.util.Random;
 
 /**
  * Implementation of the Monster class
@@ -100,6 +101,59 @@ public class Monster extends Entity {
 
 
 
+    }
+
+    public DroppedItem[] dropItems() {
+        Random generator = new Random();
+
+        //Calculate number of items to drop
+        int numItems = GameSettings.MIN_ITEM_DROP
+                + generator.nextInt(GameSettings.MAX_ITEM_DROP - GameSettings.MIN_ITEM_DROP + 1);
+
+        DroppedItem[] droppedItems = new DroppedItem[numItems];
+
+        //Maximum distance between monster death location and item spawn location
+        double maxRadius = 1.5 * getWidth();
+        double x = getPosX();   //x-pos of item spawn
+        double y = getPosY();   //y-pos of item spawn
+        boolean isValidLocation = false; //flag for whether item spawn location is valid
+
+        int randIdx;    //index of random item to drop
+        double randDist;   //random distance between item and monster
+        double randAngle;  //random angle at which item is created
+
+        double roomWidth = ((GameScreen) Controller.getState()).getRoom().getWidth();
+        double roomHeight = ((GameScreen) Controller.getState()).getRoom().getHeight();
+
+        for (int i = 0; i < numItems; i++) {
+            isValidLocation = false; //reset flag
+
+            randIdx = generator.nextInt(Controller.getDataManager().DROPPABLE_ITEMS.length);
+            droppedItems[i] = new DroppedItem(
+                    Controller.getDataManager().DROPPABLE_ITEMS[randIdx].copy());
+
+            //Set width and height
+            droppedItems[i].setW(droppedItems[i].getItem().getSprite().getWidth());
+            droppedItems[i].setH(droppedItems[i].getItem().getSprite().getHeight());
+
+            //Keep generating x and y position of item until an acceptable one is found
+            while (!isValidLocation) {
+                //generate randDist between item and monster
+                randDist = maxRadius * generator.nextDouble();
+                //generate randAngle
+                randAngle = 2 * Math.PI * generator.nextDouble();
+                //calculate x and y
+                x = randDist * Math.cos(randAngle);
+                y = randDist * Math.sin(randAngle);
+
+                isValidLocation = (x > 0.0 && x < roomWidth && y > 0.0 && y < roomHeight);
+            }
+
+            //Set x and y
+            droppedItems[i].setX(x);
+            droppedItems[i].setY(y);
+        }
+        return droppedItems;
     }
 
     public double getReaction() {
