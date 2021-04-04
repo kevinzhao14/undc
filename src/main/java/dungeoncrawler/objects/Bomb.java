@@ -1,13 +1,15 @@
 package dungeoncrawler.objects;
 
-public class Bomb extends Item {
-    double damage;
-    double radius;
-    double fuseRoom;
+import javafx.scene.image.Image;
 
-    public Bomb(double damage, double radius, double fuseRoom) {
-        //dummy path for now
-        super("Bomb path", "Bomb");
+public class Bomb extends Item {
+    private double damage;
+    private double radius;
+    private double fuseRoom;
+
+    public Bomb(String name, String spriteLocation, int stackSize,
+                double damage, double radius, double fuseRoom) {
+        super(new Image(spriteLocation), name, stackSize, true);
         this.damage = damage;
         this.radius = radius;
         this.fuseRoom = fuseRoom;
