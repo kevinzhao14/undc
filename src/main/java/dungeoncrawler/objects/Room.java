@@ -15,6 +15,7 @@ public class Room {
     private boolean visited;
     private Obstacle[] obstacles;
     private Monster[] monsters;
+    private DroppedItem[] droppedItems;
     private Door topDoor;
     private Door bottomDoor;
     private Door rightDoor;
@@ -45,6 +46,7 @@ public class Room {
         this.rightDoor = null;
         this.leftDoor = null;
         this.type = roomType;
+        this.droppedItems = new DroppedItem[100];
 
         //Need to change this later
         this.monsters = null;
@@ -187,4 +189,7 @@ public class Room {
     }
 
 
+    public DroppedItem[] getDroppedItems() {
+        return droppedItems;
+    }
 }
