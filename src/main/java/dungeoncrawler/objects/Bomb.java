@@ -15,6 +15,10 @@ public class Bomb extends Item {
         this.fuse = fuse;
     }
 
+    public Bomb copy() {
+        return new Bomb(getName(), getSprite().getUrl(), getMaxStackSize(),
+                getDamage(), getRadius(), getFuseRoom());
+    }
     public double getDamage() {
         return this.damage;
     }
