@@ -1,5 +1,10 @@
 package dungeoncrawler.objects;
 
+import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.gamestates.GameScreen;
+import dungeoncrawler.gamestates.GameState;
+import dungeoncrawler.handlers.GameSettings;
+import javafx.application.Platform;
 import javafx.scene.layout.HBox;
 
 import java.util.LinkedList;
@@ -57,6 +62,53 @@ public class Monster extends Entity {
         if (getHealth() <= 0) {
             System.out.println("Monster slain.");
         }
+    }
+
+    public void attackMonster(Player player, double damageAmount) {
+        if (this.getHealth() > 0) {
+            double dist = Math.sqrt(Math.pow(player.getPosX() - this.getPosX(), 2)
+                    + Math.pow(player.getPosY() - this.getPosY(), 2));
+            if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
+                this.setHealth(Math.max(0, this.getHealth() - damageAmount));
+                if (getHealth() <= 0) {
+                    System.out.println("Monster slain.");
+                }
+                //Give gold to player after slaying a monster
+                if (this.getHealth() == 0.0) {
+                    double modifier;
+                    switch (Controller.getDataManager().getDifficulty()) {
+                    case MEDIUM:
+                        modifier = GameSettings.MODIFIER_MEDIUM;
+                        break;
+                    case HARD:
+                        modifier = GameSettings.MODIFIER_HARD;
+                        break;
+                    default:
+                        modifier = 1.0;
+                        break;
+                    }
+                    player.setGold(player.getGold()
+                            + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
+                    GameState screen = Controller.getState();
+                    this.setOpacity(1 - (1000.0 / (GameSettings.MONSTER_FADE_TIME
+                            * GameSettings.FPS)));
+                    //use run later to prevent any thread issues
+                    if (screen instanceof GameScreen) {
+                        Platform.runLater(() -> {
+                            ((GameScreen) screen).updateHud();
+                        });
+                    } else {
+                        Platform.runLater(() -> {
+                            ((GameScreen) screen).getGame().pause();
+                            throw new IllegalStateException("Illegal Game State.");
+                        });
+                    }
+                }
+            }
+        }
+
+
+
     }
 
     public double getReaction() {
