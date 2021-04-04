@@ -3,14 +3,14 @@ package dungeoncrawler.objects;
 public class Bomb extends Item {
     double damage;
     double radius;
-    double fuseRoom;
+    double fuse;
 
-    public Bomb(double damage, double radius, double fuseRoom) {
+    public Bomb(double damage, double radius, double fuse) {
         //dummy path for now
         super("Bomb path", "Bomb");
         this.damage = damage;
         this.radius = radius;
-        this.fuseRoom = fuseRoom;
+        this.fuse = fuse;
     }
 
     public double getDamage() {
@@ -26,9 +26,9 @@ public class Bomb extends Item {
         this.radius = radius;
     }
     public double getFuseRoom() {
-        return this.fuseRoom;
+        return this.fuse;
     }
-    public void setFuseRoom(double fuseRoom) {
-        this.fuseRoom = fuseRoom;
+    public void setFuseRoom(double fuse) {
+        this.fuse = fuse;
     }
 }

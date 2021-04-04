@@ -14,7 +14,6 @@ public class Monster extends Entity {
     private MonsterType type;
     private double speed;
     private double attackSpeed;
-    private HBox healthBar;
     private double reaction;
     private LinkedList<double[]> moveQueue;
     private double opacity;

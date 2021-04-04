@@ -8,7 +8,7 @@ import javafx.scene.image.ImageView;
  * @version 1.0
  * @author Kevin Zhao
  */
-public class Weapon extends Item{
+public class Weapon extends Item {
     private String name;
     private ImageView sprite;
     //damage per hit
