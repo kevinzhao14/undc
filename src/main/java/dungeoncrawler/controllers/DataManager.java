@@ -14,9 +14,9 @@ import dungeoncrawler.objects.Weapon;
  */
 public class DataManager {
     public static final Weapon[] WEAPONS = new Weapon[]{
-        new Weapon("Axe", "weapons/axe.png", 16, 1),
-        new Weapon("Mace", "weapons/mace.png", 12, 0.75),
-        new Weapon("Sword", "weapons/sword.png", 8, 0.5),
+        new Weapon("Axe", "weapons/axe.png", 1, 1, false),
+        new Weapon("Mace", "weapons/mace.png", 12, 0.75, false),
+        new Weapon("Sword", "weapons/sword.png", 8, 0.5, false)
     };
 
     public static final Monster[] MONSTERS = new Monster[]{
