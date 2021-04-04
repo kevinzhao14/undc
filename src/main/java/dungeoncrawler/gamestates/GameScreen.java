@@ -285,4 +285,7 @@ public class GameScreen extends GameState {
     public Canvas getCanvas() {
         return canvas;
     }
+    public GameController getGame() {
+        return game;
+    }
 }
