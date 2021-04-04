@@ -8,7 +8,7 @@ import javafx.scene.image.ImageView;
  * @version 1.0
  * @author Kevin Zhao
  */
-public class Weapon {
+public class Weapon extends Item{
     private String name;
     private ImageView sprite;
     //damage per hit
@@ -24,7 +24,7 @@ public class Weapon {
      * @param attackSpeed Attack speed of the weapon, in seconds per attack
      */
     public Weapon(String name, String spriteLocation, double damage, double attackSpeed) {
-        this.name = name;
+        super(spriteLocation, name);
         this.sprite = spriteLocation == null ? null : new ImageView(spriteLocation);
         this.damage = damage;
         this.attackSpeed = attackSpeed;
