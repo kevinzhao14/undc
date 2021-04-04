@@ -105,7 +105,6 @@ public class Monster extends Entity {
 
     public DroppedItem[] dropItems() {
         Random generator = new Random();
-
         //Calculate number of items to drop
         int numItems = GameSettings.MIN_ITEM_DROP
                 + generator.nextInt(GameSettings.MAX_ITEM_DROP - GameSettings.MIN_ITEM_DROP + 1);
