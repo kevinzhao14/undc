@@ -1,4 +1,5 @@
 package dungeoncrawler.objects;
+import javafx.scene.image.Image;
 
 /**
  * Implementation of the Potion data class
@@ -11,13 +12,13 @@ public class Potion extends Item {
 
     public Potion(String path, String itemName, int stackSize,
                   boolean isDroppable, PotionType potionType, double potionModifier) {
-        super(path, itemName, stackSize, isDroppable);
+        super(new Image(path), itemName, stackSize, isDroppable);
         type = potionType;
         modifier = potionModifier;
     }
 
     public Potion(String path, String itemName, PotionType potionType) {
-        super(path, itemName);
+        super(new Image(path), itemName);
         type = potionType;
     }
 
