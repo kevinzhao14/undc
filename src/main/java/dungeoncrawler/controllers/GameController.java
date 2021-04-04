@@ -305,7 +305,10 @@ public class GameController {
             if (isAttacking && player.getAttackCooldown() == 0.0) {
                 player.setAttackCooldown(1000 * player.getWeapon().getAttackSpeed());
                 for (Monster m : room.getMonsters()) {
-                    if (m != null && m.getHealth() > 0) {
+                    //if (m != null && m.getHealth() > 0) {
+                    if (m != null) {
+                        m.attackMonster(player, player.getAttack() * player.getWeapon().getDamage());
+                        /*
                         double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2)
                                 + Math.pow(player.getPosY() - m.getPosY(), 2));
                         if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
@@ -340,6 +343,8 @@ public class GameController {
                                 });
                             }
                         }
+                         */
+
                     }
                 }
             }
