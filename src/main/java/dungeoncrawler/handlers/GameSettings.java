@@ -66,6 +66,10 @@ public class GameSettings {
     //monster kill reward settings
     public static final double MONSTER_KILL_GOLD = 20;
 
+    //monster drop reward settings
+    public static final int MIN_ITEM_DROP = 0;
+    public static final int MAX_ITEM_DROP = 4;
+
     //difficulty modifier
     public static final double MODIFIER_MEDIUM = 1.5;
     public static final double MODIFIER_HARD = 2;
