@@ -20,6 +20,19 @@ public class DroppedItem {
         this(item, 0.0, 0.0, 0.0, 0.0);
     }
 
+    public void setX(double x) {
+        this.x = x;
+    }
+    public void setY(double y) {
+        this.y = y;
+    }
+    public void setW(double w) {
+        this.w = w;
+    }
+    public void setH(double h) {
+        this.h = h;
+    }
+
     public Item getItem() {
         return item;
     }
