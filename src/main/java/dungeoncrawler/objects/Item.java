@@ -1,4 +1,5 @@
 package dungeoncrawler.objects;
+import javafx.scene.image.Image;
 
 /**
  * Implementation of the Item abstract data class
@@ -6,24 +7,24 @@ package dungeoncrawler.objects;
  * @author Manas Harbola
  */
 public abstract class Item {
-    private String sprite;
+    private Image sprite;
     private String name;
     private int maxStackSize;
     private boolean droppable;
 
-    public Item(String path, String itemName, int stackSize, boolean isDroppable) {
-        sprite = path;
+    public Item(Image img, String itemName, int stackSize, boolean isDroppable) {
+        sprite = img;
         name = itemName;
         maxStackSize = stackSize;
         droppable = isDroppable;
     }
-    public Item(String path, String itemName) {
+    public Item(Image path, String itemName) {
         sprite = path;
         name = itemName;
     }
 
-    public void setSpritePath(String path) {
-        sprite = path;
+    public void setSprite(Image img) {
+        sprite = img;
     }
     public void setName(String itemName) {
         name = itemName;
@@ -35,7 +36,7 @@ public abstract class Item {
         droppable = isDroppable;
     }
 
-    public String getSpritePath() {
+    public Image getSprite() {
         return sprite;
     }
     public String getName() {
@@ -47,4 +48,6 @@ public abstract class Item {
     public boolean isDroppable() {
         return droppable;
     }
+
+
 }
