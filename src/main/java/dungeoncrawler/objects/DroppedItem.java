@@ -4,16 +4,16 @@ public class DroppedItem {
     private Item item;
     private double x;
     private double y;
-    private double w;
-    private double h;
+    private double width;
+    private double height;
 
     public DroppedItem(Item item, double x, double y,
                        double w, double h) {
         this.item = item;
         this.x = x;
         this.y = y;
-        this.w = w;
-        this.h = h;
+        this.width = w;
+        this.height = h;
     }
 
     public DroppedItem(Item item) {
@@ -26,11 +26,11 @@ public class DroppedItem {
     public void setY(double y) {
         this.y = y;
     }
-    public void setW(double w) {
-        this.w = w;
+    public void setWidth(double w) {
+        this.width = w;
     }
-    public void setH(double h) {
-        this.h = h;
+    public void setHeight(double h) {
+        this.height = h;
     }
 
     public Item getItem() {
@@ -42,10 +42,10 @@ public class DroppedItem {
     public double getY() {
         return y;
     }
-    public double getW() {
-        return w;
+    public double getWidth() {
+        return width;
     }
-    public double getH() {
-        return h;
+    public double getHeight() {
+        return height;
     }
 }

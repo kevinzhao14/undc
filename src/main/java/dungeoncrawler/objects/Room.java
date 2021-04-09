@@ -1,5 +1,8 @@
 package dungeoncrawler.objects;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Room class implementation for handling game room
  * obstacles and doors.
@@ -15,7 +18,7 @@ public class Room {
     private boolean visited;
     private Obstacle[] obstacles;
     private Monster[] monsters;
-    private DroppedItem[] droppedItems;
+    private ArrayList<DroppedItem> droppedItems;
     private Door topDoor;
     private Door bottomDoor;
     private Door rightDoor;
@@ -46,7 +49,7 @@ public class Room {
         this.rightDoor = null;
         this.leftDoor = null;
         this.type = roomType;
-        this.droppedItems = new DroppedItem[100];
+        this.droppedItems = new ArrayList<>();
 
         //Need to change this later
         this.monsters = null;
@@ -189,7 +192,7 @@ public class Room {
     }
 
 
-    public DroppedItem[] getDroppedItems() {
+    public ArrayList<DroppedItem> getDroppedItems() {
         return droppedItems;
     }
 }

@@ -7,6 +7,9 @@ import dungeoncrawler.objects.Door;
 import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
+import dungeoncrawler.objects.DroppedItem;
+import dungeoncrawler.objects.InventoryItem;
+import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
 import dungeoncrawler.objects.Player;
@@ -282,13 +285,13 @@ public class GameController {
                 //set player sprite
                 int dir;
                 if (newPosX < posX) {
-                    dir = 0;
+                    dir = 4;
                 } else if (newPosX > posX) {
-                    dir = 2;
+                    dir = 6;
                 } else if (newPosY > posY) {
-                    dir = 1;
+                    dir = 5;
                 } else {
-                    dir = 3;
+                    dir = 7;
                 }
                 player.setDirection(dir);
 
@@ -298,6 +301,35 @@ public class GameController {
                 }
                 player.setPosX(newPosX);
                 player.setPosY(newPosY);
+            }
+
+            //check item pickup
+            droploop:
+            for (int i = 0; i < room.getDroppedItems().size(); i++) {
+                DroppedItem d = room.getDroppedItems().get(i);
+                double distX = (player.getPosX() + player.getWidth() / 2) - (d.getX() + d.getWidth() / 2);
+                double distY = (player.getPosY() + player.getHeight() / 2) - (d.getY() + d.getHeight() / 2);
+                double dist = round(Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2)));
+                //pick up item
+                if (dist <= GameSettings.PLAYER_PICKUP_RANGE) {
+                    //check for item existing in inventory
+                    for (InventoryItem[] row : player.getInventory().getItems()) {
+                        for (InventoryItem item : row) {
+                            //if item exists and is not max stack
+                            if (item.getItem().equals(d.getItem()) && item.getQuantity() < item.getItem().getMaxStackSize()) {
+                                item.setQuantity(item.getQuantity() + 1);
+                                continue droploop;
+                            }
+                        }
+                    }
+                    //not in inventory or inventory items are full
+                    if (!player.getInventory().full()) {
+                        player.getInventory().add(d.getItem());
+                        //remove dropped item
+                        room.getDroppedItems().remove(i);
+                        i--;
+                    }
+                }
             }
 
             player.setAttackCooldown(Math.max(0.0,
@@ -326,23 +358,33 @@ public class GameController {
             refresh();
 
             //update velocity
+            double ovx = velX;
+            double ovy = velY;
             velX += accelX;
             velX = round(velX);
             velY += accelY;
             velY = round(velY);
+            System.out.println(ovx + " " + velX + " " + accelX);
 
             //don't allow speed to exceed max
             if (Math.abs(velX) >= GameSettings.MAX_VEL) {
                 velX = (velX > 0 ? 1 : -1) * GameSettings.MAX_VEL;
                 //was moving before and decelerated to 0
-            } else if (frictionX && Math.abs(round(velX - accelX)) < Math.abs(accelX)) {
+            } else if (frictionX && Math.abs(ovx) <= Math.abs(accelX)) {
+                System.out.println("Stopping X " + ovx);
+                if (velY == 0) {
+                    player.setDirection((ovx > 0) ? 2 : 0);
+                }
                 velX = 0;
                 accelX -= (accelX > 0 ? 1 : -1) * GameSettings.FRICTION;
                 frictionX = false;
             }
             if (Math.abs(velY) >= GameSettings.MAX_VEL) {
                 velY = (velY > 0 ? 1 : -1) * GameSettings.MAX_VEL;
-            } else if (frictionY && Math.abs(round(velY - accelY)) < Math.abs(accelY)) {
+            } else if (frictionY && Math.abs(ovy) <= Math.abs(accelY)) {
+                if (velX == 0) {
+                    player.setDirection((ovy > 0) ? 1 : 3);
+                }
                 velY = 0;
                 accelY -= (accelY > 0 ? 1 : -1) * GameSettings.FRICTION;
                 frictionY = false;

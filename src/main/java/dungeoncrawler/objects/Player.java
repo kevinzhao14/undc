@@ -8,7 +8,11 @@ public class Player extends Entity {
         new Image("player/player-left.png"),
         new Image("player/player-up.png"),
         new Image("player/player-right.png"),
-        new Image("player/player-down.png")
+        new Image("player/player-down.png"),
+        new Image("player/player-walk-left.gif"),
+        new Image("player/player-walk-up.gif"),
+        new Image("player/player-walk-right.gif"),
+        new Image("player/player-walk-down.gif")
     };
 
     private Weapon weapon;

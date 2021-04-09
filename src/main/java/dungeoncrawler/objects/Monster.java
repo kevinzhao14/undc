@@ -132,8 +132,8 @@ public class Monster extends Entity {
                     Controller.getDataManager().DROPPABLE_ITEMS[randIdx].copy());
 
             //Set width and height
-            droppedItems[i].setW(droppedItems[i].getItem().getSprite().getWidth());
-            droppedItems[i].setH(droppedItems[i].getItem().getSprite().getHeight());
+            droppedItems[i].setWidth(droppedItems[i].getItem().getSprite().getWidth());
+            droppedItems[i].setHeight(droppedItems[i].getItem().getSprite().getHeight());
 
             //Keep generating x and y position of item until an acceptable one is found
             while (!isValidLocation) {

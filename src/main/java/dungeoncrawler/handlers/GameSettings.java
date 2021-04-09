@@ -55,6 +55,7 @@ public class GameSettings {
     public static final double PLAYER_HEIGHT = PLAYER_WIDTH * 1.81818182 / 2;
     public static final int PLAYER_HEALTH = 100;
     public static final int PLAYER_ATTACK_RANGE = 20;
+    public static final double PLAYER_PICKUP_RANGE = 2;
 
     public static final int INVENTORY_ROWS = 2;
     public static final int INVENTORY_COLUMNS = 5;
