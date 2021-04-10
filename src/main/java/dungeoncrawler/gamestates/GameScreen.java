@@ -18,15 +18,16 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import javafx.scene.image.ImageView;
 
 
 public class GameScreen extends GameState {
@@ -37,11 +38,14 @@ public class GameScreen extends GameState {
     private Room room;
     private StackPane hud;
     private Canvas canvas;
+    private StackPane inventory;
+    private boolean inventoryVisible;
 
     public GameScreen(int width, int height) {
         dungeonLayout = LayoutGenerator.generateLayout();
         scene = new Scene(new Pane(), width, height);
         canvas = new Canvas();
+        inventoryVisible = false;
     }
 
     public void start() {
@@ -87,6 +91,7 @@ public class GameScreen extends GameState {
         //create player and hud
         game.resetPos();
         createHud();
+        updateInventory();
 
         //if won, set scene as win screen
         if (room.equals(dungeonLayout.getExitRoom())) {
@@ -271,6 +276,54 @@ public class GameScreen extends GameState {
 
         //go to starting room
         setRoom(dungeonLayout.getStartingRoom());
+    }
+
+    public void updateInventory() {
+        inventory = new StackPane();
+        VBox box = new VBox(50);
+        VBox itemRows = new VBox(30);
+        HBox[] itemSlots = new HBox[GameSettings.INVENTORY_COLUMNS];
+        for (int i = 0; i < itemSlots.length; i++) {
+            itemSlots[i] = new HBox(30);
+            itemSlots[i].setAlignment(Pos.CENTER);
+        }
+        for (int i = 0; i < player.getInventory().getItems().length; i++) {
+            itemRows.getChildren().add(itemSlots[i]);
+            for (int j = 0; j < player.getInventory().getItems()[i].length; j++) {
+                StackPane newSlot = new StackPane();
+                itemSlots[i].getChildren().add(newSlot);
+                newSlot.getChildren().add(new Rectangle(75, 75, Color.GRAY));
+                if (player.getInventory().getItems()[i][j] != null) {
+                    ImageView itemImg = new ImageView(player.getInventory().getItems()[i][j].getItem().getSprite());
+                    newSlot.getChildren().add(itemImg);
+                }
+            }
+        }
+
+        Label invLabel = new Label("INVENTORY");
+        invLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
+
+        Rectangle backdrop = new Rectangle(scene.getWidth(), scene.getHeight());
+        backdrop.setFill(Color.BLACK);
+
+        inventory.setAlignment(Pos.CENTER);
+        itemRows.setAlignment(Pos.CENTER);
+        box.setAlignment(Pos.CENTER);
+
+        inventoryVisible = false;
+        inventory.setVisible(false);
+
+        box.getChildren().addAll(invLabel, itemRows);
+
+        inventory.getChildren().addAll(backdrop, box);
+        hud.getChildren().add(inventory);
+        partialFadeIn(backdrop);
+    }
+
+    public void toggleInventory() {
+        inventoryVisible = !inventoryVisible;
+
+        inventory.setVisible(inventoryVisible);
     }
 
     public void refresh() {

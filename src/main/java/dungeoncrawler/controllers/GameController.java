@@ -237,6 +237,16 @@ public class GameController {
         //non-movement keys
         if (key.equals(controls.getKey("attack")) || key.equals(controls.getKey("attack2"))) {
             isAttacking = isPress;
+        } else if (key.equals(controls.getKey("inventory"))) {
+            if (!isPress) {
+                pause();
+                if (Controller.getState() instanceof GameScreen) {
+                    ((GameScreen) Controller.getState()).toggleInventory();
+                } else {
+                    stop();
+                    System.out.println("Error: Illegal GameState");
+                }
+            }
         }
     }
 
