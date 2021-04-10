@@ -120,12 +120,13 @@ public class GameScreen extends GameState {
 
     public void updateHud() {
         createHud();
+        updateInventory();
         Pane root = (Pane) scene.getRoot();
         root.getChildren().set(1, hud);
     }
 
     private void createPlayer() {
-        player = new Player(GameSettings.PLAYER_HEALTH, 1,
+        player = new Player(GameSettings.PLAYER_HEALTH, 100,
                 Controller.getDataManager().getWeapon());
         player.setDirection(3);
         game.setPlayer(player);
@@ -134,7 +135,7 @@ public class GameScreen extends GameState {
     private void createHud() {
         hud = new StackPane();
         BorderPane display = new BorderPane();
-        HBox lowerHUD = new HBox(300);
+        HBox lowerHUD = new HBox(100);
         display.setBottom(lowerHUD);
         lowerHUD.setAlignment(Pos.CENTER);
         lowerHUD.setPadding(new Insets(0, 150, 15, 10));
@@ -157,7 +158,20 @@ public class GameScreen extends GameState {
         HBox healthBox = new HBox(healthLabel, healthBar);
         healthBox.setSpacing(5);
 
-        lowerHUD.getChildren().addAll(healthBox, goldLabel);
+        HBox hotbar = new HBox(10);
+        for (int i = 0; i < player.getInventory().getItems()[0].length; i++) {
+            StackPane newSlot = new StackPane();
+            Rectangle rect = new Rectangle(30, 30, Color.GRAY);
+            rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
+            hotbar.getChildren().add(newSlot);
+            newSlot.getChildren().add(rect);
+            if (player.getInventory().getItems()[0][i] != null) {
+                ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
+                newSlot.getChildren().add(itemImg);
+            }
+        }
+
+        lowerHUD.getChildren().addAll(healthBox, hotbar, goldLabel);
 
         hud.getChildren().add(display);
     }
@@ -291,8 +305,10 @@ public class GameScreen extends GameState {
             itemRows.getChildren().add(itemSlots[i]);
             for (int j = 0; j < player.getInventory().getItems()[i].length; j++) {
                 StackPane newSlot = new StackPane();
+                Rectangle rect = new Rectangle(75, 75, Color.GRAY);
+                rect.setStyle("-fx-stroke: white; -fx-stroke-width: 3");
                 itemSlots[i].getChildren().add(newSlot);
-                newSlot.getChildren().add(new Rectangle(75, 75, Color.GRAY));
+                newSlot.getChildren().add(rect);
                 if (player.getInventory().getItems()[i][j] != null) {
                     ImageView itemImg = new ImageView(player.getInventory().getItems()[i][j].getItem().getSprite());
                     newSlot.getChildren().add(itemImg);
@@ -318,11 +334,12 @@ public class GameScreen extends GameState {
         inventory.getChildren().addAll(backdrop, box);
         hud.getChildren().add(inventory);
         partialFadeIn(backdrop);
+        System.out.println("inventory update");
     }
 
     public void toggleInventory() {
         inventoryVisible = !inventoryVisible;
-
+        System.out.println(inventoryVisible);
         inventory.setVisible(inventoryVisible);
     }
 

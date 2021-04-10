@@ -239,7 +239,6 @@ public class GameController {
             isAttacking = isPress;
         } else if (key.equals(controls.getKey("inventory"))) {
             if (!isPress) {
-                pause();
                 if (Controller.getState() instanceof GameScreen) {
                     ((GameScreen) Controller.getState()).toggleInventory();
                 } else {
@@ -374,7 +373,7 @@ public class GameController {
             velX = round(velX);
             velY += accelY;
             velY = round(velY);
-            System.out.println(ovx + " " + velX + " " + accelX);
+            //System.out.println(ovx + " " + velX + " " + accelX);
 
             //don't allow speed to exceed max
             if (Math.abs(velX) >= GameSettings.MAX_VEL) {
