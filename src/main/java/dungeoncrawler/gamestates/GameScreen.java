@@ -95,16 +95,25 @@ public class GameScreen extends GameState {
 
         //if won, set scene as win screen
         if (room.equals(dungeonLayout.getExitRoom())) {
-            VBox box = new VBox();
+            game.pause();
+            hud.setVisible(false);
+
+            VBox box = new VBox(40);
             Label winnerLabel = new Label("Congratulations! You have escaped from the dungeon!");
-            winnerLabel.setStyle("-fx-text-fill: white");
+            winnerLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
+
             Button endButton = new Button("Exit Game");
+            endButton.setMinWidth(600);
+            endButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+
             endButton.setOnAction((e) -> {
                 Platform.exit();
             });
+
             box.getChildren().addAll(winnerLabel, endButton);
             box.setAlignment(Pos.CENTER);
             root.getChildren().addAll(hud, box);
+            fadeIn(box);
         } else {
             Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
             root.getChildren().addAll(roomPane, hud);
