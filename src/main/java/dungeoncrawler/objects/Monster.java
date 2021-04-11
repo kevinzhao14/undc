@@ -82,12 +82,22 @@ public class Monster extends Entity {
                     player.setGold(player.getGold()
                             + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
                     GameState screen = Controller.getState();
+
+                    //generate drop items and add to Room ArrayList
+                    //DroppedItem[] itemDrops = dropItems();
+
                     this.setOpacity(1 - (1000.0 / (GameSettings.MONSTER_FADE_TIME
                             * GameSettings.FPS)));
                     //use run later to prevent any thread issues
                     if (screen instanceof GameScreen) {
                         Platform.runLater(() -> {
                             ((GameScreen) screen).updateHud();
+                            /*
+                            //Add dropped items to Room ArrayList
+                            for (DroppedItem item : itemDrops) {
+                                ((GameScreen) screen).getRoom().getDroppedItems().add(item);
+                            }
+                             */
                         });
                     } else {
                         Platform.runLater(() -> {
