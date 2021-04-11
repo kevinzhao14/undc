@@ -1,4 +1,5 @@
 package dungeoncrawler.handlers;
+import dungeoncrawler.objects.DroppedItem;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
 import dungeoncrawler.objects.Player;
@@ -64,6 +65,17 @@ public class RoomRenderer {
         canvas.setTranslateY(-GameSettings.CANVAS_PADDING);
 
         main.setStyle("-fx-padding: 50px");
+
+        if (room.getDroppedItems() != null) {
+            for (DroppedItem item : room.getDroppedItems()) {
+                ImageView imageView = new ImageView(item.getItem().getSprite());
+                imageView.setX(getPx(item.getX()));
+                imageView.setY(getPx(room.getHeight() - item.getY() - item.getHeight()) + 2);
+                imageView.setFitHeight(getPx(item.getHeight()));
+                imageView.setFitWidth(getPx(item.getWidth()));
+                root.getChildren().add(imageView);
+            }
+        }
 
         if (room.getTopDoor() != null) {
             ImageView imageView = new ImageView("textures/dungeon1-topdoor.png");
