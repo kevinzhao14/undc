@@ -194,6 +194,12 @@ public class GameController {
         if (key.equals(controls.getKey("pause"))) {
             if (!isPress) {
                 pause();
+                if (Controller.getState() instanceof GameScreen) {
+                    ((GameScreen) Controller.getState()).togglePause();
+                } else {
+                    stop();
+                    System.out.println("Error: Illegal GameState");
+                }
             }
         }
         //movement keys

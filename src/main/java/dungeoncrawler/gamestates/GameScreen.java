@@ -39,13 +39,16 @@ public class GameScreen extends GameState {
     private StackPane hud;
     private Canvas canvas;
     private StackPane inventory;
+    private StackPane pause;
     private boolean inventoryVisible;
+    private boolean paused;
 
     public GameScreen(int width, int height) {
         dungeonLayout = LayoutGenerator.generateLayout();
         scene = new Scene(new Pane(), width, height);
         canvas = new Canvas();
         inventoryVisible = false;
+        paused = false;
     }
 
     public void start() {
@@ -92,6 +95,7 @@ public class GameScreen extends GameState {
         game.resetPos();
         createHud();
         updateInventory();
+        createPauseMenu();
 
         //if won, set scene as win screen
         if (room.equals(dungeonLayout.getExitRoom())) {
@@ -112,7 +116,7 @@ public class GameScreen extends GameState {
 
             box.getChildren().addAll(winnerLabel, endButton);
             box.setAlignment(Pos.CENTER);
-            root.getChildren().addAll(hud, box);
+            root.getChildren().addAll(box);
             fadeIn(box);
         } else {
             Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
@@ -130,6 +134,7 @@ public class GameScreen extends GameState {
     public void updateHud() {
         createHud();
         updateInventory();
+        createPauseMenu();
         Pane root = (Pane) scene.getRoot();
         root.getChildren().set(1, hud);
     }
@@ -256,6 +261,47 @@ public class GameScreen extends GameState {
         partialFadeIn(backdrop);
     }
 
+    public void createPauseMenu() {
+        pause = new StackPane();
+        VBox box = new VBox(40);
+
+        Rectangle backdrop = new Rectangle(scene.getWidth(), scene.getHeight());
+        backdrop.setFill(Color.BLACK);
+
+        Label pauseLabel = new Label("Paused");
+        pauseLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
+
+        Button resumeButton = new Button("Resume");
+        Button endButton = new Button("Exit Game");
+
+        resumeButton.setMinWidth(600);
+        endButton.setMinWidth(600);
+
+        resumeButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+        endButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+
+        resumeButton.setOnAction((e) -> {
+            game.pause();
+            togglePause();
+        });
+        endButton.setOnAction((e) -> {
+            Platform.exit();
+        });
+
+        box.getChildren().addAll(pauseLabel, resumeButton, endButton);
+        box.setAlignment(Pos.CENTER);
+        pause.getChildren().addAll(backdrop, box);
+        hud.getChildren().add(pause);
+        partialFadeIn(backdrop);
+        pause.setVisible(false);
+    }
+
+    public void togglePause() {
+        paused = !paused;
+        System.out.println(paused);
+        pause.setVisible(paused);
+    }
+
     /**
      * Returns the game to the state right after player leaves InitPlayerConfigScreen
      * and enters first room. The DungeonLayout remains the same, all visited rooms
@@ -347,9 +393,11 @@ public class GameScreen extends GameState {
     }
 
     public void toggleInventory() {
-        inventoryVisible = !inventoryVisible;
-        System.out.println(inventoryVisible);
-        inventory.setVisible(inventoryVisible);
+        if (!paused) {
+            inventoryVisible = !inventoryVisible;
+            System.out.println(inventoryVisible);
+            inventory.setVisible(inventoryVisible);
+        }
     }
 
     public void refresh() {
