@@ -140,7 +140,7 @@ public class GameScreen extends GameState {
     }
 
     private void createPlayer() {
-        player = new Player(GameSettings.PLAYER_HEALTH, 100,
+        player = new Player(GameSettings.PLAYER_HEALTH, 1,
                 Controller.getDataManager().getWeapon());
         player.setDirection(3);
         game.setPlayer(player);
@@ -298,7 +298,6 @@ public class GameScreen extends GameState {
 
     public void togglePause() {
         paused = !paused;
-        System.out.println(paused);
         pause.setVisible(paused);
     }
 
@@ -389,7 +388,6 @@ public class GameScreen extends GameState {
         inventory.getChildren().addAll(backdrop, box);
         hud.getChildren().add(inventory);
         partialFadeIn(backdrop);
-        System.out.println("inventory update");
     }
 
     public void toggleInventory() {

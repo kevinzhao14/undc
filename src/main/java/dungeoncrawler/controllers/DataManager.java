@@ -2,9 +2,12 @@ package dungeoncrawler.controllers;
 
 import dungeoncrawler.handlers.Difficulty;
 import dungeoncrawler.handlers.GameSettings;
+import dungeoncrawler.objects.Bomb;
 import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.MonsterType;
+import dungeoncrawler.objects.Potion;
+import dungeoncrawler.objects.PotionType;
 import dungeoncrawler.objects.Weapon;
 
 /**
@@ -15,13 +18,20 @@ import dungeoncrawler.objects.Weapon;
  */
 public class DataManager {
     public static final Weapon[] WEAPONS = new Weapon[]{
-        new Weapon("Axe", "weapons/axe.png", 1, 1, false),
+        new Weapon("Axe", "weapons/axe.png", 16, 1, false),
         new Weapon("Mace", "weapons/mace.png", 12, 0.75, false),
         new Weapon("Sword", "weapons/sword.png", 8, 0.5, false)
     };
 
     //NEED TO FILL IN FOR Monster.dropItems() method
-    public static final Item[] DROPPABLE_ITEMS = new Item[] {};
+    public static final Item[] ITEMS = new Item[]{
+            new Potion("Small Health Potion", "player/playerPlaceholder.png", 10, true, PotionType.HEALTH, 25),
+            new Potion("Medium Health Potion", "player/playerPlaceholder.png", 10, true, PotionType.HEALTH, 50),
+            new Potion("Large Health Potion", "player/playerPlaceholder.png", 10, true, PotionType.HEALTH, 100),
+            new Potion("Attack Potion", "", 10, true, PotionType.ATTACK, 0.25),
+            new Weapon("Dagger", "", 4, 0.25, true),
+            new Bomb("Bomb", "", 10, 50, 50, 5000)
+    };
 
     public static final Monster[] MONSTERS = new Monster[]{
         new Monster(20, 4, 150.0 / GameSettings.FPS, 0.5, MonsterType.FAST, 22, 18),

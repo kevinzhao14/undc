@@ -379,14 +379,12 @@ public class GameController {
             velX = round(velX);
             velY += accelY;
             velY = round(velY);
-            //System.out.println(ovx + " " + velX + " " + accelX);
 
             //don't allow speed to exceed max
             if (Math.abs(velX) >= GameSettings.MAX_VEL) {
                 velX = (velX > 0 ? 1 : -1) * GameSettings.MAX_VEL;
                 //was moving before and decelerated to 0
             } else if (frictionX && Math.abs(ovx) <= Math.abs(accelX)) {
-                System.out.println("Stopping X " + ovx);
                 if (velY == 0) {
                     player.setDirection((ovx > 0) ? 2 : 0);
                 }

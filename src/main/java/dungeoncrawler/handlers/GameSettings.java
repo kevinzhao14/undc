@@ -51,8 +51,8 @@ public class GameSettings {
 
     //Player stats
     //hitbox
-    public static final double PLAYER_WIDTH = 16.730038;
-    public static final double PLAYER_HEIGHT = PLAYER_WIDTH * 1.81818182 / 2;
+    public static final double PLAYER_WIDTH = 16;
+    public static final double PLAYER_HEIGHT = PLAYER_WIDTH;
     public static final int PLAYER_HEALTH = 100;
     public static final int PLAYER_ATTACK_RANGE = 20;
     public static final double PLAYER_PICKUP_RANGE = 2;

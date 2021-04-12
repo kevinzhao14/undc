@@ -8,7 +8,7 @@ public class Bomb extends Item {
     private double fuse;
 
     public Bomb(String name, String spriteLocation, int stackSize,
-                double damage, double radius, double fuseRoom) {
+                double damage, double radius, double fuse) {
         super(new Image(spriteLocation), name, stackSize, true);
         this.damage = damage;
         this.radius = radius;

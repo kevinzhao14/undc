@@ -18,6 +18,7 @@ public class Player extends Entity {
     private Weapon weapon;
     private int gold;
     private Inventory inventory;
+//    private Effect status = new Effect[];
 
     public Player(int maxHealth, double attack, Weapon weapon) {
         super(maxHealth, attack, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH, null);

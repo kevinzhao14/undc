@@ -62,9 +62,6 @@ public class Monster extends Entity {
                     + Math.pow(player.getPosY() - this.getPosY(), 2));
             if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
                 this.setHealth(Math.max(0, this.getHealth() - damageAmount));
-                if (getHealth() <= 0) {
-                    System.out.println("Monster slain.");
-                }
                 //Give gold to player after slaying a monster
                 if (this.getHealth() == 0.0) {
                     double modifier;
@@ -137,9 +134,9 @@ public class Monster extends Entity {
         for (int i = 0; i < numItems; i++) {
             isValidLocation = false; //reset flag
 
-            randIdx = generator.nextInt(Controller.getDataManager().DROPPABLE_ITEMS.length);
+            randIdx = generator.nextInt(Controller.getDataManager().ITEMS.length);
             droppedItems[i] = new DroppedItem(
-                    Controller.getDataManager().DROPPABLE_ITEMS[randIdx].copy());
+                    Controller.getDataManager().ITEMS[randIdx].copy());
 
             //Set width and height
             droppedItems[i].setWidth(droppedItems[i].getItem().getSprite().getWidth());
