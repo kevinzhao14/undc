@@ -174,95 +174,35 @@ public class GameScreen extends GameState {
         HBox healthBox = new HBox(healthLabel, healthBar);
         healthBox.setSpacing(5);
 
-        HBox hotbar = select(currentSelectedItem);
+        HBox hotbar = new HBox(10);
+        for (int i = 0; i < player.getInventory().getItems()[0].length; i++) {
+            StackPane newSlot = new StackPane();
+            if (i == player.getItemSelected()) {
+                Rectangle rect = new Rectangle(40, 40, Color.GRAY);
+                rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
+                hotbar.getChildren().add(newSlot);
+                newSlot.getChildren().add(rect);
+                if (player.getInventory().getItems()[0][i] != null) {
+                    ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
+                    newSlot.getChildren().add(itemImg);
+                }
+            } else {
+                Rectangle rect = new Rectangle(30, 30, Color.GRAY);
+                rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
+                hotbar.getChildren().add(newSlot);
+                newSlot.getChildren().add(rect);
+                if (player.getInventory().getItems()[0][i] != null) {
+                    ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
+                    newSlot.getChildren().add(itemImg);
+                }
+            }
+        }
 
         lowerHUD.getChildren().addAll(healthBox, hotbar, goldLabel);
 
         hud.getChildren().add(display);
     }
 
-    private HBox moveRight(int currentSelectedItem) {
-        int itemToSelect = currentSelectedItem + 1 >= 10 ? 9 : currentSelectedItem + 1;
-        HBox hotbar = new HBox(10);
-        for (int i = 0; i < player.getInventory().getItems()[0].length; i++) {
-            StackPane newSlot = new StackPane();
-            if (i == itemToSelect) {
-               Rectangle rect = new Rectangle(40, 40, Color.GRAY);
-               rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
-               hotbar.getChildren().add(newSlot);
-               newSlot.getChildren().add(rect);
-               if (player.getInventory().getItems()[0][i] != null) {
-                   ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
-                   newSlot.getChildren().add(itemImg);
-               }
-           } else {
-               Rectangle rect = new Rectangle(30, 30, Color.GRAY);
-               rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
-               hotbar.getChildren().add(newSlot);
-               newSlot.getChildren().add(rect);
-               if (player.getInventory().getItems()[0][i] != null) {
-                   ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
-                   newSlot.getChildren().add(itemImg);
-               }
-           }
-        }
-        return hotbar;
-    }
-
-    private HBox moveLeft(int currentSelectedItem) {
-        int itemToSelect = currentSelectedItem - 1 < 0 ? 0 : currentSelectedItem - 1;
-        HBox hotbar = new HBox(10);
-        for (int i = 0; i < player.getInventory().getItems()[0].length; i++) {
-            StackPane newSlot = new StackPane();
-            if (i == itemToSelect) {
-                Rectangle rect = new Rectangle(40, 40, Color.GRAY);
-                rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
-                hotbar.getChildren().add(newSlot);
-                newSlot.getChildren().add(rect);
-                if (player.getInventory().getItems()[0][i] != null) {
-                    ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
-                    newSlot.getChildren().add(itemImg);
-                }
-            } else {
-                Rectangle rect = new Rectangle(30, 30, Color.GRAY);
-                rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
-                hotbar.getChildren().add(newSlot);
-                newSlot.getChildren().add(rect);
-                if (player.getInventory().getItems()[0][i] != null) {
-                    ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
-                    newSlot.getChildren().add(itemImg);
-                }
-            }
-        }
-        return hotbar;
-    }
-
-    private HBox select(int itemToSelect) {
-        HBox hotbar = new HBox(10);
-        for (int i = 0; i < player.getInventory().getItems()[0].length; i++) {
-            StackPane newSlot = new StackPane();
-            if (i == itemToSelect) {
-                Rectangle rect = new Rectangle(40, 40, Color.GRAY);
-                rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
-                hotbar.getChildren().add(newSlot);
-                newSlot.getChildren().add(rect);
-                if (player.getInventory().getItems()[0][i] != null) {
-                    ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
-                    newSlot.getChildren().add(itemImg);
-                }
-            } else {
-                Rectangle rect = new Rectangle(30, 30, Color.GRAY);
-                rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
-                hotbar.getChildren().add(newSlot);
-                newSlot.getChildren().add(rect);
-                if (player.getInventory().getItems()[0][i] != null) {
-                    ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
-                    newSlot.getChildren().add(itemImg);
-                }
-            }
-        }
-        return hotbar;
-    }
 
     public DungeonLayout getLayout() {
         //For testing purposes

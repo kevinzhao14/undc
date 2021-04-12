@@ -18,6 +18,7 @@ public class Player extends Entity {
     private Weapon weapon;
     private int gold;
     private Inventory inventory;
+    private int itemSelected;
 //    private Effect status = new Effect[];
 
     public Player(int maxHealth, double attack, Weapon weapon) {
@@ -26,6 +27,7 @@ public class Player extends Entity {
         this.gold = 0;
         this.inventory = new Inventory(GameSettings.INVENTORY_ROWS, GameSettings.INVENTORY_COLUMNS);
         inventory.add(weapon);
+        itemSelected = 0;
     }
 
     public Weapon getWeapon() {
@@ -46,5 +48,26 @@ public class Player extends Entity {
     public Inventory getInventory() {
         return inventory;
     }
+
+    public int getItemSelected() {
+        return this.itemSelected;
+    }
+
+    public void setItemSelected(int itemSelected) {
+        this.itemSelected = itemSelected;
+    }
+
+    public void moveRight() {
+        this.itemSelected = this.itemSelected + 1 >= GameSettings.INVENTORY_COLUMNS ? 0 : this.itemSelected + 1;
+    }
+
+    public void moveLeft() {
+        this.itemSelected = this.itemSelected - 1 < 0 ? GameSettings.INVENTORY_COLUMNS - 1 : this.itemSelected - 1;
+    }
+
+    public void select(int itemToSelect) {
+       this.itemSelected = itemToSelect;
+    }
+
 
 }
