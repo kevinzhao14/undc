@@ -8,6 +8,7 @@ import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
 import dungeoncrawler.objects.DroppedItem;
+import dungeoncrawler.objects.Inventory;
 import dungeoncrawler.objects.InventoryItem;
 import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
@@ -252,6 +253,9 @@ public class GameController {
                     System.out.println("Error: Illegal GameState");
                 }
             }
+        } else if (key.equals(controls.getKey("use"))) {
+            InventoryItem selected = player.getInventory().getSelected();
+            selected.getItem().use();
         }
     }
 
