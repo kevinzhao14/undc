@@ -24,6 +24,7 @@ public abstract class Item {
     }
 
     public abstract Item copy();
+    public abstract void use();
 
     public void setSprite(Image img) {
         sprite = img;
