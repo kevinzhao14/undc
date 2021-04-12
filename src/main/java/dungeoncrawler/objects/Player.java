@@ -25,6 +25,7 @@ public class Player extends Entity {
         this.weapon = weapon;
         this.gold = 0;
         this.inventory = new Inventory(GameSettings.INVENTORY_ROWS, GameSettings.INVENTORY_COLUMNS);
+        inventory.add(weapon);
     }
 
     public Weapon getWeapon() {

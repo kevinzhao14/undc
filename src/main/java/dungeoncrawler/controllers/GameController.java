@@ -319,6 +319,7 @@ public class GameController {
             }
 
             //check item pickup
+            boolean itemPickedUp = false;
             droploop:
             for (int i = 0; i < room.getDroppedItems().size(); i++) {
                 DroppedItem d = room.getDroppedItems().get(i);
@@ -338,6 +339,7 @@ public class GameController {
                                 item.setQuantity(item.getQuantity() + 1);
                                 room.getDroppedItems().remove(i);
                                 i--;
+                                itemPickedUp = true;
                                 continue droploop;
                             }
                         }
@@ -348,7 +350,19 @@ public class GameController {
                         //remove dropped item
                         room.getDroppedItems().remove(i);
                         i--;
+                        itemPickedUp = true;
                     }
+                }
+            }
+
+            if (itemPickedUp) {
+                GameState state = Controller.getState();
+                if (state instanceof GameScreen) {
+                    Platform.runLater(() -> {
+                        ((GameScreen) state).updateHud();
+                    });
+                } else {
+                    throw new IllegalStateException("Invalid Game State!");
                 }
             }
 

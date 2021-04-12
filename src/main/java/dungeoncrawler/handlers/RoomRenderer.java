@@ -149,7 +149,7 @@ public class RoomRenderer {
                     w = getPx(m.getWidth() / m.getSpriteWidth());
                     x = getPx(m.getPosX());
                     y = getPx(room.getHeight() - m.getPosY() - m.getHeight());
-                    c.getGraphicsContext2D().setGlobalAlpha(m.getOpacity());
+                    gc.setGlobalAlpha(m.getOpacity());
                     drawImg(gc, m.getImage(), h, w, x, y);
                     drawHealthbar(gc, GameSettings.MONSTER_HEALTHBAR_HEIGHT, w, x, y
                             - GameSettings.MONSTER_HEALTHBAR_HEIGHT - 10, m.getHealth()
@@ -161,6 +161,7 @@ public class RoomRenderer {
                 }
             }
         }
+        gc.setGlobalAlpha(1);
         if (room.getDroppedItems() != null) {
             for (DroppedItem item : room.getDroppedItems()) {
                 drawImg(gc, item.getItem().getSprite(),
@@ -170,7 +171,6 @@ public class RoomRenderer {
             }
         }
         //draw player
-        gc.setGlobalAlpha(1);
         x = getPx(player.getPosX());
         y = getPx(room.getHeight() - player.getPosY() - player.getHeight() * 2);
         h = getPx(player.getHeight() * 2);

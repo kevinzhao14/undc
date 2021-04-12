@@ -109,7 +109,7 @@ public class Monster extends Entity {
     }
 
     public DroppedItem[] dropItems() {
-        if (Controller.getDataManager().DROPPABLE_ITEMS.length == 0) {
+        if (Controller.getDataManager().ITEMS.length == 0) {
             return new DroppedItem[0];
         }
         Random generator = new Random();
