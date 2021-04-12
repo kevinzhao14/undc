@@ -330,9 +330,14 @@ public class GameController {
                     //check for item existing in inventory
                     for (InventoryItem[] row : player.getInventory().getItems()) {
                         for (InventoryItem item : row) {
+                            if (item == null) {
+                                continue;
+                            }
                             //if item exists and is not max stack
                             if (item.getItem().equals(d.getItem()) && item.getQuantity() < item.getItem().getMaxStackSize()) {
                                 item.setQuantity(item.getQuantity() + 1);
+                                room.getDroppedItems().remove(i);
+                                i--;
                                 continue droploop;
                             }
                         }
@@ -535,7 +540,7 @@ public class GameController {
                         newDoor = newRoom.getTopDoor();
                         newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
                                 - GameSettings.PLAYER_WIDTH / 2;
-                        newStartY = newDoor.getY() - GameSettings.PLAYER_HEIGHT;
+                        newStartY = newDoor.getY() - GameSettings.PLAYER_HEIGHT - 1;
                     } else if (d.equals(room.getRightDoor())) {
                         newDoor = newRoom.getLeftDoor();
                         newStartX = newDoor.getX() + 10 + LayoutGenerator.DOOR_WIDTH;

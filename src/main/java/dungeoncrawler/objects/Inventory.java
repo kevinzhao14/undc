@@ -31,7 +31,7 @@ public class Inventory {
     }
 
     public boolean full() {
-        return size < rows * columns;
+        return size >= rows * columns;
     }
 
     public int getRows() {

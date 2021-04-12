@@ -28,9 +28,9 @@ public class DataManager {
             new Potion("Small Health Potion", "player/playerPlaceholder.png", 10, true, PotionType.HEALTH, 25),
             new Potion("Medium Health Potion", "player/playerPlaceholder.png", 10, true, PotionType.HEALTH, 50),
             new Potion("Large Health Potion", "player/playerPlaceholder.png", 10, true, PotionType.HEALTH, 100),
-            new Potion("Attack Potion", "", 10, true, PotionType.ATTACK, 0.25),
-            new Weapon("Dagger", "", 4, 0.25, true),
-            new Bomb("Bomb", "", 10, 50, 50, 5000)
+            new Potion("Attack Potion", "player/playerPlaceholder.png", 10, true, PotionType.ATTACK, 0.25),
+            new Weapon("Dagger", "player/playerPlaceholder.png", 4, 0.25, true),
+            new Bomb("Bomb", "player/playerPlaceholder.png", 10, 50, 50, 5000)
     };
 
     public static final Monster[] MONSTERS = new Monster[]{

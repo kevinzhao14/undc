@@ -81,7 +81,7 @@ public class Monster extends Entity {
                     GameState screen = Controller.getState();
 
                     //generate drop items and add to Room ArrayList
-                    //DroppedItem[] itemDrops = dropItems();
+                    DroppedItem[] itemDrops = dropItems();
 
                     this.setOpacity(1 - (1000.0 / (GameSettings.MONSTER_FADE_TIME
                             * GameSettings.FPS)));
@@ -89,12 +89,10 @@ public class Monster extends Entity {
                     if (screen instanceof GameScreen) {
                         Platform.runLater(() -> {
                             ((GameScreen) screen).updateHud();
-                            /*
                             //Add dropped items to Room ArrayList
                             for (DroppedItem item : itemDrops) {
                                 ((GameScreen) screen).getRoom().getDroppedItems().add(item);
                             }
-                             */
                         });
                     } else {
                         Platform.runLater(() -> {
