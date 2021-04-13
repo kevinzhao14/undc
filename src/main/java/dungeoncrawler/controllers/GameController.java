@@ -318,6 +318,11 @@ public class GameController {
          * Primary runner method, controls the data calculations of each tick.
          */
         public void run() {
+            if (!(Controller.getState() instanceof GameScreen)) {
+                this.cancel();
+                return;
+            }
+
             ticks++;
             long startTime = System.nanoTime();
             double posX = player.getPosX();
