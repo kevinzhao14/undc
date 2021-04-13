@@ -196,7 +196,13 @@ public class GameController {
             if (!isPress) {
                 pause();
                 if (Controller.getState() instanceof GameScreen) {
-                    ((GameScreen) Controller.getState()).togglePause();
+                    //esc is used to leave inventory if it's currently open
+                    //otherwise, use it to pause/unpause game
+                    if (((GameScreen) Controller.getState()).isInventoryVisible()) {
+                        ((GameScreen) Controller.getState()).toggleInventory();
+                    } else {
+                        ((GameScreen) Controller.getState()).togglePause();
+                    }
                 } else {
                     stop();
                     System.out.println("Error: Illegal GameState");
@@ -247,7 +253,10 @@ public class GameController {
         } else if (key.equals(controls.getKey("inventory"))) {
             if (!isPress) {
                 if (Controller.getState() instanceof GameScreen) {
-                    ((GameScreen) Controller.getState()).toggleInventory();
+                    if (!((GameScreen) Controller.getState()).isPaused()) {
+                        pause();
+                        ((GameScreen) Controller.getState()).toggleInventory();
+                    }
                 } else {
                     stop();
                     System.out.println("Error: Illegal GameState");
