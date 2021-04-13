@@ -23,7 +23,6 @@ public class DataManager {
         new Weapon("Sword", "weapons/sword.png", 8, 0.5, false)
     };
 
-    //NEED TO FILL IN FOR Monster.dropItems() method
     public static final Item[] ITEMS = new Item[]{
             new Potion("Small Health Potion", "items/health-potion-small.png", 10, true, PotionType.HEALTH, 25),
             new Potion("Medium Health Potion", "items/health-potion-med.png", 10, true, PotionType.HEALTH, 50),
