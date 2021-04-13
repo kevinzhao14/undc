@@ -48,4 +48,7 @@ public class Weapon extends Item {
     public double getDamage() {
         return damage;
     }
+    public void use() {
+
+    }
 }

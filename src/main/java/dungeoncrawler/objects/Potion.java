@@ -32,4 +32,7 @@ public class Potion extends Item {
     public double getModifier() {
         return modifier;
     }
+    public void use() {
+
+    }
 }

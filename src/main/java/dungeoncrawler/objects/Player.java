@@ -18,7 +18,8 @@ public class Player extends Entity {
     private Weapon weapon;
     private int gold;
     private Inventory inventory;
-    private int itemSelected;
+    private int indexOfitemSelected;
+    private InventoryItem itemSelected;
 //    private Effect status = new Effect[];
 
     public Player(int maxHealth, double attack, Weapon weapon) {
@@ -27,7 +28,8 @@ public class Player extends Entity {
         this.gold = 0;
         this.inventory = new Inventory(GameSettings.INVENTORY_ROWS, GameSettings.INVENTORY_COLUMNS);
         inventory.add(weapon);
-        itemSelected = 0;
+        indexOfitemSelected = 0;
+        itemSelected = this.inventory.getItems()[0][0];
     }
 
     public Weapon getWeapon() {
@@ -49,24 +51,35 @@ public class Player extends Entity {
         return inventory;
     }
 
-    public int getItemSelected() {
+    public int getindexOfItemSelected() {
+        return this.indexOfitemSelected;
+    }
+
+    public void setindexOfItemSelected(int indexOfitemSelected) {
+        this.indexOfitemSelected = indexOfitemSelected;
+    }
+
+    public InventoryItem getItemSelected() {
         return this.itemSelected;
     }
 
-    public void setItemSelected(int itemSelected) {
+    public void setItemSelected(InventoryItem itemSelected) {
         this.itemSelected = itemSelected;
     }
 
     public void moveRight() {
-        this.itemSelected = this.itemSelected + 1 >= GameSettings.INVENTORY_COLUMNS ? 0 : this.itemSelected + 1;
+        this.indexOfitemSelected = this.indexOfitemSelected + 1 >= GameSettings.INVENTORY_COLUMNS ? 0 : this.indexOfitemSelected+ 1;
+        itemSelected = this.inventory.getItems()[0][indexOfitemSelected];
     }
 
     public void moveLeft() {
-        this.itemSelected = this.itemSelected - 1 < 0 ? GameSettings.INVENTORY_COLUMNS - 1 : this.itemSelected - 1;
+        this.indexOfitemSelected = this.indexOfitemSelected - 1 < 0 ? GameSettings.INVENTORY_COLUMNS - 1 : this.indexOfitemSelected - 1;
+        itemSelected = this.inventory.getItems()[0][indexOfitemSelected];
     }
 
-    public void select(int itemToSelect) {
-       this.itemSelected = itemToSelect;
+    public void select(int indexOfitemSelected) {
+       this.indexOfitemSelected = indexOfitemSelected;
+       itemSelected = this.inventory.getItems()[0][indexOfitemSelected];
     }
 
 

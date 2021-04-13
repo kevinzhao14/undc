@@ -254,7 +254,7 @@ public class GameController {
                 }
             }
         } else if (key.equals(controls.getKey("use"))) {
-            InventoryItem selected = player.getInventory().getSelected();
+            InventoryItem selected = player.getItemSelected();
             selected.getItem().use();
         }
     }

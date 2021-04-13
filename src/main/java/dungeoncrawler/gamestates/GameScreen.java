@@ -42,7 +42,6 @@ public class GameScreen extends GameState {
     private StackPane pause;
     private boolean inventoryVisible;
     private boolean paused;
-    private int currentSelectedItem;
 
     public GameScreen(int width, int height) {
         dungeonLayout = LayoutGenerator.generateLayout();
@@ -50,7 +49,6 @@ public class GameScreen extends GameState {
         canvas = new Canvas();
         inventoryVisible = false;
         paused = false;
-        currentSelectedItem = 0;
     }
 
     public void start() {
@@ -177,7 +175,7 @@ public class GameScreen extends GameState {
         HBox hotbar = new HBox(10);
         for (int i = 0; i < player.getInventory().getItems()[0].length; i++) {
             StackPane newSlot = new StackPane();
-            if (i == player.getItemSelected()) {
+            if (i == player.getindexOfItemSelected()) {
                 Rectangle rect = new Rectangle(40, 40, Color.GRAY);
                 rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
                 hotbar.getChildren().add(newSlot);
