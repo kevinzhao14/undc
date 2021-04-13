@@ -171,6 +171,7 @@ public class GameScreen extends GameState {
         healthBar.setAlignment(Pos.CENTER_LEFT);
         HBox healthBox = new HBox(healthLabel, healthBar);
         healthBox.setSpacing(5);
+        healthBox.setAlignment(Pos.CENTER);
 
         HBox hotbar = new HBox(10);
         for (int i = 0; i < player.getInventory().getItems()[0].length; i++) {
@@ -182,7 +183,14 @@ public class GameScreen extends GameState {
                 newSlot.getChildren().add(rect);
                 if (player.getInventory().getItems()[0][i] != null) {
                     ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
-                    newSlot.getChildren().add(itemImg);
+                    Label quantity = new Label(player.getInventory().getItems()[0][i].getQuantity() + " ");
+
+                    StackPane quantityPane = new StackPane();
+                    quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
+                    quantity.setAlignment(Pos.BOTTOM_RIGHT);
+                    quantity.setStyle("-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323");
+                    quantityPane.getChildren().add(quantity);
+                    newSlot.getChildren().addAll(itemImg, quantityPane);
                 }
             } else {
                 Rectangle rect = new Rectangle(30, 30, Color.GRAY);
@@ -191,7 +199,14 @@ public class GameScreen extends GameState {
                 newSlot.getChildren().add(rect);
                 if (player.getInventory().getItems()[0][i] != null) {
                     ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
-                    newSlot.getChildren().add(itemImg);
+                    Label quantity = new Label(player.getInventory().getItems()[0][i].getQuantity() + " ");
+
+                    StackPane quantityPane = new StackPane();
+                    quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
+                    quantity.setAlignment(Pos.BOTTOM_RIGHT);
+                    quantity.setStyle("-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323");
+                    quantityPane.getChildren().add(quantity);
+                    newSlot.getChildren().addAll(itemImg, quantityPane);
                 }
             }
         }
@@ -384,8 +399,18 @@ public class GameScreen extends GameState {
                 itemSlots[i].getChildren().add(newSlot);
                 newSlot.getChildren().add(rect);
                 if (player.getInventory().getItems()[i][j] != null) {
-                    ImageView itemImg = new ImageView(player.getInventory().getItems()[i][j].getItem().getSprite());
-                    newSlot.getChildren().add(itemImg);
+                    ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
+                    Label quantity = new Label(player.getInventory().getItems()[0][i].getQuantity() + " ");
+                    StackPane quantityPane = new StackPane();
+
+                    quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
+                    quantity.setAlignment(Pos.BOTTOM_RIGHT);
+
+                    quantity.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
+
+                    quantityPane.getChildren().add(quantity);
+
+                    newSlot.getChildren().addAll(itemImg, quantityPane);
                 }
             }
         }
