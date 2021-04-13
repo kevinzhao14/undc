@@ -29,6 +29,8 @@ import javafx.util.Duration;
 
 import javafx.scene.image.ImageView;
 
+import java.util.ArrayList;
+
 
 public class GameScreen extends GameState {
 
@@ -189,6 +191,7 @@ public class GameScreen extends GameState {
                     quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
                     quantity.setAlignment(Pos.BOTTOM_RIGHT);
                     quantity.setStyle("-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323");
+                    quantity.setTranslateX(4);
                     quantityPane.getChildren().add(quantity);
                     newSlot.getChildren().addAll(itemImg, quantityPane);
                 }
@@ -205,6 +208,8 @@ public class GameScreen extends GameState {
                     quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
                     quantity.setAlignment(Pos.BOTTOM_RIGHT);
                     quantity.setStyle("-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323");
+                    quantity.setTranslateX(4);
+                    quantity.setTranslateY(-5);
                     quantityPane.getChildren().add(quantity);
                     newSlot.getChildren().addAll(itemImg, quantityPane);
                 }
@@ -386,6 +391,10 @@ public class GameScreen extends GameState {
         VBox box = new VBox(50);
         VBox itemRows = new VBox(30);
         HBox[] itemSlots = new HBox[GameSettings.INVENTORY_COLUMNS];
+        StackPane allItemLabels = new StackPane();
+
+        ArrayList<StackPane> itemNameList = new ArrayList<>();
+
         for (int i = 0; i < itemSlots.length; i++) {
             itemSlots[i] = new HBox(30);
             itemSlots[i].setAlignment(Pos.CENTER);
@@ -399,16 +408,30 @@ public class GameScreen extends GameState {
                 itemSlots[i].getChildren().add(newSlot);
                 newSlot.getChildren().add(rect);
                 if (player.getInventory().getItems()[i][j] != null) {
-                    ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
-                    Label quantity = new Label(player.getInventory().getItems()[0][i].getQuantity() + " ");
+                    ImageView itemImg = new ImageView(player.getInventory().getItems()[i][j].getItem().getSprite());
+                    Label quantity = new Label(player.getInventory().getItems()[i][j].getQuantity() + " ");
                     StackPane quantityPane = new StackPane();
 
                     quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
-                    quantity.setAlignment(Pos.BOTTOM_RIGHT);
 
                     quantity.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
 
                     quantityPane.getChildren().add(quantity);
+
+                    String itemName = player.getInventory().getItems()[i][j].getItem().getName();
+                    Rectangle nameRect = new Rectangle(itemName.length() * 13, 30, Color.BLACK);
+                    nameRect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
+                    Label nameLabel = new Label(player.getInventory().getItems()[i][j].getItem().getName());
+                    nameLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
+                    StackPane itemNameBox = new StackPane();
+                    itemNameBox.getChildren().addAll(nameRect, nameLabel);
+                    itemNameBox.setAlignment(Pos.TOP_CENTER);
+                    itemNameBox.setVisible(false);
+
+                    newSlot.setOnMouseEntered(event -> itemNameBox.setVisible(true));
+                    newSlot.setOnMouseExited(event -> itemNameBox.setVisible(false));
+
+                    itemNameList.add(itemNameBox);
 
                     newSlot.getChildren().addAll(itemImg, quantityPane);
                 }
@@ -428,7 +451,11 @@ public class GameScreen extends GameState {
         inventoryVisible = false;
         inventory.setVisible(false);
 
-        box.getChildren().addAll(invLabel, itemRows);
+        for (StackPane s : itemNameList) {
+            allItemLabels.getChildren().add(s);
+        }
+
+        box.getChildren().addAll(invLabel, itemRows, allItemLabels);
 
         inventory.getChildren().addAll(backdrop, box);
         hud.getChildren().add(inventory);
