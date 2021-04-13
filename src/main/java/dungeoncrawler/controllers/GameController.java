@@ -19,6 +19,7 @@ import dungeoncrawler.objects.Weapon;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.ScrollEvent;
 
 import java.util.LinkedList;
 import java.util.Timer;
@@ -77,6 +78,7 @@ public class GameController {
         scene.setOnKeyReleased(e -> handleKey(e.getCode().toString(), false));
         scene.setOnMousePressed(e -> handleKey(mouseButton(e.getButton()), true));
         scene.setOnMouseReleased(e -> handleKey(mouseButton(e.getButton()), false));
+        scene.setOnScroll(this::handleScroll);
     }
 
     /**
@@ -266,6 +268,24 @@ public class GameController {
         } else if (key.equals(controls.getKey("use"))) {
             InventoryItem selected = player.getItemSelected();
             selected.getItem().use();
+        }
+    }
+
+    /**
+     * Handle when the player uses the mouse scroll wheel.
+     * @param event ScrollEvent passed by JavaFX
+     */
+    private void handleScroll(ScrollEvent event) {
+        if (Controller.getState() instanceof GameScreen
+            && ((GameScreen) Controller.getState()).isPaused()) {
+            return;
+        }
+
+        long val = Math.round(event.getDeltaY());
+        if (val < 0) {
+            player.moveLeft();
+        } else if (val > 0) {
+            player.moveRight();
         }
     }
 

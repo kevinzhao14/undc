@@ -56,11 +56,11 @@ public class Player extends Entity {
     }
 
     public void moveRight() {
-        this.selected += this.selected == GameSettings.INVENTORY_COLUMNS ? 0 : 1;
+        this.selected = (this.selected + 1) % GameSettings.INVENTORY_COLUMNS;
     }
 
     public void moveLeft() {
-        this.selected -= this.selected == 0 ? -GameSettings.INVENTORY_COLUMNS + 1 : 1;
+        this.selected = (this.selected - 1 + GameSettings.INVENTORY_COLUMNS) % GameSettings.INVENTORY_COLUMNS;
     }
 
     public void select(int selected) {
