@@ -276,10 +276,9 @@ public class GameController {
      * @param event ScrollEvent passed by JavaFX
      */
     private void handleScroll(ScrollEvent event) {
-        if (Controller.getState() instanceof GameScreen
-            && ((GameScreen) Controller.getState()).isPaused()) {
-            return;
-        }
+        if (!(Controller.getState() instanceof GameScreen)) return;
+        GameScreen gameScreen = (GameScreen) Controller.getState();
+        if (gameScreen.isPaused()) return;
 
         long val = Math.round(event.getDeltaY());
         if (val < 0) {
@@ -287,6 +286,8 @@ public class GameController {
         } else if (val > 0) {
             player.moveRight();
         }
+
+        gameScreen.updateHud();
     }
 
     /**
