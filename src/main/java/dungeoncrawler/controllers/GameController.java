@@ -9,8 +9,6 @@ import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
 import dungeoncrawler.objects.DroppedItem;
-import dungeoncrawler.objects.Entity;
-import dungeoncrawler.objects.Inventory;
 import dungeoncrawler.objects.InventoryItem;
 import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
@@ -22,7 +20,6 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -340,8 +337,10 @@ public class GameController {
             droploop:
             for (int i = 0; i < room.getDroppedItems().size(); i++) {
                 DroppedItem d = room.getDroppedItems().get(i);
-                double distX = (player.getPosX() + player.getWidth() / 2) - (d.getX() + d.getWidth() / 2);
-                double distY = (player.getPosY() + player.getHeight() / 2) - (d.getY() + d.getHeight() / 2);
+                double distX = (player.getPosX() + player.getWidth() / 2) - (d.getX()
+                        + d.getWidth() / 2);
+                double distY = (player.getPosY() + player.getHeight() / 2) - (d.getY()
+                        + d.getHeight() / 2);
                 double dist = round(Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2)));
                 //pick up item
                 if (dist <= GameSettings.PLAYER_PICKUP_RANGE) {
@@ -352,7 +351,8 @@ public class GameController {
                                 continue;
                             }
                             //if item exists and is not max stack
-                            if (item.getItem().equals(d.getItem()) && item.getQuantity() < item.getItem().getMaxStackSize()) {
+                            if (item.getItem().equals(d.getItem()) && item.getQuantity()
+                                    < item.getItem().getMaxStackSize()) {
                                 item.setQuantity(item.getQuantity() + 1);
                                 room.getDroppedItems().remove(i);
                                 i--;
@@ -404,18 +404,18 @@ public class GameController {
                             if (slain) {
                                 double modifier;
                                 switch (Controller.getDataManager().getDifficulty()) {
-                                    case MEDIUM:
-                                        modifier = GameSettings.MODIFIER_MEDIUM;
-                                        break;
-                                    case HARD:
-                                        modifier = GameSettings.MODIFIER_HARD;
-                                        break;
-                                    default:
-                                        modifier = 1.0;
-                                        break;
+                                case MEDIUM:
+                                    modifier = GameSettings.MODIFIER_MEDIUM;
+                                    break;
+                                case HARD:
+                                    modifier = GameSettings.MODIFIER_HARD;
+                                    break;
+                                default:
+                                    modifier = 1.0;
+                                    break;
                                 }
-                                player.setGold(player.getGold() + (int)(GameSettings.MONSTER_KILL_GOLD
-                                        / modifier));
+                                player.setGold(player.getGold()
+                                        + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
                             }
                         }
                     }

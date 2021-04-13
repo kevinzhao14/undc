@@ -5,7 +5,6 @@ import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.gamestates.GameState;
 import dungeoncrawler.handlers.GameSettings;
 import javafx.application.Platform;
-import javafx.scene.layout.HBox;
 
 import java.util.LinkedList;
 import java.util.Random;

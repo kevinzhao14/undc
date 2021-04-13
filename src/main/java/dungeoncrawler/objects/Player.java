@@ -64,7 +64,7 @@ public class Player extends Entity {
     }
 
     public void select(int selected) {
-       this.selected = selected;
+        this.selected = selected;
     }
 
 

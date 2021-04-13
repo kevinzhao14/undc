@@ -22,7 +22,8 @@ public class Weapon extends Item {
      * @param attackSpeed Attack speed of the weapon, in seconds per attack
      * @param droppable whether Weapon is droppable or not
      */
-    public Weapon(String name, String spriteLocation, double damage, double attackSpeed, boolean droppable) {
+    public Weapon(String name, String spriteLocation, double damage, double attackSpeed,
+                  boolean droppable) {
         //super(spriteLocation, name);
         super(new Image(spriteLocation), name, 1, droppable);
         //this.sprite = spriteLocation == null ? null : new ImageView(spriteLocation);
