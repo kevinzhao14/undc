@@ -209,6 +209,14 @@ public class GameScreen extends GameState {
         return this.dungeonLayout;
     }
 
+    public boolean isInventoryVisible() {
+        return inventoryVisible;
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
     private void fadeOut(Pane pane) {
         FadeTransition transition = new FadeTransition();
         setFade(transition, pane, false);
