@@ -1,15 +1,18 @@
 package dungeoncrawler.objects;
 
+import javafx.scene.image.Image;
+
 public class Obstacle {
 
-    private int x;
-    private int y;
-    private int height;
-    private int width;
+    private double x;
+    private double y;
+    private double height;
+    private double width;
     private ObstacleType type;
-    
+    private Image sprite;
+    private Item item;
 
-    public Obstacle(int x, int y, int w, int h, ObstacleType type) {
+    public Obstacle(double x, double y, double w, double h, ObstacleType type) {
         this.x = x;
         this.y = y;
         this.height = h;
@@ -17,32 +20,32 @@ public class Obstacle {
         this.type = type;
     }
 
-    public int getX() {
+    public double getX() {
         return this.x;
     }
-    public int getY() {
+    public double getY() {
         return this.y;
     }
-    public int getHeight() {
+    public double getHeight() {
         return this.height;
     }
-    public int getWidth() {
+    public double getWidth() {
         return this.width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(double width) {
         this.width = width;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         this.y = y;
     }
 
@@ -52,5 +55,21 @@ public class Obstacle {
 
     public void setType(ObstacleType type) {
         this.type = type;
+    }
+
+    public Image getSprite() {
+        return sprite;
+    }
+
+    public void setSprite(Image sprite) {
+        this.sprite = sprite;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
     }
 }

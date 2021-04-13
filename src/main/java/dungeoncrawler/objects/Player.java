@@ -15,25 +15,17 @@ public class Player extends Entity {
         new Image("player/player-walk-down.gif")
     };
 
-    private Weapon weapon;
     private int gold;
     private Inventory inventory;
-    private int indexOfitemSelected;
-    private InventoryItem itemSelected;
+    private int selected;
 //    private Effect status = new Effect[];
 
     public Player(int maxHealth, double attack, Weapon weapon) {
         super(maxHealth, attack, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH, null);
-        this.weapon = weapon;
         this.gold = 0;
         this.inventory = new Inventory(GameSettings.INVENTORY_ROWS, GameSettings.INVENTORY_COLUMNS);
         inventory.add(weapon);
-        indexOfitemSelected = 0;
-        itemSelected = this.inventory.getItems()[0][0];
-    }
-
-    public Weapon getWeapon() {
-        return this.weapon;
+        selected = 0;
     }
 
     public int getGold() {
@@ -51,35 +43,28 @@ public class Player extends Entity {
         return inventory;
     }
 
-    public int getindexOfItemSelected() {
-        return this.indexOfitemSelected;
+    public int getSelected() {
+        return this.selected;
     }
 
-    public void setindexOfItemSelected(int indexOfitemSelected) {
-        this.indexOfitemSelected = indexOfitemSelected;
+    public void setSelected(int selected) {
+        this.selected = selected;
     }
 
     public InventoryItem getItemSelected() {
-        return this.itemSelected;
-    }
-
-    public void setItemSelected(InventoryItem itemSelected) {
-        this.itemSelected = itemSelected;
+        return inventory.getItems()[0][selected];
     }
 
     public void moveRight() {
-        this.indexOfitemSelected = this.indexOfitemSelected + 1 >= GameSettings.INVENTORY_COLUMNS ? 0 : this.indexOfitemSelected+ 1;
-        itemSelected = this.inventory.getItems()[0][indexOfitemSelected];
+        this.selected += this.selected == GameSettings.INVENTORY_COLUMNS ? 0 : 1;
     }
 
     public void moveLeft() {
-        this.indexOfitemSelected = this.indexOfitemSelected - 1 < 0 ? GameSettings.INVENTORY_COLUMNS - 1 : this.indexOfitemSelected - 1;
-        itemSelected = this.inventory.getItems()[0][indexOfitemSelected];
+        this.selected -= this.selected == 0 ? -GameSettings.INVENTORY_COLUMNS + 1 : 1;
     }
 
-    public void select(int indexOfitemSelected) {
-       this.indexOfitemSelected = indexOfitemSelected;
-       itemSelected = this.inventory.getItems()[0][indexOfitemSelected];
+    public void select(int selected) {
+       this.selected = selected;
     }
 
 

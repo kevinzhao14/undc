@@ -175,7 +175,7 @@ public class GameScreen extends GameState {
         HBox hotbar = new HBox(10);
         for (int i = 0; i < player.getInventory().getItems()[0].length; i++) {
             StackPane newSlot = new StackPane();
-            if (i == player.getindexOfItemSelected()) {
+            if (i == player.getSelected()) {
                 Rectangle rect = new Rectangle(40, 40, Color.GRAY);
                 rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
                 hotbar.getChildren().add(newSlot);

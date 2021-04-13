@@ -1,6 +1,5 @@
 package dungeoncrawler.objects;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -16,7 +15,7 @@ public class Room {
     private int startX;
     private int startY;
     private boolean visited;
-    private Obstacle[] obstacles;
+    private ArrayList<Obstacle> obstacles;
     private Monster[] monsters;
     private ArrayList<DroppedItem> droppedItems;
     private Door topDoor;
@@ -43,7 +42,7 @@ public class Room {
         this.startY = startY;
         this.height = height;
         this.width = width;
-        this.obstacles = roomObstacles;
+        this.obstacles = new ArrayList<>();
         this.topDoor = null;
         this.bottomDoor = null;
         this.rightDoor = null;
@@ -180,7 +179,7 @@ public class Room {
      * Getter method for accessing all Obstacle objects in Room
      * @return array of Obstacles in Room
      */
-    public Obstacle[] getObstacles() {
+    public ArrayList<Obstacle> getObstacles() {
         return this.obstacles;
     }
     /**

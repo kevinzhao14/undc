@@ -132,12 +132,7 @@ public class RoomRenderer {
                 y = getPx(room.getHeight() - obstacle.getY() - obstacle.getHeight());
                 w = getPx(obstacle.getWidth());
                 h = getPx(obstacle.getHeight());
-                if (obstacle.getType().name().equals("KEY")) {
-                    img = new Image("items/key.png");
-                } else {
-                    img = new Image("items/" + obstacle.getType().toString().toLowerCase()
-                            + ".png");
-                }
+                img = obstacle.getSprite();
                 drawImg(gc, img, h, w, x, y);
 
             }

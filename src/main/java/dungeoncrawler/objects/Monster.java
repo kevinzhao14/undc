@@ -56,56 +56,31 @@ public class Monster extends Entity {
                 m.attackSpeed, m.type, m.getHeight(), m.getWidth());
     }
 
-    public void attackMonster(Player player, double damageAmount) {
-        if (this.getHealth() > 0) {
-            double dist = Math.sqrt(Math.pow(player.getPosX() - this.getPosX(), 2)
-                    + Math.pow(player.getPosY() - this.getPosY(), 2));
-            if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
-                this.setHealth(Math.max(0, this.getHealth() - damageAmount));
-                //Give gold to player after slaying a monster
-                if (this.getHealth() == 0.0) {
-                    double modifier;
-                    switch (Controller.getDataManager().getDifficulty()) {
-                    case MEDIUM:
-                        modifier = GameSettings.MODIFIER_MEDIUM;
-                        break;
-                    case HARD:
-                        modifier = GameSettings.MODIFIER_HARD;
-                        break;
-                    default:
-                        modifier = 1.0;
-                        break;
-                    }
-                    player.setGold(player.getGold()
-                            + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
-                    GameState screen = Controller.getState();
-
-                    //generate drop items and add to Room ArrayList
-                    DroppedItem[] itemDrops = dropItems();
-
-                    this.setOpacity(1 - (1000.0 / (GameSettings.MONSTER_FADE_TIME
-                            * GameSettings.FPS)));
-                    //use run later to prevent any thread issues
-                    if (screen instanceof GameScreen) {
-                        Platform.runLater(() -> {
-                            ((GameScreen) screen).updateHud();
-                            //Add dropped items to Room ArrayList
-                            for (DroppedItem item : itemDrops) {
-                                ((GameScreen) screen).getRoom().getDroppedItems().add(item);
-                            }
-                        });
-                    } else {
-                        Platform.runLater(() -> {
-                            ((GameScreen) screen).getGame().pause();
-                            throw new IllegalStateException("Illegal Game State.");
-                        });
-                    }
-                }
-            }
+    public boolean attackMonster(double damageAmount) {
+        if (this.getHealth() <= 0) {
+            return false;
         }
+        this.setHealth(Math.max(0, this.getHealth() - damageAmount));
+        //Give gold to player after slaying a monster
+        if (this.getHealth() == 0.0) {
+            GameState screen = Controller.getState();
 
+            //generate drop items and add to Room ArrayList
+            DroppedItem[] itemDrops = dropItems();
 
-
+            this.setOpacity(1 - (1000.0 / (GameSettings.MONSTER_FADE_TIME
+                    * GameSettings.FPS)));
+            //Add dropped items to Room ArrayList
+            for (DroppedItem item : itemDrops) {
+                ((GameScreen) screen).getRoom().getDroppedItems().add(item);
+            }
+            //use run later to prevent any thread issues
+            Platform.runLater(() -> {
+                ((GameScreen) screen).updateHud();
+            });
+            return true;
+        }
+        return false;
     }
 
     public DroppedItem[] dropItems() {

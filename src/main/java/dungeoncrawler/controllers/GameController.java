@@ -3,11 +3,13 @@ package dungeoncrawler.controllers;
 import dungeoncrawler.gamestates.GameState;
 import dungeoncrawler.handlers.Controls;
 import dungeoncrawler.handlers.RoomRenderer;
+import dungeoncrawler.objects.Bomb;
 import dungeoncrawler.objects.Door;
 import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
 import dungeoncrawler.objects.DroppedItem;
+import dungeoncrawler.objects.Entity;
 import dungeoncrawler.objects.Inventory;
 import dungeoncrawler.objects.InventoryItem;
 import dungeoncrawler.objects.Item;
@@ -15,10 +17,12 @@ import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
 import dungeoncrawler.objects.Player;
 import dungeoncrawler.objects.Room;
+import dungeoncrawler.objects.Weapon;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -382,10 +386,38 @@ public class GameController {
             player.setAttackCooldown(Math.max(0.0,
                     player.getAttackCooldown() - 1000.0 / GameSettings.FPS));
             if (isAttacking && player.getAttackCooldown() == 0.0) {
-                player.setAttackCooldown(1000 * player.getWeapon().getAttackSpeed());
+                Item item = player.getItemSelected().getItem();
+                double damage = GameSettings.PLAYER_FIST_DAMAGE;
+                double cooldown = GameSettings.PLAYER_FIST_COOLDOWN;
+                if (item instanceof Weapon) {
+                    Weapon weapon = (Weapon) item;
+                    damage = weapon.getDamage();
+                    cooldown = weapon.getAttackSpeed();
+                }
+                player.setAttackCooldown(1000 * cooldown);
                 for (Monster m : room.getMonsters()) {
                     if (m != null) {
-                        m.attackMonster(player, player.getAttack() * player.getWeapon().getDamage());
+                        double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2)
+                                + Math.pow(player.getPosY() - m.getPosY(), 2));
+                        if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
+                            boolean slain = m.attackMonster(player.getAttack() * damage);
+                            if (slain) {
+                                double modifier;
+                                switch (Controller.getDataManager().getDifficulty()) {
+                                    case MEDIUM:
+                                        modifier = GameSettings.MODIFIER_MEDIUM;
+                                        break;
+                                    case HARD:
+                                        modifier = GameSettings.MODIFIER_HARD;
+                                        break;
+                                    default:
+                                        modifier = 1.0;
+                                        break;
+                                }
+                                player.setGold(player.getGold() + (int)(GameSettings.MONSTER_KILL_GOLD
+                                        / modifier));
+                            }
+                        }
                     }
                 }
             }
@@ -399,6 +431,49 @@ public class GameController {
                 //check and move the monster
                 if (m.getHealth() > 0) {
                     monsterMove(m);
+                }
+            }
+
+            //manage items (bombs)
+            for (Obstacle o : room.getObstacles()) {
+                if (o.getItem() == null) {
+                    continue;
+                }
+                //has an item linked
+                Item item = o.getItem();
+                if (item instanceof Bomb) {
+                    Bomb b = (Bomb) item;
+                    b.setLivefuse(b.getLivefuse() - 1000 / GameSettings.FPS);
+                    //if bomb has blown up
+                    if (b.getLivefuse() < 0) {
+                        double x = o.getX() + o.getHeight() / 2;
+                        double y = o.getY() + o.getWidth() / 2;
+
+                        //attack player
+                        double distX = Math.pow(x - player.getPosX() + player.getWidth() / 2, 2);
+                        double distY = Math.pow(y - player.getPosY() + player.getHeight() / 2, 2);
+                        double dist = Math.sqrt(distX + distY);
+                        if (dist <= b.getRadius()) {
+                            player.setHealth(Math.max(0, player.getHealth() - b.getDamage()));
+                            if (player.getHeight() == 0) {
+                                if (!(Controller.getState() instanceof GameScreen)) {
+                                    stop();
+                                    throw new IllegalStateException("Illegal Game State.");
+                                }
+                                gameOver((GameScreen) Controller.getState());
+                            }
+                        }
+
+                        //get all entities within range of the bomb
+                        for (Monster m : room.getMonsters()) {
+                            distX = Math.pow(x - m.getPosX() + m.getWidth() / 2, 2);
+                            distY = Math.pow(y - m.getPosY() + m.getHealth() / 2, 2);
+                            dist = Math.sqrt(distX + distY);
+                            if (dist <= b.getRadius()) {
+                                m.attackMonster(b.getDamage());
+                            }
+                        }
+                    }
                 }
             }
 
@@ -739,35 +814,34 @@ public class GameController {
                     //attack player
                     double newHealth = player.getHealth() - m.getAttack();
                     player.setHealth((int) Math.max(0, newHealth));
-                    GameState screen = Controller.getState();
+                    if (!(Controller.getState() instanceof GameScreen)) {
+                        stop();
+                        throw new IllegalStateException("Illegal Game State.");
+                    }
+                    GameScreen screen = (GameScreen) Controller.getState();
+
                     //use run later to prevent any thread issues
                     Platform.runLater(() -> {
-                        if (screen instanceof GameScreen) {
-                            ((GameScreen) screen).updateHud();
-                        } else {
-                            pause();
-                            throw new IllegalStateException("Illegal Game State.");
-                        }
+                        screen.updateHud();
                     });
 
                     //go to game over screen if player has died
                     if (player.getHealth() == 0.0) {
                         //use run later to prevent any thread issues
-                        Platform.runLater(() -> {
-                            if (screen instanceof GameScreen) {
-                                if (isRunning) {
-                                    pause();
-                                }
-                                room = ((GameScreen) screen).getLayout().getStartingRoom();
-                                ((GameScreen) screen).gameOver();
-                            } else {
-                                pause();
-                                throw new IllegalStateException("Illegal Game State.");
-                            }
-                        });
+                        gameOver(screen);
                     }
                 }
             }
+        }
+
+        private void gameOver(GameScreen screen) {
+            Platform.runLater(() -> {
+                if (isRunning) {
+                    pause();
+                }
+                room = screen.getLayout().getStartingRoom();
+                screen.gameOver();
+            });
         }
 
         /**

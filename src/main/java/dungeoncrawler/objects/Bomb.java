@@ -1,11 +1,14 @@
 package dungeoncrawler.objects;
 
+import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.gamestates.GameScreen;
 import javafx.scene.image.Image;
 
 public class Bomb extends Item {
     private double damage;
     private double radius;
     private double fuse;
+    private double livefuse;
 
     public Bomb(String name, String spriteLocation, int stackSize,
                 double damage, double radius, double fuse) {
@@ -13,6 +16,7 @@ public class Bomb extends Item {
         this.damage = damage;
         this.radius = radius;
         this.fuse = fuse;
+        livefuse = -1;
     }
 
     public Bomb copy() {
@@ -20,6 +24,19 @@ public class Bomb extends Item {
                 damage, radius, fuse);
     }
     public void use() {
+        GameScreen screen = (GameScreen) Controller.getState();
+        Room room = screen.getRoom();
+        Player player = screen.getPlayer();
+
+        //place object as an obstacle
+        Obstacle o = new Obstacle(player.getPosX() + player.getWidth() / 2, player.getPosY()
+                + player.getHeight() / 2, 20, 20, ObstacleType.SOLID);
+        o.setSprite(getSprite());
+        o.setItem(this);
+        room.getObstacles().add(o);
+
+        //start fuse
+        livefuse = fuse;
     }
     public double getDamage() {
         return this.damage;
@@ -38,5 +55,13 @@ public class Bomb extends Item {
     }
     public void setFuse(double fuse) {
         this.fuse = fuse;
+    }
+
+    public double getLivefuse() {
+        return livefuse;
+    }
+
+    public void setLivefuse(double livefuse) {
+        this.livefuse = livefuse;
     }
 }
