@@ -55,14 +55,31 @@ public class Monster extends Entity {
                 m.attackSpeed, m.type, m.getHeight(), m.getWidth());
     }
 
-    public boolean attackMonster(double damageAmount) {
+    public boolean attackMonster(double damageAmount, boolean givePlayerGoldIfSlain) {
         if (this.getHealth() <= 0) {
             return false;
         }
         this.setHealth(Math.max(0, this.getHealth() - damageAmount));
         //Give gold to player after slaying a monster
         if (this.getHealth() == 0.0) {
-            GameState screen = Controller.getState();
+            GameScreen screen = (GameScreen) Controller.getState();
+
+            if (givePlayerGoldIfSlain) {
+                double modifier;
+                switch (Controller.getDataManager().getDifficulty()) {
+                    case MEDIUM:
+                        modifier = GameSettings.MODIFIER_MEDIUM;
+                        break;
+                    case HARD:
+                        modifier = GameSettings.MODIFIER_HARD;
+                        break;
+                    default:
+                        modifier = 1.0;
+                        break;
+                }
+                screen.getPlayer().setGold(screen.getPlayer().getGold()
+                        + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
+            }
 
             //generate drop items and add to Room ArrayList
             DroppedItem[] itemDrops = dropItems();
@@ -71,11 +88,11 @@ public class Monster extends Entity {
                     * GameSettings.FPS)));
             //Add dropped items to Room ArrayList
             for (DroppedItem item : itemDrops) {
-                ((GameScreen) screen).getRoom().getDroppedItems().add(item);
+                screen.getRoom().getDroppedItems().add(item);
             }
             //use run later to prevent any thread issues
             Platform.runLater(() -> {
-                ((GameScreen) screen).updateHud();
+                screen.updateHud();
             });
             return true;
         }

@@ -30,7 +30,7 @@ public class DataManager {
                 PotionType.HEALTH, 50),
         new Potion("Large Health Potion", "items/health-potion-large.png", 10, true,
                 PotionType.HEALTH, 100),
-        new Potion("Attack Potion", "items/attack-potion.png", 10, true, PotionType.ATTACK, 0.25),
+        new Potion("Attack Potion", "items/attack-potion.png", 10, true, PotionType.ATTACK, 30),
         new Weapon("Dagger", "items/dagger.png", 5, 0.25, true),
         new Bomb("Bomb", "items/bomb.png", 10, 50, 50, 3000)
     };
