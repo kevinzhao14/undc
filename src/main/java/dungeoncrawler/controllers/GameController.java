@@ -18,6 +18,7 @@ import dungeoncrawler.objects.Room;
 import dungeoncrawler.objects.Weapon;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
 
@@ -287,6 +288,42 @@ public class GameController {
         } else if (key.equals(controls.getKey("previnv"))) {
             player.moveLeft();
             getScreen().updateHud();
+        } else if (key.equals(controls.getKey("drop"))) {
+            InventoryItem currentItem = player.getItemSelected();
+            if (currentItem == null || !isPress) {
+                return;
+            }
+            double d = GameSettings.DROP_ITEM_DISTANCE;
+            double x = player.getPosX() + player.getWidth() / 2;
+            double y = player.getPosY() + player.getHeight() / 2;
+            Image itemSprite = currentItem.getItem().getSprite();
+            int dir = player.getDirection() % 4;
+            x += dir == 0 ? -d : (dir == 2 ? d : 0);
+            y += dir == 3 ? -d : (dir == 1 ? d : 0);
+            x -= itemSprite.getWidth() / 2;
+            y -= itemSprite.getHeight() / 2;
+
+            //keep inside room
+            x = Math.max(0, x);
+            y = Math.max(0, y);
+            x = Math.min(room.getWidth() - itemSprite.getWidth(), x);
+            y = Math.min(room.getHeight() - itemSprite.getHeight(), y);
+
+            DroppedItem di = new DroppedItem(currentItem.getItem(), x, y, itemSprite.getWidth(), itemSprite.getHeight());
+            room.getDroppedItems().add(di);
+
+            //remove from inventory
+            if (currentItem.getQuantity() > 1) {
+                currentItem.setQuantity(currentItem.getQuantity() - 1);
+            } else {
+                player.getInventory().remove(currentItem.getItem());
+            }
+            getScreen().updateHud();
+        } else if (key.equals(controls.getKey("rotateinv"))) {
+            if (isPress) {
+                player.getInventory().rotate();
+                getScreen().updateHud();
+            }
         }
     }
 

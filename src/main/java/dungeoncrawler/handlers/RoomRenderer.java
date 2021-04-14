@@ -159,10 +159,10 @@ public class RoomRenderer {
         gc.setGlobalAlpha(1);
         if (room.getDroppedItems() != null) {
             for (DroppedItem item : room.getDroppedItems()) {
-                h = getPx(item.getHeight()) / 1.5;
-                w = getPx(item.getWidth()) / 1.5;
-                x = getPx(item.getX());
-                y = getPx(room.getHeight() - item.getY() - item.getHeight());
+                h = getPx(item.getHeight()) * GameSettings.DROP_ITEM_SPRITE_SCALE;
+                w = getPx(item.getWidth()) * GameSettings.DROP_ITEM_SPRITE_SCALE;
+                x = getPx(item.getX() + item.getWidth() * (1 - GameSettings.DROP_ITEM_SPRITE_SCALE) / 2);
+                y = getPx(room.getHeight() - item.getY() - item.getHeight() + item.getHeight() * (1 - GameSettings.DROP_ITEM_SPRITE_SCALE) / 2);
                 img = item.getItem().getSprite();
                 drawImg(gc, img, h, w, x, y);
             }

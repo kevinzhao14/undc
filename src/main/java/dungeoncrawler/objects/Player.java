@@ -4,8 +4,6 @@ import dungeoncrawler.controllers.DataManager;
 import dungeoncrawler.handlers.GameSettings;
 import javafx.scene.image.Image;
 
-import javax.xml.crypto.Data;
-
 public class Player extends Entity {
     private static Image[] sprites = new Image[]{
         new Image("player/player-left.png"),
@@ -21,6 +19,7 @@ public class Player extends Entity {
     private int gold;
     private Inventory inventory;
     private int selected;
+    private int direction;
     //private Effect status = new Effect[];
 
     public Player(int maxHealth, double attack, Weapon weapon) {
@@ -30,6 +29,7 @@ public class Player extends Entity {
         inventory.add(weapon);
         inventory.add(DataManager.ITEMS[0].copy(), 5);
         selected = 0;
+        direction = 0;
     }
 
     public int getGold() {
@@ -41,6 +41,7 @@ public class Player extends Entity {
 
     public void setDirection(int dir) {
         this.setImage(sprites[dir]);
+        direction = dir;
     }
 
     public Inventory getInventory() {
@@ -73,4 +74,7 @@ public class Player extends Entity {
     }
 
 
+    public int getDirection() {
+        return direction;
+    }
 }

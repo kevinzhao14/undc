@@ -4,7 +4,6 @@ import dungeoncrawler.objects.DungeonLayout;
 import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
 import dungeoncrawler.objects.InventoryItem;
-import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Player;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Room;

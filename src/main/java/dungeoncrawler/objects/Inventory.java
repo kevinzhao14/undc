@@ -39,6 +39,9 @@ public class Inventory {
         }
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
+                if (items[i][j] == null) {
+                    continue;
+                }
                 if (items[i][j].getItem() == item) {
                     if (items[i][j].getQuantity() == 1) {
                         items[i][j] = null;
@@ -50,6 +53,14 @@ public class Inventory {
             }
         }
         return false;
+    }
+
+    public void rotate() {
+        InventoryItem[] firstrow = items[0];
+        for (int i = 0; i < items.length - 1; i++) {
+            items[i] = items[i + 1];
+        }
+        items[items.length - 1] = firstrow;
     }
 
     public boolean full() {

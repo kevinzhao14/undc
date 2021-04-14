@@ -164,7 +164,7 @@ public class Controls {
         //Weapon Controls
         keyMap.put("attack", KeyCode.F13);
         keyMap.put("attack2", KeyCode.F14);
-        keyMap.put("reload", KeyCode.R);
+        keyMap.put("rotateinv", KeyCode.R);
 
         try {
             save();
