@@ -450,23 +450,7 @@ public class GameController {
                         double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2)
                                 + Math.pow(player.getPosY() - m.getPosY(), 2));
                         if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
-                            boolean slain = m.attackMonster(player.getAttack() * damage);
-                            if (slain) {
-                                double modifier;
-                                switch (Controller.getDataManager().getDifficulty()) {
-                                case MEDIUM:
-                                    modifier = GameSettings.MODIFIER_MEDIUM;
-                                    break;
-                                case HARD:
-                                    modifier = GameSettings.MODIFIER_HARD;
-                                    break;
-                                default:
-                                    modifier = 1.0;
-                                    break;
-                                }
-                                player.setGold(player.getGold()
-                                        + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
-                            }
+                            m.attackMonster(player.getAttack() * damage, true);
                         }
                     }
                 }
@@ -524,7 +508,7 @@ public class GameController {
                             distY = Math.pow(y - m.getPosY() + m.getHealth() / 2, 2);
                             dist = Math.sqrt(distX + distY);
                             if (dist <= b.getRadius()) {
-                                m.attackMonster(b.getDamage());
+                                m.attackMonster(b.getDamage(), true);
                             }
                         }
 
