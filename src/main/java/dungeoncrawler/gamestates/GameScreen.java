@@ -3,6 +3,8 @@ package dungeoncrawler.gamestates;
 import dungeoncrawler.objects.DungeonLayout;
 import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
+import dungeoncrawler.objects.InventoryItem;
+import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Player;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Room;
@@ -178,55 +180,30 @@ public class GameScreen extends GameState {
         HBox hotbar = new HBox(10);
         for (int i = 0; i < player.getInventory().getItems()[0].length; i++) {
             StackPane newSlot = new StackPane();
+            Rectangle rect = new Rectangle(40, 40, Color.GRAY);
             if (i == player.getSelected()) {
-                Rectangle rect = new Rectangle(40, 40, Color.GRAY);
-                rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
-                hotbar.getChildren().add(newSlot);
-                newSlot.getChildren().add(rect);
-                if (player.getInventory().getItems()[0][i] != null) {
-                    ImageView itemImg = new ImageView(
-                            player.getInventory().getItems()[0][i].getItem().getSprite());
-
-                    if (player.getInventory().getItems()[0][i].getQuantity() > 1) {
-                        Label quantity = new Label(
-                                player.getInventory().getItems()[0][i].getQuantity() + " ");
-
-                        StackPane quantityPane = new StackPane();
-                        quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
-                        quantity.setAlignment(Pos.BOTTOM_RIGHT);
-                        quantity.setStyle(
-                                "-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323");
-                        quantity.setTranslateX(4);
-                        quantityPane.getChildren().add(quantity);
-                        newSlot.getChildren().addAll(itemImg, quantityPane);
-                    } else {
-                        newSlot.getChildren().add(itemImg);
-                    }
-                }
-            } else {
-                Rectangle rect = new Rectangle(30, 30, Color.GRAY);
-                rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
-                hotbar.getChildren().add(newSlot);
-                newSlot.getChildren().add(rect);
-                if (player.getInventory().getItems()[0][i] != null) {
-                    ImageView itemImg = new ImageView(
-                            player.getInventory().getItems()[0][i].getItem().getSprite());
-
-                    if (player.getInventory().getItems()[0][i].getQuantity() > 1) {
-                        Label quantity = new Label(
-                                player.getInventory().getItems()[0][i].getQuantity() + " ");
-
-                        StackPane quantityPane = new StackPane();
-                        quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
-                        quantity.setAlignment(Pos.BOTTOM_RIGHT);
-                        quantity.setStyle(
-                                "-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323");
-                        quantity.setTranslateX(4);
-                        quantityPane.getChildren().add(quantity);
-                        newSlot.getChildren().addAll(itemImg, quantityPane);
-                    } else {
-                        newSlot.getChildren().add(itemImg);
-                    }
+                rect = new Rectangle(50, 50, Color.GRAY);
+            }
+            rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
+            hotbar.getChildren().add(newSlot);
+            newSlot.getChildren().add(rect);
+            if (player.getInventory().getItems()[0][i] != null) {
+                InventoryItem item = player.getInventory().getItems()[0][i];
+                ImageView itemImg = new ImageView(item.getItem().getSprite());
+                itemImg.setFitHeight(i == player.getSelected() ? 40 : 30);
+                itemImg.setFitWidth(i == player.getSelected() ? 40 : 30);
+                if (item.getQuantity() > 1) {
+                    Label quantity = new Label("" + item.getQuantity());
+                    StackPane quantityPane = new StackPane();
+                    quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
+                    quantity.setStyle(
+                            "-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323;");
+                    quantity.setTranslateX(i == player.getSelected() ? -2 : -3);
+                    quantity.setTranslateY(i == player.getSelected() ? -1 : -6);
+                    quantityPane.getChildren().add(quantity);
+                    newSlot.getChildren().addAll(itemImg, quantityPane);
+                } else {
+                    newSlot.getChildren().add(itemImg);
                 }
             }
         }
@@ -430,20 +407,13 @@ public class GameScreen extends GameState {
                 rect.setStyle("-fx-stroke: white; -fx-stroke-width: 3");
                 itemSlots[i].getChildren().add(newSlot);
                 newSlot.getChildren().add(rect);
-                if (player.getInventory().getItems()[i][j] != null) {
-                    ImageView itemImg = new ImageView(
-                            player.getInventory().getItems()[i][j].getItem().getSprite());
-
-
-                    String itemName = player.getInventory().getItems()[i][j].getItem().getName();
-                    Rectangle nameRect = new Rectangle(itemName.length() * 13, 30, Color.BLACK);
-                    nameRect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
-                    Label nameLabel = new Label(
-                            player.getInventory().getItems()[i][j].getItem().getName());
-                    nameLabel.setStyle(
-                            "-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
+                InventoryItem item = player.getInventory().getItems()[i][j];
+                if (item != null) {
+                    ImageView itemImg = new ImageView(item.getItem().getSprite());
+                    Label nameLabel = new Label(item.getItem().getName());
+                    nameLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323; -fx-background-color: black; -fx-border-color: white; -fx-padding: 5px");
                     StackPane itemNameBox = new StackPane();
-                    itemNameBox.getChildren().addAll(nameRect, nameLabel);
+                    itemNameBox.getChildren().addAll(nameLabel);
                     itemNameBox.setAlignment(Pos.TOP_CENTER);
                     itemNameBox.setVisible(false);
 
@@ -453,20 +423,16 @@ public class GameScreen extends GameState {
                     itemNameList.add(itemNameBox);
 
                     if (player.getInventory().getItems()[i][j].getQuantity() > 1) {
-                        Label quantity = new Label(
-                                player.getInventory().getItems()[i][j].getQuantity() + " ");
+                        Label quantity = new Label("" + item.getQuantity());
                         StackPane quantityPane = new StackPane();
-
                         quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
-
                         quantity.setStyle(
                                 "-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
-
+                        quantity.setTranslateX(-4);
+                        quantity.setTranslateY(-2);
                         quantityPane.getChildren().add(quantity);
-
                         newSlot.getChildren().addAll(itemImg, quantityPane);
                     } else {
-
                         newSlot.getChildren().add(itemImg);
                     }
                 }
