@@ -18,7 +18,7 @@ public class Player extends Entity {
     private int gold;
     private Inventory inventory;
     private int selected;
-//    private Effect status = new Effect[];
+    //private Effect status = new Effect[];
 
     public Player(int maxHealth, double attack, Weapon weapon) {
         super(maxHealth, attack, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH, null);
@@ -60,7 +60,8 @@ public class Player extends Entity {
     }
 
     public void moveLeft() {
-        this.selected = (this.selected - 1 + GameSettings.INVENTORY_COLUMNS) % GameSettings.INVENTORY_COLUMNS;
+        this.selected = (this.selected - 1 + GameSettings.INVENTORY_COLUMNS)
+                % GameSettings.INVENTORY_COLUMNS;
     }
 
     public void select(int selected) {

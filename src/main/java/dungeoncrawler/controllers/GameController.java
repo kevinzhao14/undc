@@ -276,9 +276,13 @@ public class GameController {
      * @param event ScrollEvent passed by JavaFX
      */
     private void handleScroll(ScrollEvent event) {
-        if (!(Controller.getState() instanceof GameScreen)) return;
+        if (!(Controller.getState() instanceof GameScreen)) {
+            return;
+        }
         GameScreen gameScreen = (GameScreen) Controller.getState();
-        if (gameScreen.isPaused()) return;
+        if (gameScreen.isPaused()) {
+            return;
+        }
 
         long val = Math.round(event.getDeltaY());
         if (val < 0) {
@@ -412,7 +416,8 @@ public class GameController {
             player.setAttackCooldown(Math.max(0.0,
                     player.getAttackCooldown() - 1000.0 / GameSettings.FPS));
             if (isAttacking && player.getAttackCooldown() == 0.0) {
-                Item item = player.getItemSelected() != null ? player.getItemSelected().getItem() : null;
+                Item item = player.getItemSelected() != null
+                        ? player.getItemSelected().getItem() : null;
                 double damage = GameSettings.PLAYER_FIST_DAMAGE;
                 double cooldown = GameSettings.PLAYER_FIST_COOLDOWN;
                 if (item instanceof Weapon) {

@@ -184,13 +184,16 @@ public class GameScreen extends GameState {
                 hotbar.getChildren().add(newSlot);
                 newSlot.getChildren().add(rect);
                 if (player.getInventory().getItems()[0][i] != null) {
-                    ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
-                    Label quantity = new Label(player.getInventory().getItems()[0][i].getQuantity() + " ");
+                    ImageView itemImg = new ImageView(
+                            player.getInventory().getItems()[0][i].getItem().getSprite());
+                    Label quantity = new Label(
+                            player.getInventory().getItems()[0][i].getQuantity() + " ");
 
                     StackPane quantityPane = new StackPane();
                     quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
                     quantity.setAlignment(Pos.BOTTOM_RIGHT);
-                    quantity.setStyle("-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323");
+                    quantity.setStyle(
+                            "-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323");
                     quantity.setTranslateX(4);
                     quantityPane.getChildren().add(quantity);
                     newSlot.getChildren().addAll(itemImg, quantityPane);
@@ -201,13 +204,16 @@ public class GameScreen extends GameState {
                 hotbar.getChildren().add(newSlot);
                 newSlot.getChildren().add(rect);
                 if (player.getInventory().getItems()[0][i] != null) {
-                    ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
-                    Label quantity = new Label(player.getInventory().getItems()[0][i].getQuantity() + " ");
+                    ImageView itemImg = new ImageView(
+                            player.getInventory().getItems()[0][i].getItem().getSprite());
+                    Label quantity = new Label(
+                            player.getInventory().getItems()[0][i].getQuantity() + " ");
 
                     StackPane quantityPane = new StackPane();
                     quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
                     quantity.setAlignment(Pos.BOTTOM_RIGHT);
-                    quantity.setStyle("-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323");
+                    quantity.setStyle(
+                            "-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323");
                     quantity.setTranslateX(4);
                     quantity.setTranslateY(-5);
                     quantityPane.getChildren().add(quantity);
@@ -408,21 +414,26 @@ public class GameScreen extends GameState {
                 itemSlots[i].getChildren().add(newSlot);
                 newSlot.getChildren().add(rect);
                 if (player.getInventory().getItems()[i][j] != null) {
-                    ImageView itemImg = new ImageView(player.getInventory().getItems()[i][j].getItem().getSprite());
-                    Label quantity = new Label(player.getInventory().getItems()[i][j].getQuantity() + " ");
+                    ImageView itemImg = new ImageView(
+                            player.getInventory().getItems()[i][j].getItem().getSprite());
+                    Label quantity = new Label(
+                            player.getInventory().getItems()[i][j].getQuantity() + " ");
                     StackPane quantityPane = new StackPane();
 
                     quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
 
-                    quantity.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
+                    quantity.setStyle(
+                            "-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
 
                     quantityPane.getChildren().add(quantity);
 
                     String itemName = player.getInventory().getItems()[i][j].getItem().getName();
                     Rectangle nameRect = new Rectangle(itemName.length() * 13, 30, Color.BLACK);
                     nameRect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
-                    Label nameLabel = new Label(player.getInventory().getItems()[i][j].getItem().getName());
-                    nameLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
+                    Label nameLabel = new Label(
+                            player.getInventory().getItems()[i][j].getItem().getName());
+                    nameLabel.setStyle(
+                            "-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
                     StackPane itemNameBox = new StackPane();
                     itemNameBox.getChildren().addAll(nameRect, nameLabel);
                     itemNameBox.setAlignment(Pos.TOP_CENTER);

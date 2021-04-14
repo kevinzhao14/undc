@@ -23,7 +23,7 @@ public class ItemDataTest extends ApplicationTest {
     @Test
     public void testHasItems() {
         int size = DataManager.ITEMS.length;
-        assert(size > 0);
+        assertTrue(size > 0);
     }
 
     @Test
