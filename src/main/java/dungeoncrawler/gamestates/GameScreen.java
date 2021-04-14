@@ -410,7 +410,9 @@ public class GameScreen extends GameState {
                 if (item != null) {
                     ImageView itemImg = new ImageView(item.getItem().getSprite());
                     Label nameLabel = new Label(item.getItem().getName());
-                    nameLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323; -fx-background-color: black; -fx-border-color: white; -fx-padding: 5px");
+                    nameLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; "
+                            + "-fx-font-family:VT323; -fx-background-color: black; "
+                            + "-fx-border-color: white; -fx-padding: 5px");
                     StackPane itemNameBox = new StackPane();
                     itemNameBox.getChildren().addAll(nameLabel);
                     itemNameBox.setAlignment(Pos.TOP_CENTER);

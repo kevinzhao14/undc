@@ -2,7 +2,6 @@ package dungeoncrawler.objects;
 
 import dungeoncrawler.controllers.Controller;
 import dungeoncrawler.gamestates.GameScreen;
-import dungeoncrawler.gamestates.GameState;
 import dungeoncrawler.handlers.GameSettings;
 import javafx.application.Platform;
 
@@ -67,15 +66,15 @@ public class Monster extends Entity {
             if (givePlayerGoldIfSlain) {
                 double modifier;
                 switch (Controller.getDataManager().getDifficulty()) {
-                    case MEDIUM:
-                        modifier = GameSettings.MODIFIER_MEDIUM;
-                        break;
-                    case HARD:
-                        modifier = GameSettings.MODIFIER_HARD;
-                        break;
-                    default:
-                        modifier = 1.0;
-                        break;
+                case MEDIUM:
+                    modifier = GameSettings.MODIFIER_MEDIUM;
+                    break;
+                case HARD:
+                    modifier = GameSettings.MODIFIER_HARD;
+                    break;
+                default:
+                    modifier = 1.0;
+                    break;
                 }
                 screen.getPlayer().setGold(screen.getPlayer().getGold()
                         + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));

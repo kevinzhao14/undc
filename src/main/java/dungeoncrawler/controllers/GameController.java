@@ -20,7 +20,6 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.ScrollEvent;
 
 import java.util.LinkedList;
 import java.util.Timer;
@@ -218,13 +217,13 @@ public class GameController {
             if (!isPress) {
                 pause();
                 GameScreen screen = getScreen();
-                    //esc is used to leave inventory if it's currently open
-                    //otherwise, use it to pause/unpause game
-                    if (screen.isInventoryVisible()) {
-                        screen.toggleInventory();
-                    } else {
-                        screen.togglePause();
-                    }
+                //esc is used to leave inventory if it's currently open
+                //otherwise, use it to pause/unpause game
+                if (screen.isInventoryVisible()) {
+                    screen.toggleInventory();
+                } else {
+                    screen.togglePause();
+                }
             }
         }
         //movement keys
@@ -270,18 +269,19 @@ public class GameController {
             isAttacking = isPress;
         } else if (key.equals(controls.getKey("inventory"))) {
             if (!isPress) {
-                    if (!getScreen().isPaused()) {
-                        pause();
-                        getScreen().toggleInventory();
-                    }
+                if (!getScreen().isPaused()) {
+                    pause();
+                    getScreen().toggleInventory();
+                }
             }
         } else if (key.equals(controls.getKey("use"))) {
-            if (isPress == false) {
-                return;
+            if (isPress) {
+                InventoryItem selected = player.getItemSelected();
+                if (selected != null) {
+                    System.out.println("Using item " + selected.getItem());
+                    selected.getItem().use();
+                }
             }
-            InventoryItem selected = player.getItemSelected();
-            System.out.println("Using item " + selected.getItem());
-            selected.getItem().use();
         } else if (key.equals(controls.getKey("nextinv"))) {
             player.moveRight();
             getScreen().updateHud();
@@ -309,7 +309,8 @@ public class GameController {
             x = Math.min(room.getWidth() - itemSprite.getWidth(), x);
             y = Math.min(room.getHeight() - itemSprite.getHeight(), y);
 
-            DroppedItem di = new DroppedItem(currentItem.getItem(), x, y, itemSprite.getWidth(), itemSprite.getHeight());
+            DroppedItem di = new DroppedItem(currentItem.getItem(), x, y, itemSprite.getWidth(),
+                    itemSprite.getHeight());
             room.getDroppedItems().add(di);
 
             //remove from inventory
@@ -816,6 +817,7 @@ public class GameController {
         /**
          * Monster AI for calculating movement and attacking.
          * @param m Monster to calculate for
+         * @return Returns if the program should stop
          */
         private boolean monsterMove(Monster m) {
             //check queue
@@ -840,7 +842,8 @@ public class GameController {
                     ? m.getMoveQueue().getLast() : new double[]{0, m.getPosX(), m.getPosY()};
             double mPosY = mq[2];
             double mPosX = mq[1];
-            double ydiff = (mPosY + m.getHeight() / 2) - (player.getPosY() + player.getHeight() / 2);
+            double ydiff = (mPosY + m.getHeight() / 2) - (player.getPosY() + player.getHeight()
+                    / 2);
             double xdiff = (mPosX + m.getWidth() / 2) - (player.getPosX() + player.getWidth() / 2);
             double d = round(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2)));
             if (d <= GameSettings.MONSTER_MOVE_RANGE && d >= GameSettings.MONSTER_MOVE_MIN) {

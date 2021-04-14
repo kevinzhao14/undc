@@ -53,7 +53,8 @@ public abstract class Item {
     }
 
     public boolean equals(Item item) {
-        return name.equals(item.name) && sprite.getUrl().equals(item.sprite.getUrl()) && droppable == item.droppable && maxStackSize == item.maxStackSize;
+        return name.equals(item.name) && sprite.getUrl().equals(item.sprite.getUrl())
+                && droppable == item.droppable && maxStackSize == item.maxStackSize;
     }
 
     public String toString() {

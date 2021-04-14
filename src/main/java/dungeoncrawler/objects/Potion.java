@@ -50,39 +50,42 @@ public class Potion extends Item {
         Room room = gameScreen.getRoom();
 
         switch (this.type) {
-            case ATTACK:
-                // damage nearby monsters by potion modifier
-                for (Monster m : room.getMonsters()) {
-                    if (m == null) continue;
-                    double xdist = player.getPosX() - m.getPosX();
-                    double ydist = player.getPosY() - m.getPosY();
-                    double sqdist = xdist * xdist + ydist * ydist;
-                    double sqattackrange = GameSettings.PLAYER_ATTACK_RANGE * GameSettings.PLAYER_ATTACK_RANGE * 4;
-                    if (sqdist <= sqattackrange) {
-                        m.attackMonster(this.getModifier(), true);
-                    }
+        case ATTACK:
+            // damage nearby monsters by potion modifier
+            for (Monster m : room.getMonsters()) {
+                if (m == null) {
+                    continue;
                 }
+                double xdist = player.getPosX() - m.getPosX();
+                double ydist = player.getPosY() - m.getPosY();
+                double sqdist = xdist * xdist + ydist * ydist;
+                double sqattackrange = GameSettings.PLAYER_ATTACK_RANGE
+                        * GameSettings.PLAYER_ATTACK_RANGE * 4;
+                if (sqdist <= sqattackrange) {
+                    m.attackMonster(this.getModifier(), true);
+                }
+            }
 
+            //remove from inventory
+            player.getInventory().remove(this);
+            gameScreen.updateHud();
+            break;
+        case HEALTH:
+            // increase health by potion modifier
+            double health = gameScreen.getPlayer().getHealth();
+            double newHealth = health + this.getModifier();
+            double maxHealth = gameScreen.getPlayer().getMaxHealth();
+            double cappedHealth = Math.min(newHealth, maxHealth);
+
+            if (cappedHealth != health) {
                 //remove from inventory
+                gameScreen.getPlayer().setHealth(cappedHealth);
                 player.getInventory().remove(this);
                 gameScreen.updateHud();
-                break;
-            case HEALTH:
-                // increase health by potion modifier
-                double health = gameScreen.getPlayer().getHealth();
-                double newHealth = health + this.getModifier();
-                double maxHealth = gameScreen.getPlayer().getMaxHealth();
-                double cappedHealth = Math.min(newHealth, maxHealth);
-
-                if (cappedHealth != health) {
-                    //remove from inventory
-                    gameScreen.getPlayer().setHealth(cappedHealth);
-                    player.getInventory().remove(this);
-                    gameScreen.updateHud();
-                }
-                break;
-            default:
-                System.err.println("Potion type not yet implemented.");
+            }
+            break;
+        default:
+            System.err.println("Potion type not yet implemented.");
         }
     }
 }

@@ -29,7 +29,7 @@ public class Inventory {
             }
         }
     }
-    public void add (Item item) {
+    public void add(Item item) {
         add(item, 1);
     }
 
