@@ -389,6 +389,27 @@ public class GameController {
             }
 
             //check item pickup
+            pickupItems();
+
+            checkPlayerAttack();
+
+            //Manage Monsters
+            monsterAI();
+
+            //manage items (bombs)
+            checkObstacleItems();
+
+            refresh();
+
+            //update velocity
+            updatePlayerVelocity();
+
+            long endTime = System.nanoTime();
+            double execTime = round((endTime - startTime) / 1000000.0); //in milliseconds
+            totalTime += execTime;
+        }
+
+        private void pickupItems() {
             boolean itemPickedUp = false;
             droploop:
             for (int i = 0; i < room.getDroppedItems().size(); i++) {
@@ -427,11 +448,12 @@ public class GameController {
                     }
                 }
             }
-
             if (itemPickedUp) {
                 Platform.runLater(() -> getScreen().updateHud());
             }
+        }
 
+        private void checkPlayerAttack() {
             player.setAttackCooldown(Math.max(0.0,
                     player.getAttackCooldown() - 1000.0 / GameSettings.FPS));
             if (isAttacking && player.getAttackCooldown() == 0.0) {
@@ -455,8 +477,9 @@ public class GameController {
                     }
                 }
             }
+        }
 
-            //Manage Monsters
+        private void monsterAI() {
             for (int i = 0; i < room.getMonsters().length; i++) {
                 Monster m = room.getMonsters()[i];
                 if (m == null || m.getHealth() == 0) {
@@ -469,8 +492,9 @@ public class GameController {
                     }
                 }
             }
+        }
 
-            //manage items (bombs)
+        private void checkObstacleItems() {
             for (int i = 0; i < room.getObstacles().size(); i++) {
                 Obstacle o = room.getObstacles().get(i);
                 if (o.getItem() == null) {
@@ -518,10 +542,9 @@ public class GameController {
                     }
                 }
             }
+        }
 
-            refresh();
-
-            //update velocity
+        private void updatePlayerVelocity() {
             double ovx = velX;
             double ovy = velY;
             velX += accelX;
@@ -560,10 +583,6 @@ public class GameController {
                 frictionY = true;
                 accelY += (velY > 0 ? -1 : 1) * GameSettings.FRICTION;
             }
-
-            long endTime = System.nanoTime();
-            double execTime = round((endTime - startTime) / 1000000.0); //in milliseconds
-            totalTime += execTime;
         }
 
         /**
