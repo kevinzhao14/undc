@@ -184,16 +184,24 @@ public class GameScreen extends GameState {
                 hotbar.getChildren().add(newSlot);
                 newSlot.getChildren().add(rect);
                 if (player.getInventory().getItems()[0][i] != null) {
-                    ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
-                    Label quantity = new Label(player.getInventory().getItems()[0][i].getQuantity() + " ");
+                    ImageView itemImg = new ImageView(
+                            player.getInventory().getItems()[0][i].getItem().getSprite());
 
-                    StackPane quantityPane = new StackPane();
-                    quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
-                    quantity.setAlignment(Pos.BOTTOM_RIGHT);
-                    quantity.setStyle("-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323");
-                    quantity.setTranslateX(4);
-                    quantityPane.getChildren().add(quantity);
-                    newSlot.getChildren().addAll(itemImg, quantityPane);
+                    if (player.getInventory().getItems()[0][i].getQuantity() > 1) {
+                        Label quantity = new Label(
+                                player.getInventory().getItems()[0][i].getQuantity() + " ");
+
+                        StackPane quantityPane = new StackPane();
+                        quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
+                        quantity.setAlignment(Pos.BOTTOM_RIGHT);
+                        quantity.setStyle(
+                                "-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323");
+                        quantity.setTranslateX(4);
+                        quantityPane.getChildren().add(quantity);
+                        newSlot.getChildren().addAll(itemImg, quantityPane);
+                    } else {
+                        newSlot.getChildren().add(itemImg);
+                    }
                 }
             } else {
                 Rectangle rect = new Rectangle(30, 30, Color.GRAY);
@@ -201,17 +209,24 @@ public class GameScreen extends GameState {
                 hotbar.getChildren().add(newSlot);
                 newSlot.getChildren().add(rect);
                 if (player.getInventory().getItems()[0][i] != null) {
-                    ImageView itemImg = new ImageView(player.getInventory().getItems()[0][i].getItem().getSprite());
-                    Label quantity = new Label(player.getInventory().getItems()[0][i].getQuantity() + " ");
+                    ImageView itemImg = new ImageView(
+                            player.getInventory().getItems()[0][i].getItem().getSprite());
 
-                    StackPane quantityPane = new StackPane();
-                    quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
-                    quantity.setAlignment(Pos.BOTTOM_RIGHT);
-                    quantity.setStyle("-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323");
-                    quantity.setTranslateX(4);
-                    quantity.setTranslateY(-5);
-                    quantityPane.getChildren().add(quantity);
-                    newSlot.getChildren().addAll(itemImg, quantityPane);
+                    if (player.getInventory().getItems()[0][i].getQuantity() > 1) {
+                        Label quantity = new Label(
+                                player.getInventory().getItems()[0][i].getQuantity() + " ");
+
+                        StackPane quantityPane = new StackPane();
+                        quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
+                        quantity.setAlignment(Pos.BOTTOM_RIGHT);
+                        quantity.setStyle(
+                                "-fx-text-fill:WHITE; -fx-font-size: 14; -fx-font-family:VT323");
+                        quantity.setTranslateX(4);
+                        quantityPane.getChildren().add(quantity);
+                        newSlot.getChildren().addAll(itemImg, quantityPane);
+                    } else {
+                        newSlot.getChildren().add(itemImg);
+                    }
                 }
             }
         }
@@ -358,9 +373,7 @@ public class GameScreen extends GameState {
                         if (m != null) {
                             int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
                             int monsterY = (int) (Math.random() * (room.getHeight() - 39)) + 20;
-                            m.setPosX(monsterX);
-                            m.setPosY(monsterY);
-                            m.setHealth(m.getMaxHealth());
+                            m.revive(monsterX, monsterY);
                         }
                     }
                 }
@@ -382,6 +395,16 @@ public class GameScreen extends GameState {
             break;
         }
 
+        //empty player inventory
+        for (int i = 0; i < player.getInventory().getItems().length; i++) {
+            for (int j = 0; j < player.getInventory().getItems()[i].length; j++) {
+                player.getInventory().getItems()[i][j] = null;
+            }
+        }
+        //add starter weapon
+        player.getInventory().add(Controller.getDataManager().getWeapon());
+        //update inventory display
+        updateInventory();
         //go to starting room
         setRoom(dungeonLayout.getStartingRoom());
     }
@@ -408,21 +431,17 @@ public class GameScreen extends GameState {
                 itemSlots[i].getChildren().add(newSlot);
                 newSlot.getChildren().add(rect);
                 if (player.getInventory().getItems()[i][j] != null) {
-                    ImageView itemImg = new ImageView(player.getInventory().getItems()[i][j].getItem().getSprite());
-                    Label quantity = new Label(player.getInventory().getItems()[i][j].getQuantity() + " ");
-                    StackPane quantityPane = new StackPane();
+                    ImageView itemImg = new ImageView(
+                            player.getInventory().getItems()[i][j].getItem().getSprite());
 
-                    quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
-
-                    quantity.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
-
-                    quantityPane.getChildren().add(quantity);
 
                     String itemName = player.getInventory().getItems()[i][j].getItem().getName();
                     Rectangle nameRect = new Rectangle(itemName.length() * 13, 30, Color.BLACK);
                     nameRect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
-                    Label nameLabel = new Label(player.getInventory().getItems()[i][j].getItem().getName());
-                    nameLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
+                    Label nameLabel = new Label(
+                            player.getInventory().getItems()[i][j].getItem().getName());
+                    nameLabel.setStyle(
+                            "-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
                     StackPane itemNameBox = new StackPane();
                     itemNameBox.getChildren().addAll(nameRect, nameLabel);
                     itemNameBox.setAlignment(Pos.TOP_CENTER);
@@ -433,7 +452,23 @@ public class GameScreen extends GameState {
 
                     itemNameList.add(itemNameBox);
 
-                    newSlot.getChildren().addAll(itemImg, quantityPane);
+                    if (player.getInventory().getItems()[i][j].getQuantity() > 1) {
+                        Label quantity = new Label(
+                                player.getInventory().getItems()[i][j].getQuantity() + " ");
+                        StackPane quantityPane = new StackPane();
+
+                        quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
+
+                        quantity.setStyle(
+                                "-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
+
+                        quantityPane.getChildren().add(quantity);
+
+                        newSlot.getChildren().addAll(itemImg, quantityPane);
+                    } else {
+
+                        newSlot.getChildren().add(itemImg);
+                    }
                 }
             }
         }

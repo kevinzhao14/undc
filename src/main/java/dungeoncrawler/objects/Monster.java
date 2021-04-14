@@ -82,6 +82,13 @@ public class Monster extends Entity {
         return false;
     }
 
+    public void revive(int posX, int posY) {
+        setPosX(posX);
+        setPosY(posY);
+        setHealth(getMaxHealth());
+        setOpacity(1.0);
+    }
+
     public DroppedItem[] dropItems() {
         if (Controller.getDataManager().ITEMS.length == 0) {
             return new DroppedItem[0];
