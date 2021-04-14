@@ -199,8 +199,9 @@ public class GameScreen extends GameState {
                         quantity.setTranslateX(4);
                         quantityPane.getChildren().add(quantity);
                         newSlot.getChildren().addAll(itemImg, quantityPane);
+                    } else {
+                        newSlot.getChildren().add(itemImg);
                     }
-                    newSlot.getChildren().add(itemImg);
                 }
             } else {
                 Rectangle rect = new Rectangle(30, 30, Color.GRAY);
@@ -223,8 +224,9 @@ public class GameScreen extends GameState {
                         quantity.setTranslateX(4);
                         quantityPane.getChildren().add(quantity);
                         newSlot.getChildren().addAll(itemImg, quantityPane);
+                    } else {
+                        newSlot.getChildren().add(itemImg);
                     }
-                    newSlot.getChildren().add(itemImg);
                 }
             }
         }
@@ -455,9 +457,10 @@ public class GameScreen extends GameState {
                         quantityPane.getChildren().add(quantity);
 
                         newSlot.getChildren().addAll(itemImg, quantityPane);
-                    }
+                    } else {
 
-                    newSlot.getChildren().add(itemImg);
+                        newSlot.getChildren().add(itemImg);
+                    }
                 }
             }
         }
