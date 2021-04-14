@@ -364,9 +364,7 @@ public class GameScreen extends GameState {
                         if (m != null) {
                             int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
                             int monsterY = (int) (Math.random() * (room.getHeight() - 39)) + 20;
-                            m.setPosX(monsterX);
-                            m.setPosY(monsterY);
-                            m.setHealth(m.getMaxHealth());
+                            m.revive(monsterX, monsterY);
                         }
                     }
                 }
@@ -388,6 +386,16 @@ public class GameScreen extends GameState {
             break;
         }
 
+        //empty player inventory
+        for (int i = 0; i < player.getInventory().getItems().length; i++) {
+            for (int j = 0; j < player.getInventory().getItems()[i].length; j++) {
+                player.getInventory().getItems()[i][j] = null;
+            }
+        }
+        //add starter weapon
+        player.getInventory().add(Controller.getDataManager().getWeapon());
+        //update inventory display
+        updateInventory();
         //go to starting room
         setRoom(dungeonLayout.getStartingRoom());
     }
