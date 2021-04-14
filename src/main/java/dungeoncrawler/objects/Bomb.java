@@ -28,9 +28,15 @@ public class Bomb extends Item {
         Room room = screen.getRoom();
         Player player = screen.getPlayer();
 
+        //remove from inventory
+        player.getInventory().remove(this);
+        screen.updateHud();
+
         //place object as an obstacle
-        Obstacle o = new Obstacle(player.getPosX() + player.getWidth() / 2, player.getPosY()
-                + player.getHeight() / 2, 20, 20, ObstacleType.SOLID);
+        double width = 20;
+        double height = 20;
+        Obstacle o = new Obstacle(player.getPosX() + player.getWidth() / 2 - width / 2, player.getPosY()
+                + player.getHeight() / 2 - height / 2, width, height, ObstacleType.SOLID);
         o.setSprite(getSprite());
         o.setItem(this);
         room.getObstacles().add(o);

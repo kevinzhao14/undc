@@ -52,5 +52,13 @@ public abstract class Item {
         return droppable;
     }
 
+    public boolean equals(Item item) {
+        return name.equals(item.name) && sprite.getUrl().equals(item.sprite.getUrl()) && droppable == item.droppable && maxStackSize == item.maxStackSize;
+    }
+
+    public String toString() {
+        return name + " " + (droppable ? "droppable" : "not droppable") + ", " + maxStackSize;
+    }
+
 
 }

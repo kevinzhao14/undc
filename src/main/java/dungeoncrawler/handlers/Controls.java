@@ -153,8 +153,8 @@ public class Controls {
         keyMap.put("drop", KeyCode.G);
 
         //Inventory Controls
-        keyMap.put("nextinv", KeyCode.F15);
-        keyMap.put("previnv", KeyCode.F16);
+        keyMap.put("nextinv", KeyCode.F16);
+        keyMap.put("previnv", KeyCode.F15);
         keyMap.put("slot1", KeyCode.DIGIT1);
         keyMap.put("slot2", KeyCode.DIGIT2);
         keyMap.put("slot3", KeyCode.DIGIT3);

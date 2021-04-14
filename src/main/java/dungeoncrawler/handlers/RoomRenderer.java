@@ -159,19 +159,23 @@ public class RoomRenderer {
         gc.setGlobalAlpha(1);
         if (room.getDroppedItems() != null) {
             for (DroppedItem item : room.getDroppedItems()) {
-                drawImg(gc, item.getItem().getSprite(),
-                        getPx(item.getHeight()), getPx(item.getWidth()),
-                        getPx(item.getX()),
-                        (getPx(room.getHeight() - item.getY() - item.getHeight()) + 2));
+                h = getPx(item.getHeight()) / 1.5;
+                w = getPx(item.getWidth()) / 1.5;
+                x = getPx(item.getX());
+                y = getPx(room.getHeight() - item.getY() - item.getHeight());
+                img = item.getItem().getSprite();
+                drawImg(gc, img, h, w, x, y);
             }
         }
         //draw player
-        x = getPx(player.getPosX());
-        y = getPx(room.getHeight() - player.getPosY() - player.getHeight() * 2);
-        h = getPx(player.getHeight() * 2);
-        w = getPx(player.getWidth());
-        img = player.getImage();
-        drawImg(gc, img, h, w, x, y);
+        if (player.getHealth() > 0) {
+            x = getPx(player.getPosX());
+            y = getPx(room.getHeight() - player.getPosY() - player.getHeight() * 2);
+            h = getPx(player.getHeight() * 2);
+            w = getPx(player.getWidth());
+            img = player.getImage();
+            drawImg(gc, img, h, w, x, y);
+        }
     }
 
     private static void drawImg(GraphicsContext gc, Image img, double h, double w, double x,

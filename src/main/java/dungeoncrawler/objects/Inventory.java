@@ -14,11 +14,11 @@ public class Inventory {
         size = 0;
     }
 
-    public void add(Item item) {
+    public void add(Item item, int quantity) {
         if (full()) {
             return;
         }
-        InventoryItem invItem = new InventoryItem(item, 1);
+        InventoryItem invItem = new InventoryItem(item, quantity);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 if (items[i][j] == null) {
@@ -28,6 +28,28 @@ public class Inventory {
                 }
             }
         }
+    }
+    public void add (Item item) {
+        add(item, 1);
+    }
+
+    public boolean remove(Item item) {
+        if (size == 0) {
+            return false;
+        }
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (items[i][j].getItem() == item) {
+                    if (items[i][j].getQuantity() == 1) {
+                        items[i][j] = null;
+                    } else {
+                        items[i][j].setQuantity(items[i][j].getQuantity() - 1);
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean full() {

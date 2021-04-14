@@ -1,5 +1,6 @@
 package dungeoncrawler.objects;
 
+import dungeoncrawler.controllers.DataManager;
 import dungeoncrawler.handlers.GameSettings;
 import javafx.scene.image.Image;
 

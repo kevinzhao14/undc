@@ -31,14 +31,14 @@ public class DataManager {
         new Potion("Large Health Potion", "items/health-potion-large.png", 10, true,
                 PotionType.HEALTH, 100),
         new Potion("Attack Potion", "items/attack-potion.png", 10, true, PotionType.ATTACK, 0.25),
-        new Weapon("Dagger", "items/dagger.png", 4, 0.25, true),
-        new Bomb("Bomb", "items/bomb.png", 10, 50, 50, 5000)
+        new Weapon("Dagger", "items/dagger.png", 5, 0.25, true),
+        new Bomb("Bomb", "items/bomb.png", 10, 50, 50, 3000)
     };
 
     public static final Monster[] MONSTERS = new Monster[]{
-        new Monster(20, 4, 150.0 / GameSettings.FPS, 0.5, MonsterType.FAST, 22, 18),
-        new Monster(40, 5, 100.0 / GameSettings.FPS, 0.75, MonsterType.NORMAL, 48, 25),
-        new Monster(80, 10, 50.0 / GameSettings.FPS, 2, MonsterType.TANK, 31, 46)
+        new Monster(20, 4, 150.0 / GameSettings.FPS, 0.5, MonsterType.FAST, 11, 9),
+        new Monster(40, 5, 100.0 / GameSettings.FPS, 0.75, MonsterType.NORMAL, 24, 12),
+        new Monster(80, 10, 50.0 / GameSettings.FPS, 2, MonsterType.TANK, 21, 31)
     };
 
     private String username;

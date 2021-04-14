@@ -78,7 +78,7 @@ public class GameController {
         scene.setOnKeyReleased(e -> handleKey(e.getCode().toString(), false));
         scene.setOnMousePressed(e -> handleKey(mouseButton(e.getButton()), true));
         scene.setOnMouseReleased(e -> handleKey(mouseButton(e.getButton()), false));
-        scene.setOnScroll(this::handleScroll);
+        scene.setOnScroll(e -> handleKey(handleScroll(e.getDeltaY()), false));
     }
 
     /**
@@ -93,6 +93,29 @@ public class GameController {
             return "MOUSE2";
         }
         return "";
+    }
+
+    private GameScreen getScreen() {
+        GameState state = Controller.getState();
+        if (!(state instanceof GameScreen)) {
+            throw new IllegalStateException("Illegal Gamestate");
+        }
+        return (GameScreen) state;
+    }
+
+    /**
+     * Handle when the player uses the mouse scroll wheel.
+     * @param val Scroll length
+     * @return String of the keycode
+     */
+    private String handleScroll(double val) {
+        if (val < 0) {
+            return "MWHEELDOWN";
+        } else if (val > 0) {
+            return "MWHEELUP";
+        } else {
+            return "";
+        }
     }
 
     /**
@@ -112,12 +135,7 @@ public class GameController {
             stop();
         }
         room = newRoom;
-        if (Controller.getState() instanceof GameScreen) {
-            Platform.runLater(() -> ((GameScreen) Controller.getState()).setRoom(newRoom));
-        } else {
-            stop();
-            System.out.println("Error: Illegal GameState");
-        }
+        Platform.runLater(() -> getScreen().setRoom(newRoom));
     }
 
     /**
@@ -159,12 +177,12 @@ public class GameController {
      */
     public void pause() {
         if (isRunning) {
-            System.out.println("Game has been paused");
-            System.out.println("Average FPS in " + ticks + " ticks: " + round(1000.0
-                    / (totalTime / ticks)));
+            //System.out.println("Game has been paused");
+            //System.out.println("Average FPS in " + ticks + " ticks: " + round(1000.0
+            //        / (totalTime / ticks)));
             timer.cancel();
         } else {
-            System.out.println("Game has been resumed");
+            //System.out.println("Game has been resumed");
             startTimer();
         }
         if (!isRunning && isStopped) {
@@ -176,7 +194,7 @@ public class GameController {
         isRunning = true;
         pause();
         isStopped = true;
-        System.out.println("Game has been stopped.");
+        //System.out.println("Game has been stopped.");
     }
 
     /**
@@ -198,18 +216,14 @@ public class GameController {
         if (key.equals(controls.getKey("pause"))) {
             if (!isPress) {
                 pause();
-                if (Controller.getState() instanceof GameScreen) {
+                GameScreen screen = getScreen();
                     //esc is used to leave inventory if it's currently open
                     //otherwise, use it to pause/unpause game
-                    if (((GameScreen) Controller.getState()).isInventoryVisible()) {
-                        ((GameScreen) Controller.getState()).toggleInventory();
+                    if (screen.isInventoryVisible()) {
+                        screen.toggleInventory();
                     } else {
-                        ((GameScreen) Controller.getState()).togglePause();
+                        screen.togglePause();
                     }
-                } else {
-                    stop();
-                    System.out.println("Error: Illegal GameState");
-                }
             }
         }
         //movement keys
@@ -255,39 +269,25 @@ public class GameController {
             isAttacking = isPress;
         } else if (key.equals(controls.getKey("inventory"))) {
             if (!isPress) {
-                if (Controller.getState() instanceof GameScreen) {
-                    if (!((GameScreen) Controller.getState()).isPaused()) {
+                    if (!getScreen().isPaused()) {
                         pause();
-                        ((GameScreen) Controller.getState()).toggleInventory();
+                        getScreen().toggleInventory();
                     }
-                } else {
-                    stop();
-                    System.out.println("Error: Illegal GameState");
-                }
             }
         } else if (key.equals(controls.getKey("use"))) {
+            if (isPress == false) {
+                return;
+            }
             InventoryItem selected = player.getItemSelected();
+            System.out.println("Using item " + selected.getItem());
             selected.getItem().use();
-        }
-    }
-
-    /**
-     * Handle when the player uses the mouse scroll wheel.
-     * @param event ScrollEvent passed by JavaFX
-     */
-    private void handleScroll(ScrollEvent event) {
-        if (!(Controller.getState() instanceof GameScreen)) return;
-        GameScreen gameScreen = (GameScreen) Controller.getState();
-        if (gameScreen.isPaused()) return;
-
-        long val = Math.round(event.getDeltaY());
-        if (val < 0) {
-            player.moveLeft();
-        } else if (val > 0) {
+        } else if (key.equals(controls.getKey("nextinv"))) {
             player.moveRight();
+            getScreen().updateHud();
+        } else if (key.equals(controls.getKey("previnv"))) {
+            player.moveLeft();
+            getScreen().updateHud();
         }
-
-        gameScreen.updateHud();
     }
 
     /**
@@ -300,14 +300,7 @@ public class GameController {
     }
 
     private void refresh() {
-        GameState state = Controller.getState();
-        if (state instanceof GameScreen) {
-            Platform.runLater(() -> {
-                RoomRenderer.drawFrame(((GameScreen) state).getCanvas(), room, player);
-            });
-        } else {
-            throw new IllegalStateException("Invalid Game State!");
-        }
+        Platform.runLater(() -> RoomRenderer.drawFrame(getScreen().getCanvas(), room, player));
     }
 
     /**
@@ -399,14 +392,7 @@ public class GameController {
             }
 
             if (itemPickedUp) {
-                GameState state = Controller.getState();
-                if (state instanceof GameScreen) {
-                    Platform.runLater(() -> {
-                        ((GameScreen) state).updateHud();
-                    });
-                } else {
-                    throw new IllegalStateException("Invalid Game State!");
-                }
+                Platform.runLater(() -> getScreen().updateHud());
             }
 
             player.setAttackCooldown(Math.max(0.0,
@@ -456,12 +442,15 @@ public class GameController {
                 }
                 //check and move the monster
                 if (m.getHealth() > 0) {
-                    monsterMove(m);
+                    if (monsterMove(m)) {
+                        return;
+                    }
                 }
             }
 
             //manage items (bombs)
-            for (Obstacle o : room.getObstacles()) {
+            for (int i = 0; i < room.getObstacles().size(); i++) {
+                Obstacle o = room.getObstacles().get(i);
                 if (o.getItem() == null) {
                     continue;
                 }
@@ -472,6 +461,7 @@ public class GameController {
                     b.setLivefuse(b.getLivefuse() - 1000 / GameSettings.FPS);
                     //if bomb has blown up
                     if (b.getLivefuse() < 0) {
+                        System.out.println("Exploding");
                         double x = o.getX() + o.getHeight() / 2;
                         double y = o.getY() + o.getWidth() / 2;
 
@@ -479,14 +469,14 @@ public class GameController {
                         double distX = Math.pow(x - player.getPosX() + player.getWidth() / 2, 2);
                         double distY = Math.pow(y - player.getPosY() + player.getHeight() / 2, 2);
                         double dist = Math.sqrt(distX + distY);
+                        System.out.println("Player d" + dist);
                         if (dist <= b.getRadius()) {
+                            System.out.println("Damaging player");
                             player.setHealth(Math.max(0, player.getHealth() - b.getDamage()));
-                            if (player.getHeight() == 0) {
-                                if (!(Controller.getState() instanceof GameScreen)) {
-                                    stop();
-                                    throw new IllegalStateException("Illegal Game State.");
-                                }
-                                gameOver((GameScreen) Controller.getState());
+                            System.out.println("New Health " + player.getHealth());
+                            Platform.runLater(() -> getScreen().updateHud());
+                            if (player.getHealth() == 0) {
+                                gameOver(getScreen());
                             }
                         }
 
@@ -499,6 +489,10 @@ public class GameController {
                                 m.attackMonster(b.getDamage());
                             }
                         }
+
+                        //remove obstacle
+                        room.getObstacles().remove(i);
+                        i--;
                     }
                 }
             }
@@ -782,7 +776,7 @@ public class GameController {
          * Monster AI for calculating movement and attacking.
          * @param m Monster to calculate for
          */
-        private void monsterMove(Monster m) {
+        private boolean monsterMove(Monster m) {
             //check queue
             LinkedList<double[]> removeList = new LinkedList<>();
             for (double[] e : m.getMoveQueue()) {
@@ -805,14 +799,14 @@ public class GameController {
                     ? m.getMoveQueue().getLast() : new double[]{0, m.getPosX(), m.getPosY()};
             double mPosY = mq[2];
             double mPosX = mq[1];
-            double ydiff = mPosY - player.getPosY();
-            double xdiff = mPosX - player.getPosX();
+            double ydiff = (mPosY + m.getHeight() / 2) - (player.getPosY() + player.getHeight() / 2);
+            double xdiff = (mPosX + m.getWidth() / 2) - (player.getPosX() + player.getWidth() / 2);
             double d = round(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2)));
             if (d <= GameSettings.MONSTER_MOVE_RANGE && d >= GameSettings.MONSTER_MOVE_MIN) {
                 //move monster towards player
                 double angle = Math.atan2(ydiff, xdiff) - Math.PI;
-                double newPosX = mPosX + Math.cos(angle) * m.getSpeed();
-                double newPosY = mPosY + Math.sin(angle) * m.getSpeed();
+                double newPosX = mPosX + round(Math.cos(angle) * m.getSpeed());
+                double newPosY = mPosY + round(Math.sin(angle) * m.getSpeed());
 
                 //check collisions with obstacles
                 double[] newPos = checkPos(mPosX, mPosY, newPosX, newPosY,
@@ -820,7 +814,7 @@ public class GameController {
                 int count = 0;
                 if (count >= 4) {
                     System.out.println("Error: Monster stuck.");
-                    return;
+                    return false;
                 }
 
                 //add to queue
@@ -828,8 +822,8 @@ public class GameController {
                         new double[]{GameSettings.MONSTER_REACTION_TIME, newPos[0], newPos[1]};
                 m.getMoveQueue().add(moveItem);
             }
-            ydiff = m.getPosY() - player.getPosY();
-            xdiff = m.getPosX() - player.getPosX();
+            ydiff = (m.getPosY() + m.getHeight() / 2) - (player.getPosY() + player.getHeight() / 2);
+            xdiff = (m.getPosX() + m.getWidth() / 2) - (player.getPosX() + player.getWidth() / 2);
             d = round(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2)));
 
             //check for current attack
@@ -840,31 +834,26 @@ public class GameController {
                     //attack player
                     double newHealth = player.getHealth() - m.getAttack();
                     player.setHealth((int) Math.max(0, newHealth));
-                    if (!(Controller.getState() instanceof GameScreen)) {
-                        stop();
-                        throw new IllegalStateException("Illegal Game State.");
-                    }
-                    GameScreen screen = (GameScreen) Controller.getState();
+                    GameScreen screen = getScreen();
 
                     //use run later to prevent any thread issues
-                    Platform.runLater(() -> {
-                        screen.updateHud();
-                    });
+                    Platform.runLater(() -> screen.updateHud());
 
                     //go to game over screen if player has died
                     if (player.getHealth() == 0.0) {
                         //use run later to prevent any thread issues
+                        refresh();
                         gameOver(screen);
+                        return true;
                     }
                 }
             }
+            return false;
         }
 
         private void gameOver(GameScreen screen) {
+            stop();
             Platform.runLater(() -> {
-                if (isRunning) {
-                    pause();
-                }
                 room = screen.getLayout().getStartingRoom();
                 screen.gameOver();
             });
