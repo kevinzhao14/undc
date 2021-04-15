@@ -264,7 +264,6 @@ public class LayoutGenerator {
                 return new int[]{x - 1, y};
             }
         } else {
-            System.out.println("No available directions");
             return null;
         }
     }
