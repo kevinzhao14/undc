@@ -227,6 +227,13 @@ public class GameController {
                     screen.togglePause();
                 }
             }
+        } else if (key.equals(controls.getKey("inventory"))) {
+            if (!isPress) {
+                if (!getScreen().isPaused()) {
+                    pause();
+                    getScreen().toggleInventory();
+                }
+            }
         }
         //movement keys
         int sign = 0;
@@ -266,16 +273,14 @@ public class GameController {
             accelY = round(accelY);
         }
 
+
+        if (!isRunning) {
+            return;
+        }
+
         //non-movement keys
         if (key.equals(controls.getKey("attack")) || key.equals(controls.getKey("attack2"))) {
             isAttacking = isPress;
-        } else if (key.equals(controls.getKey("inventory"))) {
-            if (!isPress) {
-                if (!getScreen().isPaused()) {
-                    pause();
-                    getScreen().toggleInventory();
-                }
-            }
         } else if (key.equals(controls.getKey("use"))) {
             if (isPress) {
                 InventoryItem selected = player.getItemSelected();
@@ -293,6 +298,16 @@ public class GameController {
             InventoryItem currentItem = player.getItemSelected();
             if (currentItem == null || !isPress) {
                 return;
+            }
+            //remove from inventory
+            if (currentItem.getQuantity() > 1) {
+                System.out.println("Quantity " + currentItem.getQuantity());
+                currentItem.setQuantity(currentItem.getQuantity() - 1);
+            } else {
+                if (!player.getInventory().remove(currentItem.getItem())) {
+                    System.out.println("Failed to drop item");
+                    return;
+                }
             }
             double d = GameSettings.DROP_ITEM_DISTANCE;
             double x = player.getPosX() + player.getWidth() / 2;
@@ -313,13 +328,6 @@ public class GameController {
             DroppedItem di = new DroppedItem(currentItem.getItem(), x, y, itemSprite.getWidth(),
                     itemSprite.getHeight());
             room.getDroppedItems().add(di);
-
-            //remove from inventory
-            if (currentItem.getQuantity() > 1) {
-                currentItem.setQuantity(currentItem.getQuantity() - 1);
-            } else {
-                player.getInventory().remove(currentItem.getItem());
-            }
             getScreen().updateHud();
         } else if (key.equals(controls.getKey("rotateinv"))) {
             if (isPress) {
@@ -399,7 +407,11 @@ public class GameController {
             monsterAI();
 
             //manage items (bombs)
-            checkObstacleItems();
+            if (checkObstacleItems()) {
+                return;
+            }
+
+
             for (int i = 0; i < player.getEffects().size(); i++) {
                 Effect e = player.getEffects().get(i);
                 e.setDuration(e.getDuration() - 1000 / GameSettings.FPS);
@@ -513,7 +525,7 @@ public class GameController {
             }
         }
 
-        private void checkObstacleItems() {
+        private boolean checkObstacleItems() {
             for (int i = 0; i < room.getObstacles().size(); i++) {
                 Obstacle o = room.getObstacles().get(i);
                 if (o.getItem() == null) {
@@ -526,7 +538,6 @@ public class GameController {
                     b.setLivefuse(b.getLivefuse() - 1000 / GameSettings.FPS);
                     //if bomb has blown up
                     if (b.getLivefuse() < 0) {
-                        System.out.println("Exploding");
                         double x = o.getX() + o.getHeight() / 2;
                         double y = o.getY() + o.getWidth() / 2;
 
@@ -536,12 +547,11 @@ public class GameController {
                         double dist = Math.sqrt(distX + distY);
                         System.out.println("Player d" + dist);
                         if (dist <= b.getRadius()) {
-                            System.out.println("Damaging player");
                             player.setHealth(Math.max(0, player.getHealth() - b.getDamage()));
-                            System.out.println("New Health " + player.getHealth());
                             Platform.runLater(() -> getScreen().updateHud());
                             if (player.getHealth() == 0) {
                                 gameOver(getScreen());
+                                return true;
                             }
                         }
 
@@ -561,6 +571,7 @@ public class GameController {
                     }
                 }
             }
+            return false;
         }
 
         private void updatePlayerVelocity() {
@@ -914,6 +925,7 @@ public class GameController {
         }
 
         private void gameOver(GameScreen screen) {
+            System.out.println("Game Over");
             stop();
             Platform.runLater(() -> {
                 room = screen.getLayout().getStartingRoom();

@@ -29,7 +29,10 @@ public class Bomb extends Item {
         Player player = screen.getPlayer();
 
         //remove from inventory
-        player.getInventory().remove(this);
+        if (!player.getInventory().remove(this)) {
+            System.out.println("Failed to use bomb");
+            return;
+        }
         screen.updateHud();
 
         //place object as an obstacle

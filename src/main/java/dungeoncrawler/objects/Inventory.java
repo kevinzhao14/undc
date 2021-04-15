@@ -45,10 +45,10 @@ public class Inventory {
                 if (items[i][j].getItem() == item) {
                     if (items[i][j].getQuantity() == 1) {
                         items[i][j] = null;
+                        size--;
                     } else {
                         items[i][j].setQuantity(items[i][j].getQuantity() - 1);
                     }
-                    size--;
                     return true;
                 }
             }
