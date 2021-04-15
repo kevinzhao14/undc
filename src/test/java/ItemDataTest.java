@@ -27,7 +27,7 @@ public class ItemDataTest extends ApplicationTest {
     }
 
     @Test
-    public void hasValidItems() {
+    public void testHasValidItems() {
         boolean hasHealthPotion = false;
         boolean hasAttackPotion = false;
         boolean hasWeapon = false;
