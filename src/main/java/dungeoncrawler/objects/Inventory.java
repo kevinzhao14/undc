@@ -48,6 +48,7 @@ public class Inventory {
                     } else {
                         items[i][j].setQuantity(items[i][j].getQuantity() - 1);
                     }
+                    size--;
                     return true;
                 }
             }

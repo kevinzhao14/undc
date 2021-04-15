@@ -1,8 +1,9 @@
 package dungeoncrawler.objects;
 
-import dungeoncrawler.controllers.DataManager;
 import dungeoncrawler.handlers.GameSettings;
 import javafx.scene.image.Image;
+
+import java.util.ArrayList;
 
 public class Player extends Entity {
     private static Image[] sprites = new Image[]{
@@ -20,7 +21,7 @@ public class Player extends Entity {
     private Inventory inventory;
     private int selected;
     private int direction;
-    //private Effect status = new Effect[];
+    private ArrayList<Effect> effects;
 
     public Player(int maxHealth, double attack, Weapon weapon) {
         super(maxHealth, attack, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH, null);
@@ -29,6 +30,7 @@ public class Player extends Entity {
         inventory.add(weapon);
         selected = 0;
         direction = 0;
+        effects = new ArrayList<>();
     }
 
     public int getGold() {
@@ -75,5 +77,9 @@ public class Player extends Entity {
 
     public int getDirection() {
         return direction;
+    }
+
+    public ArrayList<Effect> getEffects() {
+        return effects;
     }
 }

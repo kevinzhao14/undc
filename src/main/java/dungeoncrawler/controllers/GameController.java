@@ -9,6 +9,8 @@ import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
 import dungeoncrawler.objects.DroppedItem;
+import dungeoncrawler.objects.Effect;
+import dungeoncrawler.objects.EffectType;
 import dungeoncrawler.objects.InventoryItem;
 import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
@@ -278,7 +280,6 @@ public class GameController {
             if (isPress) {
                 InventoryItem selected = player.getItemSelected();
                 if (selected != null) {
-                    System.out.println("Using item " + selected.getItem());
                     selected.getItem().use();
                 }
             }
@@ -462,10 +463,22 @@ public class GameController {
                         ? player.getItemSelected().getItem() : null;
                 double damage = GameSettings.PLAYER_FIST_DAMAGE;
                 double cooldown = GameSettings.PLAYER_FIST_COOLDOWN;
+                double modifier = player.getAttack();
                 if (item instanceof Weapon) {
                     Weapon weapon = (Weapon) item;
                     damage = weapon.getDamage();
                     cooldown = weapon.getAttackSpeed();
+                }
+                //check for effects
+                for (int i = 0; i < player.getEffects().size(); i++) {
+                    Effect e = player.getEffects().get(i);
+                    if (e.getType() == EffectType.ATTACKBOOST) {
+                        modifier += e.getAmount();
+                        e.setDuration(e.getDuration() - 1000 / GameSettings.FPS);
+                        if (e.getDuration() <= 0) {
+                            player.getEffects().remove(i--);
+                        }
+                    }
                 }
                 player.setAttackCooldown(1000 * cooldown);
                 for (Monster m : room.getMonsters()) {
@@ -473,7 +486,7 @@ public class GameController {
                         double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2)
                                 + Math.pow(player.getPosY() - m.getPosY(), 2));
                         if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
-                            m.attackMonster(player.getAttack() * damage, true);
+                            m.attackMonster(modifier * damage, true);
                         }
                     }
                 }
