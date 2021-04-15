@@ -70,7 +70,7 @@ public class GameSettings {
     public static final double MONSTER_KILL_GOLD = 20;
 
     //monster drop reward settings
-    public static final int MIN_ITEM_DROP = 4;
+    public static final int MIN_ITEM_DROP = 0;
     public static final int MAX_ITEM_DROP = 4;
     public static final double DROP_ITEM_SPRITE_SCALE = 0.75;
     public static final double DROP_ITEM_DISTANCE = 25;
