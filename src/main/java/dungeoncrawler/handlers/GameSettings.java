@@ -92,4 +92,6 @@ public class GameSettings {
     public static final int MONSTER_HEALTHBAR_HEIGHT = 5;
 
     public static final int CANVAS_PADDING = 50;
+
+    public static final double EFFECT_INDICATOR_SCALE = 1.5;
 }

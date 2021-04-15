@@ -400,6 +400,15 @@ public class GameController {
 
             //manage items (bombs)
             checkObstacleItems();
+            for (int i = 0; i < player.getEffects().size(); i++) {
+                Effect e = player.getEffects().get(i);
+                e.setDuration(e.getDuration() - 1000 / GameSettings.FPS);
+                if (e.getDuration() <= 0) {
+                    player.getEffects().remove(i--);
+                    Platform.runLater(() -> getScreen().updateHud());
+                }
+            }
+
 
             refresh();
 
@@ -474,10 +483,6 @@ public class GameController {
                     Effect e = player.getEffects().get(i);
                     if (e.getType() == EffectType.ATTACKBOOST) {
                         modifier += e.getAmount();
-                        e.setDuration(e.getDuration() - 1000 / GameSettings.FPS);
-                        if (e.getDuration() <= 0) {
-                            player.getEffects().remove(i--);
-                        }
                     }
                 }
                 player.setAttackCooldown(1000 * cooldown);

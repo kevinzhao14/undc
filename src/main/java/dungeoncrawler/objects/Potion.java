@@ -52,20 +52,8 @@ public class Potion extends Item {
         switch (this.type) {
         case ATTACK:
             // damage nearby monsters by potion modifier
-//            for (Monster m : room.getMonsters()) {
-//                if (m == null) {
-//                    continue;
-//                }
-//                double xdist = player.getPosX() - m.getPosX();
-//                double ydist = player.getPosY() - m.getPosY();
-//                double sqdist = xdist * xdist + ydist * ydist;
-//                double sqattackrange = GameSettings.PLAYER_ATTACK_RANGE
-//                        * GameSettings.PLAYER_ATTACK_RANGE * 4;
-//                if (sqdist <= sqattackrange) {
-//                    m.attackMonster(this.getModifier(), true);
-//                }
-//            }
-            double duration = 20;
+
+            double duration = 15 * 1000;
 
             //check for existing effect
             for (Effect e : player.getEffects()) {

@@ -1,12 +1,8 @@
 package dungeoncrawler.gamestates;
 
-import dungeoncrawler.objects.DungeonLayout;
+import dungeoncrawler.objects.*;
 import dungeoncrawler.handlers.GameSettings;
 import dungeoncrawler.handlers.LayoutGenerator;
-import dungeoncrawler.objects.InventoryItem;
-import dungeoncrawler.objects.Player;
-import dungeoncrawler.objects.Monster;
-import dungeoncrawler.objects.Room;
 import dungeoncrawler.handlers.RoomRenderer;
 import dungeoncrawler.controllers.Controller;
 import dungeoncrawler.controllers.GameController;
@@ -19,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -157,6 +154,25 @@ public class GameScreen extends GameState {
         lowerHUD.setAlignment(Pos.CENTER);
         lowerHUD.setPadding(new Insets(0, 150, 15, 10));
 
+        // upper hud, includes attack boost indicator
+        HBox upperHUD = new HBox(100);
+        upperHUD.setPadding(new Insets(15, 15, 15, 15));
+        display.setTop(upperHUD);
+        upperHUD.setAlignment(Pos.CENTER_RIGHT);
+
+        for (Effect e : player.getEffects()) {
+            if (e.getType().equals(EffectType.ATTACKBOOST)) {
+                Image attackBoostImg = new Image("effects/attackboost.png");
+                ImageView attackBoost = new ImageView(attackBoostImg);
+                attackBoost.setFitWidth(attackBoostImg.getWidth() * GameSettings.EFFECT_INDICATOR_SCALE);
+                attackBoost.setFitHeight(attackBoostImg.getHeight() * GameSettings.EFFECT_INDICATOR_SCALE);
+                upperHUD.getChildren().add(attackBoost);
+            }
+        }
+
+
+
+        // lower hud labels (gold, health)
         Label goldLabel = new Label("Gold: " + player.getGold());
         Label healthLabel = new Label("Health: ");
         Label healthNumber = new Label(" " + player.getHealth() + " / " + "100.0");
@@ -165,6 +181,7 @@ public class GameScreen extends GameState {
         healthLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
         healthNumber.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
 
+        // health bar
         Rectangle healthBarTop =
                 new Rectangle(player.getHealth() / player.getMaxHealth() * 150, 20);
         healthBarTop.setFill(Color.LIMEGREEN);
@@ -176,6 +193,7 @@ public class GameScreen extends GameState {
         healthBox.setSpacing(5);
         healthBox.setAlignment(Pos.CENTER);
 
+        // hotbar
         HBox hotbar = new HBox(10);
         for (int i = 0; i < player.getInventory().getItems()[0].length; i++) {
             StackPane newSlot = new StackPane();
@@ -186,11 +204,15 @@ public class GameScreen extends GameState {
             rect.setStyle("-fx-stroke: white; -fx-stroke-width: 1");
             hotbar.getChildren().add(newSlot);
             newSlot.getChildren().add(rect);
+
+            // if item slot is not empty
             if (player.getInventory().getItems()[0][i] != null) {
                 InventoryItem item = player.getInventory().getItems()[0][i];
                 ImageView itemImg = new ImageView(item.getItem().getSprite());
                 itemImg.setFitHeight(i == player.getSelected() ? 40 : 30);
                 itemImg.setFitWidth(i == player.getSelected() ? 40 : 30);
+
+                // show item quantity if > 1
                 if (item.getQuantity() > 1) {
                     Label quantity = new Label("" + item.getQuantity());
                     StackPane quantityPane = new StackPane();
@@ -469,7 +491,6 @@ public class GameScreen extends GameState {
     public void toggleInventory() {
         if (!paused) {
             inventoryVisible = !inventoryVisible;
-            System.out.println(inventoryVisible);
             inventory.setVisible(inventoryVisible);
         }
     }
