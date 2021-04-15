@@ -164,8 +164,10 @@ public class GameScreen extends GameState {
             if (e.getType().equals(EffectType.ATTACKBOOST)) {
                 Image attackBoostImg = new Image("effects/attackboost.png");
                 ImageView attackBoost = new ImageView(attackBoostImg);
-                attackBoost.setFitWidth(attackBoostImg.getWidth() * GameSettings.EFFECT_INDICATOR_SCALE);
-                attackBoost.setFitHeight(attackBoostImg.getHeight() * GameSettings.EFFECT_INDICATOR_SCALE);
+                attackBoost.setFitWidth(attackBoostImg.getWidth()
+                        * GameSettings.EFFECT_INDICATOR_SCALE);
+                attackBoost.setFitHeight(attackBoostImg.getHeight()
+                        * GameSettings.EFFECT_INDICATOR_SCALE);
                 upperHUD.getChildren().add(attackBoost);
             }
         }
