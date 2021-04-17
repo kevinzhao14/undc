@@ -409,6 +409,8 @@ public class GameScreen extends GameState {
                 InventoryItem item = player.getInventory().getItems()[i][j];
                 if (item != null) {
                     ImageView itemImg = new ImageView(item.getItem().getSprite());
+                    itemImg.setFitWidth(60);
+                    itemImg.setPreserveRatio(true);
                     Label nameLabel = new Label(item.getItem().getName());
                     nameLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; "
                             + "-fx-font-family:VT323; -fx-background-color: black; "
