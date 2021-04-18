@@ -8,6 +8,7 @@ import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.MonsterType;
 import dungeoncrawler.objects.Potion;
 import dungeoncrawler.objects.PotionType;
+import dungeoncrawler.objects.RangedWeapon;
 import dungeoncrawler.objects.Weapon;
 
 /**
@@ -31,8 +32,9 @@ public class DataManager {
         new Potion("Large Health Potion", "items/health-potion-large.png", 3, true,
                 PotionType.HEALTH, 100),
         new Potion("Attack Potion", "items/attack-potion.png", 3, true, PotionType.ATTACK, 30),
-        new Weapon("Dagger", "items/dagger.png", 5, 0.25, true),
-        new Bomb("Bomb", "items/bomb.png", 3, 50, 100, 3000)
+        new Weapon("Dagger", "weapons/dagger.png", 5, 0.25, true),
+        new Bomb("Bomb", "items/bomb.png", 3, 50, 100, 3000),
+        new RangedWeapon("Rocket Launcher", "weapons/rocketlauncher.png", 20, true, 1, 1)
     };
 
     public static final Monster[] MONSTERS = new Monster[]{
