@@ -2,7 +2,7 @@ package dungeoncrawler.objects;
 
 import javafx.scene.image.Image;
 
-public class Obstacle {
+public class Obstacle implements Movable {
 
     private double x;
     private double y;
@@ -20,15 +20,22 @@ public class Obstacle {
         this.type = type;
     }
 
+    @Override
     public double getX() {
         return this.x;
     }
+
+    @Override
     public double getY() {
         return this.y;
     }
+
+    @Override
     public double getHeight() {
         return this.height;
     }
+
+    @Override
     public double getWidth() {
         return this.width;
     }
@@ -41,11 +48,13 @@ public class Obstacle {
         this.height = height;
     }
 
-    public void setY(double y) {
+    @Override
+    public void setX(double x) {
         this.y = y;
     }
 
-    public void setX(double x) {
+    @Override
+    public void setY(double y) {
         this.y = y;
     }
 

@@ -1,7 +1,5 @@
 package dungeoncrawler.objects;
 
-import org.w3c.dom.ranges.Range;
-
 public class RangedWeapon extends Weapon{
     private Ammo ammo;
 

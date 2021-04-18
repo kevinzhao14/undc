@@ -99,8 +99,8 @@ public class Monster extends Entity {
     }
 
     public void revive(int posX, int posY) {
-        setPosX(posX);
-        setPosY(posY);
+        setX(posX);
+        setY(posY);
         setHealth(getMaxHealth());
         setOpacity(1.0);
     }
@@ -118,8 +118,8 @@ public class Monster extends Entity {
 
         //Maximum distance between monster death location and item spawn location
         double maxRadius = 1.5 * getWidth();
-        double x = getPosX();   //x-pos of item spawn
-        double y = getPosY();   //y-pos of item spawn
+        double x = getX();   //x-pos of item spawn
+        double y = getY();   //y-pos of item spawn
         boolean isValidLocation = false; //flag for whether item spawn location is valid
 
         int randIdx;    //index of random item to drop
@@ -148,8 +148,8 @@ public class Monster extends Entity {
                 randAngle = 2 * Math.PI * generator.nextDouble();
 
                 //calculate x and y
-                x = getPosX() + (randDist * Math.cos(randAngle));
-                y = getPosY() + (randDist * Math.sin(randAngle));
+                x = getX() + (randDist * Math.cos(randAngle));
+                y = getY() + (randDist * Math.sin(randAngle));
 
                 isValidLocation = (x > 0.0 && x < roomWidth && y > 0.0 && y < roomHeight);
             }

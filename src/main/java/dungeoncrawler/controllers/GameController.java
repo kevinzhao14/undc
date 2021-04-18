@@ -151,8 +151,8 @@ public class GameController {
      * Resets the player's position to the starting position.
      */
     public void resetPos() {
-        player.setPosX(room.getStartX());
-        player.setPosY(room.getStartY());
+        player.setX(room.getStartX());
+        player.setY(room.getStartY());
         refresh();
     }
 
@@ -310,8 +310,8 @@ public class GameController {
                 }
             }
             double d = GameSettings.DROP_ITEM_DISTANCE;
-            double x = player.getPosX() + player.getWidth() / 2;
-            double y = player.getPosY() + player.getHeight() / 2;
+            double x = player.getX() + player.getWidth() / 2;
+            double y = player.getY() + player.getHeight() / 2;
             Image itemSprite = currentItem.getItem().getSprite();
             int dir = player.getDirection() % 4;
             x += dir == 0 ? -d : (dir == 2 ? d : 0);
@@ -365,8 +365,8 @@ public class GameController {
 
             ticks++;
             long startTime = System.nanoTime();
-            double posX = player.getPosX();
-            double posY = player.getPosY();
+            double posX = player.getX();
+            double posY = player.getY();
             double newPosX = round(posX + velX);
             double newPosY = round(posY + velY);
 
@@ -394,8 +394,8 @@ public class GameController {
                 if (checkDoors(posX, posY, newPosX, newPosY)) {
                     return;
                 }
-                player.setPosX(newPosX);
-                player.setPosY(newPosY);
+                player.setX(newPosX);
+                player.setY(newPosY);
             }
 
             //check item pickup
@@ -437,9 +437,9 @@ public class GameController {
             droploop:
             for (int i = 0; i < room.getDroppedItems().size(); i++) {
                 DroppedItem d = room.getDroppedItems().get(i);
-                double distX = (player.getPosX() + player.getWidth() / 2) - (d.getX()
+                double distX = (player.getX() + player.getWidth() / 2) - (d.getX()
                         + d.getWidth() / 2);
-                double distY = (player.getPosY() + player.getHeight() / 2) - (d.getY()
+                double distY = (player.getY() + player.getHeight() / 2) - (d.getY()
                         + d.getHeight() / 2);
                 double dist = round(Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2)));
                 //pick up item
@@ -500,8 +500,8 @@ public class GameController {
                 player.setAttackCooldown(1000 * cooldown);
                 for (Monster m : room.getMonsters()) {
                     if (m != null) {
-                        double dist = Math.sqrt(Math.pow(player.getPosX() - m.getPosX(), 2)
-                                + Math.pow(player.getPosY() - m.getPosY(), 2));
+                        double dist = Math.sqrt(Math.pow(player.getX() - m.getX(), 2)
+                                + Math.pow(player.getY() - m.getY(), 2));
                         if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
                             m.attackMonster(modifier * damage, true);
                         }
@@ -542,8 +542,8 @@ public class GameController {
                         double y = o.getY() + o.getWidth() / 2;
 
                         //attack player
-                        double distX = Math.pow(x - player.getPosX() + player.getWidth() / 2, 2);
-                        double distY = Math.pow(y - player.getPosY() + player.getHeight() / 2, 2);
+                        double distX = Math.pow(x - player.getX() + player.getWidth() / 2, 2);
+                        double distY = Math.pow(y - player.getY() + player.getHeight() / 2, 2);
                         double dist = Math.sqrt(distX + distY);
                         System.out.println("Player d" + dist);
                         if (dist <= b.getRadius()) {
@@ -557,8 +557,8 @@ public class GameController {
 
                         //get all entities within range of the bomb
                         for (Monster m : room.getMonsters()) {
-                            distX = Math.pow(x - m.getPosX() + m.getWidth() / 2, 2);
-                            distY = Math.pow(y - m.getPosY() + m.getHealth() / 2, 2);
+                            distX = Math.pow(x - m.getX() + m.getWidth() / 2, 2);
+                            distY = Math.pow(y - m.getY() + m.getHealth() / 2, 2);
                             dist = Math.sqrt(distX + distY);
                             if (dist <= b.getRadius()) {
                                 m.attackMonster(b.getDamage(), true);
@@ -855,8 +855,8 @@ public class GameController {
                 e[0] -= 1000.0 / GameSettings.FPS;
                 //time to apply the move
                 if (e[0] <= 0) {
-                    m.setPosX(e[1]);
-                    m.setPosY(e[2]);
+                    m.setX(e[1]);
+                    m.setY(e[2]);
 
                     //remove
                     removeList.add(e);
@@ -868,12 +868,11 @@ public class GameController {
 
             //calculate distance between player and monster
             double[] mq = (m.getMoveQueue().size() > 0)
-                    ? m.getMoveQueue().getLast() : new double[]{0, m.getPosX(), m.getPosY()};
+                    ? m.getMoveQueue().getLast() : new double[]{0, m.getX(), m.getY()};
             double mPosY = mq[2];
             double mPosX = mq[1];
-            double ydiff = (mPosY + m.getHeight() / 2) - (player.getPosY() + player.getHeight()
-                    / 2);
-            double xdiff = (mPosX + m.getWidth() / 2) - (player.getPosX() + player.getWidth() / 2);
+            double ydiff = (mPosY + m.getHeight() / 2) - (player.getY() + player.getHeight() / 2);
+            double xdiff = (mPosX + m.getWidth() / 2) - (player.getX() + player.getWidth() / 2);
             double d = round(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2)));
             if (d <= GameSettings.MONSTER_MOVE_RANGE && d >= GameSettings.MONSTER_MOVE_MIN) {
                 //move monster towards player
@@ -895,8 +894,8 @@ public class GameController {
                         new double[]{GameSettings.MONSTER_REACTION_TIME, newPos[0], newPos[1]};
                 m.getMoveQueue().add(moveItem);
             }
-            ydiff = (m.getPosY() + m.getHeight() / 2) - (player.getPosY() + player.getHeight() / 2);
-            xdiff = (m.getPosX() + m.getWidth() / 2) - (player.getPosX() + player.getWidth() / 2);
+            ydiff = (m.getY() + m.getHeight() / 2) - (player.getY() + player.getHeight() / 2);
+            xdiff = (m.getX() + m.getWidth() / 2) - (player.getX() + player.getWidth() / 2);
             d = round(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2)));
 
             //check for current attack

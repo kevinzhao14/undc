@@ -291,8 +291,8 @@ public class LayoutGenerator {
 
             int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
             int monsterY = (int) (Math.random() * (room.getHeight() - 39)) + 20;
-            monsters[i].setPosX(monsterX);
-            monsters[i].setPosY(monsterY);
+            monsters[i].setX(monsterX);
+            monsters[i].setY(monsterY);
         }
         room.setMonsters(monsters);
     }

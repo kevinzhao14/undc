@@ -10,7 +10,7 @@ import javafx.scene.image.Image;
  * @version 1.0
  */
 
-public abstract class Entity {
+public abstract class Entity implements Movable {
     private int maxHealth;
     private double health;
     private double attack;
@@ -43,23 +43,28 @@ public abstract class Entity {
     public double getAttack() {
         return this.attack;
     }
+    @Override
     public double getHeight() {
         return this.height;
     }
+    @Override
     public double getWidth() {
         return this.width;
     }
-    public double getPosX() {
+    @Override
+    public double getX() {
         return this.posX;
     }
-    public double getPosY() {
+    @Override
+    public double getY() {
         return this.posY;
     }
-
-    public void setPosX(double newX) {
+    @Override
+    public void setX(double newX) {
         this.posX = newX;
     }
-    public void setPosY(double newY) {
+    @Override
+    public void setY(double newY) {
         this.posY = newY;
     }
     public void setHealth(double newHealth) {

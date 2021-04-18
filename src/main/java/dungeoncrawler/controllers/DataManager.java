@@ -8,6 +8,7 @@ import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.MonsterType;
 import dungeoncrawler.objects.Potion;
 import dungeoncrawler.objects.PotionType;
+import dungeoncrawler.objects.Projectile;
 import dungeoncrawler.objects.RangedWeapon;
 import dungeoncrawler.objects.Weapon;
 
@@ -35,6 +36,10 @@ public class DataManager {
         new Weapon("Dagger", "weapons/dagger.png", 5, 0.25, true),
         new Bomb("Bomb", "items/bomb.png", 3, 50, 100, 3000),
         new RangedWeapon("Rocket Launcher", "weapons/rocketlauncher.png", 20, true, 1, 1)
+    };
+
+    public static final Projectile[] PROJECTILES = new Projectile[] {
+        new Projectile("Rocket", "weapons/rocket.png", 500, 200, true, 25)
     };
 
     public static final Monster[] MONSTERS = new Monster[]{
