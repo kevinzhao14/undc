@@ -35,11 +35,13 @@ public class DataManager {
         new Potion("Attack Potion", "items/attack-potion.png", 3, true, PotionType.ATTACK, 30),
         new Weapon("Dagger", "weapons/dagger.png", 5, 0.25, true),
         new Bomb("Bomb", "items/bomb.png", 3, 50, 100, 3000),
-        new RangedWeapon("Rocket Launcher", "weapons/rocketlauncher.png", 20, true, 1, 1)
+        new RangedWeapon("Rocket Launcher", "weapons/rocketlauncher.png", 4, false, 1, 1)
     };
 
     public static final Projectile[] PROJECTILES = new Projectile[] {
-        new Projectile("Rocket", "weapons/rocket.png", 500, 200, true, 25)
+        new Projectile("Rocket", new String[]{"weapons/rocket-left.png",
+                "weapons/rocket-up.png", "weapons/rocket-right.png", "weapons/rocket-down.png"},
+                25, 500.0 / GameSettings.FPS, 300, true, 25)
     };
 
     public static final Monster[] MONSTERS = new Monster[]{

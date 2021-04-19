@@ -1,5 +1,7 @@
 package dungeoncrawler.objects;
 
+import org.w3c.dom.ranges.Range;
+
 public class RangedWeapon extends Weapon{
     private Ammo ammo;
 
@@ -14,7 +16,7 @@ public class RangedWeapon extends Weapon{
 
     public RangedWeapon(String name, String sprite, double damage, boolean droppable,
                         double reloadTime, double fireRate, Ammo ammo) {
-        super(name, sprite, damage, 0, droppable);
+        super(name, sprite, damage, 1, droppable);
         this.reloadTime = reloadTime;
         this.fireRate = fireRate;
         isReloading = false;
@@ -25,9 +27,19 @@ public class RangedWeapon extends Weapon{
     public RangedWeapon(String name, String sprite, double damage, boolean droppable,
                         double reloadTime, double fireRate) {
         this(name, sprite, damage, droppable, reloadTime, fireRate, null);
-        Projectile proj = new Projectile("None", 0, 0, false, 0);
-        Ammo ammo = new Ammo(0, 0, proj);
+        Ammo ammo = new Ammo(0, 0, null);
         this.ammo = ammo;
+    }
+
+    public RangedWeapon copy() {
+        RangedWeapon nw = new RangedWeapon(getName(), getSprite().getUrl(), getDamage(),
+                isDroppable(), reloadTime, fireRate, ammo.copy());
+        return nw;
+    }
+
+    public void reload() {
+        isReloading = true;
+        delay = reloadTime * 1000;
     }
 
     public Ammo getAmmo() {

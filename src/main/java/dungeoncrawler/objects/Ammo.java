@@ -18,6 +18,10 @@ public class Ammo {
         this.projectile = projectile;
     }
 
+    public Ammo copy() {
+        return new Ammo(size, backupMax, projectile != null ? projectile.copy() : null);
+    }
+
     public int getSize() {
         return size;
     }

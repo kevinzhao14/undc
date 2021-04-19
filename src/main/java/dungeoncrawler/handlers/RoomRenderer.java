@@ -4,6 +4,7 @@ import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
 import dungeoncrawler.objects.Player;
 import dungeoncrawler.objects.Room;
+import dungeoncrawler.objects.ShotProjectile;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -169,6 +170,16 @@ public class RoomRenderer {
                 drawImg(gc, img, h, w, x, y);
             }
         }
+        //draw projectiles
+        for (ShotProjectile p : room.getProjectiles()) {
+            h = getPx(p.getHeight());
+            w = getPx(p.getWidth());
+            x = getPx(p.getX());
+            y = getPx(room.getHeight() - p.getY() - p.getHeight());
+            img = p.getSprite();
+            drawImg(gc, img, h, w, x, y);
+        }
+
         //draw player
         if (player.getHealth() > 0) {
             x = getPx(player.getX());

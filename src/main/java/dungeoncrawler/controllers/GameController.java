@@ -3,6 +3,7 @@ package dungeoncrawler.controllers;
 import dungeoncrawler.gamestates.GameState;
 import dungeoncrawler.handlers.Controls;
 import dungeoncrawler.handlers.RoomRenderer;
+import dungeoncrawler.objects.Ammo;
 import dungeoncrawler.objects.Bomb;
 import dungeoncrawler.objects.Door;
 import dungeoncrawler.gamestates.GameScreen;
@@ -14,14 +15,19 @@ import dungeoncrawler.objects.EffectType;
 import dungeoncrawler.objects.InventoryItem;
 import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
+import dungeoncrawler.objects.Movable;
 import dungeoncrawler.objects.Obstacle;
 import dungeoncrawler.objects.Player;
+import dungeoncrawler.objects.Projectile;
+import dungeoncrawler.objects.RangedWeapon;
 import dungeoncrawler.objects.Room;
+import dungeoncrawler.objects.ShotProjectile;
 import dungeoncrawler.objects.Weapon;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
+import org.w3c.dom.ranges.Range;
 
 import java.util.LinkedList;
 import java.util.Timer;
@@ -56,6 +62,7 @@ public class GameController {
     private boolean frictionX;
     private boolean frictionY;
     private boolean isAttacking;
+    private boolean isFiring;
 
     /**
      * Secondary constructor for no player
@@ -172,6 +179,8 @@ public class GameController {
         pressDown = false;
         frictionX = false;
         frictionY = false;
+        isAttacking = false;
+        isFiring = false;
     }
 
     /**
@@ -279,8 +288,10 @@ public class GameController {
         }
 
         //non-movement keys
-        if (key.equals(controls.getKey("attack")) || key.equals(controls.getKey("attack2"))) {
+        if (key.equals(controls.getKey("attack"))) {
             isAttacking = isPress;
+        } else if (key.equals(controls.getKey("attack2"))) {
+            isFiring = isPress;
         } else if (key.equals(controls.getKey("use"))) {
             if (isPress) {
                 InventoryItem selected = player.getItemSelected();
@@ -401,6 +412,13 @@ public class GameController {
             //check item pickup
             pickupItems();
 
+            //lower cooldowns
+            checkCooldowns();
+
+            //check for projectiles
+            checkProjectiles();
+
+            //check for player attacking
             checkPlayerAttack();
 
             //Manage Monsters
@@ -476,12 +494,65 @@ public class GameController {
             }
         }
 
+        private void checkCooldowns() {
+            //lower player attack cooldown
+            player.setAttackCooldown(Math.max(0.0, player.getAttackCooldown() - 1000.0
+                    / GameSettings.FPS));
+
+            //lower held weapon delay if rangedweapon
+            Item item = player.getItemSelected() != null  ? player.getItemSelected().getItem()
+                    : null;
+            if (item instanceof RangedWeapon) {
+                RangedWeapon weapon = (RangedWeapon) item;
+                weapon.setDelay(Math.max(0, weapon.getDelay() - 1000 / GameSettings.FPS));
+            }
+        }
+
+        private void checkProjectiles() {
+            for (int i = 0; i < room.getProjectiles().size(); i++) {
+                ShotProjectile p = room.getProjectiles().get(i);
+                //move
+                double x = p.getX();
+                double y = p.getY();
+                double newX = x + p.getVelX();
+                double newY = y + p.getVelY();
+
+                //check collisions
+                double[] checked = checkPos(x, y, newX, newY, p.getHeight(), p.getWidth());
+                //hit an object, then explode
+                if (checked == null || (checked[0] == x && checked[1] == y)) {
+                    p.hit(null);
+                    i--;
+                } else {
+                    //check for entity collisions
+                    newX = checked[0];
+                    newY = checked[1];
+                    Monster m = checkCollisions(room.getMonsters(), x, y, newX, newY);
+                    //hit a monster
+                    if (m != null) {
+                        p.hit(m);
+                    } else {
+                        //keep moving
+                        p.setX(newX);
+                        p.setY(newY);
+
+                        //calculate distance
+                        double d = Math.sqrt(Math.pow(p.getVelX(), 2) + Math.pow(p.getVelY(), 2));
+                        p.setDistance(round(p.getDistance() + d));
+                        System.out.println("Distance " + p.getDistance());
+                        if (p.getDistance() >= p.getProjectile().getRange()) {
+                            p.hit(null);
+                            i--;
+                        }
+                    }
+                }
+            }
+        }
+
         private void checkPlayerAttack() {
-            player.setAttackCooldown(Math.max(0.0,
-                    player.getAttackCooldown() - 1000.0 / GameSettings.FPS));
+            Item item = player.getItemSelected() != null
+                    ? player.getItemSelected().getItem() : null;
             if (isAttacking && player.getAttackCooldown() == 0.0) {
-                Item item = player.getItemSelected() != null
-                        ? player.getItemSelected().getItem() : null;
                 double damage = GameSettings.PLAYER_FIST_DAMAGE;
                 double cooldown = GameSettings.PLAYER_FIST_COOLDOWN;
                 double modifier = player.getAttack();
@@ -507,6 +578,80 @@ public class GameController {
                         }
                     }
                 }
+            }
+
+            //firing ranged weapon
+            if (isFiring && item instanceof RangedWeapon) {
+                RangedWeapon weapon = (RangedWeapon) item;
+                if (weapon.getDelay() > 0) {
+                    return;
+                }
+
+                Ammo ammo = weapon.getAmmo();
+
+                //check for ammo
+                if (ammo.getRemaining() <= 0) {
+                    weapon.reload();
+                    return;
+                }
+
+                //set fire delay
+                weapon.setDelay(weapon.getFireRate() * 1000);
+
+                //reduce ammo
+                ammo.setRemaining(ammo.getRemaining() - 1);
+                if (ammo.getRemaining() == 0) {
+                    weapon.reload();
+                }
+
+                //create projectile
+                int dir = player.getDirection() % 4;
+                double x = player.getX() + player.getWidth() / 2;
+                double y = player.getY() + player.getHeight() / 2;
+                Image sprite = ammo.getProjectile().getSpriteLeft();
+                if (dir == 1) {
+                    sprite = ammo.getProjectile().getSpriteUp();
+                } else if (dir == 2) {
+                    sprite = ammo.getProjectile().getSpriteRight();
+                } else if (dir == 3) {
+                    sprite = ammo.getProjectile().getSpriteDown();
+                }
+                double height = sprite.getHeight();
+                double width = sprite.getWidth();
+                if (dir == 0) {
+                    x -= 10;
+                } else if (dir == 2) {
+                    x += 10;
+                } else if (dir == 1) {
+                    y += 10;
+                } else {
+                    y -= 10;
+                }
+
+                //reset x and y coordinates
+                if (x < 0) {
+                    x = 0;
+                } else if (x > room.getWidth() - width) {
+                    x = room.getWidth() - width;
+                }
+                if (y < 0) {
+                    y = 0;
+                } else if (y > room.getHeight() - height) {
+                    x = room.getHeight() - height;
+                }
+
+                //velocity
+                double speed = ammo.getProjectile().getSpeed();
+                double velX = dir == 0 ? -speed : (dir == 2 ? speed : 0);
+                double velY = dir == 1 ? speed : (dir == 3 ? -speed : 0);
+
+                System.out.println("Player " + player.getX() + " " + player.getY());
+                System.out.println(x + " " + y + " " + velX + " " + velY);
+                //create projectile
+                ShotProjectile sp = new ShotProjectile(ammo.getProjectile(), x, y, velX, velY,
+                        width, height);
+                sp.setSprite(sprite);
+                room.getProjectiles().add(sp);
             }
         }
 
@@ -649,7 +794,7 @@ public class GameController {
          * @param w width
          * @return Returns whether the object is in range of the player's movement
          */
-        private boolean inRange(Obstacle o, double x, double y,
+        private boolean inRange(Movable o, double x, double y,
                                 double newX, double newY, double h, double w) {
             /* Checks if the object is in range of the player's movement
              *          _________
@@ -672,6 +817,33 @@ public class GameController {
             return true;
         }
 
+        private <T extends Movable> T checkCollisions(T[] list, double x, double y ,double newX, double newY) {
+            for (T t: list) {
+                if (t == null) {
+                    continue;
+                }
+                //Check if monster is out of movement vector rectangle
+                if (!inRange(t, x, y, newX, newY,
+                        GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH)) {
+                    continue;
+                }
+                //movement direction
+                boolean moveRight = x < newX;
+                boolean moveUp = y < newY;
+
+                //Get equation for intersection
+                double[] playerEquation = equation(x, y, newX, newY);
+                double[] intersects = getIntersect(t, playerEquation[0], playerEquation[1],
+                        moveUp, moveRight, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH);
+
+                //intersects
+                if (intersects != null) {
+                    return t;
+                }
+            }
+            return null;
+        }
+
         /**
          * Checks if the player has entered any doors
          * @param x x position
@@ -689,65 +861,45 @@ public class GameController {
             };
 
             //loop through doors
-            for (Door d : doors) {
-                if (d == null) {
-                    continue;
-                }
-                //Check if door is out of player movement vector rectangle
-                if (!inRange(d, x, y, newX, newY,
-                        GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH)) {
-                    continue;
-                }
-                //player movement direction
-                boolean moveRight = x < newX;
-                boolean moveUp = y < newY;
+            Door d = checkCollisions(doors, x, y, newX, newY);
+            if (d != null) {
+                Room newRoom = d.getGoesTo();
 
-                //Get equation for intersection
-                double[] playerEquation = equation(x, y, newX, newY);
-                double[] intersects = getIntersect(d, playerEquation[0], playerEquation[1],
-                        moveUp, moveRight, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH);
-
-
-                //player intersects door, move to new room
-                if (intersects != null) {
-                    Room newRoom = d.getGoesTo();
-
-                    //check if not visited & if there are still monsters
-                    if (!newRoom.wasVisited()) {
-                        for (Monster m : room.getMonsters()) {
-                            if (m != null && m.getHealth() > 0) {
-                                return false;
-                            }
+                //check if not visited & if there are still monsters
+                if (!newRoom.wasVisited()) {
+                    for (Monster m : room.getMonsters()) {
+                        if (m != null && m.getHealth() > 0) {
+                            return false;
                         }
                     }
-
-                    Door newDoor;
-                    double newStartX;
-                    double newStartY;
-                    if (d.equals(room.getTopDoor())) {
-                        newDoor = newRoom.getBottomDoor();
-                        newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
-                                - GameSettings.PLAYER_WIDTH / 2;
-                        newStartY = newDoor.getY() + LayoutGenerator.DOORBOTTOM_HEIGHT + 10;
-                    } else if (d.equals(room.getBottomDoor())) {
-                        newDoor = newRoom.getTopDoor();
-                        newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
-                                - GameSettings.PLAYER_WIDTH / 2;
-                        newStartY = newDoor.getY() - GameSettings.PLAYER_HEIGHT - 1;
-                    } else if (d.equals(room.getRightDoor())) {
-                        newDoor = newRoom.getLeftDoor();
-                        newStartX = newDoor.getX() + 10 + LayoutGenerator.DOOR_WIDTH;
-                        newStartY = newDoor.getY() + newDoor.getHeight() / 5.0;
-                    } else {
-                        newDoor = newRoom.getRightDoor();
-                        newStartX = newDoor.getX() - 10 - GameSettings.PLAYER_WIDTH;
-                        newStartY = newDoor.getY() + newDoor.getHeight() / 5.0;
-                    }
-                    newRoom.setStartX((int) newStartX);
-                    newRoom.setStartY((int) newStartY);
-                    setRoom(newRoom);
-                    return true;
                 }
+
+                Door newDoor;
+                double newStartX;
+                double newStartY;
+                if (d.equals(room.getTopDoor())) {
+                    newDoor = newRoom.getBottomDoor();
+                    newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
+                            - GameSettings.PLAYER_WIDTH / 2;
+                    newStartY = newDoor.getY() + LayoutGenerator.DOORBOTTOM_HEIGHT + 10;
+                } else if (d.equals(room.getBottomDoor())) {
+                    newDoor = newRoom.getTopDoor();
+                    newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
+                            - GameSettings.PLAYER_WIDTH / 2;
+                    newStartY = newDoor.getY() - GameSettings.PLAYER_HEIGHT - 1;
+                } else if (d.equals(room.getRightDoor())) {
+                    newDoor = newRoom.getLeftDoor();
+                    newStartX = newDoor.getX() + 10 + LayoutGenerator.DOOR_WIDTH;
+                    newStartY = newDoor.getY() + newDoor.getHeight() / 5.0;
+                } else {
+                    newDoor = newRoom.getRightDoor();
+                    newStartX = newDoor.getX() - 10 - GameSettings.PLAYER_WIDTH;
+                    newStartY = newDoor.getY() + newDoor.getHeight() / 5.0;
+                }
+                newRoom.setStartX((int) newStartX);
+                newRoom.setStartY((int) newStartY);
+                setRoom(newRoom);
+                return true;
             }
             return false;
         }
@@ -763,7 +915,7 @@ public class GameController {
          * @param w width
          * @return Returns the x and y coordinate of the intersection point, null if no intersection
          */
-        private double[] getIntersect(Obstacle o, double m, double b, boolean moveUp,
+        private double[] getIntersect(Movable o, double m, double b, boolean moveUp,
                                       boolean moveRight, double h, double w) {
             /* Calculate x-coordinate intersection point on the y-axis
              *

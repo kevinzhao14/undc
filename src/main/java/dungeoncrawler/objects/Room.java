@@ -18,6 +18,7 @@ public class Room {
     private ArrayList<Obstacle> obstacles;
     private Monster[] monsters;
     private ArrayList<DroppedItem> droppedItems;
+    private ArrayList<ShotProjectile> projectiles;
     private Door topDoor;
     private Door bottomDoor;
     private Door rightDoor;
@@ -49,6 +50,7 @@ public class Room {
         this.leftDoor = null;
         this.type = roomType;
         this.droppedItems = new ArrayList<>();
+        this.projectiles = new ArrayList<>();
 
         //Need to change this later
         this.monsters = null;
@@ -193,5 +195,9 @@ public class Room {
 
     public ArrayList<DroppedItem> getDroppedItems() {
         return droppedItems;
+    }
+
+    public ArrayList<ShotProjectile> getProjectiles() {
+        return projectiles;
     }
 }

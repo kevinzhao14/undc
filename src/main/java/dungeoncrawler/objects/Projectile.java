@@ -1,10 +1,15 @@
 package dungeoncrawler.objects;
 
+import dungeoncrawler.handlers.GameSettings;
 import javafx.scene.image.Image;
 
 public class Projectile {
     private String name;
-    private Image sprite;
+    private Image spriteRight;
+    private Image spriteLeft;
+    private Image spriteUp;
+    private Image spriteDown;
+    private double damage;
 
     //speed of the projectile
     private double speed;
@@ -15,14 +20,35 @@ public class Projectile {
     //projectile multi/splash range
     private double splashRange;
 
-    public Projectile(String name, String sprite, double speed, double range, boolean isMulti,
-                      double splashRange) {
+    public Projectile(String name, double damage, double speed, double range,
+                      boolean isMulti, double splashRange) {
         this.name = name;
-        this.sprite = new Image(sprite);
+        this.damage = damage;
         this.speed = speed;
         this.range = range;
         this.isMulti = isMulti;
         this.splashRange = splashRange;
+    }
+
+    public Projectile(String name, String[] sprites, double damage, double speed, double range,
+                      boolean isMulti, double splashRange) {
+        this(name, damage, speed, range, isMulti, splashRange);
+        setSprites(sprites[0], sprites[1], sprites[2], sprites[3]);
+    }
+
+    public Projectile copy() {
+        Projectile p = new Projectile(name, damage, speed, range, isMulti, splashRange);
+        p.setSprites(spriteLeft.getUrl(), spriteUp.getUrl(), spriteRight.getUrl(), spriteDown.getUrl());
+        return p;
+    }
+
+    public void setSprites(String left, String up, String right, String down) {
+        spriteLeft = new Image(left);
+        spriteUp = left.equals(up) ? spriteLeft : new Image(up);
+        spriteRight = left.equals(right) ? spriteLeft : (up.equals(right) ? spriteUp
+                : new Image(right));
+        spriteDown = left.equals(down) ? spriteLeft : (up.equals(down) ? spriteUp
+                : (right.equals(down) ? spriteRight : new Image(down)));
     }
 
     public String getName() {
@@ -45,11 +71,23 @@ public class Projectile {
         return splashRange;
     }
 
-    public Image getSpriteImage() {
-        return sprite;
+    public Image getSpriteRight() {
+        return spriteRight;
     }
 
-    public void setSpriteImage(Image sprite) {
-        this.sprite = sprite;
+    public Image getSpriteLeft() {
+        return spriteLeft;
+    }
+
+    public Image getSpriteUp() {
+        return spriteUp;
+    }
+
+    public Image getSpriteDown() {
+        return spriteDown;
+    }
+
+    public double getDamage() {
+        return damage;
     }
 }
