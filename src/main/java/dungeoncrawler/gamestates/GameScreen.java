@@ -108,6 +108,17 @@ public class GameScreen extends GameState {
             Label winnerLabel = new Label("Congratulations! You have escaped from the dungeon!");
             winnerLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
 
+            //add stats
+            Label monstersKilled = new Label("Total monsters killed: "
+                    + getPlayer().getMonstersKilled());
+            monstersKilled.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+            Label totalDamageDealt = new Label("Total damage dealt: "
+                    + getPlayer().getTotalDamageDealt());
+            totalDamageDealt.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+            Label totalItemsConsumed = new Label("Total items consumed/used: "
+                    + getPlayer().getTotalItemsConsumed());
+            totalItemsConsumed.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+
             Button newGameButton = new Button("New Game");
             newGameButton.setMinWidth(600);
             newGameButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
@@ -125,7 +136,9 @@ public class GameScreen extends GameState {
             });
 
 
-            box.getChildren().addAll(winnerLabel, newGameButton, endButton);
+            //box.getChildren().addAll(winnerLabel, newGameButton, endButton);
+            box.getChildren().addAll(winnerLabel, monstersKilled, totalDamageDealt,
+                                    totalItemsConsumed, newGameButton, endButton);
             box.setAlignment(Pos.CENTER);
             root.getChildren().addAll(box);
             fadeIn(box);
@@ -213,6 +226,9 @@ public class GameScreen extends GameState {
         healthBox.setSpacing(5);
         healthBox.setAlignment(Pos.CENTER);
 
+        boolean hasRangedWeapon = false;
+        int[] rangedAmmo = new int[2];
+
         // hotbar
         HBox hotbar = new HBox(10);
         for (int i = 0; i < player.getInventory().getItems()[0].length; i++) {
@@ -232,6 +248,13 @@ public class GameScreen extends GameState {
                 itemImg.setFitHeight(i == player.getSelected() ? 40 : 30);
                 itemImg.setFitWidth(i == player.getSelected() ? 40 : 30);
 
+                if (item.getItem() instanceof RangedWeapon) {
+                    hasRangedWeapon = true;
+                    rangedAmmo[0] = ((RangedWeapon) item.getItem()).getAmmo().getRemaining();
+                    rangedAmmo[1] = ((RangedWeapon) item.getItem()).getAmmo().getBackupRemaining();
+                }
+
+
                 // show item quantity if > 1
                 if (item.getQuantity() > 1) {
                     Label quantity = new Label("" + item.getQuantity());
@@ -249,7 +272,17 @@ public class GameScreen extends GameState {
             }
         }
 
-        lowerHUD.getChildren().addAll(healthBox, hotbar, goldLabel);
+        // ammo label
+        if (hasRangedWeapon) {
+            Label ammoLabel = new Label("Ammo: " + rangedAmmo[0] + " / " + rangedAmmo[1]);
+            ammoLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
+            lowerHUD.getChildren().addAll(healthBox, hotbar, goldLabel, ammoLabel);
+
+            ammoLabel.setTranslateX(-50);
+            lowerHUD.setTranslateX(117);
+        } else {
+            lowerHUD.getChildren().addAll(healthBox, hotbar, goldLabel);
+        }
 
         hud.getChildren().add(display);
     }
@@ -311,6 +344,17 @@ public class GameScreen extends GameState {
         Label deathLabel = new Label("GAME OVER");
         deathLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
 
+        //add stats
+        Label monstersKilled = new Label("Total monsters killed: "
+                + getPlayer().getMonstersKilled());
+        monstersKilled.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+        Label totalDamageDealt = new Label("Total damage dealt: "
+                + getPlayer().getTotalDamageDealt());
+        totalDamageDealt.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+        Label totalItemsConsumed = new Label("Total items consumed/used: "
+                + getPlayer().getTotalItemsConsumed());
+        totalItemsConsumed.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+
         Button restartButton = new Button("Restart");
         Button endButton = new Button("Exit Game");
 
@@ -327,7 +371,9 @@ public class GameScreen extends GameState {
             Platform.exit();
         });
 
-        box.getChildren().addAll(deathLabel, restartButton, endButton);
+        //box.getChildren().addAll(deathLabel, restartButton, endButton);
+        box.getChildren().addAll(deathLabel, monstersKilled, totalDamageDealt,
+                totalItemsConsumed, restartButton, endButton);
         box.setAlignment(Pos.CENTER);
         root.getChildren().addAll(backdrop, box);
         hud.getChildren().add(root);
@@ -399,6 +445,9 @@ public class GameScreen extends GameState {
         }
         //set player health to original amt
         player.setHealth(player.getMaxHealth());
+
+        //clear player stats
+        player.clearGameStats();
 
         //set player gold value to original amt - MAKE SURE TO UNCOMMENT LINES BELOW
         switch (Controller.getDataManager().getDifficulty()) {

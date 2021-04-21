@@ -1,5 +1,5 @@
 package dungeoncrawler.objects;
 
 public enum ObstacleType {
-    SOLID, DOOR;
+    SOLID, NONSOLID, DOOR;
 }

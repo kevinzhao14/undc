@@ -63,8 +63,8 @@ public class GameSettings {
     public static final int INVENTORY_COLUMNS = 5;
 
     //monster generation settings
-    public static final int MIN_MONSTERS = 1;
-    public static final int MAX_MONSTERS = 1;
+    public static final int MIN_MONSTERS = 4;
+    public static final int MAX_MONSTERS = 4;
 
     //monster kill reward settings
     public static final double MONSTER_KILL_GOLD = 20;
@@ -88,10 +88,12 @@ public class GameSettings {
     public static final int MONSTER_REACTION_TIME = 300;
     public static final int MONSTER_FADE_TIME = 400;
 
+    public static final double EXPLOSION_MAX_WIDTH = 75;
+
     //pixels
     public static final int MONSTER_HEALTHBAR_HEIGHT = 5;
 
-    public static final int CANVAS_PADDING = 50;
+    public static final int CANVAS_PADDING = 150;
 
     public static final double EFFECT_INDICATOR_SCALE = 1.5;
 }

@@ -58,7 +58,11 @@ public class Monster extends Entity {
         if (this.getHealth() <= 0) {
             return false;
         }
+        //update damage dealt stat in player object
+        ((GameScreen) Controller.getState()).getPlayer().addDamageDealt(Math.min(this.getHealth(), damageAmount));
+        //change monster health
         this.setHealth(Math.max(0, this.getHealth() - damageAmount));
+
         //Give gold to player after slaying a monster
         if (this.getHealth() == 0.0) {
             GameScreen screen = (GameScreen) Controller.getState();
@@ -78,6 +82,9 @@ public class Monster extends Entity {
                 }
                 screen.getPlayer().setGold(screen.getPlayer().getGold()
                         + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
+
+                //update number of monsters player killed
+                screen.getPlayer().addMonsterKilled();
             }
 
             //generate drop items and add to Room ArrayList
@@ -106,13 +113,22 @@ public class Monster extends Entity {
     }
 
     public DroppedItem[] dropItems() {
-        if (Controller.getDataManager().ITEMS.length == 0) {
+        if (Controller.getDataManager().ITEMS.length == 0 && type != MonsterType.FINALBOSS) {
             return new DroppedItem[0];
         }
         Random generator = new Random();
         //Calculate number of items to drop
         int numItems = GameSettings.MIN_ITEM_DROP
                 + generator.nextInt(GameSettings.MAX_ITEM_DROP - GameSettings.MIN_ITEM_DROP + 1);
+
+        //if monster is the final boss, add another space in array for key
+        if (getType() == MonsterType.FINALBOSS) {
+            if (Controller.getDataManager().ITEMS.length > 0) {
+                numItems++;
+            } else {
+                numItems = 1;
+            }
+        }
 
         DroppedItem[] droppedItems = new DroppedItem[numItems];
 
@@ -133,8 +149,13 @@ public class Monster extends Entity {
             isValidLocation = false; //reset flag
 
             randIdx = generator.nextInt(Controller.getDataManager().ITEMS.length);
-            droppedItems[i] = new DroppedItem(
-                    Controller.getDataManager().ITEMS[randIdx].copy());
+
+            if (type != MonsterType.FINALBOSS || i < numItems - 1) {
+                droppedItems[i] = new DroppedItem(
+                        Controller.getDataManager().ITEMS[randIdx].copy());
+            } else {
+                droppedItems[i] = new DroppedItem(Controller.getDataManager().EXITKEY.copy());
+            }
 
             //Set width and height
             droppedItems[i].setWidth(droppedItems[i].getItem().getSprite().getWidth());

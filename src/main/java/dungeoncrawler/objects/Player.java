@@ -19,6 +19,10 @@ public class Player extends Entity {
     };
 
     private int gold;
+    private int monstersKilled;
+    private double totalDamageDealt;
+    private int totalItemsConsumed;
+
     private Inventory inventory;
     private int selected;
     private int direction;
@@ -35,6 +39,11 @@ public class Player extends Entity {
         ammo.setBackupRemaining(10);
         w.setAmmo(ammo);
         inventory.add(w);
+        inventory.add(DataManager.ITEMS[5], 10);
+
+        monstersKilled = 0;
+        totalDamageDealt = 0.0;
+        totalItemsConsumed = 0;
 
         selected = 0;
         direction = 0;
@@ -44,8 +53,43 @@ public class Player extends Entity {
     public int getGold() {
         return this.gold;
     }
+    public int getMonstersKilled() {
+        return monstersKilled;
+    }
+    public double getTotalDamageDealt() {
+        return totalDamageDealt;
+    }
+    public int getTotalItemsConsumed() {
+        return totalItemsConsumed;
+    }
+
     public void setGold(int gold) {
         this.gold = gold;
+    }
+    public void setMonstersKilled(int amt) {
+        monstersKilled = amt;
+    }
+    public void addMonsterKilled() {
+        monstersKilled++;
+    }
+    public void setTotalDamageDealt(double amt) {
+        totalDamageDealt = amt;
+    }
+    public void addDamageDealt(double amt) {
+        totalDamageDealt += amt;
+    }
+    public void setTotalItemsConsumed(int amt) {
+        totalItemsConsumed = amt;
+    }
+    public void addItemConsumed() {
+        totalItemsConsumed++;
+    }
+
+    public void clearGameStats() {
+        //DOES NOT CLEAR GOLD
+        monstersKilled = 0;
+        totalDamageDealt = 0.0;
+        totalItemsConsumed = 0;
     }
 
     public void setDirection(int dir) {
@@ -81,7 +125,6 @@ public class Player extends Entity {
     public void select(int selected) {
         this.selected = selected;
     }
-
 
     public int getDirection() {
         return direction;

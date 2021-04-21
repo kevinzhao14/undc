@@ -11,6 +11,7 @@ import dungeoncrawler.objects.PotionType;
 import dungeoncrawler.objects.Projectile;
 import dungeoncrawler.objects.RangedWeapon;
 import dungeoncrawler.objects.Weapon;
+import dungeoncrawler.objects.Key;
 
 /**
  * Class for storing and handling all session data.
@@ -38,6 +39,8 @@ public class DataManager {
         new RangedWeapon("Rocket Launcher", "weapons/rocketlauncher.png", 4, false, 1, 1)
     };
 
+    public static final Key EXITKEY = new Key("Special Key", "items/key.png", true);
+
     public static final Projectile[] PROJECTILES = new Projectile[] {
         new Projectile("Rocket", new String[]{"weapons/rocket-left.png",
                 "weapons/rocket-up.png", "weapons/rocket-right.png", "weapons/rocket-down.png"},
@@ -51,7 +54,8 @@ public class DataManager {
     };
 
     public static final Monster finalBoss = new Monster(100, 15, 175.0 / GameSettings.FPS, 1.0, MonsterType.FINALBOSS, 42, 62);
-
+    public static final String explosion = "weapons/explosion.gif";
+    
     private String username;
     private Difficulty difficulty;
     private Weapon weapon;

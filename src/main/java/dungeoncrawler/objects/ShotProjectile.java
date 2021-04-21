@@ -1,8 +1,13 @@
 package dungeoncrawler.objects;
 
 import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.controllers.DataManager;
 import dungeoncrawler.gamestates.GameScreen;
+import dungeoncrawler.handlers.GameSettings;
 import javafx.scene.image.Image;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ShotProjectile implements Movable {
     private Projectile projectile;
@@ -26,6 +31,28 @@ public class ShotProjectile implements Movable {
         this.height = height;
         this.width = width;
     }
+
+    public static void addExplosion(Room room, Movable m, double width) {
+        if (width > GameSettings.EXPLOSION_MAX_WIDTH) {
+            width = GameSettings.EXPLOSION_MAX_WIDTH;
+        }
+
+        //draw explosion animation
+        Image explosion = new Image(DataManager.explosion);
+        double height = width * 1.2734375;
+        double x = m.getX() + (m.getWidth() / 2) - (width / 2);
+        double y = m.getY() - 10;
+        Obstacle o = new Obstacle(x, y, width, height, ObstacleType.NONSOLID);
+        o.setSprite(explosion);
+        room.getObstacles().add(o);
+        //remove obstacle after 1 second
+        new Timer().schedule(new TimerTask() {
+            public void run() {
+                room.getObstacles().remove(o);
+            }
+        }, 1000);
+    }
+
 
     public void hit(Entity e) {
         //stop projectile
@@ -57,6 +84,8 @@ public class ShotProjectile implements Movable {
                     m.attackMonster(projectile.getDamage(), true);
                 }
             }
+            //draw explosion animation
+            addExplosion(room, this, projectile.getSplashRange() * 2);
         }
 
         //remove projectile

@@ -6,28 +6,31 @@ import dungeoncrawler.handlers.RoomRenderer;
 import dungeoncrawler.objects.Ammo;
 import dungeoncrawler.objects.Bomb;
 import dungeoncrawler.objects.Door;
-import dungeoncrawler.gamestates.GameScreen;
-import dungeoncrawler.handlers.GameSettings;
-import dungeoncrawler.handlers.LayoutGenerator;
 import dungeoncrawler.objects.DroppedItem;
 import dungeoncrawler.objects.Effect;
 import dungeoncrawler.objects.EffectType;
 import dungeoncrawler.objects.InventoryItem;
 import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
-import dungeoncrawler.objects.Movable;
 import dungeoncrawler.objects.Obstacle;
+import dungeoncrawler.objects.ObstacleType;
 import dungeoncrawler.objects.Player;
+import dungeoncrawler.objects.Movable;
 import dungeoncrawler.objects.Projectile;
 import dungeoncrawler.objects.RangedWeapon;
 import dungeoncrawler.objects.Room;
+import dungeoncrawler.objects.RoomType;
 import dungeoncrawler.objects.ShotProjectile;
 import dungeoncrawler.objects.Weapon;
+import dungeoncrawler.objects.Key;
+
+import dungeoncrawler.gamestates.GameScreen;
+import dungeoncrawler.handlers.GameSettings;
+import dungeoncrawler.handlers.LayoutGenerator;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
-import org.w3c.dom.ranges.Range;
 
 import java.util.LinkedList;
 import java.util.Timer;
@@ -312,11 +315,9 @@ public class GameController {
             }
             //remove from inventory
             if (currentItem.getQuantity() > 1) {
-                System.out.println("Quantity " + currentItem.getQuantity());
                 currentItem.setQuantity(currentItem.getQuantity() - 1);
             } else {
                 if (!player.getInventory().remove(currentItem.getItem())) {
-                    System.out.println("Failed to drop item");
                     return;
                 }
             }
@@ -539,7 +540,6 @@ public class GameController {
                         //calculate distance
                         double d = Math.sqrt(Math.pow(p.getVelX(), 2) + Math.pow(p.getVelY(), 2));
                         p.setDistance(round(p.getDistance() + d));
-                        System.out.println("Distance " + p.getDistance());
                         if (p.getDistance() >= p.getProjectile().getRange()) {
                             p.hit(null);
                             i--;
@@ -604,6 +604,9 @@ public class GameController {
                     weapon.reload();
                 }
 
+                //update ammo on HUD
+                Platform.runLater(() -> getScreen().updateHud());
+
                 //create projectile
                 int dir = player.getDirection() % 4;
                 double x = player.getX() + player.getWidth() / 2;
@@ -645,8 +648,6 @@ public class GameController {
                 double velX = dir == 0 ? -speed : (dir == 2 ? speed : 0);
                 double velY = dir == 1 ? speed : (dir == 3 ? -speed : 0);
 
-                System.out.println("Player " + player.getX() + " " + player.getY());
-                System.out.println(x + " " + y + " " + velX + " " + velY);
                 //create projectile
                 ShotProjectile sp = new ShotProjectile(ammo.getProjectile(), x, y, velX, velY,
                         width, height);
@@ -690,7 +691,10 @@ public class GameController {
                         double distX = Math.pow(x - player.getX() + player.getWidth() / 2, 2);
                         double distY = Math.pow(y - player.getY() + player.getHeight() / 2, 2);
                         double dist = Math.sqrt(distX + distY);
-                        System.out.println("Player d" + dist);
+
+                        //draw explosion
+                        ShotProjectile.addExplosion(room, o, b.getRadius() * 2);
+
                         if (dist <= b.getRadius()) {
                             player.setHealth(Math.max(0, player.getHealth() - b.getDamage()));
                             Platform.runLater(() -> getScreen().updateHud());
@@ -827,6 +831,13 @@ public class GameController {
                         GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH)) {
                     continue;
                 }
+                //for monsters
+                if (t instanceof Monster && ((Monster) t).getHealth() == 0) {
+                    continue;
+                } else if (t instanceof Obstacle && ((Obstacle) t).getType() == ObstacleType.NONSOLID) {
+                    continue;
+                }
+
                 //movement direction
                 boolean moveRight = x < newX;
                 boolean moveUp = y < newY;
@@ -873,6 +884,29 @@ public class GameController {
                         }
                     }
                 }
+
+                /*
+                //if next room is the exit, don't let player go through unless they have key
+                if (newRoom.getType() == RoomType.EXITROOM) {
+                    boolean hasKey = false;
+                    InventoryItem[][] playerItems = player.getInventory().getItems();
+                    for (InventoryItem[] itemRow : playerItems) {
+                        for (InventoryItem playerItem : itemRow) {
+                            if (playerItem != null && playerItem.getItem() != null
+                                    && (playerItem.getItem() instanceof Key)) {
+                                hasKey = true;
+                                break;
+                            }
+                        }
+                        if (hasKey) {
+                            break;
+                        }
+                    }
+                    if (!hasKey) {
+                        return false;
+                    }
+                }
+                 */
 
                 Door newDoor;
                 double newStartX;
