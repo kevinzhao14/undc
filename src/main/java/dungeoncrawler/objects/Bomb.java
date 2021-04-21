@@ -28,6 +28,9 @@ public class Bomb extends Item {
         Room room = screen.getRoom();
         Player player = screen.getPlayer();
 
+        //update items consumed stat for player
+        player.addItemConsumed();
+
         //remove from inventory
         if (!player.getInventory().remove(this)) {
             System.out.println("Failed to use bomb");
