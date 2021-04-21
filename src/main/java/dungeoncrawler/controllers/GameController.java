@@ -346,6 +346,13 @@ public class GameController {
                 player.getInventory().rotate();
                 getScreen().updateHud();
             }
+        } else if (key.equals(controls.getKey("reload"))) {
+            //get held weapon
+            Item item = player.getItemSelected() != null
+                    ? player.getItemSelected().getItem() : null;
+            if (item instanceof RangedWeapon) {
+                ((RangedWeapon) item).reload();
+            }
         }
     }
 
@@ -497,15 +504,19 @@ public class GameController {
 
         private void checkCooldowns() {
             //lower player attack cooldown
-            player.setAttackCooldown(Math.max(0.0, player.getAttackCooldown() - 1000.0
-                    / GameSettings.FPS));
-
+            if (player.getAttackCooldown() > 0) {
+                player.setAttackCooldown(Math.max(0.0, player.getAttackCooldown() - 1000.0
+                        / GameSettings.FPS));
+            }
             //lower held weapon delay if rangedweapon
             Item item = player.getItemSelected() != null  ? player.getItemSelected().getItem()
                     : null;
-            if (item instanceof RangedWeapon) {
+            if (item instanceof RangedWeapon && ((RangedWeapon) item).getDelay() > 0) {
                 RangedWeapon weapon = (RangedWeapon) item;
                 weapon.setDelay(Math.max(0, weapon.getDelay() - 1000 / GameSettings.FPS));
+                if (weapon.isReloading() && weapon.getDelay() == 0) {
+                    weapon.finishReloading();
+                }
             }
         }
 
@@ -600,9 +611,6 @@ public class GameController {
 
                 //reduce ammo
                 ammo.setRemaining(ammo.getRemaining() - 1);
-                if (ammo.getRemaining() == 0) {
-                    weapon.reload();
-                }
 
                 //update ammo on HUD
                 Platform.runLater(() -> getScreen().updateHud());

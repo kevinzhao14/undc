@@ -1,0 +1,5 @@
+.rootPane {
+    -fx-background-image: url("../textures/dungeon1.png");
+    -fx-background-position: top left;
+    -fx-background-size: 100% 100%;
+}

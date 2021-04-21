@@ -19,7 +19,7 @@ public class MonsterGenerationTest extends ApplicationTest {
     }
     @Test
     public void testMonsterNumber() {
-        DungeonLayout layout = LayoutGenerator.generateLayout();
+        DungeonLayout layout = new LayoutGenerator().generateLayout();
         Room[][] roomGrid = layout.getGrid();
         for (int i = 0; i < roomGrid.length; i++) {
             for (int j = 0; j < roomGrid[i].length; j++) {
@@ -33,7 +33,7 @@ public class MonsterGenerationTest extends ApplicationTest {
 
     @Test
     public void testMonsterType() {
-        DungeonLayout layout = LayoutGenerator.generateLayout();
+        DungeonLayout layout = new LayoutGenerator().generateLayout();
         Room[][] roomGrid = layout.getGrid();
         for (int i = 0; i < roomGrid.length; i++) {
             for (int j = 0; j < roomGrid[i].length; j++) {

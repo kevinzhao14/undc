@@ -164,7 +164,8 @@ public class Controls {
         //Weapon Controls
         keyMap.put("attack", KeyCode.F13);
         keyMap.put("attack2", KeyCode.F14);
-        keyMap.put("rotateinv", KeyCode.R);
+        keyMap.put("rotateinv", KeyCode.F);
+        keyMap.put("reload", KeyCode.R);
 
         try {
             save();
@@ -236,10 +237,12 @@ public class Controls {
      */
     public void setKey(String controlName, String key) {
         if (controlName == null) {
-            throw new IllegalArgumentException("Control cannot be null.");
+            System.out.println("Control cannot be null.");
+            return;
         }
         if (key == null) {
-            throw new IllegalArgumentException("Key cannot be null.");
+            System.out.println("Key cannot be null.");
+            return;
         }
 
         //get KeyCode object from the key string
@@ -257,7 +260,8 @@ public class Controls {
 
         //if the key is already mapped to another control, throw an exception
         if (keyMap.get(controlName) != code && keyMap.containsValue(code)) {
-            throw new IllegalArgumentException("That key is already mapped to another control.");
+            System.out.println("That key is already mapped to another control.");
+            return;
         }
         //if the control is already mapped, overwrite it
         if (keyMap.containsKey(controlName)) {

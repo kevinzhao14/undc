@@ -19,7 +19,7 @@ public class MonsterFadeOnDeathTest extends ApplicationTest {
 
     @Test
     public void testLivingMonsterIsVisible() {
-        DungeonLayout layout = LayoutGenerator.generateLayout();
+        DungeonLayout layout = new LayoutGenerator().generateLayout();
         Room[][] roomGrid = layout.getGrid();
         for (int i = 0; i < roomGrid.length; i++) {
             for (int j = 0; j < roomGrid[i].length; j++) {
@@ -38,7 +38,7 @@ public class MonsterFadeOnDeathTest extends ApplicationTest {
 
     @Test
     public void testMonsterDeathProgressBeginsAt1() {
-        DungeonLayout layout = LayoutGenerator.generateLayout();
+        DungeonLayout layout = new LayoutGenerator().generateLayout();
         Room[][] roomGrid = layout.getGrid();
         for (int i = 0; i < roomGrid.length; i++) {
             for (int j = 0; j < roomGrid[i].length; j++) {

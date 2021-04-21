@@ -31,7 +31,6 @@ import java.util.ArrayList;
 
 
 public class GameScreen extends GameState {
-
     private GameController game;
     private Player player;
     private DungeonLayout dungeonLayout;
@@ -45,7 +44,7 @@ public class GameScreen extends GameState {
     private boolean paused;
 
     public GameScreen(int width, int height) {
-        dungeonLayout = LayoutGenerator.generateLayout();
+        dungeonLayout = new LayoutGenerator().generateLayout();
         scene = new Scene(new Pane(), width, height);
         canvas = new Canvas();
         inventoryVisible = false;
@@ -203,8 +202,6 @@ public class GameScreen extends GameState {
             }
         }
 
-
-
         // lower hud labels (gold, health)
         Label goldLabel = new Label("Gold: " + player.getGold());
         Label healthLabel = new Label("Health: ");
@@ -227,7 +224,6 @@ public class GameScreen extends GameState {
         healthBox.setAlignment(Pos.CENTER);
 
         boolean hasRangedWeapon = false;
-        int[] rangedAmmo = new int[2];
 
         // hotbar
         HBox hotbar = new HBox(10);
@@ -248,13 +244,6 @@ public class GameScreen extends GameState {
                 itemImg.setFitHeight(i == player.getSelected() ? 40 : 30);
                 itemImg.setFitWidth(i == player.getSelected() ? 40 : 30);
 
-                if (item.getItem() instanceof RangedWeapon) {
-                    hasRangedWeapon = true;
-                    rangedAmmo[0] = ((RangedWeapon) item.getItem()).getAmmo().getRemaining();
-                    rangedAmmo[1] = ((RangedWeapon) item.getItem()).getAmmo().getBackupRemaining();
-                }
-
-
                 // show item quantity if > 1
                 if (item.getQuantity() > 1) {
                     Label quantity = new Label("" + item.getQuantity());
@@ -273,8 +262,16 @@ public class GameScreen extends GameState {
         }
 
         // ammo label
-        if (hasRangedWeapon) {
-            Label ammoLabel = new Label("Ammo: " + rangedAmmo[0] + " / " + rangedAmmo[1]);
+        Item item = player.getItemSelected() != null
+                ? player.getItemSelected().getItem() : null;
+        if (item instanceof RangedWeapon) {
+            RangedWeapon w = (RangedWeapon) item;
+            String text = "Ammo: " + w.getAmmo().getRemaining() + " / " + w.getAmmo().getBackupRemaining();
+            if (w.isReloading()) {
+                text = "Ammo: Reloading";
+            }
+            Label ammoLabel = new Label(text);
+            ammoLabel.setMinWidth(200);
             ammoLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
             lowerHUD.getChildren().addAll(healthBox, hotbar, goldLabel, ammoLabel);
 
@@ -597,10 +594,6 @@ public class GameScreen extends GameState {
         partialFadeIn(backdrop);
         challenge.setVisible(false);
     }
-
-
-
-
 
     public void refresh() {
         RoomRenderer.drawFrame(canvas, room, player);
