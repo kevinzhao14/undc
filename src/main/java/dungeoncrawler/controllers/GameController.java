@@ -6,28 +6,30 @@ import dungeoncrawler.handlers.RoomRenderer;
 import dungeoncrawler.objects.Ammo;
 import dungeoncrawler.objects.Bomb;
 import dungeoncrawler.objects.Door;
-import dungeoncrawler.gamestates.GameScreen;
-import dungeoncrawler.handlers.GameSettings;
-import dungeoncrawler.handlers.LayoutGenerator;
 import dungeoncrawler.objects.DroppedItem;
 import dungeoncrawler.objects.Effect;
 import dungeoncrawler.objects.EffectType;
 import dungeoncrawler.objects.InventoryItem;
 import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
-import dungeoncrawler.objects.Movable;
 import dungeoncrawler.objects.Obstacle;
 import dungeoncrawler.objects.Player;
+import dungeoncrawler.objects.Movable;
 import dungeoncrawler.objects.Projectile;
 import dungeoncrawler.objects.RangedWeapon;
 import dungeoncrawler.objects.Room;
+import dungeoncrawler.objects.RoomType;
 import dungeoncrawler.objects.ShotProjectile;
 import dungeoncrawler.objects.Weapon;
+import dungeoncrawler.objects.Key;
+
+import dungeoncrawler.gamestates.GameScreen;
+import dungeoncrawler.handlers.GameSettings;
+import dungeoncrawler.handlers.LayoutGenerator;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
-import org.w3c.dom.ranges.Range;
 
 import java.util.LinkedList;
 import java.util.Timer;
@@ -873,6 +875,29 @@ public class GameController {
                         }
                     }
                 }
+
+                /*
+                //if next room is the exit, don't let player go through unless they have key
+                if (newRoom.getType() == RoomType.EXITROOM) {
+                    boolean hasKey = false;
+                    InventoryItem[][] playerItems = player.getInventory().getItems();
+                    for (InventoryItem[] itemRow : playerItems) {
+                        for (InventoryItem playerItem : itemRow) {
+                            if (playerItem != null && playerItem.getItem() != null
+                                    && (playerItem.getItem() instanceof Key)) {
+                                hasKey = true;
+                                break;
+                            }
+                        }
+                        if (hasKey) {
+                            break;
+                        }
+                    }
+                    if (!hasKey) {
+                        return false;
+                    }
+                }
+                 */
 
                 Door newDoor;
                 double newStartX;
