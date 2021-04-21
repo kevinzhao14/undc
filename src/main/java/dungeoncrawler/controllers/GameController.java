@@ -831,6 +831,13 @@ public class GameController {
                         GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH)) {
                     continue;
                 }
+                //for monsters
+                if (t instanceof Monster && ((Monster) t).getHealth() == 0) {
+                    continue;
+                } else if (t instanceof Obstacle && ((Obstacle) t).getType() == ObstacleType.NONSOLID) {
+                    continue;
+                }
+
                 //movement direction
                 boolean moveRight = x < newX;
                 boolean moveUp = y < newY;
