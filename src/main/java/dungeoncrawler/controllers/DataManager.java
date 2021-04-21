@@ -50,6 +50,8 @@ public class DataManager {
         new Monster(80, 10, 50.0 / GameSettings.FPS, 2, MonsterType.TANK, 21, 31)
     };
 
+    public static final Monster finalBoss = new Monster(100, 15, 175.0 / GameSettings.FPS, 1.0, MonsterType.FINALBOSS, 42, 62);
+
     private String username;
     private Difficulty difficulty;
     private Weapon weapon;

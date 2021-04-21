@@ -1,11 +1,16 @@
 package dungeoncrawler.handlers;
 
 import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.objects.ChallengeRoom;
 import dungeoncrawler.objects.Door;
 import dungeoncrawler.objects.DoorOrientation;
+import dungeoncrawler.objects.DroppedItem;
 import dungeoncrawler.objects.DungeonLayout;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
+import dungeoncrawler.objects.Potion;
+import dungeoncrawler.objects.PotionType;
+import dungeoncrawler.objects.RangedWeapon;
 import dungeoncrawler.objects.Room;
 import dungeoncrawler.objects.RoomType;
 /**
@@ -65,6 +70,10 @@ public class LayoutGenerator {
         roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2] = startRoom;
         int[] coords;
         // up path
+        int challengeCount = 0;
+        DroppedItem[] firstRoomRewards = {new DroppedItem(new RangedWeapon("Rocket Launcher", "weapons/rocketlauncher.png", 4, false, 1, 1), ROOM_HEIGHT / 2, ROOM_WIDTH / 2, 20, 20)};
+        DroppedItem[] secondRoomRewards = {new DroppedItem(new Potion("Large Health Potion", "items/health-potion-large.png", 3, true,
+                PotionType.HEALTH, 100), ROOM_HEIGHT / 2, ROOM_WIDTH / 2, 20, 20)};
         roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2 + 1] =
                 new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
                         new Obstacle[5], RoomType.EMPTYROOM);
@@ -74,6 +83,16 @@ public class LayoutGenerator {
         for (int i = 0; i < upPath - 1; i++) {
             if (coords == null) {
                 break;
+            }
+            if (challengeCount < 2) {
+                if (Math.random() < 0.5) {
+                    if (challengeCount == 0) {
+                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, firstRoomRewards);
+                    } else {
+                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, secondRoomRewards);
+                    }
+                    challengeCount++;
+                }
             }
             coords = generateRoom(roomGrid, coords[0], coords[1], 0);
         }
@@ -94,6 +113,16 @@ public class LayoutGenerator {
         for (int i = 0; i < rightPath - 1; i++) {
             if (coords == null) {
                 break;
+            }
+            if (challengeCount < 2) {
+                if (Math.random() < 0.5) {
+                    if (challengeCount == 0) {
+                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, firstRoomRewards);
+                    } else {
+                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, secondRoomRewards);
+                    }
+                    challengeCount++;
+                }
             }
             coords = generateRoom(roomGrid, coords[0], coords[1], 1);
         }
@@ -116,6 +145,16 @@ public class LayoutGenerator {
         for (int i = 0; i < downPath - 1; i++) {
             if (coords == null) {
                 break;
+            }
+            if (challengeCount < 2) {
+                if (Math.random() < 0.5) {
+                    if (challengeCount == 0) {
+                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, firstRoomRewards);
+                    } else {
+                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, secondRoomRewards);
+                    }
+                    challengeCount++;
+                }
             }
             coords = generateRoom(roomGrid, coords[0], coords[1], 2);
         }
@@ -143,6 +182,14 @@ public class LayoutGenerator {
             if (coords == null) {
                 break;
             }
+            if (challengeCount < 2) {
+                    if (challengeCount == 0) {
+                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, firstRoomRewards);
+                    } else {
+                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, secondRoomRewards);
+                    }
+                    challengeCount++;
+            }
             coords = generateRoom(roomGrid, coords[0], coords[1], 3);
         }
         if (leftPath >= 6 && !exitPlaced && coords != null) {
@@ -151,11 +198,16 @@ public class LayoutGenerator {
             exitCoords = coords;
         }
 
+
+
         //check exit distance
         if (!exitPlaced || (Math.abs(exitCoords[0] - GRID_WIDTH / 2) + Math.abs(exitCoords[1]
                 - GRID_HEIGHT / 2)) < 6) {
             return generateLayout();
         }
+        //create challenge rooms
+        int randX = (int) (Math.random() * GRID_WIDTH);
+        int randY = (int) (Math.random() * GRID_HEIGHT);
 
         printGrid(roomGrid);
 
