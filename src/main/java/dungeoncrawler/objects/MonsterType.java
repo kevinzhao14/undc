@@ -1,5 +1,5 @@
 package dungeoncrawler.objects;
 
 public enum MonsterType {
-    TANK, NORMAL, FAST;
+    TANK, NORMAL, FAST, FINALBOSS;
 }

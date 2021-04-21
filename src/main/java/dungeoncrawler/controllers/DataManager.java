@@ -11,6 +11,7 @@ import dungeoncrawler.objects.PotionType;
 import dungeoncrawler.objects.Projectile;
 import dungeoncrawler.objects.RangedWeapon;
 import dungeoncrawler.objects.Weapon;
+import dungeoncrawler.objects.Key;
 
 /**
  * Class for storing and handling all session data.
@@ -37,6 +38,8 @@ public class DataManager {
         new Bomb("Bomb", "items/bomb.png", 3, 50, 100, 3000),
         new RangedWeapon("Rocket Launcher", "weapons/rocketlauncher.png", 4, false, 1, 1)
     };
+
+    public static final Key EXITKEY = new Key("Special Key", "items/key.png", true);
 
     public static final Projectile[] PROJECTILES = new Projectile[] {
         new Projectile("Rocket", new String[]{"weapons/rocket-left.png",

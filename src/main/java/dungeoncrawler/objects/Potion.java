@@ -48,6 +48,9 @@ public class Potion extends Item {
         Player player = gameScreen.getPlayer();
         Room room = gameScreen.getRoom();
 
+        //update items consumed stat of player
+        player.addItemConsumed();
+
         switch (this.type) {
         case ATTACK:
             // damage nearby monsters by potion modifier
