@@ -1,4 +1,5 @@
 package dungeoncrawler.handlers;
+import dungeoncrawler.objects.ChallengeRoom;
 import dungeoncrawler.objects.DroppedItem;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
@@ -8,6 +9,7 @@ import dungeoncrawler.objects.ShotProjectile;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -42,7 +44,11 @@ public class RoomRenderer {
         root.setMaxWidth(rootWidth);
         root.setPrefWidth(rootWidth);
         root.setMinWidth(rootWidth);
-
+        if (room instanceof ChallengeRoom) {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setContentText("Challenge room");
+            a.show();
+        }
         //holds the dungeon image
         double roomHeight = Math.round(getPx(room.getHeight()) * 1.36363636);
         double roomWidth = Math.round(getPx(room.getWidth()) * 1.11111111);

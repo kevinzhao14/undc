@@ -329,6 +329,9 @@ public class LayoutGenerator {
                 (int) (Math.random()
                         * (GameSettings.MAX_MONSTERS - GameSettings.MIN_MONSTERS + 1))
                         +  GameSettings.MIN_MONSTERS;
+        if (room instanceof ChallengeRoom) {
+            numMonsters = 5;
+        }
         Monster[] monsters = new Monster[numMonsters];
         for (int i = 0; i < monsters.length; i++) {
             int n = (int) (Math.random() * 3);
