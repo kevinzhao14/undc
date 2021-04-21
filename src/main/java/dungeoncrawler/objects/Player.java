@@ -35,6 +35,7 @@ public class Player extends Entity {
         ammo.setBackupRemaining(10);
         w.setAmmo(ammo);
         inventory.add(w);
+        inventory.add(DataManager.ITEMS[5], 10);
 
         selected = 0;
         direction = 0;

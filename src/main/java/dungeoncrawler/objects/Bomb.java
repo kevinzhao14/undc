@@ -42,11 +42,12 @@ public class Bomb extends Item {
                 player.getY() + player.getHeight() / 2 - height / 2, width, height,
                 ObstacleType.SOLID);
         o.setSprite(getSprite());
-        o.setItem(this);
+        Bomb timer = copy();
+        o.setItem(timer);
         room.getObstacles().add(o);
 
         //start fuse
-        livefuse = fuse;
+        timer.livefuse = fuse;
     }
     public double getDamage() {
         return this.damage;

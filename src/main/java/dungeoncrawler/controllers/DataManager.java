@@ -50,6 +50,9 @@ public class DataManager {
         new Monster(80, 10, 50.0 / GameSettings.FPS, 2, MonsterType.TANK, 21, 31)
     };
 
+    public static final String explosion = "weapons/explosion.gif";
+
+
     private String username;
     private Difficulty difficulty;
     private Weapon weapon;

@@ -17,6 +17,7 @@ import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Movable;
 import dungeoncrawler.objects.Obstacle;
+import dungeoncrawler.objects.ObstacleType;
 import dungeoncrawler.objects.Player;
 import dungeoncrawler.objects.Projectile;
 import dungeoncrawler.objects.RangedWeapon;
@@ -312,11 +313,9 @@ public class GameController {
             }
             //remove from inventory
             if (currentItem.getQuantity() > 1) {
-                System.out.println("Quantity " + currentItem.getQuantity());
                 currentItem.setQuantity(currentItem.getQuantity() - 1);
             } else {
                 if (!player.getInventory().remove(currentItem.getItem())) {
-                    System.out.println("Failed to drop item");
                     return;
                 }
             }
@@ -539,7 +538,6 @@ public class GameController {
                         //calculate distance
                         double d = Math.sqrt(Math.pow(p.getVelX(), 2) + Math.pow(p.getVelY(), 2));
                         p.setDistance(round(p.getDistance() + d));
-                        System.out.println("Distance " + p.getDistance());
                         if (p.getDistance() >= p.getProjectile().getRange()) {
                             p.hit(null);
                             i--;
@@ -645,8 +643,6 @@ public class GameController {
                 double velX = dir == 0 ? -speed : (dir == 2 ? speed : 0);
                 double velY = dir == 1 ? speed : (dir == 3 ? -speed : 0);
 
-                System.out.println("Player " + player.getX() + " " + player.getY());
-                System.out.println(x + " " + y + " " + velX + " " + velY);
                 //create projectile
                 ShotProjectile sp = new ShotProjectile(ammo.getProjectile(), x, y, velX, velY,
                         width, height);
@@ -690,7 +686,10 @@ public class GameController {
                         double distX = Math.pow(x - player.getX() + player.getWidth() / 2, 2);
                         double distY = Math.pow(y - player.getY() + player.getHeight() / 2, 2);
                         double dist = Math.sqrt(distX + distY);
-                        System.out.println("Player d" + dist);
+
+                        //draw explosion
+                        ShotProjectile.addExplosion(room, o, b.getRadius() * 2);
+
                         if (dist <= b.getRadius()) {
                             player.setHealth(Math.max(0, player.getHealth() - b.getDamage()));
                             Platform.runLater(() -> getScreen().updateHud());
