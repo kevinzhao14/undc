@@ -108,6 +108,17 @@ public class GameScreen extends GameState {
             Label winnerLabel = new Label("Congratulations! You have escaped from the dungeon!");
             winnerLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
 
+            //add stats
+            Label monstersKilled = new Label("Total monsters killed: "
+                    + getPlayer().getMonstersKilled());
+            monstersKilled.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+            Label totalDamageDealt = new Label("Total damage dealt: "
+                    + getPlayer().getTotalDamageDealt());
+            totalDamageDealt.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+            Label totalItemsConsumed = new Label("Total items consumed/used: "
+                    + getPlayer().getTotalItemsConsumed());
+            totalItemsConsumed.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+
             Button newGameButton = new Button("New Game");
             newGameButton.setMinWidth(600);
             newGameButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
@@ -125,7 +136,9 @@ public class GameScreen extends GameState {
             });
 
 
-            box.getChildren().addAll(winnerLabel, newGameButton, endButton);
+            //box.getChildren().addAll(winnerLabel, newGameButton, endButton);
+            box.getChildren().addAll(winnerLabel, monstersKilled, totalDamageDealt,
+                                    totalItemsConsumed, newGameButton, endButton);
             box.setAlignment(Pos.CENTER);
             root.getChildren().addAll(box);
             fadeIn(box);
@@ -311,6 +324,17 @@ public class GameScreen extends GameState {
         Label deathLabel = new Label("GAME OVER");
         deathLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
 
+        //add stats
+        Label monstersKilled = new Label("Total monsters killed: "
+                + getPlayer().getMonstersKilled());
+        monstersKilled.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+        Label totalDamageDealt = new Label("Total damage dealt: "
+                + getPlayer().getTotalDamageDealt());
+        totalDamageDealt.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+        Label totalItemsConsumed = new Label("Total items consumed/used: "
+                + getPlayer().getTotalItemsConsumed());
+        totalItemsConsumed.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+
         Button restartButton = new Button("Restart");
         Button endButton = new Button("Exit Game");
 
@@ -327,7 +351,9 @@ public class GameScreen extends GameState {
             Platform.exit();
         });
 
-        box.getChildren().addAll(deathLabel, restartButton, endButton);
+        //box.getChildren().addAll(deathLabel, restartButton, endButton);
+        box.getChildren().addAll(deathLabel, monstersKilled, totalDamageDealt,
+                totalItemsConsumed, restartButton, endButton);
         box.setAlignment(Pos.CENTER);
         root.getChildren().addAll(backdrop, box);
         hud.getChildren().add(root);
@@ -399,6 +425,9 @@ public class GameScreen extends GameState {
         }
         //set player health to original amt
         player.setHealth(player.getMaxHealth());
+
+        //clear player stats
+        player.clearGameStats();
 
         //set player gold value to original amt - MAKE SURE TO UNCOMMENT LINES BELOW
         switch (Controller.getDataManager().getDifficulty()) {
