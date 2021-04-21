@@ -40,6 +40,7 @@ public class GameScreen extends GameState {
     private Canvas canvas;
     private StackPane inventory;
     private StackPane pause;
+    private StackPane challenge;
     private boolean inventoryVisible;
     private boolean paused;
 
@@ -96,6 +97,7 @@ public class GameScreen extends GameState {
         createHud();
         updateInventory();
         createPauseMenu();
+        onChallengeEnter();
 
         //if won, set scene as win screen
         if (room.equals(dungeonLayout.getExitRoom())) {
@@ -106,15 +108,24 @@ public class GameScreen extends GameState {
             Label winnerLabel = new Label("Congratulations! You have escaped from the dungeon!");
             winnerLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
 
-            Button endButton = new Button("Exit Game");
+            Button newGameButton = new Button("New Game");
+            newGameButton.setMinWidth(600);
+            newGameButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+
+            Button endButton = new Button("Exit");
             endButton.setMinWidth(600);
             endButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+
+            newGameButton.setOnAction((e) -> {
+                Controller.setState(new InitPlayerConfigScreen(1280, 720));
+            });
 
             endButton.setOnAction((e) -> {
                 Platform.exit();
             });
 
-            box.getChildren().addAll(winnerLabel, endButton);
+
+            box.getChildren().addAll(winnerLabel, newGameButton, endButton);
             box.setAlignment(Pos.CENTER);
             root.getChildren().addAll(box);
             fadeIn(box);
@@ -126,6 +137,13 @@ public class GameScreen extends GameState {
             } else {
                 game.updateRoom();
             }
+
+            /*
+            if (room.getType().equals(RoomType.CHALLENGEROOM)) {
+
+
+            }
+             */
         }
         root.setStyle("-fx-background-color: #34311b");
         scene.setRoot(root);
@@ -154,7 +172,7 @@ public class GameScreen extends GameState {
         lowerHUD.setAlignment(Pos.CENTER);
         lowerHUD.setPadding(new Insets(0, 150, 15, 10));
 
-        // upper hud, includes attack boost indicator
+        // upper hud, includes effect indicator
         HBox upperHUD = new HBox(100);
         upperHUD.setPadding(new Insets(15, 15, 15, 15));
         display.setTop(upperHUD);
@@ -496,6 +514,44 @@ public class GameScreen extends GameState {
             inventory.setVisible(inventoryVisible);
         }
     }
+
+    public void onChallengeEnter() {
+        challenge = new StackPane();
+        VBox box = new VBox(40);
+
+        Rectangle backdrop = new Rectangle(scene.getWidth(), scene.getHeight());
+        backdrop.setFill(Color.BLACK);
+
+        Label pauseLabel = new Label("You have entered a Challenge Room. Would you like to partake in the trial?");
+        pauseLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:40");
+
+        Button yesButton = new Button("Proceed");
+        Button noButton = new Button("Leave");
+
+        yesButton.setMinWidth(600);
+        noButton.setMinWidth(600);
+
+        yesButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+        noButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+
+        yesButton.setOnAction((e) -> {
+
+        });
+        noButton.setOnAction((e) -> {
+
+        });
+
+        box.getChildren().addAll(pauseLabel, yesButton, noButton);
+        box.setAlignment(Pos.CENTER);
+        challenge.getChildren().addAll(backdrop, box);
+        hud.getChildren().add(challenge);
+        partialFadeIn(backdrop);
+        challenge.setVisible(false);
+    }
+
+
+
+
 
     public void refresh() {
         RoomRenderer.drawFrame(canvas, room, player);
