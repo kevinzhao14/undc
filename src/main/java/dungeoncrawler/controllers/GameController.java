@@ -606,6 +606,9 @@ public class GameController {
                     weapon.reload();
                 }
 
+                //update ammo on HUD
+                Platform.runLater(() -> getScreen().updateHud());
+
                 //create projectile
                 int dir = player.getDirection() % 4;
                 double x = player.getX() + player.getWidth() / 2;
