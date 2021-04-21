@@ -226,9 +226,6 @@ public class GameScreen extends GameState {
         healthBox.setSpacing(5);
         healthBox.setAlignment(Pos.CENTER);
 
-        boolean hasRangedWeapon = false;
-        int[] rangedAmmo = new int[2];
-
         // hotbar
         HBox hotbar = new HBox(10);
         for (int i = 0; i < player.getInventory().getItems()[0].length; i++) {
@@ -248,12 +245,6 @@ public class GameScreen extends GameState {
                 itemImg.setFitHeight(i == player.getSelected() ? 40 : 30);
                 itemImg.setFitWidth(i == player.getSelected() ? 40 : 30);
 
-                if (item.getItem() instanceof RangedWeapon) {
-                    hasRangedWeapon = true;
-                    rangedAmmo[0] = ((RangedWeapon) item.getItem()).getAmmo().getRemaining();
-                    rangedAmmo[1] = ((RangedWeapon) item.getItem()).getAmmo().getBackupRemaining();
-                }
-
 
                 // show item quantity if > 1
                 if (item.getQuantity() > 1) {
@@ -272,14 +263,17 @@ public class GameScreen extends GameState {
             }
         }
 
+        InventoryItem selected = player.getInventory().getItems()[0][player.getSelected()];
+
         // ammo label
-        if (hasRangedWeapon) {
-            Label ammoLabel = new Label("Ammo: " + rangedAmmo[0] + " / " + rangedAmmo[1]);
+        if (selected != null && selected.getItem() instanceof RangedWeapon) {
+            RangedWeapon selected2 = (RangedWeapon) player.getInventory().getItems()[0][player.getSelected()].getItem();
+            Label ammoLabel = new Label("Ammo: " + selected2.getAmmo().getBackupRemaining() + " / " + selected2.getAmmo().getBackupRemaining());
             ammoLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
             lowerHUD.getChildren().addAll(healthBox, hotbar, goldLabel, ammoLabel);
 
             ammoLabel.setTranslateX(-50);
-            lowerHUD.setTranslateX(117);
+            lowerHUD.setTranslateX(112);
         } else {
             lowerHUD.getChildren().addAll(healthBox, hotbar, goldLabel);
         }
