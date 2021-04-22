@@ -1,11 +1,14 @@
 package dungeoncrawler.handlers;
 
 import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.controllers.DataManager;
 import dungeoncrawler.objects.ChallengeRoom;
 import dungeoncrawler.objects.Door;
 import dungeoncrawler.objects.DoorOrientation;
 import dungeoncrawler.objects.DroppedItem;
 import dungeoncrawler.objects.DungeonLayout;
+import dungeoncrawler.objects.Inventory;
+import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
 import dungeoncrawler.objects.Potion;
@@ -13,6 +16,9 @@ import dungeoncrawler.objects.PotionType;
 import dungeoncrawler.objects.RangedWeapon;
 import dungeoncrawler.objects.Room;
 import dungeoncrawler.objects.RoomType;
+
+import java.util.Random;
+
 /**
  * Class that generates Layout of the Rooms
  * @author Ishaan Guha, Trenton Wong
@@ -47,175 +53,85 @@ public class LayoutGenerator {
     private static final int PATH_MIN = 6;
     private static final int PATH_MAX = 10;
 
-    public LayoutGenerator() {
+    private static final double CHALLENGE_ODDS = 0.25;
 
+    private Room startRoom;
+    private Room exitRoom;
+
+    private Inventory cr1Rewards;
+    private Inventory cr2Rewards;
+    private ChallengeRoom cr1;
+    private ChallengeRoom cr2;
+
+    private int challengeCount;
+    private boolean exitPlaced;
+    private int[] exitCoords;
+    private Room[][] roomGrid;
+
+    public LayoutGenerator() {
+        //set challenge rooms
+        Item[] items = DataManager.ITEMS;
+        cr1Rewards = new Inventory(2, 5);
+        cr1Rewards.add(items[2], 1);
+        cr1Rewards.add(items[3], 1);
+        cr1Rewards.add(items[5], 2);
+        cr1Rewards.add(items[6], 1);
+
+        cr2Rewards = new Inventory(2, 5);
+        cr2Rewards.add(items[0], 3);
+        cr2Rewards.add(items[1], 2);
+        cr2Rewards.add(items[2], 1);
+        cr2Rewards.add(items[3], 2);
+        cr2Rewards.add(items[4], 1);
+        cr2Rewards.add(items[5], 3);
+    }
+
+    private void reset() {
+        startRoom = new Room(ROOM_HEIGHT, ROOM_WIDTH, (int) ((ROOM_WIDTH
+                - GameSettings.PLAYER_WIDTH) / 2.0), (int) (ROOM_HEIGHT / 2.0
+                - GameSettings.PLAYER_HEIGHT), new Obstacle[0], RoomType.STARTROOM);
+        startRoom.setMonsters(new Monster[0]);
+
+        exitRoom = new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
+                new Obstacle[0], RoomType.EXITROOM);
+        setMonsters(exitRoom);
+
+        cr1 = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[0], cr1Rewards);
+        cr2 = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[0], cr2Rewards);
+
+        setMonsters(cr1);
+        setMonsters(cr2);
+
+        challengeCount = 0;
+        exitPlaced = false;
+        exitCoords = new int[2];
+        roomGrid = new Room[GRID_WIDTH][GRID_HEIGHT];
     }
 
     /**
      * generate the layout of the rooms
      * @return the layout
      */
-    public static DungeonLayout generateLayout() {
-        Room[][] roomGrid = new Room[GRID_WIDTH][GRID_HEIGHT];
-        boolean exitPlaced = false;
-        Room exitRoom = new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
-                new Obstacle[0], RoomType.EXITROOM);
-        setMonsters(exitRoom);
-        int[] exitCoords = new int[]{GRID_WIDTH / 2, GRID_HEIGHT / 2};
+    public DungeonLayout generateLayout() {
+        reset();
+
         //starting room
-        Room startRoom = new Room(ROOM_HEIGHT, ROOM_WIDTH, (int) ((ROOM_WIDTH
-                - GameSettings.PLAYER_WIDTH) / 2.0), (int) (ROOM_HEIGHT / 2.0
-                - GameSettings.PLAYER_HEIGHT), new Obstacle[0], RoomType.STARTROOM);
-        startRoom.setMonsters(new Monster[0]);
         roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2] = startRoom;
-        int[] coords;
-        // up path
+
+        //challenge rooms
         int challengeCount = 0;
-        DroppedItem[] firstRoomRewards = {new DroppedItem(new RangedWeapon("Rocket Launcher", "weapons/rocketlauncher.png", 4, false, 1, 1), ROOM_HEIGHT / 2, ROOM_WIDTH / 2, 20, 20)};
-        DroppedItem[] secondRoomRewards = {new DroppedItem(new Potion("Large Health Potion", "items/health-potion-large.png", 3, true,
-                PotionType.HEALTH, 100), ROOM_HEIGHT / 2, ROOM_WIDTH / 2, 20, 20)};
-        roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2 + 1] =
-                new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
-                        new Obstacle[5], RoomType.EMPTYROOM);
-        setMonsters(roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2 + 1]);
-        coords = generateRoom(roomGrid, GRID_WIDTH / 2, GRID_HEIGHT / 2 + 1, 0);
-        int upPath = (int) (Math.random() * 7) + 4;
-        for (int i = 0; i < upPath - 1; i++) {
-            if (coords == null) {
-                break;
-            }
-            if (challengeCount < 2) {
-                if (Math.random() < 0.5) {
-                    if (challengeCount == 0) {
-                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, firstRoomRewards);
-                    } else {
-                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, secondRoomRewards);
-                    }
-                    challengeCount++;
-                }
-            }
-            coords = generateRoom(roomGrid, coords[0], coords[1], 0);
+
+        //left path
+        for (int i = 0; i < 4; i++) {
+            generatePath(i);
         }
-        if (upPath >= 6 && !exitPlaced && coords != null) {
-            exitPlaced = true;
-            roomGrid[coords[0]][coords[1]] = exitRoom;
-            exitCoords = coords;
-        }
-
-        // right path
-
-        roomGrid[GRID_WIDTH / 2 + 1][GRID_HEIGHT / 2] =
-                new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
-                        new Obstacle[5], RoomType.EMPTYROOM);
-        setMonsters(roomGrid[GRID_WIDTH / 2 + 1][GRID_HEIGHT / 2]);
-        coords = generateRoom(roomGrid, GRID_WIDTH / 2 + 1, GRID_HEIGHT / 2, 1);
-        int rightPath = (int) (Math.random() * 7) + 4;
-        for (int i = 0; i < rightPath - 1; i++) {
-            if (coords == null) {
-                break;
-            }
-            if (challengeCount < 2) {
-                if (Math.random() < 0.5) {
-                    if (challengeCount == 0) {
-                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, firstRoomRewards);
-                    } else {
-                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, secondRoomRewards);
-                    }
-                    challengeCount++;
-                }
-            }
-            coords = generateRoom(roomGrid, coords[0], coords[1], 1);
-        }
-        if (rightPath >= 6 && !exitPlaced && coords != null) {
-            exitPlaced = true;
-            roomGrid[coords[0]][coords[1]] = exitRoom;
-            exitCoords = coords;
-
-        }
-
-        // down path
-
-        roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2 - 1] =
-                new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
-                        new Obstacle[5], RoomType.EMPTYROOM);
-        setMonsters(roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2 - 1]);
-        coords = generateRoom(roomGrid, GRID_WIDTH / 2, GRID_HEIGHT / 2 - 1, 2);
-        int downPath = (int) (Math.random() * 7) + 4;
-
-        for (int i = 0; i < downPath - 1; i++) {
-            if (coords == null) {
-                break;
-            }
-            if (challengeCount < 2) {
-                if (Math.random() < 0.5) {
-                    if (challengeCount == 0) {
-                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, firstRoomRewards);
-                    } else {
-                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, secondRoomRewards);
-                    }
-                    challengeCount++;
-                }
-            }
-            coords = generateRoom(roomGrid, coords[0], coords[1], 2);
-        }
-        if (downPath >= 6 && !exitPlaced && coords != null) {
-            exitPlaced = true;
-            roomGrid[coords[0]][coords[1]] = exitRoom;
-            exitCoords = coords;
-        }
-
-        // left path
-
-        roomGrid[GRID_WIDTH / 2 - 1][GRID_HEIGHT / 2] =
-                new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
-                        new Obstacle[5], RoomType.EMPTYROOM);
-        setMonsters(roomGrid[GRID_WIDTH / 2 - 1][GRID_HEIGHT / 2]);
-        coords = generateRoom(roomGrid, GRID_WIDTH / 2 - 1, GRID_HEIGHT / 2, 3);
-
-        int leftPath;
-        if (upPath < 6 && rightPath < 6 && downPath < 6) {
-            leftPath = 7;
-        } else {
-            leftPath = (int) (Math.random() * 7) + 4;
-        }
-        for (int i = 0; i < leftPath - 1; i++) {
-            if (coords == null) {
-                break;
-            }
-            if (challengeCount < 2) {
-                    if (challengeCount == 0) {
-                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, firstRoomRewards);
-                    } else {
-                        roomGrid[coords[0]][coords[1]] = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[5], RoomType.EMPTYROOM, secondRoomRewards);
-                    }
-                    challengeCount++;
-            }
-            coords = generateRoom(roomGrid, coords[0], coords[1], 3);
-        }
-        if (leftPath >= 6 && !exitPlaced && coords != null) {
-            exitPlaced = true;
-            roomGrid[coords[0]][coords[1]] = exitRoom;
-            exitCoords = coords;
-        }
-
-
 
         //check exit distance
         if (!exitPlaced || (Math.abs(exitCoords[0] - GRID_WIDTH / 2) + Math.abs(exitCoords[1]
                 - GRID_HEIGHT / 2)) < 6) {
             return generateLayout();
         }
-        //create challenge rooms
-        int randX = (int) (Math.random() * GRID_WIDTH);
-        int randY = (int) (Math.random() * GRID_HEIGHT);
-
         printGrid(roomGrid);
-
-
-        /*
-        int x, int y, int w, int h, Room r, DoorOrientation d
-         */
-
 
         // create doors
         for (int i = 1; i < GRID_WIDTH - 1; i++) {
@@ -253,6 +169,49 @@ public class LayoutGenerator {
         return new DungeonLayout(roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2], exitRoom, roomGrid);
     }
 
+    private void generatePath(int dir) {
+        int x = GRID_WIDTH / 2;
+        if (dir == 0) {
+            x--;
+        } else if (dir == 2) {
+            x++;
+        }
+        int y = GRID_HEIGHT / 2;
+        if (dir == 1) {
+            y++;
+        } else if (dir == 3) {
+            y--;
+        }
+        //create origin room
+        roomGrid[x][y] = new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[0], RoomType.EMPTYROOM);
+        setMonsters(roomGrid[x][y]);
+
+        int[] coords = generateRoom(roomGrid, x, y, 0);
+        Random rand = new Random();
+        int pathLength = rand.nextInt(PATH_MAX - PATH_MIN + 1) + PATH_MIN;
+        for (int i = 0; i < pathLength; i++) {
+            if (coords == null) {
+                break;
+            }
+            if (challengeCount < 2) {
+                if (Math.random() < CHALLENGE_ODDS) {
+                    if (challengeCount == 0) {
+                        roomGrid[coords[0]][coords[1]] = cr1;
+                    } else {
+                        roomGrid[coords[0]][coords[1]] = cr2;
+                    }
+                    challengeCount++;
+                }
+            }
+            coords = generateRoom(roomGrid, coords[0], coords[1], 0);
+        }
+        if (!exitPlaced && coords != null) {
+            exitPlaced = true;
+            roomGrid[coords[0]][coords[1]] = exitRoom;
+            exitCoords = coords;
+        }
+    }
+
 
     /**
      * Populate room grid with the room and adjacent rooms at the coordinate
@@ -262,58 +221,58 @@ public class LayoutGenerator {
      * @param direction the direction of the path being generated
      * @return the next coordinate
      */
-    private static int[] generateRoom(Room[][] grid, int x, int y, int direction) {
+    private int[] generateRoom(Room[][] grid, int x, int y, int direction) {
         boolean[] blockedDirections = new boolean[]{false, false, false, false};
 
-        if ((direction == 2 && y >= GRID_HEIGHT / 2 - 1) || y == 0 || grid[x][y - 1] != null) {
-            blockedDirections[0] = true;
-        }
-        if ((direction == 3 && x >= GRID_WIDTH / 2 - 1) || x == GRID_WIDTH - 1
-                || grid[x + 1][y] != null) {
+        if ((direction == 3 && y >= GRID_HEIGHT / 2 - 1) || y == 0 || grid[x][y - 1] != null) {
             blockedDirections[1] = true;
         }
-        if ((direction == 0 && y <= GRID_HEIGHT / 2 + 1) || y == GRID_HEIGHT - 1
-                || grid[x][y + 1] != null) {
+        if ((direction == 0 && x >= GRID_WIDTH / 2 - 1) || x == GRID_WIDTH - 1
+                || grid[x + 1][y] != null) {
             blockedDirections[2] = true;
         }
-        if ((direction == 1 && x <= GRID_WIDTH / 2 + 1) || x == 0 || grid[x - 1][y] != null) {
+        if ((direction == 1 && y <= GRID_HEIGHT / 2 + 1) || y == GRID_HEIGHT - 1
+                || grid[x][y + 1] != null) {
             blockedDirections[3] = true;
         }
+        if ((direction == 2 && x <= GRID_WIDTH / 2 + 1) || x == 0 || grid[x - 1][y] != null) {
+            blockedDirections[0] = true;
+        }
 
-        int newDirection;
-        if (!(blockedDirections[0] && blockedDirections[1]
-                && blockedDirections[2]
-                && blockedDirections[3])) {
+        if (!(blockedDirections[0] && blockedDirections[1] && blockedDirections[2] && blockedDirections[3])) {
+            int newDirection;
             do {
                 newDirection = (int) (Math.random() * 4);
             } while (blockedDirections[newDirection]);
 
-            /* 0 - up
-             * 1 - right
-             * 2 - down
-             * 3 - left
+            /* 0 - left
+             * 1 - up
+             * 2 - right
+             * 3 - down
              */
             switch (newDirection) {
             case 0:
+                grid[x - 1][y] = new Room(ROOM_HEIGHT, ROOM_WIDTH,
+                        100, 100, new Obstacle[5], RoomType.EMPTYROOM);
+                setMonsters(grid[x - 1][y]);
+                return new int[]{x - 1, y};
+            case 1:
                 grid[x][y - 1] = new Room(ROOM_HEIGHT, ROOM_WIDTH,
                         100, 100, new Obstacle[5], RoomType.EMPTYROOM);
                 setMonsters(grid[x][y - 1]);
                 return new int[]{x, y - 1};
-            case 1:
+            case 2:
                 grid[x + 1][y] = new Room(ROOM_HEIGHT, ROOM_WIDTH,
                         100, 100, new Obstacle[5], RoomType.EMPTYROOM);
                 setMonsters(grid[x + 1][y]);
                 return new int[]{x + 1, y};
-            case 2:
+            case 3:
                 grid[x][y + 1] = new Room(ROOM_HEIGHT, ROOM_WIDTH,
                         100, 100, new Obstacle[5], RoomType.EMPTYROOM);
                 setMonsters(grid[x][y + 1]);
                 return new int[]{x, y + 1};
             default:
-                grid[x - 1][y] = new Room(ROOM_HEIGHT, ROOM_WIDTH,
-                        100, 100, new Obstacle[5], RoomType.EMPTYROOM);
-                setMonsters(grid[x - 1][y]);
-                return new int[]{x - 1, y};
+                return null;
             }
         } else {
             return null;
@@ -324,7 +283,7 @@ public class LayoutGenerator {
      * Adds monsters to a room
      * @param room the room to add the monsters to
      */
-    public static void setMonsters(Room room) {
+    private void setMonsters(Room room) {
         int numMonsters =
                 (int) (Math.random()
                         * (GameSettings.MAX_MONSTERS - GameSettings.MIN_MONSTERS + 1))
@@ -356,7 +315,7 @@ public class LayoutGenerator {
      * Prints out a representation of the Layout
      * @param grid the grid to print out.
      */
-    private static void printGrid(Room[][] grid) {
+    private void printGrid(Room[][] grid) {
         for (int i = 0; i < GRID_WIDTH; i++) {
             String col = "";
             for (int j = 0; j < GRID_HEIGHT; j++) {
@@ -365,6 +324,8 @@ public class LayoutGenerator {
                 } else if (grid[j][i] != null) {
                     if (grid[j][i].getType().equals(RoomType.EXITROOM)) {
                         col += "e ";
+                    } else if (grid[j][i].getType().equals(RoomType.CHALLENGEROOM)) {
+                        col += "c ";
                     } else {
                         col += "* ";
                     }

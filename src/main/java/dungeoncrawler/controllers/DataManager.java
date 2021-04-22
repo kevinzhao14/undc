@@ -27,16 +27,16 @@ public class DataManager {
     };
 
     public static final Item[] ITEMS = new Item[]{
-        new Potion("Small Health Potion", "items/health-potion-small.png", 3, true,
+        new Potion("Small Health Potion", "items/health-potion-small.png", 10, true,
                 PotionType.HEALTH, 25),
-        new Potion("Medium Health Potion", "items/health-potion-med.png", 3, true,
+        new Potion("Medium Health Potion", "items/health-potion-med.png", 10, true,
                 PotionType.HEALTH, 50),
-        new Potion("Large Health Potion", "items/health-potion-large.png", 3, true,
+        new Potion("Large Health Potion", "items/health-potion-large.png", 10, true,
                 PotionType.HEALTH, 100),
-        new Potion("Attack Potion", "items/attack-potion.png", 3, true, PotionType.ATTACK, 30),
+        new Potion("Attack Potion", "items/attack-potion.png", 10, true, PotionType.ATTACK, 30),
         new Weapon("Dagger", "weapons/dagger.png", 5, 0.25, true),
-        new Bomb("Bomb", "items/bomb.png", 3, 50, 100, 3000),
-        new RangedWeapon("Rocket Launcher", "weapons/rocketlauncher.png", 4, false, 1, 1)
+        new Bomb("Bomb", "items/bomb.png", 10, 50, 100, 3000),
+        new RangedWeapon("Rocket Launcher", "weapons/rocketlauncher.png", 4, false, 1, 1),
     };
 
     public static final Key EXITKEY = new Key("Special Key", "items/key.png", true);

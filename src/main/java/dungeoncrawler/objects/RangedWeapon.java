@@ -1,5 +1,8 @@
 package dungeoncrawler.objects;
 
+import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.gamestates.GameScreen;
+import javafx.application.Platform;
 import org.w3c.dom.ranges.Range;
 
 public class RangedWeapon extends Weapon{
@@ -38,8 +41,20 @@ public class RangedWeapon extends Weapon{
     }
 
     public void reload() {
+        if (ammo.getRemaining() >= ammo.getSize()) {
+            return;
+        }
         isReloading = true;
         delay = reloadTime * 1000;
+        Platform.runLater(() -> ((GameScreen) Controller.getState()).updateHud());
+    }
+
+    public void finishReloading() {
+        int change = ammo.getSize() - ammo.getRemaining();
+        ammo.setRemaining(ammo.getSize());
+        ammo.setBackupRemaining(ammo.getBackupRemaining() - change);
+        isReloading = false;
+        Platform.runLater(() -> ((GameScreen) Controller.getState()).updateHud());
     }
 
     public Ammo getAmmo() {

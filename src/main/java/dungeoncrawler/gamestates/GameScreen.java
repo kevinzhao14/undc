@@ -31,7 +31,6 @@ import java.util.ArrayList;
 
 
 public class GameScreen extends GameState {
-
     private GameController game;
     private Player player;
     private DungeonLayout dungeonLayout;
@@ -45,7 +44,7 @@ public class GameScreen extends GameState {
     private boolean paused;
 
     public GameScreen(int width, int height) {
-        dungeonLayout = LayoutGenerator.generateLayout();
+        dungeonLayout = new LayoutGenerator().generateLayout();
         scene = new Scene(new Pane(), width, height);
         canvas = new Canvas();
         inventoryVisible = false;
@@ -56,15 +55,15 @@ public class GameScreen extends GameState {
         game = new GameController();
         createPlayer();
         switch (Controller.getDataManager().getDifficulty()) {
-        case EASY:
-            player.setGold(300);
-            break;
-        case MEDIUM:
-            player.setGold(200);
-            break;
-        default:
-            player.setGold(100);
-            break;
+            case EASY:
+                player.setGold(300);
+                break;
+            case MEDIUM:
+                player.setGold(200);
+                break;
+            default:
+                player.setGold(100);
+                break;
         }
         game.start(dungeonLayout.getStartingRoom());
         scene.getStylesheets().add("http://fonts.googleapis.com/css?family=VT323");
@@ -138,7 +137,7 @@ public class GameScreen extends GameState {
 
             //box.getChildren().addAll(winnerLabel, newGameButton, endButton);
             box.getChildren().addAll(winnerLabel, monstersKilled, totalDamageDealt,
-                                    totalItemsConsumed, newGameButton, endButton);
+                    totalItemsConsumed, newGameButton, endButton);
             box.setAlignment(Pos.CENTER);
             root.getChildren().addAll(box);
             fadeIn(box);
@@ -203,8 +202,6 @@ public class GameScreen extends GameState {
             }
         }
 
-
-
         // lower hud labels (gold, health)
         Label goldLabel = new Label("Gold: " + player.getGold());
         Label healthLabel = new Label("Health: ");
@@ -226,6 +223,8 @@ public class GameScreen extends GameState {
         healthBox.setSpacing(5);
         healthBox.setAlignment(Pos.CENTER);
 
+        boolean hasRangedWeapon = false;
+
         // hotbar
         HBox hotbar = new HBox(10);
         for (int i = 0; i < player.getInventory().getItems()[0].length; i++) {
@@ -245,7 +244,6 @@ public class GameScreen extends GameState {
                 itemImg.setFitHeight(i == player.getSelected() ? 40 : 30);
                 itemImg.setFitWidth(i == player.getSelected() ? 40 : 30);
 
-
                 // show item quantity if > 1
                 if (item.getQuantity() > 1) {
                     Label quantity = new Label("" + item.getQuantity());
@@ -263,17 +261,22 @@ public class GameScreen extends GameState {
             }
         }
 
-        InventoryItem selected = player.getInventory().getItems()[0][player.getSelected()];
-
         // ammo label
-        if (selected != null && selected.getItem() instanceof RangedWeapon) {
-            RangedWeapon selected2 = (RangedWeapon) player.getInventory().getItems()[0][player.getSelected()].getItem();
-            Label ammoLabel = new Label("Ammo: " + selected2.getAmmo().getBackupRemaining() + " / " + selected2.getAmmo().getBackupRemaining());
+        Item item = player.getItemSelected() != null
+                ? player.getItemSelected().getItem() : null;
+        if (item instanceof RangedWeapon) {
+            RangedWeapon w = (RangedWeapon) item;
+            String text = "Ammo: " + w.getAmmo().getRemaining() + " / " + w.getAmmo().getBackupRemaining();
+            if (w.isReloading()) {
+                text = "Ammo: Reloading";
+            }
+            Label ammoLabel = new Label(text);
+            ammoLabel.setMinWidth(200);
             ammoLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
             lowerHUD.getChildren().addAll(healthBox, hotbar, goldLabel, ammoLabel);
 
             ammoLabel.setTranslateX(-50);
-            lowerHUD.setTranslateX(112);
+            lowerHUD.setTranslateX(117);
         } else {
             lowerHUD.getChildren().addAll(healthBox, hotbar, goldLabel);
         }
@@ -419,7 +422,7 @@ public class GameScreen extends GameState {
      * and enters first room. The DungeonLayout remains the same, all visited rooms
      * become unvisited, monsters are restored to original health, and
      * player has original gold amt.
-      */
+     */
     public void restartGame() {
         //set all visited values to false in Room[][] grid
         //set all monsters in visited rooms to max health
@@ -445,15 +448,15 @@ public class GameScreen extends GameState {
 
         //set player gold value to original amt - MAKE SURE TO UNCOMMENT LINES BELOW
         switch (Controller.getDataManager().getDifficulty()) {
-        case EASY:
-            player.setGold(300);
-            break;
-        case MEDIUM:
-            player.setGold(200);
-            break;
-        default:
-            player.setGold(100);
-            break;
+            case EASY:
+                player.setGold(300);
+                break;
+            case MEDIUM:
+                player.setGold(200);
+                break;
+            default:
+                player.setGold(100);
+                break;
         }
 
         //empty player inventory
@@ -591,10 +594,6 @@ public class GameScreen extends GameState {
         partialFadeIn(backdrop);
         challenge.setVisible(false);
     }
-
-
-
-
 
     public void refresh() {
         RoomRenderer.drawFrame(canvas, room, player);
