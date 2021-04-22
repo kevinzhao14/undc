@@ -34,6 +34,7 @@ public class GameScreen extends GameState {
     private GameController game;
     private Player player;
     private DungeonLayout dungeonLayout;
+    private Room previous;
     private Room room;
     private StackPane hud;
     private Canvas canvas;
@@ -70,6 +71,9 @@ public class GameScreen extends GameState {
     }
 
     public boolean setRoom(Room newRoom) {
+        //store old room
+        previous = getRoom();
+
         //set new room
         room = newRoom;
 
@@ -96,7 +100,7 @@ public class GameScreen extends GameState {
         createHud();
         updateInventory();
         createPauseMenu();
-        onChallengeEnter();
+        createChallengeOverlay();
 
         //if won, set scene as win screen
         if (room.equals(dungeonLayout.getExitRoom())) {
@@ -150,12 +154,11 @@ public class GameScreen extends GameState {
                 game.updateRoom();
             }
 
-            /*
             if (room.getType().equals(RoomType.CHALLENGEROOM)) {
-
-
+                onChallengeEnter();
+                game.pause();
             }
-             */
+
         }
         root.setStyle("-fx-background-color: #34311b");
         scene.setRoot(root);
@@ -276,7 +279,7 @@ public class GameScreen extends GameState {
             lowerHUD.getChildren().addAll(healthBox, hotbar, goldLabel, ammoLabel);
 
             ammoLabel.setTranslateX(-50);
-            lowerHUD.setTranslateX(117);
+            lowerHUD.setTranslateX(150);
         } else {
             lowerHUD.getChildren().addAll(healthBox, hotbar, goldLabel);
         }
@@ -561,7 +564,7 @@ public class GameScreen extends GameState {
         }
     }
 
-    public void onChallengeEnter() {
+    public void createChallengeOverlay() {
         challenge = new StackPane();
         VBox box = new VBox(40);
 
@@ -581,10 +584,13 @@ public class GameScreen extends GameState {
         noButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
 
         yesButton.setOnAction((e) -> {
-
+            challenge.setVisible(false);
+            game.pause();
         });
-        noButton.setOnAction((e) -> {
 
+        noButton.setOnAction((e) -> {
+            game.setRoom(previous);
+            challenge.setVisible(false);
         });
 
         box.getChildren().addAll(pauseLabel, yesButton, noButton);
@@ -593,6 +599,10 @@ public class GameScreen extends GameState {
         hud.getChildren().add(challenge);
         partialFadeIn(backdrop);
         challenge.setVisible(false);
+    }
+
+    public void onChallengeEnter() {
+        challenge.setVisible(!challenge.isVisible());
     }
 
     public void refresh() {

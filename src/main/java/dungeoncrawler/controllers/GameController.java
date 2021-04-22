@@ -142,7 +142,7 @@ public class GameController {
      * Changes the room.
      * @param newRoom Room to change to
      */
-    private void setRoom(Room newRoom) {
+    public void setRoom(Room newRoom) {
         if (isRunning) {
             stop();
         }
