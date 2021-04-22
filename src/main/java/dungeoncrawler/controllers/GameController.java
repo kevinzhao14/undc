@@ -743,10 +743,10 @@ public class GameController {
                         ShotProjectile.addExplosion(room, o, b.getRadius() * 2);
 
                         if (dist <= b.getRadius()) {
-                            player.setHealth(Math.max(0, player.getHealth() - b.getDamage()));
+                            player.setHealth(Math.max(0, player.getHealth() - b.getDamage() * GameSettings.PLAYER_ATTACK_SELF_MODIFIER));
                             Platform.runLater(() -> getScreen().updateHud());
                             if (player.getHealth() == 0) {
-                                gameOver(getScreen());
+                                gameOver();
                                 return true;
                             }
                         }
@@ -1148,7 +1148,7 @@ public class GameController {
                     if (player.getHealth() == 0.0) {
                         //use run later to prevent any thread issues
                         refresh();
-                        gameOver(screen);
+                        gameOver();
                         return true;
                     }
                 }
@@ -1156,9 +1156,9 @@ public class GameController {
             return false;
         }
 
-        private void gameOver(GameScreen screen) {
+        private void gameOver() {
             System.out.println("Game Over");
-            stop();
+            GameScreen screen = getScreen();
             Platform.runLater(() -> {
                 room = screen.getLayout().getStartingRoom();
                 screen.gameOver();
