@@ -6,6 +6,7 @@ import dungeoncrawler.handlers.GameSettings;
 import javafx.application.Platform;
 
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -87,15 +88,71 @@ public class Monster extends Entity {
                 screen.getPlayer().addMonsterKilled();
             }
 
-            //generate drop items and add to Room ArrayList
-            DroppedItem[] itemDrops = dropItems();
-
+            //make monster disappear
             this.setOpacity(1 - (1000.0 / (GameSettings.MONSTER_FADE_TIME
                     * GameSettings.FPS)));
-            //Add dropped items to Room ArrayList
-            for (DroppedItem item : itemDrops) {
-                screen.getRoom().getDroppedItems().add(item);
+
+            //only drop items if it's not a challenge room
+            if (!(screen.getRoom() instanceof ChallengeRoom)) {
+                //generate drop items and add to Room ArrayList
+                DroppedItem[] itemDrops = dropItems();
+
+                //Add dropped items to Room ArrayList
+                for (DroppedItem item : itemDrops) {
+                    screen.getRoom().getDroppedItems().add(item);
+                }
+            } else {    //drop the rewards if challenge room is complete
+                boolean allDead = true;
+                for (Monster m : screen.getRoom().getMonsters()) {
+                    if (m != null && m.getHealth() > 0) {
+                        allDead = false;
+                        break;
+                    }
+                }
+                if (allDead) {
+                    for (InventoryItem[] itemRow : ((ChallengeRoom) screen.getRoom()).getRewards().getItems()) {
+                        if (itemRow != null) {
+                            for (InventoryItem item : itemRow) {
+                                if (item != null) {
+                                    for (int i = 0; i < item.getQuantity(); i++) {
+                                        DroppedItem newItem = new DroppedItem(item.getItem());
+                                        newItem.setWidth(item.getItem().getSprite().getWidth());
+                                        newItem.setHeight(item.getItem().getSprite().getHeight());
+
+                                        double maxRadius = screen.getPlayer().getSpriteWidth() * 3.0;
+                                        Random generator = new Random();
+                                        double randDist;
+                                        double randAngle;
+                                        double x = screen.getPlayer().getX();
+                                        double y = screen.getPlayer().getY();
+
+                                        boolean isValidLocation = false;
+
+                                        while (!isValidLocation) {
+                                            //generate randDist between item and monster
+                                            randDist = maxRadius * generator.nextDouble();
+                                            //generate randAngle
+                                            randAngle = 2 * Math.PI * generator.nextDouble();
+
+                                            //calculate x and y
+                                            x = screen.getPlayer().getX() + (randDist * Math.cos(randAngle));
+                                            y = screen.getPlayer().getY() + (randDist * Math.sin(randAngle));
+
+                                            isValidLocation = (x > 0.0 && x < screen.getRoom().getWidth() && y > 0.0 && y < screen.getRoom().getHeight());
+                                        }
+
+                                        //Set x and y
+                                        newItem.setX(x);
+                                        newItem.setY(y);
+                                        screen.getRoom().getDroppedItems().add(newItem);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
+
             //use run later to prevent any thread issues
             Platform.runLater(() -> {
                 screen.updateHud();
