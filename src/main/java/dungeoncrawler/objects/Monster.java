@@ -110,6 +110,7 @@ public class Monster extends Entity {
                     }
                 }
                 if (allDead) {
+                    ((ChallengeRoom) screen.getRoom()).setCompleted(true);
                     for (InventoryItem[] itemRow : ((ChallengeRoom) screen.getRoom()).getRewards().getItems()) {
                         if (itemRow != null) {
                             for (InventoryItem item : itemRow) {
