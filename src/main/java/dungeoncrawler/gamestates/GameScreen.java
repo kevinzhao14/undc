@@ -23,6 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 import javafx.scene.image.ImageView;
@@ -484,7 +485,7 @@ public class GameScreen extends GameState {
         HBox[] itemSlots = new HBox[GameSettings.INVENTORY_COLUMNS];
         StackPane allItemLabels = new StackPane();
 
-        ArrayList<StackPane> itemNameList = new ArrayList<>();
+        ArrayList<Label> itemNameList = new ArrayList<>();
 
         for (int i = 0; i < itemSlots.length; i++) {
             itemSlots[i] = new HBox(30);
@@ -504,18 +505,27 @@ public class GameScreen extends GameState {
                     itemImg.setFitWidth(60);
                     itemImg.setPreserveRatio(true);
                     Label nameLabel = new Label(item.getItem().getName());
+
+                    if (item.getItem() instanceof RangedWeapon) {
+                        RangedWeapon w = (RangedWeapon) item.getItem();
+
+                        nameLabel.setText(w.getName() + "\n"
+                                + w.getAmmo().getProjectile().getName() + " ("
+                                + w.getAmmo().getRemaining() + " / "
+                                + w.getAmmo().getBackupRemaining() + ")");
+                    }
                     nameLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; "
                             + "-fx-font-family:VT323; -fx-background-color: black; "
                             + "-fx-border-color: white; -fx-padding: 5px");
-                    StackPane itemNameBox = new StackPane();
-                    itemNameBox.getChildren().addAll(nameLabel);
-                    itemNameBox.setAlignment(Pos.TOP_CENTER);
-                    itemNameBox.setVisible(false);
 
-                    newSlot.setOnMouseEntered(event -> itemNameBox.setVisible(true));
-                    newSlot.setOnMouseExited(event -> itemNameBox.setVisible(false));
+                    nameLabel.setTextAlignment(TextAlignment.CENTER);
+                    nameLabel.setAlignment(Pos.TOP_CENTER);
+                    nameLabel.setVisible(false);
 
-                    itemNameList.add(itemNameBox);
+                    newSlot.setOnMouseEntered(event -> nameLabel.setVisible(true));
+                    newSlot.setOnMouseExited(event -> nameLabel.setVisible(false));
+
+                    itemNameList.add(nameLabel);
 
                     if (player.getInventory().getItems()[i][j].getQuantity() > 1) {
                         Label quantity = new Label("" + item.getQuantity());
@@ -547,8 +557,8 @@ public class GameScreen extends GameState {
         inventoryVisible = false;
         inventory.setVisible(false);
 
-        for (StackPane s : itemNameList) {
-            allItemLabels.getChildren().add(s);
+        for (Label label : itemNameList) {
+            allItemLabels.getChildren().add(label);
         }
 
         box.getChildren().addAll(invLabel, itemRows, allItemLabels);
