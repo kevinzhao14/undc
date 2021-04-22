@@ -156,7 +156,7 @@ public class GameScreen extends GameState {
             } else {
                 game.updateRoom();
             }
-            if (room.getType() == RoomType.CHALLENGEROOM) {
+            if (room.getType() == RoomType.CHALLENGEROOM && !((ChallengeRoom) room).isCompleted()) {
                 onChallengeEnter();
             }
         }
@@ -310,7 +310,7 @@ public class GameScreen extends GameState {
     private void fadeIn(Pane pane) {
         FadeTransition transition = new FadeTransition();
         setFade(transition, pane, true);
-        if (room.getType() != RoomType.CHALLENGEROOM) {
+        if (room.getType() != RoomType.CHALLENGEROOM || ((ChallengeRoom) room).isCompleted()) {
             transition.setOnFinished((e) -> game.updateRoom());
         }
     }

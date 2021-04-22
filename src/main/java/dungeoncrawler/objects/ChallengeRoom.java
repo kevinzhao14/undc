@@ -1,6 +1,7 @@
 package dungeoncrawler.objects;
 
 public class ChallengeRoom extends Room {
+    private boolean completed;
     private Inventory rewards;
 
     /**
@@ -17,6 +18,7 @@ public class ChallengeRoom extends Room {
     public ChallengeRoom(int height, int width, int startX, int startY, Obstacle[] roomObstacles, Inventory rewards) {
         super(height, width, startX, startY, roomObstacles, RoomType.CHALLENGEROOM);
         this.rewards = rewards;
+        this.completed = false;
     }
 
     public Inventory getRewards() {
@@ -25,5 +27,14 @@ public class ChallengeRoom extends Room {
 
     public void setRewards(Inventory rewards) {
         this.rewards = rewards;
+    }
+
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }
