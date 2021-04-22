@@ -51,6 +51,11 @@ public class Projectile {
                 : (right.equals(down) ? spriteRight : new Image(down)));
     }
 
+    public boolean equals(Projectile p) {
+        return name.equals(p.name) && damage == p.damage && speed == p.speed && range == p.range
+                && isMulti == p.isMulti && splashRange == p.splashRange;
+    }
+
     public String getName() {
         return name;
     }

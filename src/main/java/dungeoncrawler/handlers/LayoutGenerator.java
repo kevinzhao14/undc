@@ -2,6 +2,7 @@ package dungeoncrawler.handlers;
 
 import dungeoncrawler.controllers.Controller;
 import dungeoncrawler.controllers.DataManager;
+import dungeoncrawler.objects.Ammo;
 import dungeoncrawler.objects.ChallengeRoom;
 import dungeoncrawler.objects.Door;
 import dungeoncrawler.objects.DoorOrientation;
@@ -72,10 +73,16 @@ public class LayoutGenerator {
         //set challenge rooms
         Item[] items = DataManager.ITEMS;
         cr1Rewards = new Inventory(2, 5);
+        RangedWeapon rl = ((RangedWeapon) items[6]).copy();
+        Ammo ammo = new Ammo(2, 20, DataManager.PROJECTILES[0].copy());
+        ammo.setRemaining(2);
+        ammo.setBackupRemaining(10);
+        rl.setAmmo(ammo);
+
         cr1Rewards.add(items[2], 1);
         cr1Rewards.add(items[3], 1);
         cr1Rewards.add(items[5], 2);
-        cr1Rewards.add(items[6], 1);
+        cr1Rewards.add(rl, 1);
 
         cr2Rewards = new Inventory(2, 5);
         cr2Rewards.add(items[0], 3);

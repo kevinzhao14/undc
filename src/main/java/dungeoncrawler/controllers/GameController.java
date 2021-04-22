@@ -4,11 +4,13 @@ import dungeoncrawler.gamestates.GameState;
 import dungeoncrawler.handlers.Controls;
 import dungeoncrawler.handlers.RoomRenderer;
 import dungeoncrawler.objects.Ammo;
+import dungeoncrawler.objects.Ammunition;
 import dungeoncrawler.objects.Bomb;
 import dungeoncrawler.objects.Door;
 import dungeoncrawler.objects.DroppedItem;
 import dungeoncrawler.objects.Effect;
 import dungeoncrawler.objects.EffectType;
+import dungeoncrawler.objects.Inventory;
 import dungeoncrawler.objects.InventoryItem;
 import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
@@ -474,6 +476,39 @@ public class GameController {
                 double dist = round(Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2)));
                 //pick up item
                 if (dist <= GameSettings.PLAYER_PICKUP_RANGE) {
+                    //check if ammunition
+                    if (d.getItem() instanceof Ammunition) {
+                        //check if a weapon that uses this ammunition exists
+                        for (InventoryItem[] row : player.getInventory().getItems()) {
+                            for (InventoryItem item : row) {
+                                if (item == null) {
+                                    continue;
+                                }
+                                if (item.getItem() instanceof RangedWeapon) {
+                                    Ammo ammo = ((RangedWeapon) item.getItem()).getAmmo();
+                                    Ammunition a = (Ammunition) d.getItem();
+                                    if (ammo == null || ammo.getProjectile() == null) {
+                                        System.out.println("Ammo is null");
+                                        continue;
+                                    }
+                                    if (ammo.getProjectile().equals(a.getProjectile())) {
+                                        int maxChange = ammo.getBackupMax() - ammo.getBackupRemaining();
+                                        if (a.getAmount() <= maxChange) {
+                                            ammo.setBackupRemaining(ammo.getBackupRemaining() + a.getAmount());
+                                            itemPickedUp = true;
+                                            room.getDroppedItems().remove(i);
+                                            i--;
+                                        } else {
+                                            ammo.setBackupRemaining(ammo.getBackupMax());
+                                            a.setAmount(a.getAmount() - maxChange);
+                                        }
+                                        continue droploop;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     //check for item existing in inventory
                     for (InventoryItem[] row : player.getInventory().getItems()) {
                         for (InventoryItem item : row) {

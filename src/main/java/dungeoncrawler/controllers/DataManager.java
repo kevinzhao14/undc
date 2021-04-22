@@ -2,6 +2,7 @@ package dungeoncrawler.controllers;
 
 import dungeoncrawler.handlers.Difficulty;
 import dungeoncrawler.handlers.GameSettings;
+import dungeoncrawler.objects.Ammunition;
 import dungeoncrawler.objects.Bomb;
 import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
@@ -26,6 +27,12 @@ public class DataManager {
         new Weapon("Sword", "weapons/sword.png", 8, 0.5, false)
     };
 
+    public static final Projectile[] PROJECTILES = new Projectile[] {
+            new Projectile("Rocket", new String[]{"weapons/rocket-left.png",
+                    "weapons/rocket-up.png", "weapons/rocket-right.png", "weapons/rocket-down.png"},
+                    25, 500.0 / GameSettings.FPS, 400, true, 25)
+    };
+
     public static final Item[] ITEMS = new Item[]{
         new Potion("Small Health Potion", "items/health-potion-small.png", 10, true,
                 PotionType.HEALTH, 25),
@@ -37,15 +44,10 @@ public class DataManager {
         new Weapon("Dagger", "weapons/dagger.png", 5, 0.25, true),
         new Bomb("Bomb", "items/bomb.png", 10, 50, 100, 3000),
         new RangedWeapon("Rocket Launcher", "weapons/rocketlauncher.png", 4, false, 1, 1),
+        new Ammunition("Rockets", "weapons/rocket-right.png", 5, PROJECTILES[0])
     };
 
     public static final Key EXITKEY = new Key("Special Key", "items/key.png", true);
-
-    public static final Projectile[] PROJECTILES = new Projectile[] {
-        new Projectile("Rocket", new String[]{"weapons/rocket-left.png",
-                "weapons/rocket-up.png", "weapons/rocket-right.png", "weapons/rocket-down.png"},
-                25, 500.0 / GameSettings.FPS, 300, true, 25)
-    };
 
     public static final Monster[] MONSTERS = new Monster[]{
         new Monster(20, 4, 150.0 / GameSettings.FPS, 0.5, MonsterType.FAST, 11, 9),

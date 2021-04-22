@@ -34,7 +34,7 @@ public class Player extends Entity {
         this.inventory = new Inventory(GameSettings.INVENTORY_ROWS, GameSettings.INVENTORY_COLUMNS);
         inventory.add(weapon);
         RangedWeapon w = (RangedWeapon) DataManager.ITEMS[6].copy();
-        Ammo ammo = new Ammo(50, 50, DataManager.PROJECTILES[0].copy());
+        Ammo ammo = new Ammo(50, 500, DataManager.PROJECTILES[0].copy());
         ammo.setRemaining(50);
         ammo.setBackupRemaining(50);
         w.setAmmo(ammo);
@@ -66,20 +66,11 @@ public class Player extends Entity {
     public void setGold(int gold) {
         this.gold = gold;
     }
-    public void setMonstersKilled(int amt) {
-        monstersKilled = amt;
-    }
     public void addMonsterKilled() {
         monstersKilled++;
     }
-    public void setTotalDamageDealt(double amt) {
-        totalDamageDealt = amt;
-    }
     public void addDamageDealt(double amt) {
         totalDamageDealt += amt;
-    }
-    public void setTotalItemsConsumed(int amt) {
-        totalItemsConsumed = amt;
     }
     public void addItemConsumed() {
         totalItemsConsumed++;
