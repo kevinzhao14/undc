@@ -226,27 +226,6 @@ public class GameController {
      * @param isPress Whether the event is a press or release event
      */
     private void handleKey(String key, boolean isPress) {
-        //Global key binds, regardless of game play/pause state
-        if (key.equals(controls.getKey("pause"))) {
-            if (!isPress) {
-                pause();
-                GameScreen screen = getScreen();
-                //esc is used to leave inventory if it's currently open
-                //otherwise, use it to pause/unpause game
-                if (screen.isInventoryVisible()) {
-                    screen.toggleInventory();
-                } else {
-                    screen.togglePause();
-                }
-            }
-        } else if (key.equals(controls.getKey("inventory"))) {
-            if (!isPress) {
-                if (!getScreen().isPaused()) {
-                    pause();
-                    getScreen().toggleInventory();
-                }
-            }
-        }
         //movement keys
         int sign = 0;
         boolean xval = false;
@@ -285,6 +264,31 @@ public class GameController {
             accelY = round(accelY);
         }
 
+        if (isStopped) {
+            return;
+        }
+
+        //Global key binds, regardless of game play/pause state
+        if (key.equals(controls.getKey("pause"))) {
+            if (!isPress) {
+                pause();
+                GameScreen screen = getScreen();
+                //esc is used to leave inventory if it's currently open
+                //otherwise, use it to pause/unpause game
+                if (screen.isInventoryVisible()) {
+                    screen.toggleInventory();
+                } else {
+                    screen.togglePause();
+                }
+            }
+        } else if (key.equals(controls.getKey("inventory"))) {
+            if (!isPress) {
+                if (!getScreen().isPaused()) {
+                    pause();
+                    getScreen().toggleInventory();
+                }
+            }
+        }
 
         if (!isRunning) {
             return;

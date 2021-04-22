@@ -39,9 +39,9 @@ public class ShotProjectile implements Movable {
 
         //draw explosion animation
         Image explosion = new Image(DataManager.explosion);
-        double height = width * 1.2734375;
+        double height = width;// * 1.2734375;
         double x = m.getX() + (m.getWidth() / 2) - (width / 2);
-        double y = m.getY() - 10;
+        double y = m.getY() + (m.getHeight() / 2) - (height / 2);
         Obstacle o = new Obstacle(x, y, width, height, ObstacleType.NONSOLID);
         o.setSprite(explosion);
         room.getObstacles().add(o);

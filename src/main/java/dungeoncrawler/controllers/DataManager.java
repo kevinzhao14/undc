@@ -54,7 +54,9 @@ public class DataManager {
     };
 
     public static final Monster finalBoss = new Monster(100, 15, 175.0 / GameSettings.FPS, 1.0, MonsterType.FINALBOSS, 42, 62);
-    public static final String explosion = "weapons/explosion.gif";
+    public static final String explosion = "textures/boom.gif";
+
+
 
     private String username;
     private Difficulty difficulty;

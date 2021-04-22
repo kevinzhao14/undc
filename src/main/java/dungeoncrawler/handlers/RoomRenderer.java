@@ -44,11 +44,6 @@ public class RoomRenderer {
         root.setMaxWidth(rootWidth);
         root.setPrefWidth(rootWidth);
         root.setMinWidth(rootWidth);
-        if (room instanceof ChallengeRoom) {
-            Alert a = new Alert(Alert.AlertType.INFORMATION);
-            a.setContentText("Challenge room");
-            a.show();
-        }
         //holds the dungeon image
         double roomHeight = Math.round(getPx(room.getHeight()) * 1.36363636);
         double roomWidth = Math.round(getPx(room.getWidth()) * 1.11111111);

@@ -100,7 +100,9 @@ public class GameScreen extends GameState {
         createHud();
         updateInventory();
         createPauseMenu();
-        createChallengeOverlay();
+        if (room.getType() == RoomType.CHALLENGEROOM) {
+            createChallengeOverlay();
+        }
 
         //if won, set scene as win screen
         if (room.equals(dungeonLayout.getExitRoom())) {
@@ -153,12 +155,9 @@ public class GameScreen extends GameState {
             } else {
                 game.updateRoom();
             }
-
-            if (room.getType().equals(RoomType.CHALLENGEROOM)) {
+            if (room.getType() == RoomType.CHALLENGEROOM) {
                 onChallengeEnter();
-                game.pause();
             }
-
         }
         root.setStyle("-fx-background-color: #34311b");
         scene.setRoot(root);
@@ -310,7 +309,9 @@ public class GameScreen extends GameState {
     private void fadeIn(Pane pane) {
         FadeTransition transition = new FadeTransition();
         setFade(transition, pane, true);
-        transition.setOnFinished((e) -> game.updateRoom());
+        if (room.getType() != RoomType.CHALLENGEROOM) {
+            transition.setOnFinished((e) -> game.updateRoom());
+        }
     }
 
     private void setFade(FadeTransition t, Node n, boolean fadeIn) {
