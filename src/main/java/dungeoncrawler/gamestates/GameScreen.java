@@ -337,6 +337,8 @@ public class GameScreen extends GameState {
     }
 
     public void gameOver() {
+        game.stop();
+
         StackPane root = new StackPane();
         VBox box = new VBox(40);
 
@@ -445,6 +447,9 @@ public class GameScreen extends GameState {
                 }
             }
         }
+        createPlayer();
+
+        /*
         //set player health to original amt
         player.setHealth(player.getMaxHealth());
 
@@ -473,9 +478,9 @@ public class GameScreen extends GameState {
         //add starter weapon
         player.getInventory().add(Controller.getDataManager().getWeapon());
         //update inventory display
-        updateInventory();
+        updateInventory();*/
         //go to starting room
-        setRoom(dungeonLayout.getStartingRoom());
+        game.start(dungeonLayout.getStartingRoom());
     }
 
     public void updateInventory() {

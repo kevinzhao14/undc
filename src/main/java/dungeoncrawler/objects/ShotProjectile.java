@@ -4,6 +4,7 @@ import dungeoncrawler.controllers.Controller;
 import dungeoncrawler.controllers.DataManager;
 import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.handlers.GameSettings;
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 
 import java.util.Timer;
@@ -58,7 +59,9 @@ public class ShotProjectile implements Movable {
         //stop projectile
         velX = 0;
 
-        Room room = ((GameScreen) Controller.getState()).getRoom();
+        GameScreen screen = (GameScreen) Controller.getState();
+        Room room = screen.getRoom();
+        Player player = screen.getPlayer();
 
         //hit single monster
         if (e != null) {
@@ -82,6 +85,18 @@ public class ShotProjectile implements Movable {
                 //if in range of the blast
                 if (dist <= projectile.getSplashRange()) {
                     m.attackMonster(projectile.getDamage(), true);
+                }
+            }
+            //attack player
+            double distX = Math.pow(posX - player.getX() + player.getWidth() / 2, 2);
+            double distY = Math.pow(posY - player.getY() + player.getHeight() / 2, 2);
+            double dist = Math.sqrt(distX + distY);
+            if (dist <= projectile.getSplashRange()) {
+                System.out.println("Distnace " + dist);
+                player.setHealth(Math.max(0, player.getHealth() - projectile.getDamage() * GameSettings.PLAYER_ATTACK_SELF_MODIFIER));
+                Platform.runLater(() -> screen.updateHud());
+                if (player.getHealth() == 0) {
+                    Platform.runLater(() -> screen.gameOver());
                 }
             }
             //draw explosion animation

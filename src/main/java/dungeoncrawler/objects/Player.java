@@ -2,6 +2,7 @@ package dungeoncrawler.objects;
 
 import dungeoncrawler.controllers.DataManager;
 import dungeoncrawler.handlers.GameSettings;
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;

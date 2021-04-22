@@ -657,7 +657,7 @@ public class GameController {
                 //create projectile
                 int dir = player.getDirection() % 4;
                 double x = player.getX() + player.getWidth() / 2;
-                double y = player.getY() + player.getHeight() / 2;
+                double y = player.getY() + player.getHeight();
                 Image sprite = ammo.getProjectile().getSpriteLeft();
                 if (dir == 1) {
                     sprite = ammo.getProjectile().getSpriteUp();
@@ -669,14 +669,16 @@ public class GameController {
                 double height = sprite.getHeight();
                 double width = sprite.getWidth();
                 if (dir == 0) {
-                    x -= 10;
+                    x -= 5;
                 } else if (dir == 2) {
-                    x += 10;
+                    x += 5;
                 } else if (dir == 1) {
-                    y += 10;
+                    y += 5;
                 } else {
-                    y -= 10;
+                    y -= 5;
                 }
+                x -= width / 2;
+                y -= height / 2;
 
                 //reset x and y coordinates
                 if (x < 0) {
@@ -743,10 +745,10 @@ public class GameController {
                         ShotProjectile.addExplosion(room, o, b.getRadius() * 2);
 
                         if (dist <= b.getRadius()) {
-                            player.setHealth(Math.max(0, player.getHealth() - b.getDamage()));
+                            player.setHealth(Math.max(0, player.getHealth() - b.getDamage() * GameSettings.PLAYER_ATTACK_SELF_MODIFIER));
                             Platform.runLater(() -> getScreen().updateHud());
                             if (player.getHealth() == 0) {
-                                gameOver(getScreen());
+                                gameOver();
                                 return true;
                             }
                         }
@@ -1148,7 +1150,7 @@ public class GameController {
                     if (player.getHealth() == 0.0) {
                         //use run later to prevent any thread issues
                         refresh();
-                        gameOver(screen);
+                        gameOver();
                         return true;
                     }
                 }
@@ -1156,9 +1158,9 @@ public class GameController {
             return false;
         }
 
-        private void gameOver(GameScreen screen) {
+        private void gameOver() {
             System.out.println("Game Over");
-            stop();
+            GameScreen screen = getScreen();
             Platform.runLater(() -> {
                 room = screen.getLayout().getStartingRoom();
                 screen.gameOver();
