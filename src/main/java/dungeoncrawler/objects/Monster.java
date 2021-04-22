@@ -150,6 +150,11 @@ public class Monster extends Entity {
 
             randIdx = generator.nextInt(Controller.getDataManager().ITEMS.length);
 
+            //keep generating a new index until a droppable item is found
+            while (!Controller.getDataManager().ITEMS[randIdx].isDroppable()) {
+                randIdx = generator.nextInt(Controller.getDataManager().ITEMS.length);
+            }
+
             if (type != MonsterType.FINALBOSS || i < numItems - 1) {
                 droppedItems[i] = new DroppedItem(
                         Controller.getDataManager().ITEMS[randIdx].copy());
