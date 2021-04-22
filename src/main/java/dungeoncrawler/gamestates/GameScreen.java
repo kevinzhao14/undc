@@ -600,7 +600,25 @@ public class GameScreen extends GameState {
         });
 
         noButton.setOnAction((e) -> {
+
+            int x = (int) player.getX();
+            int y = (int) player.getY();
+
+            if (x < 100 || x > room.getWidth() - GameSettings.PLAYER_WIDTH - 100) {
+                // left/right
+                previous.setStartX(room.getWidth() - room.getStartX());
+                previous.setStartY(y);
+            } else if (y < 50) {
+                // leave through bottom
+                previous.setStartY(room.getHeight() - room.getStartY() - 30);
+                previous.setStartX(x);
+            } else {
+                // leave through top
+                previous.setStartY(room.getHeight() - room.getStartY());
+                previous.setStartX(x);
+            }
             game.setRoom(previous);
+
             challenge.setVisible(false);
         });
 
