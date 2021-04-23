@@ -516,16 +516,31 @@ public class GameScreen extends GameState {
 
                     if (item.getItem() instanceof RangedWeapon) {
                         RangedWeapon w = (RangedWeapon) item.getItem();
-
                         nameLabel.setText(w.getName() + "\n"
                                 + w.getAmmo().getProjectile().getName() + " ("
                                 + w.getAmmo().getRemaining() + " / "
                                 + w.getAmmo().getBackupRemaining() + ")");
+                    } else if (item.getItem() instanceof Weapon) {
+                        Weapon w = (Weapon) item.getItem();
+                        nameLabel.setText(w.getName() + "\nDamage: "
+                                + (int) w.getDamage() + "\nSpeed: "
+                                + (int) w.getAttackSpeed());
+                    } else if (item.getItem() instanceof Potion) {
+                        Potion p = (Potion) item.getItem();
+                        if (p.getType().equals(PotionType.HEALTH)) {
+                            nameLabel.setText(p.getName() + "\n("
+                                    + (int) p.getModifier() + " HP)");
+                        }
+                    } else if (item.getItem() instanceof Bomb) {
+                        Bomb b = (Bomb) item.getItem();
+                        nameLabel.setText(b.getName() + "\nDamage: "
+                                + (int) b.getDamage() + "\nRadius: "
+                                + (int) b.getRadius() + "\nFuse Time: "
+                                + (int) b.getFuse() / 1000 + "s");
                     }
                     nameLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; "
                             + "-fx-font-family:VT323; -fx-background-color: black; "
                             + "-fx-border-color: white; -fx-padding: 5px");
-
                     nameLabel.setTextAlignment(TextAlignment.CENTER);
                     nameLabel.setAlignment(Pos.TOP_CENTER);
                     nameLabel.setVisible(false);
