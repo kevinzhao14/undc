@@ -1,6 +1,7 @@
 package dungeoncrawler.handlers;
 
 import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.controllers.DataManager;
 import dungeoncrawler.objects.ChallengeRoom;
 import dungeoncrawler.objects.Door;
 import dungeoncrawler.objects.DoorOrientation;
@@ -8,9 +9,6 @@ import dungeoncrawler.objects.DroppedItem;
 import dungeoncrawler.objects.DungeonLayout;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
-import dungeoncrawler.objects.Potion;
-import dungeoncrawler.objects.PotionType;
-import dungeoncrawler.objects.RangedWeapon;
 import dungeoncrawler.objects.Room;
 import dungeoncrawler.objects.RoomType;
 /**
@@ -71,9 +69,8 @@ public class LayoutGenerator {
         int[] coords;
         // up path
         int challengeCount = 0;
-        DroppedItem[] firstRoomRewards = {new DroppedItem(new RangedWeapon("Rocket Launcher", "weapons/rocketlauncher.png", 4, false, 1, 1), ROOM_HEIGHT / 2, ROOM_WIDTH / 2, 20, 20)};
-        DroppedItem[] secondRoomRewards = {new DroppedItem(new Potion("Large Health Potion", "items/health-potion-large.png", 3, true,
-                PotionType.HEALTH, 100), ROOM_HEIGHT / 2, ROOM_WIDTH / 2, 20, 20)};
+        DroppedItem[] firstRoomRewards = {new DroppedItem(DataManager.ITEMS[DataManager.ITEMS.length - 1], ROOM_HEIGHT / 2, ROOM_WIDTH / 2, 20, 20)};
+        DroppedItem[] secondRoomRewards = {new DroppedItem(DataManager.ITEMS[3], ROOM_HEIGHT / 2, ROOM_WIDTH / 2, 20, 20)};
         roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2 + 1] =
                 new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
                         new Obstacle[5], RoomType.EMPTYROOM);
