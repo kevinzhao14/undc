@@ -437,6 +437,9 @@ public class GameScreen extends GameState {
             for (Room room : roomRow) {
                 if (room != null && room.wasVisited()) {
                     room.setVisited(false);
+                    room.getObstacles().clear();
+                    room.getDroppedItems().clear();
+                    room.getProjectiles().clear();
                     for (Monster m : room.getMonsters()) {
                         if (m != null) {
                             int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
