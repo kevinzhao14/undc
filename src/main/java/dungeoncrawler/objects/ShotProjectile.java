@@ -92,7 +92,6 @@ public class ShotProjectile implements Movable {
             double distY = Math.pow(posY - player.getY() + player.getHeight() / 2, 2);
             double dist = Math.sqrt(distX + distY);
             if (dist <= projectile.getSplashRange()) {
-                System.out.println("Distnace " + dist);
                 player.setHealth(Math.max(0, player.getHealth() - projectile.getDamage() * GameSettings.PLAYER_ATTACK_SELF_MODIFIER));
                 Platform.runLater(() -> screen.updateHud());
                 if (player.getHealth() == 0) {

@@ -46,6 +46,8 @@ public class GameScreen extends GameState {
     private boolean paused;
 
     public GameScreen(int width, int height) {
+        sceneWidth = width;
+        sceneHeight = height;
         dungeonLayout = new LayoutGenerator().generateLayout();
         scene = new Scene(new Pane(), width, height);
         canvas = new Canvas();
@@ -105,61 +107,21 @@ public class GameScreen extends GameState {
             createChallengeOverlay();
         }
 
-        //if won, set scene as win screen
-        if (room.equals(dungeonLayout.getExitRoom())) {
-            game.pause();
-            hud.setVisible(false);
-
-            VBox box = new VBox(40);
-            Label winnerLabel = new Label("Congratulations! You have escaped from the dungeon!");
-            winnerLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
-
-            //add stats
-            Label monstersKilled = new Label("Total monsters killed: "
-                    + getPlayer().getMonstersKilled());
-            monstersKilled.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
-            Label totalDamageDealt = new Label("Total damage dealt: "
-                    + getPlayer().getTotalDamageDealt());
-            totalDamageDealt.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
-            Label totalItemsConsumed = new Label("Total items consumed/used: "
-                    + getPlayer().getTotalItemsConsumed());
-            totalItemsConsumed.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
-
-            Button newGameButton = new Button("New Game");
-            newGameButton.setMinWidth(600);
-            newGameButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
-
-            Button endButton = new Button("Exit");
-            endButton.setMinWidth(600);
-            endButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
-
-            newGameButton.setOnAction((e) -> {
-                Controller.setState(new InitPlayerConfigScreen(1280, 720));
-            });
-
-            endButton.setOnAction((e) -> {
-                Platform.exit();
-            });
-
-
-            //box.getChildren().addAll(winnerLabel, newGameButton, endButton);
-            box.getChildren().addAll(winnerLabel, monstersKilled, totalDamageDealt,
-                    totalItemsConsumed, newGameButton, endButton);
-            box.setAlignment(Pos.CENTER);
-            root.getChildren().addAll(box);
-            fadeIn(box);
-        } else {
-            Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
-            root.getChildren().addAll(roomPane, hud);
-            if (scene.getRoot().getChildrenUnmodifiable().size() > 0) {
+        Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
+        root.getChildren().addAll(roomPane, hud);
+        if (scene.getRoot().getChildrenUnmodifiable().size() > 0) {
+            if (room.getType() != RoomType.CHALLENGEROOM || ((ChallengeRoom) room).isCompleted()) {
                 fadeIn(roomPane);
             } else {
-                game.updateRoom();
+                fadeIn(roomPane, false);
             }
-            if (room.getType() == RoomType.CHALLENGEROOM && !((ChallengeRoom) room).isCompleted()) {
-                onChallengeEnter();
-            }
+        } else {
+            game.updateRoom();
         }
+        if (room.getType() == RoomType.CHALLENGEROOM && !((ChallengeRoom) room).isCompleted()) {
+            onChallengeEnter();
+        }
+
         root.setStyle("-fx-background-color: #34311b");
         scene.setRoot(root);
     }
@@ -307,12 +269,16 @@ public class GameScreen extends GameState {
         transition.setOnFinished((e) -> createRoom());
     }
 
-    private void fadeIn(Pane pane) {
+    private void fadeIn(Pane pane, boolean unpause) {
         FadeTransition transition = new FadeTransition();
         setFade(transition, pane, true);
-        if (room.getType() != RoomType.CHALLENGEROOM || ((ChallengeRoom) room).isCompleted()) {
+        if (unpause) {
             transition.setOnFinished((e) -> game.updateRoom());
         }
+    }
+
+    private void fadeIn(Pane pane) {
+        fadeIn(pane, true);
     }
 
     private void setFade(FadeTransition t, Node n, boolean fadeIn) {
@@ -452,36 +418,6 @@ public class GameScreen extends GameState {
         }
         createPlayer();
 
-        /*
-        //set player health to original amt
-        player.setHealth(player.getMaxHealth());
-
-        //clear player stats
-        player.clearGameStats();
-
-        //set player gold value to original amt - MAKE SURE TO UNCOMMENT LINES BELOW
-        switch (Controller.getDataManager().getDifficulty()) {
-            case EASY:
-                player.setGold(300);
-                break;
-            case MEDIUM:
-                player.setGold(200);
-                break;
-            default:
-                player.setGold(100);
-                break;
-        }
-
-        //empty player inventory
-        for (int i = 0; i < player.getInventory().getItems().length; i++) {
-            for (int j = 0; j < player.getInventory().getItems()[i].length; j++) {
-                player.getInventory().getItems()[i][j] = null;
-            }
-        }
-        //add starter weapon
-        player.getInventory().add(Controller.getDataManager().getWeapon());
-        //update inventory display
-        updateInventory();*/
         //go to starting room
         game.start(dungeonLayout.getStartingRoom());
     }
@@ -652,6 +588,55 @@ public class GameScreen extends GameState {
         partialFadeIn(backdrop);
         challenge.setVisible(false);
     }
+
+    public void win() {
+        System.out.println("Winning");
+        StackPane root = new StackPane();
+
+        hud.setVisible(false);
+
+        VBox box = new VBox(40);
+        Label winnerLabel = new Label("Congratulations! You have escaped from the dungeon!");
+        winnerLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
+
+        //add stats
+        Label monstersKilled = new Label("Total monsters killed: "
+                + getPlayer().getMonstersKilled());
+        monstersKilled.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+        Label totalDamageDealt = new Label("Total damage dealt: "
+                + getPlayer().getTotalDamageDealt());
+        totalDamageDealt.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+        Label totalItemsConsumed = new Label("Total items consumed/used: "
+                + getPlayer().getTotalItemsConsumed());
+        totalItemsConsumed.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+
+        Button newGameButton = new Button("New Game");
+        newGameButton.setMinWidth(600);
+        newGameButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+
+        Button endButton = new Button("Exit");
+        endButton.setMinWidth(600);
+        endButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+
+        newGameButton.setOnAction((e) -> {
+            Controller.setState(new HomeScreen(sceneWidth, sceneHeight));
+        });
+
+        endButton.setOnAction((e) -> {
+            Platform.exit();
+        });
+
+        //box.getChildren().addAll(winnerLabel, newGameButton, endButton);
+        box.getChildren().addAll(winnerLabel, monstersKilled, totalDamageDealt,
+                totalItemsConsumed, newGameButton, endButton);
+        box.setAlignment(Pos.CENTER);
+        root.getChildren().addAll(box);
+        fadeIn(box, false);
+
+        root.setStyle("-fx-background-color: #34311b");
+        scene.setRoot(root);
+    }
+
 
     public void onChallengeEnter() {
         challenge.setVisible(!challenge.isVisible());

@@ -1,10 +1,12 @@
 package dungeoncrawler.handlers;
 import dungeoncrawler.objects.ChallengeRoom;
 import dungeoncrawler.objects.DroppedItem;
+import dungeoncrawler.objects.ExitDoor;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
 import dungeoncrawler.objects.Player;
 import dungeoncrawler.objects.Room;
+import dungeoncrawler.objects.RoomType;
 import dungeoncrawler.objects.ShotProjectile;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -45,8 +47,13 @@ public class RoomRenderer {
         root.setPrefWidth(rootWidth);
         root.setMinWidth(rootWidth);
         //holds the dungeon image
-        double roomHeight = Math.round(getPx(room.getHeight()) * 1.36363636);
-        double roomWidth = Math.round(getPx(room.getWidth()) * 1.11111111);
+        double roomHeight = getPx(room.getHeight() * 1.36363636);
+        double roomWidth = getPx(room.getWidth() * 1.11111111);
+        if (room.getType() == RoomType.EXITROOM) {
+            roomHeight = getPx(room.getHeight()) * 1.21621622;
+            roomWidth = getPx(room.getWidth()) * 1.15384615;
+        }
+
         main.setMaxHeight(roomHeight);
         main.setPrefHeight(roomHeight);
         main.setMinHeight(roomHeight);
@@ -57,8 +64,13 @@ public class RoomRenderer {
         main.getStyleClass().add("rootPane");
 
         //shift game rectangle so that it's aligned with the background image
-        root.setTranslateX(Math.round(getPx(room.getWidth()) * 0.0555555556));
-        root.setTranslateY(Math.round(getPx(room.getHeight()) * 0.23863636363));
+        if (room.getType() == RoomType.EXITROOM) {
+            root.setTranslateX(getPx(room.getWidth()) * 0.0769230769);
+            root.setTranslateY(getPx(room.getHeight()) * 0.144144144);
+        } else {
+            root.setTranslateX(getPx(room.getWidth() * 0.0555555556));
+            root.setTranslateY(getPx(room.getHeight() * 0.23863636363));
+        }
 
         //add canvas to root
         canvas.setHeight(rootHeight + GameSettings.CANVAS_PADDING * 2);
@@ -72,9 +84,14 @@ public class RoomRenderer {
 
         if (room.getTopDoor() != null) {
             ImageView imageView = new ImageView("textures/dungeon1-topdoor.png");
+            double y = getPx(room.getHeight() - room.getTopDoor().getY()
+                    - room.getTopDoor().getHeight()) + 2;
+            if (room.getTopDoor() instanceof ExitDoor) {
+                imageView = new ImageView("textures/dungeon1-topdoor-exit.png");
+                y--;
+            }
             imageView.setX(getPx(room.getTopDoor().getX()));
-            imageView.setY(getPx(room.getHeight() - room.getTopDoor().getY()
-                    - room.getTopDoor().getHeight()) + 2);
+            imageView.setY(y);
             imageView.setFitWidth(getPx(room.getTopDoor().getWidth()));
             imageView.setFitHeight(getPx(room.getTopDoor().getHeight()));
             root.getChildren().add(imageView);

@@ -40,7 +40,7 @@ public class Player extends Entity {
         ammo.setBackupRemaining(50);
         w.setAmmo(ammo);
         inventory.add(w);
-        inventory.add(DataManager.ITEMS[5], 10);
+//        inventory.add(DataManager.ITEMS[5], 10);
 
         monstersKilled = 0;
         totalDamageDealt = 0.0;

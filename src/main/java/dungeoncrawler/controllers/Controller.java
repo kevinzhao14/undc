@@ -23,7 +23,7 @@ public class Controller extends Application {
         this.dataManager = new DataManager();
 
         this.stage = stage;
-        this.state = new HomeScreen(1280, 720); // placeholder gamestate, this should never be null
+        this.state = new HomeScreen(1920, 1080); // placeholder gamestate, this should never be null
 
         stage.setTitle("Luckless Dungeon Crawler");
         this.stage.setScene(this.state.getScene());

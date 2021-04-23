@@ -4,6 +4,7 @@ import dungeoncrawler.controllers.Controller;
 import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.handlers.GameSettings;
 import javafx.application.Platform;
+import javafx.scene.image.Image;
 
 import java.util.LinkedList;
 import java.util.ArrayList;
@@ -43,6 +44,9 @@ public class Monster extends Entity {
             break;
         case TANK:
             setNode("monsters/monster-tank.png");
+            break;
+        case FINALBOSS:
+            setNode("monsters/final-boss.gif");
             break;
         default:
             setNode("monsters/monster-normal.png");
@@ -174,19 +178,19 @@ public class Monster extends Entity {
         if (Controller.getDataManager().ITEMS.length == 0 && type != MonsterType.FINALBOSS) {
             return new DroppedItem[0];
         }
+        if (type == MonsterType.FINALBOSS) {
+            Item key = Controller.getDataManager().EXITKEY.copy();
+            Image sprite = key.getSprite();
+            double x = getX() + getWidth() / 2 - sprite.getWidth() / 2;
+            double y = getY() + getHeight() / 2 - sprite.getHeight() / 2;
+            return new DroppedItem[]{
+                    new DroppedItem(key, x, y, sprite.getWidth(), sprite.getHeight())
+            };
+        }
         Random generator = new Random();
         //Calculate number of items to drop
         int numItems = GameSettings.MIN_ITEM_DROP
                 + generator.nextInt(GameSettings.MAX_ITEM_DROP - GameSettings.MIN_ITEM_DROP + 1);
-
-        //if monster is the final boss, add another space in array for key
-        if (getType() == MonsterType.FINALBOSS) {
-            if (Controller.getDataManager().ITEMS.length > 0) {
-                numItems++;
-            } else {
-                numItems = 1;
-            }
-        }
 
         DroppedItem[] droppedItems = new DroppedItem[numItems];
 
@@ -213,12 +217,7 @@ public class Monster extends Entity {
                 randIdx = generator.nextInt(Controller.getDataManager().ITEMS.length);
             }
 
-            if (type != MonsterType.FINALBOSS || i < numItems - 1) {
-                droppedItems[i] = new DroppedItem(
-                        Controller.getDataManager().ITEMS[randIdx].copy());
-            } else {
-                droppedItems[i] = new DroppedItem(Controller.getDataManager().EXITKEY.copy());
-            }
+            droppedItems[i] = new DroppedItem(Controller.getDataManager().ITEMS[randIdx].copy());
 
             //Set width and height
             droppedItems[i].setWidth(droppedItems[i].getItem().getSprite().getWidth());

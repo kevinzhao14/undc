@@ -56,6 +56,25 @@ public class Inventory {
         return false;
     }
 
+    public boolean remove(InventoryItem item) {
+        if (size == 0) {
+            return false;
+        }
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (items[i][j] == null) {
+                    continue;
+                }
+                if (items[i][j] == item) {
+                    items[i][j] = null;
+                    size--;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void rotate() {
         InventoryItem[] firstrow = items[0];
         for (int i = 0; i < items.length - 1; i++) {

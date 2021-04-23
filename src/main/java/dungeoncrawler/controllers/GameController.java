@@ -10,6 +10,7 @@ import dungeoncrawler.objects.Door;
 import dungeoncrawler.objects.DroppedItem;
 import dungeoncrawler.objects.Effect;
 import dungeoncrawler.objects.EffectType;
+import dungeoncrawler.objects.ExitDoor;
 import dungeoncrawler.objects.Inventory;
 import dungeoncrawler.objects.InventoryItem;
 import dungeoncrawler.objects.Item;
@@ -323,7 +324,7 @@ public class GameController {
             if (currentItem.getQuantity() > 1) {
                 currentItem.setQuantity(currentItem.getQuantity() - 1);
             } else {
-                if (!player.getInventory().remove(currentItem.getItem())) {
+                if (!player.getInventory().remove(currentItem)) {
                     return;
                 }
             }
@@ -578,7 +579,7 @@ public class GameController {
                     //check for entity collisions
                     newX = checked[0];
                     newY = checked[1];
-                    Monster m = checkCollisions(room.getMonsters(), x, y, newX, newY);
+                    Monster m = checkCollisions(room.getMonsters(), p, x, y, newX, newY);
                     //hit a monster
                     if (m != null) {
                         p.hit(m);
@@ -870,14 +871,17 @@ public class GameController {
             return true;
         }
 
-        private <T extends Movable> T checkCollisions(T[] list, double x, double y ,double newX, double newY) {
+        private <T extends Movable> T checkCollisions(T[] list, Movable m, double x, double y ,double newX, double newY) {
             for (T t: list) {
                 if (t == null) {
                     continue;
                 }
+                if (t == m) {
+                    continue;
+                }
                 //Check if monster is out of movement vector rectangle
                 if (!inRange(t, x, y, newX, newY,
-                        GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH)) {
+                        m.getHeight(), m.getWidth())) {
                     continue;
                 }
                 //for monsters
@@ -894,7 +898,7 @@ public class GameController {
                 //Get equation for intersection
                 double[] playerEquation = equation(x, y, newX, newY);
                 double[] intersects = getIntersect(t, playerEquation[0], playerEquation[1],
-                        moveUp, moveRight, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH);
+                        moveUp, moveRight, m.getHeight(), m.getWidth());
 
                 //intersects
                 if (intersects != null) {
@@ -921,9 +925,25 @@ public class GameController {
             };
 
             //loop through doors
-            Door d = checkCollisions(doors, x, y, newX, newY);
+            Door d = checkCollisions(doors, player, x, y, newX, newY);
             if (d != null) {
                 Room newRoom = d.getGoesTo();
+
+                //if next room is the exit, don't let player go through unless they have key
+                if (room.getType() == RoomType.EXITROOM && d instanceof ExitDoor) {
+                    InventoryItem[][] playerItems = player.getInventory().getItems();
+                    for (InventoryItem[] itemRow : playerItems) {
+                        for (InventoryItem playerItem : itemRow) {
+                            if (playerItem != null && playerItem.getItem() instanceof Key) {
+                                stop();
+                                Platform.runLater(() -> getScreen().win());
+                                return true;
+                            }
+                        }
+                    }
+                    //no key
+                    return false;
+                }
 
                 //check if not visited & if there are still monsters
                 if (!newRoom.wasVisited()) {
@@ -934,33 +954,13 @@ public class GameController {
                     }
                 }
 
-                /*
-                //if next room is the exit, don't let player go through unless they have key
-                if (newRoom.getType() == RoomType.EXITROOM) {
-                    boolean hasKey = false;
-                    InventoryItem[][] playerItems = player.getInventory().getItems();
-                    for (InventoryItem[] itemRow : playerItems) {
-                        for (InventoryItem playerItem : itemRow) {
-                            if (playerItem != null && playerItem.getItem() != null
-                                    && (playerItem.getItem() instanceof Key)) {
-                                hasKey = true;
-                                break;
-                            }
-                        }
-                        if (hasKey) {
-                            break;
-                        }
-                    }
-                    if (!hasKey) {
-                        return false;
-                    }
-                }
-                 */
-
                 Door newDoor;
                 double newStartX;
                 double newStartY;
-                if (d.equals(room.getTopDoor())) {
+                if (newRoom.getType() == RoomType.EXITROOM) {
+                    newStartX = (newRoom.getWidth() + player.getWidth()) / 2;
+                    newStartY = 20;
+                } else if (d.equals(room.getTopDoor())) {
                     newDoor = newRoom.getBottomDoor();
                     newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
                             - GameSettings.PLAYER_WIDTH / 2;
@@ -1090,8 +1090,15 @@ public class GameController {
                 e[0] -= 1000.0 / GameSettings.FPS;
                 //time to apply the move
                 if (e[0] <= 0) {
-                    m.setX(e[1]);
-                    m.setY(e[2]);
+                    double x = m.getX();
+                    double y = m.getY();
+
+                    Monster check = checkCollisions(room.getMonsters(), m, x, y, e[1], e[2]);
+
+                    if (check == null) {
+                        m.setX(e[1]);
+                        m.setY(e[2]);
+                    }
 
                     //remove
                     removeList.add(e);
@@ -1109,6 +1116,8 @@ public class GameController {
             double ydiff = (mPosY + m.getHeight() / 2) - (player.getY() + player.getHeight() / 2);
             double xdiff = (mPosX + m.getWidth() / 2) - (player.getX() + player.getWidth() / 2);
             double d = round(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2)));
+
+
             if (d <= GameSettings.MONSTER_MOVE_RANGE && d >= GameSettings.MONSTER_MOVE_MIN) {
                 //move monster towards player
                 double angle = Math.atan2(ydiff, xdiff) - Math.PI;
@@ -1124,10 +1133,14 @@ public class GameController {
                     return false;
                 }
 
-                //add to queue
-                double[] moveItem =
-                        new double[]{GameSettings.MONSTER_REACTION_TIME, newPos[0], newPos[1]};
-                m.getMoveQueue().add(moveItem);
+                Monster check = checkCollisions(room.getMonsters(), m, mPosX, mPosY, newPos[0], newPos[1]);
+
+                if (check == null) {
+                    //add to queue
+                    double[] moveItem =
+                            new double[]{GameSettings.MONSTER_REACTION_TIME, newPos[0], newPos[1]};
+                    m.getMoveQueue().add(moveItem);
+                }
             }
             ydiff = (m.getY() + m.getHeight() / 2) - (player.getY() + player.getHeight() / 2);
             xdiff = (m.getX() + m.getWidth() / 2) - (player.getX() + player.getWidth() / 2);

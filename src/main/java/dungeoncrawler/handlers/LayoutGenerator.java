@@ -8,6 +8,7 @@ import dungeoncrawler.objects.Door;
 import dungeoncrawler.objects.DoorOrientation;
 import dungeoncrawler.objects.DroppedItem;
 import dungeoncrawler.objects.DungeonLayout;
+import dungeoncrawler.objects.ExitDoor;
 import dungeoncrawler.objects.Inventory;
 import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
@@ -51,8 +52,8 @@ public class LayoutGenerator {
     public static final int DOORBOTTOM_HEIGHT = (int) Math.round(ROOM_HEIGHT * 0.125);
     public static final int DOORBOTTOM_WIDTH = (int) Math.round(DOORBOTTOM_HEIGHT * 1.75757576);
 
-    private static final int PATH_MIN = 6;
-    private static final int PATH_MAX = 10;
+    private static final int PATH_MIN = 1;
+    private static final int PATH_MAX = 2;
 
     private static final double CHALLENGE_ODDS = 0.25;
 
@@ -99,9 +100,14 @@ public class LayoutGenerator {
                 - GameSettings.PLAYER_HEIGHT), new Obstacle[0], RoomType.STARTROOM);
         startRoom.setMonsters(new Monster[0]);
 
-        exitRoom = new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100,
+        int exitWidth = 832;
+        int exitHeight = 444;
+
+        exitRoom = new Room(exitHeight, exitWidth, 100, 100,
                 new Obstacle[0], RoomType.EXITROOM);
-        setMonsters(exitRoom);
+        exitRoom.setMonsters(new Monster[]{DataManager.FINALBOSS});
+        ExitDoor ed = new ExitDoor((exitWidth - DOORTOP_WIDTH) / 2, exitHeight - 1, DOORTOP_WIDTH, DOORTOP_HEIGHT);
+        exitRoom.setTopDoor(ed);
 
         cr1 = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[0], cr1Rewards);
         cr2 = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[0], cr2Rewards);
@@ -135,7 +141,7 @@ public class LayoutGenerator {
 
         //check exit distance
         if (!exitPlaced || (Math.abs(exitCoords[0] - GRID_WIDTH / 2) + Math.abs(exitCoords[1]
-                - GRID_HEIGHT / 2)) < 6) {
+                - GRID_HEIGHT / 2)) < 1) {
             return generateLayout();
         }
         printGrid(roomGrid);
@@ -143,7 +149,7 @@ public class LayoutGenerator {
         // create doors
         for (int i = 1; i < GRID_WIDTH - 1; i++) {
             for (int j = 1; j < GRID_HEIGHT - 1; j++) {
-                if (roomGrid[i][j] != null) {
+                if (roomGrid[i][j] != null && roomGrid[i][j].getType() != RoomType.EXITROOM) {
                     if (roomGrid[i + 1][j] != null) {
                         roomGrid[i][j].setRightDoor(
                                 new Door(ROOM_WIDTH - 1, (ROOM_HEIGHT - DOOR_HEIGHT) / 2,
