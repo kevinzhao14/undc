@@ -4,11 +4,13 @@ import dungeoncrawler.gamestates.GameState;
 import dungeoncrawler.handlers.Controls;
 import dungeoncrawler.handlers.RoomRenderer;
 import dungeoncrawler.objects.Ammo;
+import dungeoncrawler.objects.Ammunition;
 import dungeoncrawler.objects.Bomb;
 import dungeoncrawler.objects.Door;
 import dungeoncrawler.objects.DroppedItem;
 import dungeoncrawler.objects.Effect;
 import dungeoncrawler.objects.EffectType;
+import dungeoncrawler.objects.Inventory;
 import dungeoncrawler.objects.InventoryItem;
 import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
@@ -142,7 +144,7 @@ public class GameController {
      * Changes the room.
      * @param newRoom Room to change to
      */
-    private void setRoom(Room newRoom) {
+    public void setRoom(Room newRoom) {
         if (isRunning) {
             stop();
         }
@@ -226,27 +228,6 @@ public class GameController {
      * @param isPress Whether the event is a press or release event
      */
     private void handleKey(String key, boolean isPress) {
-        //Global key binds, regardless of game play/pause state
-        if (key.equals(controls.getKey("pause"))) {
-            if (!isPress) {
-                pause();
-                GameScreen screen = getScreen();
-                //esc is used to leave inventory if it's currently open
-                //otherwise, use it to pause/unpause game
-                if (screen.isInventoryVisible()) {
-                    screen.toggleInventory();
-                } else {
-                    screen.togglePause();
-                }
-            }
-        } else if (key.equals(controls.getKey("inventory"))) {
-            if (!isPress) {
-                if (!getScreen().isPaused()) {
-                    pause();
-                    getScreen().toggleInventory();
-                }
-            }
-        }
         //movement keys
         int sign = 0;
         boolean xval = false;
@@ -285,6 +266,31 @@ public class GameController {
             accelY = round(accelY);
         }
 
+        if (isStopped) {
+            return;
+        }
+
+        //Global key binds, regardless of game play/pause state
+        if (key.equals(controls.getKey("pause"))) {
+            if (!isPress) {
+                pause();
+                GameScreen screen = getScreen();
+                //esc is used to leave inventory if it's currently open
+                //otherwise, use it to pause/unpause game
+                if (screen.isInventoryVisible()) {
+                    screen.toggleInventory();
+                } else {
+                    screen.togglePause();
+                }
+            }
+        } else if (key.equals(controls.getKey("inventory"))) {
+            if (!isPress) {
+                if (!getScreen().isPaused()) {
+                    pause();
+                    getScreen().toggleInventory();
+                }
+            }
+        }
 
         if (!isRunning) {
             return;
@@ -345,6 +351,13 @@ public class GameController {
             if (isPress) {
                 player.getInventory().rotate();
                 getScreen().updateHud();
+            }
+        } else if (key.equals(controls.getKey("reload"))) {
+            //get held weapon
+            Item item = player.getItemSelected() != null
+                    ? player.getItemSelected().getItem() : null;
+            if (item instanceof RangedWeapon) {
+                ((RangedWeapon) item).reload();
             }
         }
     }
@@ -463,6 +476,39 @@ public class GameController {
                 double dist = round(Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2)));
                 //pick up item
                 if (dist <= GameSettings.PLAYER_PICKUP_RANGE) {
+                    //check if ammunition
+                    if (d.getItem() instanceof Ammunition) {
+                        //check if a weapon that uses this ammunition exists
+                        for (InventoryItem[] row : player.getInventory().getItems()) {
+                            for (InventoryItem item : row) {
+                                if (item == null) {
+                                    continue;
+                                }
+                                if (item.getItem() instanceof RangedWeapon) {
+                                    Ammo ammo = ((RangedWeapon) item.getItem()).getAmmo();
+                                    Ammunition a = (Ammunition) d.getItem();
+                                    if (ammo == null || ammo.getProjectile() == null) {
+                                        System.out.println("Ammo is null");
+                                        continue;
+                                    }
+                                    if (ammo.getProjectile().equals(a.getProjectile())) {
+                                        int maxChange = ammo.getBackupMax() - ammo.getBackupRemaining();
+                                        if (a.getAmount() <= maxChange) {
+                                            ammo.setBackupRemaining(ammo.getBackupRemaining() + a.getAmount());
+                                            itemPickedUp = true;
+                                            room.getDroppedItems().remove(i);
+                                            i--;
+                                        } else {
+                                            ammo.setBackupRemaining(ammo.getBackupMax());
+                                            a.setAmount(a.getAmount() - maxChange);
+                                        }
+                                        continue droploop;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     //check for item existing in inventory
                     for (InventoryItem[] row : player.getInventory().getItems()) {
                         for (InventoryItem item : row) {
@@ -497,15 +543,19 @@ public class GameController {
 
         private void checkCooldowns() {
             //lower player attack cooldown
-            player.setAttackCooldown(Math.max(0.0, player.getAttackCooldown() - 1000.0
-                    / GameSettings.FPS));
-
+            if (player.getAttackCooldown() > 0) {
+                player.setAttackCooldown(Math.max(0.0, player.getAttackCooldown() - 1000.0
+                        / GameSettings.FPS));
+            }
             //lower held weapon delay if rangedweapon
             Item item = player.getItemSelected() != null  ? player.getItemSelected().getItem()
                     : null;
-            if (item instanceof RangedWeapon) {
+            if (item instanceof RangedWeapon && ((RangedWeapon) item).getDelay() > 0) {
                 RangedWeapon weapon = (RangedWeapon) item;
                 weapon.setDelay(Math.max(0, weapon.getDelay() - 1000 / GameSettings.FPS));
+                if (weapon.isReloading() && weapon.getDelay() == 0) {
+                    weapon.finishReloading();
+                }
             }
         }
 
@@ -600,9 +650,6 @@ public class GameController {
 
                 //reduce ammo
                 ammo.setRemaining(ammo.getRemaining() - 1);
-                if (ammo.getRemaining() == 0) {
-                    weapon.reload();
-                }
 
                 //update ammo on HUD
                 Platform.runLater(() -> getScreen().updateHud());
@@ -610,7 +657,7 @@ public class GameController {
                 //create projectile
                 int dir = player.getDirection() % 4;
                 double x = player.getX() + player.getWidth() / 2;
-                double y = player.getY() + player.getHeight() / 2;
+                double y = player.getY() + player.getHeight();
                 Image sprite = ammo.getProjectile().getSpriteLeft();
                 if (dir == 1) {
                     sprite = ammo.getProjectile().getSpriteUp();
@@ -622,14 +669,16 @@ public class GameController {
                 double height = sprite.getHeight();
                 double width = sprite.getWidth();
                 if (dir == 0) {
-                    x -= 10;
+                    x -= 5;
                 } else if (dir == 2) {
-                    x += 10;
+                    x += 5;
                 } else if (dir == 1) {
-                    y += 10;
+                    y += 5;
                 } else {
-                    y -= 10;
+                    y -= 5;
                 }
+                x -= width / 2;
+                y -= height / 2;
 
                 //reset x and y coordinates
                 if (x < 0) {
@@ -696,10 +745,10 @@ public class GameController {
                         ShotProjectile.addExplosion(room, o, b.getRadius() * 2);
 
                         if (dist <= b.getRadius()) {
-                            player.setHealth(Math.max(0, player.getHealth() - b.getDamage()));
+                            player.setHealth(Math.max(0, player.getHealth() - b.getDamage() * GameSettings.PLAYER_ATTACK_SELF_MODIFIER));
                             Platform.runLater(() -> getScreen().updateHud());
                             if (player.getHealth() == 0) {
-                                gameOver(getScreen());
+                                gameOver();
                                 return true;
                             }
                         }
@@ -1101,7 +1150,7 @@ public class GameController {
                     if (player.getHealth() == 0.0) {
                         //use run later to prevent any thread issues
                         refresh();
-                        gameOver(screen);
+                        gameOver();
                         return true;
                     }
                 }
@@ -1109,9 +1158,9 @@ public class GameController {
             return false;
         }
 
-        private void gameOver(GameScreen screen) {
+        private void gameOver() {
             System.out.println("Game Over");
-            stop();
+            GameScreen screen = getScreen();
             Platform.runLater(() -> {
                 room = screen.getLayout().getStartingRoom();
                 screen.gameOver();

@@ -1,7 +1,8 @@
 package dungeoncrawler.objects;
 
 public class ChallengeRoom extends Room {
-    private DroppedItem[] rewards;
+    private boolean completed;
+    private Inventory rewards;
 
     /**
      * Constructor for defining all Room features except Door layouts.
@@ -12,18 +13,28 @@ public class ChallengeRoom extends Room {
      * @param startX        Initial x-position of player in room, in game units
      * @param startY        Initial y-position of player in room, in game units
      * @param roomObstacles Array of all obstacle locations inside Room object
-     * @param roomType      Style of the Room object
+     * @param rewards Rewards for beating the room
      */
-    public ChallengeRoom(int height, int width, int startX, int startY, Obstacle[] roomObstacles, RoomType roomType, DroppedItem[] rewards) {
-        super(height, width, startX, startY, roomObstacles, roomType);
+    public ChallengeRoom(int height, int width, int startX, int startY, Obstacle[] roomObstacles, Inventory rewards) {
+        super(height, width, startX, startY, roomObstacles, RoomType.CHALLENGEROOM);
         this.rewards = rewards;
+        this.completed = false;
     }
 
-    public DroppedItem[] getRewards() {
+    public Inventory getRewards() {
         return rewards;
     }
 
-    public void setRewards(DroppedItem[] rewards) {
+    public void setRewards(Inventory rewards) {
         this.rewards = rewards;
+    }
+
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

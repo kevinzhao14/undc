@@ -23,6 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 import javafx.scene.image.ImageView;
@@ -31,10 +32,10 @@ import java.util.ArrayList;
 
 
 public class GameScreen extends GameState {
-
     private GameController game;
     private Player player;
     private DungeonLayout dungeonLayout;
+    private Room previous;
     private Room room;
     private StackPane hud;
     private Canvas canvas;
@@ -45,7 +46,7 @@ public class GameScreen extends GameState {
     private boolean paused;
 
     public GameScreen(int width, int height) {
-        dungeonLayout = LayoutGenerator.generateLayout();
+        dungeonLayout = new LayoutGenerator().generateLayout();
         scene = new Scene(new Pane(), width, height);
         canvas = new Canvas();
         inventoryVisible = false;
@@ -56,21 +57,24 @@ public class GameScreen extends GameState {
         game = new GameController();
         createPlayer();
         switch (Controller.getDataManager().getDifficulty()) {
-        case EASY:
-            player.setGold(300);
-            break;
-        case MEDIUM:
-            player.setGold(200);
-            break;
-        default:
-            player.setGold(100);
-            break;
+            case EASY:
+                player.setGold(300);
+                break;
+            case MEDIUM:
+                player.setGold(200);
+                break;
+            default:
+                player.setGold(100);
+                break;
         }
         game.start(dungeonLayout.getStartingRoom());
         scene.getStylesheets().add("http://fonts.googleapis.com/css?family=VT323");
     }
 
     public boolean setRoom(Room newRoom) {
+        //store old room
+        previous = getRoom();
+
         //set new room
         room = newRoom;
 
@@ -97,7 +101,9 @@ public class GameScreen extends GameState {
         createHud();
         updateInventory();
         createPauseMenu();
-        onChallengeEnter();
+        if (room.getType() == RoomType.CHALLENGEROOM) {
+            createChallengeOverlay();
+        }
 
         //if won, set scene as win screen
         if (room.equals(dungeonLayout.getExitRoom())) {
@@ -138,7 +144,7 @@ public class GameScreen extends GameState {
 
             //box.getChildren().addAll(winnerLabel, newGameButton, endButton);
             box.getChildren().addAll(winnerLabel, monstersKilled, totalDamageDealt,
-                                    totalItemsConsumed, newGameButton, endButton);
+                    totalItemsConsumed, newGameButton, endButton);
             box.setAlignment(Pos.CENTER);
             root.getChildren().addAll(box);
             fadeIn(box);
@@ -150,13 +156,9 @@ public class GameScreen extends GameState {
             } else {
                 game.updateRoom();
             }
-
-            /*
-            if (room.getType().equals(RoomType.CHALLENGEROOM)) {
-
-
+            if (room.getType() == RoomType.CHALLENGEROOM && !((ChallengeRoom) room).isCompleted()) {
+                onChallengeEnter();
             }
-             */
         }
         root.setStyle("-fx-background-color: #34311b");
         scene.setRoot(root);
@@ -203,8 +205,6 @@ public class GameScreen extends GameState {
             }
         }
 
-
-
         // lower hud labels (gold, health)
         Label goldLabel = new Label("Gold: " + player.getGold());
         Label healthLabel = new Label("Health: ");
@@ -227,7 +227,6 @@ public class GameScreen extends GameState {
         healthBox.setAlignment(Pos.CENTER);
 
         boolean hasRangedWeapon = false;
-        int[] rangedAmmo = new int[2];
 
         // hotbar
         HBox hotbar = new HBox(10);
@@ -248,13 +247,6 @@ public class GameScreen extends GameState {
                 itemImg.setFitHeight(i == player.getSelected() ? 40 : 30);
                 itemImg.setFitWidth(i == player.getSelected() ? 40 : 30);
 
-                if (item.getItem() instanceof RangedWeapon) {
-                    hasRangedWeapon = true;
-                    rangedAmmo[0] = ((RangedWeapon) item.getItem()).getAmmo().getRemaining();
-                    rangedAmmo[1] = ((RangedWeapon) item.getItem()).getAmmo().getBackupRemaining();
-                }
-
-
                 // show item quantity if > 1
                 if (item.getQuantity() > 1) {
                     Label quantity = new Label("" + item.getQuantity());
@@ -273,13 +265,21 @@ public class GameScreen extends GameState {
         }
 
         // ammo label
-        if (hasRangedWeapon) {
-            Label ammoLabel = new Label("Ammo: " + rangedAmmo[0] + " / " + rangedAmmo[1]);
+        Item item = player.getItemSelected() != null
+                ? player.getItemSelected().getItem() : null;
+        if (item instanceof RangedWeapon) {
+            RangedWeapon w = (RangedWeapon) item;
+            String text = "Ammo: " + w.getAmmo().getRemaining() + " / " + w.getAmmo().getBackupRemaining();
+            if (w.isReloading()) {
+                text = "Ammo: Reloading";
+            }
+            Label ammoLabel = new Label(text);
+            ammoLabel.setMinWidth(200);
             ammoLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
             lowerHUD.getChildren().addAll(healthBox, hotbar, goldLabel, ammoLabel);
 
             ammoLabel.setTranslateX(-50);
-            lowerHUD.setTranslateX(117);
+            lowerHUD.setTranslateX(150);
         } else {
             lowerHUD.getChildren().addAll(healthBox, hotbar, goldLabel);
         }
@@ -310,7 +310,9 @@ public class GameScreen extends GameState {
     private void fadeIn(Pane pane) {
         FadeTransition transition = new FadeTransition();
         setFade(transition, pane, true);
-        transition.setOnFinished((e) -> game.updateRoom());
+        if (room.getType() != RoomType.CHALLENGEROOM || ((ChallengeRoom) room).isCompleted()) {
+            transition.setOnFinished((e) -> game.updateRoom());
+        }
     }
 
     private void setFade(FadeTransition t, Node n, boolean fadeIn) {
@@ -335,6 +337,8 @@ public class GameScreen extends GameState {
     }
 
     public void gameOver() {
+        game.stop();
+
         StackPane root = new StackPane();
         VBox box = new VBox(40);
 
@@ -425,7 +429,7 @@ public class GameScreen extends GameState {
      * and enters first room. The DungeonLayout remains the same, all visited rooms
      * become unvisited, monsters are restored to original health, and
      * player has original gold amt.
-      */
+     */
     public void restartGame() {
         //set all visited values to false in Room[][] grid
         //set all monsters in visited rooms to max health
@@ -433,6 +437,9 @@ public class GameScreen extends GameState {
             for (Room room : roomRow) {
                 if (room != null && room.wasVisited()) {
                     room.setVisited(false);
+                    room.getObstacles().clear();
+                    room.getDroppedItems().clear();
+                    room.getProjectiles().clear();
                     for (Monster m : room.getMonsters()) {
                         if (m != null) {
                             int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
@@ -443,6 +450,9 @@ public class GameScreen extends GameState {
                 }
             }
         }
+        createPlayer();
+
+        /*
         //set player health to original amt
         player.setHealth(player.getMaxHealth());
 
@@ -451,15 +461,15 @@ public class GameScreen extends GameState {
 
         //set player gold value to original amt - MAKE SURE TO UNCOMMENT LINES BELOW
         switch (Controller.getDataManager().getDifficulty()) {
-        case EASY:
-            player.setGold(300);
-            break;
-        case MEDIUM:
-            player.setGold(200);
-            break;
-        default:
-            player.setGold(100);
-            break;
+            case EASY:
+                player.setGold(300);
+                break;
+            case MEDIUM:
+                player.setGold(200);
+                break;
+            default:
+                player.setGold(100);
+                break;
         }
 
         //empty player inventory
@@ -471,9 +481,9 @@ public class GameScreen extends GameState {
         //add starter weapon
         player.getInventory().add(Controller.getDataManager().getWeapon());
         //update inventory display
-        updateInventory();
+        updateInventory();*/
         //go to starting room
-        setRoom(dungeonLayout.getStartingRoom());
+        game.start(dungeonLayout.getStartingRoom());
     }
 
     public void updateInventory() {
@@ -483,7 +493,7 @@ public class GameScreen extends GameState {
         HBox[] itemSlots = new HBox[GameSettings.INVENTORY_COLUMNS];
         StackPane allItemLabels = new StackPane();
 
-        ArrayList<StackPane> itemNameList = new ArrayList<>();
+        ArrayList<Label> itemNameList = new ArrayList<>();
 
         for (int i = 0; i < itemSlots.length; i++) {
             itemSlots[i] = new HBox(30);
@@ -503,18 +513,42 @@ public class GameScreen extends GameState {
                     itemImg.setFitWidth(60);
                     itemImg.setPreserveRatio(true);
                     Label nameLabel = new Label(item.getItem().getName());
+
+                    if (item.getItem() instanceof RangedWeapon) {
+                        RangedWeapon w = (RangedWeapon) item.getItem();
+                        nameLabel.setText(w.getName() + "\n"
+                                + w.getAmmo().getProjectile().getName() + " ("
+                                + w.getAmmo().getRemaining() + " / "
+                                + w.getAmmo().getBackupRemaining() + ")");
+                    } else if (item.getItem() instanceof Weapon) {
+                        Weapon w = (Weapon) item.getItem();
+                        nameLabel.setText(w.getName() + "\nDamage: "
+                                + (int) w.getDamage() + "\nSpeed: "
+                                + (int) w.getAttackSpeed());
+                    } else if (item.getItem() instanceof Potion) {
+                        Potion p = (Potion) item.getItem();
+                        if (p.getType().equals(PotionType.HEALTH)) {
+                            nameLabel.setText(p.getName() + "\n("
+                                    + (int) p.getModifier() + " HP)");
+                        }
+                    } else if (item.getItem() instanceof Bomb) {
+                        Bomb b = (Bomb) item.getItem();
+                        nameLabel.setText(b.getName() + "\nDamage: "
+                                + (int) b.getDamage() + "\nRadius: "
+                                + (int) b.getRadius() + "\nFuse Time: "
+                                + (int) b.getFuse() / 1000 + "s");
+                    }
                     nameLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; "
                             + "-fx-font-family:VT323; -fx-background-color: black; "
                             + "-fx-border-color: white; -fx-padding: 5px");
-                    StackPane itemNameBox = new StackPane();
-                    itemNameBox.getChildren().addAll(nameLabel);
-                    itemNameBox.setAlignment(Pos.TOP_CENTER);
-                    itemNameBox.setVisible(false);
+                    nameLabel.setTextAlignment(TextAlignment.CENTER);
+                    nameLabel.setAlignment(Pos.TOP_CENTER);
+                    nameLabel.setVisible(false);
 
-                    newSlot.setOnMouseEntered(event -> itemNameBox.setVisible(true));
-                    newSlot.setOnMouseExited(event -> itemNameBox.setVisible(false));
+                    newSlot.setOnMouseEntered(event -> nameLabel.setVisible(true));
+                    newSlot.setOnMouseExited(event -> nameLabel.setVisible(false));
 
-                    itemNameList.add(itemNameBox);
+                    itemNameList.add(nameLabel);
 
                     if (player.getInventory().getItems()[i][j].getQuantity() > 1) {
                         Label quantity = new Label("" + item.getQuantity());
@@ -546,8 +580,8 @@ public class GameScreen extends GameState {
         inventoryVisible = false;
         inventory.setVisible(false);
 
-        for (StackPane s : itemNameList) {
-            allItemLabels.getChildren().add(s);
+        for (Label label : itemNameList) {
+            allItemLabels.getChildren().add(label);
         }
 
         box.getChildren().addAll(invLabel, itemRows, allItemLabels);
@@ -564,7 +598,7 @@ public class GameScreen extends GameState {
         }
     }
 
-    public void onChallengeEnter() {
+    public void createChallengeOverlay() {
         challenge = new StackPane();
         VBox box = new VBox(40);
 
@@ -584,10 +618,31 @@ public class GameScreen extends GameState {
         noButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
 
         yesButton.setOnAction((e) -> {
-
+            challenge.setVisible(false);
+            game.pause();
         });
+
         noButton.setOnAction((e) -> {
 
+            int x = (int) player.getX();
+            int y = (int) player.getY();
+
+            if (x < 100 || x > room.getWidth() - GameSettings.PLAYER_WIDTH - 100) {
+                // left/right
+                previous.setStartX(room.getWidth() - room.getStartX());
+                previous.setStartY(y);
+            } else if (y < 50) {
+                // leave through bottom
+                previous.setStartY(room.getHeight() - room.getStartY() - 30);
+                previous.setStartX(x);
+            } else {
+                // leave through top
+                previous.setStartY(room.getHeight() - room.getStartY());
+                previous.setStartX(x);
+            }
+            game.setRoom(previous);
+
+            challenge.setVisible(false);
         });
 
         box.getChildren().addAll(pauseLabel, yesButton, noButton);
@@ -598,9 +653,9 @@ public class GameScreen extends GameState {
         challenge.setVisible(false);
     }
 
-
-
-
+    public void onChallengeEnter() {
+        challenge.setVisible(!challenge.isVisible());
+    }
 
     public void refresh() {
         RoomRenderer.drawFrame(canvas, room, player);

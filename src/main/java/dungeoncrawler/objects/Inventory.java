@@ -64,6 +64,19 @@ public class Inventory {
         items[items.length - 1] = firstrow;
     }
 
+    public InventoryItem[] getItemsList() {
+        InventoryItem[] list = new InventoryItem[size];
+        int c = 0;
+        for (InventoryItem[] row : items) {
+            for (InventoryItem i: row) {
+                if (i != null) {
+                    list[c++] = i;
+                }
+            }
+        }
+        return list;
+    }
+
     public boolean full() {
         return size >= rows * columns;
     }

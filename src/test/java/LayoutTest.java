@@ -11,8 +11,8 @@ public class LayoutTest {
 
     @Test
     public void testRandomShape() {
-        DungeonLayout layout1 = LayoutGenerator.generateLayout();
-        DungeonLayout layout2 = LayoutGenerator.generateLayout();
+        DungeonLayout layout1 = new LayoutGenerator().generateLayout();
+        DungeonLayout layout2 = new LayoutGenerator().generateLayout();
         Room[][] roomGrid1 = layout1.getGrid();
         Room[][] roomGrid2 = layout2.getGrid();
         boolean layoutsAreIdentical = true;
@@ -32,7 +32,7 @@ public class LayoutTest {
 
     @Test
     public void testNumberOfRooms() {
-        DungeonLayout layout = LayoutGenerator.generateLayout();
+        DungeonLayout layout = new LayoutGenerator().generateLayout();
         Room[][] roomGrid = layout.getGrid();
 
         int rooms = 0;

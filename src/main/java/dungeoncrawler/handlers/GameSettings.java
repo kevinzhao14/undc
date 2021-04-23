@@ -55,6 +55,7 @@ public class GameSettings {
     public static final double PLAYER_HEIGHT = PLAYER_WIDTH;
     public static final int PLAYER_HEALTH = 100;
     public static final int PLAYER_ATTACK_RANGE = 20;
+    public static final double PLAYER_ATTACK_SELF_MODIFIER = 0.75;
     public static final double PLAYER_PICKUP_RANGE = 10;
     public static final double PLAYER_FIST_DAMAGE = 1;
     public static final double PLAYER_FIST_COOLDOWN = 0.5;
@@ -63,14 +64,14 @@ public class GameSettings {
     public static final int INVENTORY_COLUMNS = 5;
 
     //monster generation settings
-    public static final int MIN_MONSTERS = 4;
-    public static final int MAX_MONSTERS = 4;
+    public static final int MIN_MONSTERS = 1;
+    public static final int MAX_MONSTERS = 1;
 
     //monster kill reward settings
     public static final double MONSTER_KILL_GOLD = 20;
 
     //monster drop reward settings
-    public static final int MIN_ITEM_DROP = 0;
+    public static final int MIN_ITEM_DROP = 4;
     public static final int MAX_ITEM_DROP = 4;
     public static final double DROP_ITEM_SPRITE_SCALE = 0.75;
     public static final double DROP_ITEM_DISTANCE = 25;
