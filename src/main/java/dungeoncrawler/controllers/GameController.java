@@ -3,29 +3,7 @@ package dungeoncrawler.controllers;
 import dungeoncrawler.gamestates.GameState;
 import dungeoncrawler.handlers.Controls;
 import dungeoncrawler.handlers.RoomRenderer;
-import dungeoncrawler.objects.Ammo;
-import dungeoncrawler.objects.Ammunition;
-import dungeoncrawler.objects.Bomb;
-import dungeoncrawler.objects.Door;
-import dungeoncrawler.objects.DroppedItem;
-import dungeoncrawler.objects.Effect;
-import dungeoncrawler.objects.EffectType;
-import dungeoncrawler.objects.ExitDoor;
-import dungeoncrawler.objects.Inventory;
-import dungeoncrawler.objects.InventoryItem;
-import dungeoncrawler.objects.Item;
-import dungeoncrawler.objects.Monster;
-import dungeoncrawler.objects.Obstacle;
-import dungeoncrawler.objects.ObstacleType;
-import dungeoncrawler.objects.Player;
-import dungeoncrawler.objects.Movable;
-import dungeoncrawler.objects.Projectile;
-import dungeoncrawler.objects.RangedWeapon;
-import dungeoncrawler.objects.Room;
-import dungeoncrawler.objects.RoomType;
-import dungeoncrawler.objects.ShotProjectile;
-import dungeoncrawler.objects.Weapon;
-import dungeoncrawler.objects.Key;
+import dungeoncrawler.objects.*;
 
 import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.handlers.GameSettings;
@@ -943,6 +921,10 @@ public class GameController {
                     }
                     //no key
                     return false;
+
+                    // if in challenge room, don't let player leave if not completed
+                } else if (room.getType() == RoomType.CHALLENGEROOM) {
+                    return ((ChallengeRoom) room).isCompleted();
                 }
 
                 //check if not visited & if there are still monsters
