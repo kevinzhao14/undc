@@ -4,7 +4,6 @@ import dungeoncrawler.objects.DungeonLayout;
 import dungeoncrawler.objects.Room;
 import dungeoncrawler.objects.RoomType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import org.junit.Test;
 import org.testfx.api.FxAssert;

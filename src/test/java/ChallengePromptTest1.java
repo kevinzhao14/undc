@@ -1,15 +1,9 @@
 import dungeoncrawler.controllers.Controller;
 import dungeoncrawler.gamestates.GameScreen;
-import dungeoncrawler.handlers.GameSettings;
-import dungeoncrawler.objects.ChallengeRoom;
 import dungeoncrawler.objects.DungeonLayout;
 import dungeoncrawler.objects.Room;
 import dungeoncrawler.objects.RoomType;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import org.junit.Test;
 import org.testfx.api.FxAssert;
@@ -20,7 +14,6 @@ import org.testfx.robot.impl.SleepRobotImpl;
 import org.testfx.robot.impl.WriteRobotImpl;
 import org.testfx.service.finder.impl.WindowFinderImpl;
 
-import static org.junit.Assert.assertFalse;
 
 public class ChallengePromptTest1 extends ApplicationTest {
 
