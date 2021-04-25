@@ -486,6 +486,8 @@ public class GameController {
                                 }
                             }
                         }
+                        //don't do anything if player can't pick up the ammo
+                        continue;
                     }
 
                     //check for item existing in inventory
@@ -1075,12 +1077,8 @@ public class GameController {
                     double x = m.getX();
                     double y = m.getY();
 
-                    Monster check = checkCollisions(room.getMonsters(), m, x, y, e[1], e[2]);
-
-                    if (check == null) {
-                        m.setX(e[1]);
-                        m.setY(e[2]);
-                    }
+                    m.setX(e[1]);
+                    m.setY(e[2]);
 
                     //remove
                     removeList.add(e);
@@ -1099,8 +1097,15 @@ public class GameController {
             double xdiff = (mPosX + m.getWidth() / 2) - (player.getX() + player.getWidth() / 2);
             double d = round(Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2)));
 
+            double range = GameSettings.MONSTER_MOVE_RANGE;
+            double reactTime = GameSettings.MONSTER_REACTION_TIME;
+            if (m.getType() == MonsterType.FINALBOSS) {
+                range = GameSettings.BOSS_MOVE_RANGE;
+                reactTime = GameSettings.BOSS_REACTION_TIME;
+            }
 
-            if (d <= GameSettings.MONSTER_MOVE_RANGE && d >= GameSettings.MONSTER_MOVE_MIN) {
+
+            if (d <= range && d >= GameSettings.MONSTER_MOVE_MIN) {
                 //move monster towards player
                 double angle = Math.atan2(ydiff, xdiff) - Math.PI;
                 double newPosX = mPosX + round(Math.cos(angle) * m.getSpeed());
@@ -1115,14 +1120,10 @@ public class GameController {
                     return false;
                 }
 
-                Monster check = checkCollisions(room.getMonsters(), m, mPosX, mPosY, newPos[0], newPos[1]);
-
-                if (check == null) {
-                    //add to queue
-                    double[] moveItem =
-                            new double[]{GameSettings.MONSTER_REACTION_TIME, newPos[0], newPos[1]};
-                    m.getMoveQueue().add(moveItem);
-                }
+                //add to queue
+                double[] moveItem =
+                        new double[]{reactTime, newPos[0], newPos[1]};
+                m.getMoveQueue().add(moveItem);
             }
             ydiff = (m.getY() + m.getHeight() / 2) - (player.getY() + player.getHeight() / 2);
             xdiff = (m.getX() + m.getWidth() / 2) - (player.getX() + player.getWidth() / 2);

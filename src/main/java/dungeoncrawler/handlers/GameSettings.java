@@ -82,11 +82,13 @@ public class GameSettings {
 
     //how close to a player a monster must be to move towards it
     public static final int MONSTER_MOVE_RANGE = 300;
+    public static final int BOSS_MOVE_RANGE = MONSTER_MOVE_RANGE * 2;
     public static final int MONSTER_MOVE_MIN = 10;
     //how close to a player a monster must be to attack
     public static final int MONSTER_ATTACK_RANGE = 10;
     //monster reaction time to a player being in range in milliseconds
     public static final int MONSTER_REACTION_TIME = 300;
+    public static final int BOSS_REACTION_TIME = MONSTER_REACTION_TIME / 2;
     public static final int MONSTER_FADE_TIME = 400;
 
     public static final double EXPLOSION_MAX_WIDTH = 75;

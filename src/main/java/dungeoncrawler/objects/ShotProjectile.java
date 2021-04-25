@@ -39,7 +39,7 @@ public class ShotProjectile implements Movable {
         }
 
         //draw explosion animation
-        Image explosion = new Image(DataManager.explosion);
+        Image explosion = new Image(DataManager.EXPLOSION);
         double height = width;// * 1.2734375;
         double x = m.getX() + (m.getWidth() / 2) - (width / 2);
         double y = m.getY() + (m.getHeight() / 2) - (height / 2);

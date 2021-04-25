@@ -3,6 +3,7 @@ package dungeoncrawler.handlers;
 import dungeoncrawler.controllers.Controller;
 import dungeoncrawler.controllers.DataManager;
 import dungeoncrawler.objects.Ammo;
+import dungeoncrawler.objects.Ammunition;
 import dungeoncrawler.objects.ChallengeRoom;
 import dungeoncrawler.objects.Door;
 import dungeoncrawler.objects.DoorOrientation;
@@ -92,6 +93,9 @@ public class LayoutGenerator {
         cr2Rewards.add(items[3], 2);
         cr2Rewards.add(items[4], 1);
         cr2Rewards.add(items[5], 3);
+        Ammunition rockets = (Ammunition) items[7];
+        rockets.setAmount(20);
+        cr2Rewards.add(rockets);
     }
 
     private void reset() {
@@ -132,7 +136,7 @@ public class LayoutGenerator {
         roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2] = startRoom;
 
         //challenge rooms
-        int challengeCount = 0;
+        challengeCount = 0;
 
         //left path
         for (int i = 0; i < 4; i++) {
@@ -140,8 +144,9 @@ public class LayoutGenerator {
         }
 
         //check exit distance
-        if (!exitPlaced || (Math.abs(exitCoords[0] - GRID_WIDTH / 2) + Math.abs(exitCoords[1]
-                - GRID_HEIGHT / 2)) < 1) {
+        double exitDistance = Math.abs(exitCoords[0] - GRID_WIDTH / 2) + Math.abs(exitCoords[1]
+                - GRID_HEIGHT / 2);
+        if (!exitPlaced || exitDistance < 1 || challengeCount < 2) {
             return generateLayout();
         }
         printGrid(roomGrid);
@@ -338,7 +343,7 @@ public class LayoutGenerator {
                     if (grid[j][i].getType().equals(RoomType.EXITROOM)) {
                         col += "e ";
                     } else if (grid[j][i].getType().equals(RoomType.CHALLENGEROOM)) {
-                        col += "c ";
+                        col += grid[j][i].equals(cr1) ? "1 " : "2 ";
                     } else {
                         col += "* ";
                     }

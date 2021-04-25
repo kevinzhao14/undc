@@ -7,7 +7,7 @@ public class Ammunition extends Item{
     private Projectile projectile;
 
     public Ammunition(String name, String sprite, int amount, Projectile projectile) {
-        super(sprite == null ? null : new Image(sprite), name, 1, false);
+        super(sprite == null ? null : new Image(sprite), name, 1, true);
         this.amount = amount;
         this.projectile = projectile;
     }

@@ -1,11 +1,13 @@
 package dungeoncrawler.objects;
 
 import dungeoncrawler.controllers.Controller;
+import dungeoncrawler.controllers.DataManager;
 import dungeoncrawler.gamestates.GameScreen;
 import dungeoncrawler.handlers.GameSettings;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 
+import javax.xml.crypto.Data;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Random;
@@ -119,6 +121,9 @@ public class Monster extends Entity {
                         if (itemRow != null) {
                             for (InventoryItem item : itemRow) {
                                 if (item != null) {
+                                    if (item.equals(DataManager.ITEMS[6])) {
+                                        DataManager.unlockedAmmo = true;
+                                    }
                                     for (int i = 0; i < item.getQuantity(); i++) {
                                         DroppedItem newItem = new DroppedItem(item.getItem());
                                         newItem.setWidth(item.getItem().getSprite().getWidth());
@@ -210,14 +215,15 @@ public class Monster extends Entity {
         for (int i = 0; i < numItems; i++) {
             isValidLocation = false; //reset flag
 
-            randIdx = generator.nextInt(Controller.getDataManager().ITEMS.length);
+            randIdx = generator.nextInt(DataManager.ITEMS.length);
 
             //keep generating a new index until a droppable item is found
-            while (!Controller.getDataManager().ITEMS[randIdx].isDroppable()) {
-                randIdx = generator.nextInt(Controller.getDataManager().ITEMS.length);
+            while (!DataManager.ITEMS[randIdx].isDroppable() || (DataManager.ITEMS[randIdx]
+                    instanceof Ammunition && !DataManager.unlockedAmmo)) {
+                randIdx = generator.nextInt(DataManager.ITEMS.length);
             }
 
-            droppedItems[i] = new DroppedItem(Controller.getDataManager().ITEMS[randIdx].copy());
+            droppedItems[i] = new DroppedItem(DataManager.ITEMS[randIdx].copy());
 
             //Set width and height
             droppedItems[i].setWidth(droppedItems[i].getItem().getSprite().getWidth());
