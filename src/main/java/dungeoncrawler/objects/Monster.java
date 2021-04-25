@@ -132,8 +132,6 @@ public class Monster extends Entity {
                                         newItem.setHeight(height);
 
                                         double maxRadius = GameSettings.PLAYER_PICKUP_RANGE * 1;
-                                        double maxRadius =
-                                                screen.getPlayer().getSpriteWidth() * 3.0;
                                         Random generator = new Random();
                                         Player player = screen.getPlayer();
                                         double x = 0;
