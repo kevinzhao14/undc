@@ -156,19 +156,17 @@ public class InitPlayerConfigScreen extends GameState {
 
 
         this.scene = new Scene(root, this.windowWidth, this.windowHeight);
-
-        scene.getStylesheets().add("http://fonts.googleapis.com/css?family=VT323");
-        enterPlayerName.setStyle("-fx-font-family:VT323; -fx-font-size:20");
-        selectDifficulty.setStyle("-fx-font-family:VT323; -fx-font-size:20");
-        selectStarterWeapon.setStyle("-fx-font-family:VT323; -fx-font-size:20");
+        scene.getStylesheets().addAll("styles/INITPLAYERCONFIGSCREEN.css",
+                "http://fonts.googleapis.com/css?family=VT323");
+        enterPlayerName.getStyleClass().add("label");
+        selectDifficulty.getStyleClass().add("label");
+        selectStarterWeapon.getStyleClass().add("label");
         for (RadioButton r : difficultyButtons) {
-            r.setStyle("-fx-font-family:VT323; -fx-font-size:20");
+            r.getStyleClass().add("radioButton");
         }
         for (RadioButton r : weaponButtons) {
-            r.setStyle("-fx-font-family:VT323; -fx-font-size:20");
+            r.getStyleClass().add("radioButton");
         }
-        nextButton.setStyle("-fx-font-family:VT323; -fx-font-size:20");
-
+        nextButton.getStyleClass().add("nextButton");
     }
-
 }
