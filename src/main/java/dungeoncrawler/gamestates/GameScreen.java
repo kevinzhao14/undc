@@ -59,15 +59,15 @@ public class GameScreen extends GameState {
         game = new GameController();
         createPlayer();
         switch (Controller.getDataManager().getDifficulty()) {
-            case EASY:
-                player.setGold(300);
-                break;
-            case MEDIUM:
-                player.setGold(200);
-                break;
-            default:
-                player.setGold(100);
-                break;
+        case EASY:
+            player.setGold(300);
+            break;
+        case MEDIUM:
+            player.setGold(200);
+            break;
+        default:
+            player.setGold(100);
+            break;
         }
         game.start(dungeonLayout.getStartingRoom());
         scene.getStylesheets().add("http://fonts.googleapis.com/css?family=VT323");

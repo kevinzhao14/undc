@@ -7,9 +7,7 @@ import dungeoncrawler.handlers.GameSettings;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 
-import javax.xml.crypto.Data;
 import java.util.LinkedList;
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -66,7 +64,8 @@ public class Monster extends Entity {
             return false;
         }
         //update damage dealt stat in player object
-        ((GameScreen) Controller.getState()).getPlayer().addDamageDealt(Math.min(this.getHealth(), damageAmount));
+        ((GameScreen) Controller.getState()).getPlayer().addDamageDealt(
+                Math.min(this.getHealth(), damageAmount));
         //change monster health
         this.setHealth(Math.max(0, this.getHealth() - damageAmount));
 
@@ -117,7 +116,8 @@ public class Monster extends Entity {
                 }
                 if (allDead) {
                     ((ChallengeRoom) screen.getRoom()).setCompleted(true);
-                    for (InventoryItem[] itemRow : ((ChallengeRoom) screen.getRoom()).getRewards().getItems()) {
+                    for (InventoryItem[] itemRow
+                            : ((ChallengeRoom) screen.getRoom()).getRewards().getItems()) {
                         if (itemRow != null) {
                             for (InventoryItem item : itemRow) {
                                 if (item != null) {
@@ -132,6 +132,8 @@ public class Monster extends Entity {
                                         newItem.setHeight(height);
 
                                         double maxRadius = GameSettings.PLAYER_PICKUP_RANGE * 1;
+                                        double maxRadius =
+                                                screen.getPlayer().getSpriteWidth() * 3.0;
                                         Random generator = new Random();
                                         Player player = screen.getPlayer();
                                         double x = 0;
@@ -146,10 +148,14 @@ public class Monster extends Entity {
                                             double randAngle = 2 * Math.PI * generator.nextDouble();
 
                                             //calculate x and y
-                                            x = player.getX() + player.getWidth() / 2 + (randDist * Math.cos(randAngle)) - width / 2;
-                                            y = player.getY() + player.getHeight()  + (randDist * Math.sin(randAngle)) - height / 2;
+                                            x = player.getX() + player.getWidth() / 2 + (randDist
+                                                    * Math.cos(randAngle)) - width / 2;
+                                            y = player.getY() + player.getHeight()  + (randDist
+                                                    * Math.sin(randAngle)) - height / 2;
 
-                                            isValidLocation = (x > 0.0 && x < screen.getRoom().getWidth() && y > 0.0 && y < screen.getRoom().getHeight());
+                                            isValidLocation = x >= 0.0 && x < screen.getRoom()
+                                                    .getWidth() && y > 0.0 && y < screen.getRoom()
+                                                    .getHeight();
                                         }
 
                                         //Set x and y
@@ -190,7 +196,7 @@ public class Monster extends Entity {
             double x = getX() + getWidth() / 2 - sprite.getWidth() / 2;
             double y = getY() + getHeight() / 2 - sprite.getHeight() / 2;
             return new DroppedItem[]{
-                    new DroppedItem(key, x, y, sprite.getWidth(), sprite.getHeight())
+                new DroppedItem(key, x, y, sprite.getWidth(), sprite.getHeight())
             };
         }
         Random generator = new Random();
