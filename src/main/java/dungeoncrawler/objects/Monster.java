@@ -126,27 +126,28 @@ public class Monster extends Entity {
                                     }
                                     for (int i = 0; i < item.getQuantity(); i++) {
                                         DroppedItem newItem = new DroppedItem(item.getItem());
-                                        newItem.setWidth(item.getItem().getSprite().getWidth());
-                                        newItem.setHeight(item.getItem().getSprite().getHeight());
+                                        double width = item.getItem().getSprite().getWidth();
+                                        double height = item.getItem().getSprite().getHeight();
+                                        newItem.setWidth(width);
+                                        newItem.setHeight(height);
 
-                                        double maxRadius = screen.getPlayer().getSpriteWidth() * 3.0;
+                                        double maxRadius = GameSettings.PLAYER_PICKUP_RANGE * 1;
                                         Random generator = new Random();
-                                        double randDist;
-                                        double randAngle;
-                                        double x = screen.getPlayer().getX();
-                                        double y = screen.getPlayer().getY();
+                                        Player player = screen.getPlayer();
+                                        double x = 0;
+                                        double y = 0;
 
                                         boolean isValidLocation = false;
 
                                         while (!isValidLocation) {
                                             //generate randDist between item and monster
-                                            randDist = maxRadius * generator.nextDouble();
+                                            double randDist = maxRadius * generator.nextDouble();
                                             //generate randAngle
-                                            randAngle = 2 * Math.PI * generator.nextDouble();
+                                            double randAngle = 2 * Math.PI * generator.nextDouble();
 
                                             //calculate x and y
-                                            x = screen.getPlayer().getX() + (randDist * Math.cos(randAngle));
-                                            y = screen.getPlayer().getY() + (randDist * Math.sin(randAngle));
+                                            x = player.getX() + player.getWidth() / 2 + (randDist * Math.cos(randAngle)) - width / 2;
+                                            y = player.getY() + player.getHeight()  + (randDist * Math.sin(randAngle)) - height / 2;
 
                                             isValidLocation = (x > 0.0 && x < screen.getRoom().getWidth() && y > 0.0 && y < screen.getRoom().getHeight());
                                         }

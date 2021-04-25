@@ -165,6 +165,8 @@ public class GameController {
         frictionY = false;
         isAttacking = false;
         isFiring = false;
+        ticks = 0;
+        totalTime = 0;
     }
 
     /**
@@ -363,6 +365,7 @@ public class GameController {
          */
         public void run() {
             if (!(Controller.getState() instanceof GameScreen)) {
+                System.out.println("Invalid Run Instance!");
                 this.cancel();
                 return;
             }

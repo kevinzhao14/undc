@@ -109,6 +109,9 @@ public class LayoutGenerator {
 
         exitRoom = new Room(exitHeight, exitWidth, 100, 100,
                 new Obstacle[0], RoomType.EXITROOM);
+        Monster boss = DataManager.FINALBOSS;
+        boss.setX(exitWidth / 2 - boss.getWidth() / 2);
+        boss.setY(exitHeight - boss.getHeight() - 5);
         exitRoom.setMonsters(new Monster[]{DataManager.FINALBOSS});
         ExitDoor ed = new ExitDoor((exitWidth - DOORTOP_WIDTH) / 2, exitHeight - 1, DOORTOP_WIDTH, DOORTOP_HEIGHT);
         exitRoom.setTopDoor(ed);
