@@ -1,16 +1,10 @@
 import dungeoncrawler.controllers.Controller;
 import dungeoncrawler.gamestates.GameScreen;
-import dungeoncrawler.objects.DungeonLayout;
 import dungeoncrawler.objects.Player;
-import dungeoncrawler.objects.Room;
-import dungeoncrawler.objects.RoomType;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
-import org.testfx.api.FxAssert;
 import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.matcher.base.NodeMatchers;
 import org.testfx.robot.impl.BaseRobotImpl;
 import org.testfx.robot.impl.SleepRobotImpl;
 import org.testfx.robot.impl.WriteRobotImpl;
