@@ -1,7 +1,5 @@
 package dungeoncrawler.objects;
 
-import java.util.ArrayList;
-
 public class ChallengeRoom extends Room {
     private boolean completed;
     private Inventory rewards;
