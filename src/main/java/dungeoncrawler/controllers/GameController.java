@@ -391,7 +391,8 @@ public class GameController {
                 for (int i = 0; i < obstacles.size(); i++) {
                     obs[i] = obstacles.get(i);
                 }
-                Obstacle checkObs = (Obstacle) checkCollisions(obs, player, posX, posY, newPosX, newPosY)[0];
+                Obstacle checkObs = (Obstacle) checkCollisions(
+                        obs, player, posX, posY, newPosX, newPosY)[0];
                 if (checkObs == null) {
 
                     //set player sprite
@@ -484,9 +485,11 @@ public class GameController {
                                         continue;
                                     }
                                     if (ammo.getProjectile().equals(a.getProjectile())) {
-                                        int maxChange = ammo.getBackupMax() - ammo.getBackupRemaining();
+                                        int maxChange = ammo.getBackupMax()
+                                                - ammo.getBackupRemaining();
                                         if (a.getAmount() <= maxChange) {
-                                            ammo.setBackupRemaining(ammo.getBackupRemaining() + a.getAmount());
+                                            ammo.setBackupRemaining(ammo.getBackupRemaining()
+                                                    + a.getAmount());
                                             itemPickedUp = true;
                                             room.getDroppedItems().remove(i);
                                             i--;
@@ -572,7 +575,8 @@ public class GameController {
                     //check for entity collisions
                     newX = checked[0];
                     newY = checked[1];
-                    Monster m = (Monster) checkCollisions(room.getMonsters(), p, x, y, newX, newY)[0];
+                    Monster m = (Monster) checkCollisions(
+                            room.getMonsters(), p, x, y, newX, newY)[0];
                     //hit a monster
                     if (m != null) {
                         p.hit(m);
@@ -742,7 +746,8 @@ public class GameController {
                         ShotProjectile.addExplosion(room, o, b.getRadius() * 2);
 
                         if (dist <= b.getRadius()) {
-                            player.setHealth(Math.max(0, player.getHealth() - b.getDamage() * GameSettings.PLAYER_ATTACK_SELF_MODIFIER));
+                            player.setHealth(Math.max(0, player.getHealth()
+                                    - b.getDamage() * GameSettings.PLAYER_ATTACK_SELF_MODIFIER));
                             Platform.runLater(() -> getScreen().updateHud());
                             if (player.getHealth() == 0) {
                                 gameOver();
@@ -867,7 +872,8 @@ public class GameController {
             return true;
         }
 
-        private <T extends Movable> Object[] checkCollisions(T[] list, Movable m, double x, double y ,double newX, double newY) {
+        private <T extends Movable> Object[] checkCollisions(
+                T[] list, Movable m, double x, double y, double newX, double newY) {
             for (T t: list) {
                 if (t == null) {
                     continue;
@@ -883,7 +889,8 @@ public class GameController {
                 //for monsters
                 if (t instanceof Monster && ((Monster) t).getHealth() == 0) {
                     continue;
-                } else if (t instanceof Obstacle && ((Obstacle) t).getType() == ObstacleType.NONSOLID) {
+                } else if (t instanceof Obstacle
+                        && ((Obstacle) t).getType() == ObstacleType.NONSOLID) {
                     continue;
                 }
 
@@ -941,7 +948,8 @@ public class GameController {
                     return false;
 
                     // if in challenge room, don't let player leave if not completed
-                } else if (room.getType() == RoomType.CHALLENGEROOM && !((ChallengeRoom) room).isCompleted()) {
+                } else if (room.getType() == RoomType.CHALLENGEROOM
+                        && !((ChallengeRoom) room).isCompleted()) {
                     return false;
                 }
 
