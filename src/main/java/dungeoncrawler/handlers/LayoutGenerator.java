@@ -7,15 +7,12 @@ import dungeoncrawler.objects.Ammunition;
 import dungeoncrawler.objects.ChallengeRoom;
 import dungeoncrawler.objects.Door;
 import dungeoncrawler.objects.DoorOrientation;
-import dungeoncrawler.objects.DroppedItem;
 import dungeoncrawler.objects.DungeonLayout;
 import dungeoncrawler.objects.ExitDoor;
 import dungeoncrawler.objects.Inventory;
 import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.Obstacle;
-import dungeoncrawler.objects.Potion;
-import dungeoncrawler.objects.PotionType;
 import dungeoncrawler.objects.RangedWeapon;
 import dungeoncrawler.objects.Room;
 import dungeoncrawler.objects.RoomType;
@@ -117,7 +114,8 @@ public class LayoutGenerator {
         boss.setX(exitWidth / 2 - boss.getWidth() / 2);
         boss.setY(exitHeight - boss.getHeight() - 5);
         exitRoom.setMonsters(new Monster[]{DataManager.FINALBOSS});
-        ExitDoor ed = new ExitDoor((exitWidth - DOORTOP_WIDTH) / 2, exitHeight - 1, DOORTOP_WIDTH, DOORTOP_HEIGHT);
+        ExitDoor ed = new ExitDoor((exitWidth - DOORTOP_WIDTH) / 2,
+                exitHeight - 1, DOORTOP_WIDTH, DOORTOP_HEIGHT);
         exitRoom.setTopDoor(ed);
 
         cr1 = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, cr1Rewards);
@@ -213,7 +211,6 @@ public class LayoutGenerator {
         generateObstacles(r);
         roomGrid[x][y] = r;
 
-
         int[] coords = generateRoom(roomGrid, x, y, 0);
         Random rand = new Random();
         int pathLength = rand.nextInt(PATH_MAX - PATH_MIN + 1) + PATH_MIN;
@@ -267,7 +264,8 @@ public class LayoutGenerator {
             blockedDirections[0] = true;
         }
 
-        if (!(blockedDirections[0] && blockedDirections[1] && blockedDirections[2] && blockedDirections[3])) {
+        if (!(blockedDirections[0] && blockedDirections[1]
+                && blockedDirections[2] && blockedDirections[3])) {
             int newDirection;
             do {
                 newDirection = (int) (Math.random() * 4);
