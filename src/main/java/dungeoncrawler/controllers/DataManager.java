@@ -28,10 +28,10 @@ public class DataManager {
     };
 
     public static final Projectile[] PROJECTILES = new Projectile[] {
-            new Projectile("Rocket", new String[]{"weapons/rocket-left.png",
-                    "weapons/rocket-up.png", "weapons/rocket-right.png", "weapons/rocket-down.png"},
-                    25, 500.0 / GameSettings.FPS, 400, true, 25)
-    };
+        new Projectile("Rocket",
+                new String[]{"weapons/rocket-left.png", "weapons/rocket-up.png",
+                    "weapons/rocket-right.png", "weapons/rocket-down.png"},
+                25, 500.0 / GameSettings.FPS, 400, true, 25)};
 
     public static final Item[] ITEMS = new Item[]{
         new Potion("Small Health Potion", "items/health-potion-small.png", 10, true,
@@ -55,7 +55,9 @@ public class DataManager {
         new Monster(80, 10, 50.0 / GameSettings.FPS, 2, MonsterType.TANK, 21, 31)
     };
 
-    public static final Monster FINALBOSS = new Monster(400, 15, 100.0 / GameSettings.FPS, 1.0, MonsterType.FINALBOSS, 48, 48);
+    public static final Monster FINALBOSS = new Monster(400,
+             15, 100.0 / GameSettings.FPS, 1.0,
+            MonsterType.FINALBOSS, 48, 48);
     public static final String EXPLOSION = "textures/boom.gif";
 
     public static boolean unlockedAmmo = false;

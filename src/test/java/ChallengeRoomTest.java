@@ -23,9 +23,9 @@ public class ChallengeRoomTest extends ApplicationTest {
         int numChallengeRooms = 0;
         for (int i = 0; i < roomGrid.length; i++) {
             for (int j = 0; j < roomGrid[i].length; j++) {
-               if (roomGrid[i][j] instanceof ChallengeRoom) {
-                   numChallengeRooms++;
-               }
+                if (roomGrid[i][j] instanceof ChallengeRoom) {
+                    numChallengeRooms++;
+                }
             }
         }
         assertEquals(numChallengeRooms, 2);

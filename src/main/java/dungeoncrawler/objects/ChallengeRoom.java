@@ -15,7 +15,8 @@ public class ChallengeRoom extends Room {
      * @param roomObstacles Array of all obstacle locations inside Room object
      * @param rewards Rewards for beating the room
      */
-    public ChallengeRoom(int height, int width, int startX, int startY, Obstacle[] roomObstacles, Inventory rewards) {
+    public ChallengeRoom(int height, int width, int startX, int startY,
+                         Obstacle[] roomObstacles, Inventory rewards) {
         super(height, width, startX, startY, roomObstacles, RoomType.CHALLENGEROOM);
         this.rewards = rewards;
         this.completed = false;
