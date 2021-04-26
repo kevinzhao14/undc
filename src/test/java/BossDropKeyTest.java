@@ -39,4 +39,21 @@ public class BossDropKeyTest extends ApplicationTest {
                 .anyMatch(x -> x.getItem() instanceof Key));
     }
 
+
+    @Test
+    public void testFinalBossSpecialKey() {
+        clickOn("Start");
+        clickOn("Enter player name:");
+        WriteRobotImpl wr = new WriteRobotImpl(
+                new BaseRobotImpl(), new SleepRobotImpl(), new WindowFinderImpl());
+        wr.write("player1");
+        clickOn("EASY");
+        clickOn("Sword");
+        clickOn("Next");
+
+        Monster m = new Monster(1, 1, 1, 1, MonsterType.FINALBOSS, 1, 1);
+        // dropped items has Special Key specifically
+        Assert.assertTrue(Arrays.stream(m.dropItems())
+                .anyMatch(x -> x.getItem().getName().equals("Special Key")));
+    }
 }
