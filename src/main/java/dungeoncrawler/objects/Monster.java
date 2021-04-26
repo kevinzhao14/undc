@@ -123,7 +123,7 @@ public class Monster extends Entity {
                             for (InventoryItem item : itemRow) {
                                 if (item != null) {
                                     if (item.getItem().equals(DataManager.ITEMS[6])) {
-                                        DataManager.unlockedAmmo = true;
+                                        DataManager.setUnlockedAmmo(true);
                                     }
                                     for (int i = 0; i < item.getQuantity(); i++) {
                                         DroppedItem newItem = new DroppedItem(item.getItem());
@@ -223,7 +223,7 @@ public class Monster extends Entity {
 
             //keep generating a new index until a droppable item is found
             while (!DataManager.ITEMS[randIdx].isDroppable() || (DataManager.ITEMS[randIdx]
-                    instanceof Ammunition && !DataManager.unlockedAmmo)) {
+                    instanceof Ammunition && !DataManager.isUnlockedAmmo())) {
                 randIdx = generator.nextInt(DataManager.ITEMS.length);
             }
 

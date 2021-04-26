@@ -3,9 +3,8 @@ package dungeoncrawler.objects;
 import dungeoncrawler.controllers.Controller;
 import dungeoncrawler.gamestates.GameScreen;
 import javafx.application.Platform;
-import org.w3c.dom.ranges.Range;
 
-public class RangedWeapon extends Weapon{
+public class RangedWeapon extends Weapon {
     private Ammo ammo;
 
     //reload time in seconds

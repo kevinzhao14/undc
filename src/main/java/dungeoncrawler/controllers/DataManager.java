@@ -67,7 +67,7 @@ public class DataManager {
             MonsterType.FINALBOSS, 48, 48);
     public static final String EXPLOSION = "textures/boom.gif";
 
-    public static boolean unlockedAmmo = false;
+    private static boolean unlockedAmmo = false;
 
     private String username;
     private Difficulty difficulty;
@@ -80,6 +80,14 @@ public class DataManager {
         username = "";
         difficulty = null;
         weapon = null;
+    }
+
+    public static boolean isUnlockedAmmo() {
+        return unlockedAmmo;
+    }
+
+    public static void setUnlockedAmmo(boolean unlockedAmmo) {
+        DataManager.unlockedAmmo = unlockedAmmo;
     }
 
     /**

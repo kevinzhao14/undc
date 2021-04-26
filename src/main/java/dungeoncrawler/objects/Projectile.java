@@ -1,6 +1,5 @@
 package dungeoncrawler.objects;
 
-import dungeoncrawler.handlers.GameSettings;
 import javafx.scene.image.Image;
 
 public class Projectile {
@@ -38,7 +37,8 @@ public class Projectile {
 
     public Projectile copy() {
         Projectile p = new Projectile(name, damage, speed, range, isMulti, splashRange);
-        p.setSprites(spriteLeft.getUrl(), spriteUp.getUrl(), spriteRight.getUrl(), spriteDown.getUrl());
+        p.setSprites(spriteLeft.getUrl(), spriteUp.getUrl(), spriteRight.getUrl(),
+                spriteDown.getUrl());
         return p;
     }
 

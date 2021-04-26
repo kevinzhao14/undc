@@ -2,7 +2,7 @@ package dungeoncrawler.objects;
 
 import javafx.scene.image.Image;
 
-public class Ammunition extends Item{
+public class Ammunition extends Item {
     private int amount;
     private Projectile projectile;
 

@@ -40,7 +40,7 @@ public class ShotProjectile implements Movable {
 
         //draw explosion animation
         Image explosion = new Image(DataManager.EXPLOSION);
-        double height = width;// * 1.2734375;
+        double height = width;
         double x = m.getX() + (m.getWidth() / 2) - (width / 2);
         double y = m.getY() + (m.getHeight() / 2) - (height / 2);
         Obstacle o = new Obstacle(explosion, x, y, width, height, ObstacleType.NONSOLID);
@@ -67,8 +67,6 @@ public class ShotProjectile implements Movable {
         if (e != null) {
             if (e instanceof Monster) {
                 ((Monster) e).attackMonster(projectile.getDamage(), true);
-            } else {
-                //attack other entities
             }
         }
 
@@ -92,7 +90,8 @@ public class ShotProjectile implements Movable {
             double distY = Math.pow(posY - player.getY() + player.getHeight() / 2, 2);
             double dist = Math.sqrt(distX + distY);
             if (dist <= projectile.getSplashRange()) {
-                player.setHealth(Math.max(0, player.getHealth() - projectile.getDamage() * GameSettings.PLAYER_ATTACK_SELF_MODIFIER));
+                player.setHealth(Math.max(0, player.getHealth() - projectile.getDamage()
+                        * GameSettings.PLAYER_ATTACK_SELF_MODIFIER));
                 Platform.runLater(() -> screen.updateHud());
                 if (player.getHealth() == 0) {
                     Platform.runLater(() -> screen.gameOver());
