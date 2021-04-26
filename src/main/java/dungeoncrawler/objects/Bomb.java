@@ -41,9 +41,9 @@ public class Bomb extends Item {
         //place object as an obstacle
         double width = 20;
         double height = 20;
-        Obstacle o = new Obstacle(player.getX() + player.getWidth() / 2 - width / 2,
+        Obstacle o = new Obstacle(getSprite(),player.getX() + player.getWidth() / 2 - width / 2,
                 player.getY() + player.getHeight() / 2 - height / 2, width, height,
-                ObstacleType.SOLID);
+                ObstacleType.NONSOLID);
         o.setSprite(getSprite());
         Bomb timer = copy();
         o.setItem(timer);

@@ -32,13 +32,9 @@ public class Room {
      * @param width Room width, in game units
      * @param startX Initial x-position of player in room, in game units
      * @param startY Initial y-position of player in room, in game units
-     * @param roomObstacles Array of all obstacle locations inside Room object
      * @param roomType Style of the Room object
      */
-    public Room(int height, int width, int startX,
-                int startY, Obstacle[] roomObstacles,
-                RoomType roomType) {
-        //this(height, width, startX, startY, roomObstacles, null, null, null, null, roomType);
+    public Room(int height, int width, int startX, int startY, RoomType roomType) {
         this.startX = startX;
         this.startY = startY;
         this.height = height;

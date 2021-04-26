@@ -5,8 +5,8 @@ public class Door extends Obstacle {
     private DoorOrientation orientation;
     private Room goesTo;
 
-    public Door(int x, int y, int w, int h, Room r, DoorOrientation d) {
-        super(x, y, w, h, ObstacleType.DOOR);
+    public Door(double x, double y, double w, double h, Room r, DoorOrientation d) {
+        super("", x, y, w, h, ObstacleType.DOOR);
         this.goesTo = r;
         this.orientation = d;
 
@@ -19,13 +19,4 @@ public class Door extends Obstacle {
     public Room getGoesTo() {
         return goesTo;
     }
-
-    public void setOrientation(DoorOrientation d) {
-        this.orientation = d;
-    }
-
-    public void setGoesTo(Room r) {
-        this.goesTo = r;
-    }
-
 }

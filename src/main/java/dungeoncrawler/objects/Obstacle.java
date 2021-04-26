@@ -12,12 +12,21 @@ public class Obstacle implements Movable {
     private Image sprite;
     private Item item;
 
-    public Obstacle(double x, double y, double w, double h, ObstacleType type) {
+    public Obstacle(Image sprite, double x, double y, double w, double h, ObstacleType type) {
         this.x = x;
         this.y = y;
         this.height = h;
         this.width = w;
         this.type = type;
+        this.sprite = sprite;
+    }
+
+    public Obstacle(String sprite, double x, double y, double w, double h, ObstacleType type) {
+        this(sprite.equals("") ? null : new Image(sprite), x, y, w, h, type);
+    }
+
+    public Obstacle copy() {
+        return new Obstacle(sprite, x, y, width, height, type);
     }
 
     @Override
@@ -50,7 +59,7 @@ public class Obstacle implements Movable {
 
     @Override
     public void setX(double x) {
-        this.y = y;
+        this.x = x;
     }
 
     @Override

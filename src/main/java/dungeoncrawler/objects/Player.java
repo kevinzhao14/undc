@@ -33,12 +33,12 @@ public class Player extends Entity {
         this.gold = 0;
         this.inventory = new Inventory(GameSettings.INVENTORY_ROWS, GameSettings.INVENTORY_COLUMNS);
         inventory.add(weapon);
-        RangedWeapon w = (RangedWeapon) DataManager.ITEMS[6].copy();
-        Ammo ammo = new Ammo(50, 500, DataManager.PROJECTILES[0].copy());
-        ammo.setRemaining(50);
-        ammo.setBackupRemaining(50);
-        w.setAmmo(ammo);
-        inventory.add(w);
+//        RangedWeapon w = (RangedWeapon) DataManager.ITEMS[6].copy();
+//        Ammo ammo = new Ammo(50, 500, DataManager.PROJECTILES[0].copy());
+//        ammo.setRemaining(50);
+//        ammo.setBackupRemaining(50);
+//        w.setAmmo(ammo);
+//        inventory.add(w);
         //inventory.add(DataManager.ITEMS[5], 10);
 
         monstersKilled = 0;

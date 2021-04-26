@@ -1,5 +1,7 @@
 package dungeoncrawler.objects;
 
+import java.util.ArrayList;
+
 public class ChallengeRoom extends Room {
     private boolean completed;
     private Inventory rewards;
@@ -12,11 +14,10 @@ public class ChallengeRoom extends Room {
      * @param width         Room width, in game units
      * @param startX        Initial x-position of player in room, in game units
      * @param startY        Initial y-position of player in room, in game units
-     * @param roomObstacles Array of all obstacle locations inside Room object
      * @param rewards Rewards for beating the room
      */
-    public ChallengeRoom(int height, int width, int startX, int startY, Obstacle[] roomObstacles, Inventory rewards) {
-        super(height, width, startX, startY, roomObstacles, RoomType.CHALLENGEROOM);
+    public ChallengeRoom(int height, int width, int startX, int startY, Inventory rewards) {
+        super(height, width, startX, startY, RoomType.CHALLENGEROOM);
         this.rewards = rewards;
         this.completed = false;
     }

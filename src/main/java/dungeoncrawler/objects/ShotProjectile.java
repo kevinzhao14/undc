@@ -43,7 +43,7 @@ public class ShotProjectile implements Movable {
         double height = width;// * 1.2734375;
         double x = m.getX() + (m.getWidth() / 2) - (width / 2);
         double y = m.getY() + (m.getHeight() / 2) - (height / 2);
-        Obstacle o = new Obstacle(x, y, width, height, ObstacleType.NONSOLID);
+        Obstacle o = new Obstacle(explosion, x, y, width, height, ObstacleType.NONSOLID);
         o.setSprite(explosion);
         room.getObstacles().add(o);
         //remove obstacle after 1 second

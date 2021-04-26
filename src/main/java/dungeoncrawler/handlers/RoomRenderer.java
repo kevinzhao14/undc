@@ -35,9 +35,7 @@ public class RoomRenderer {
     public static Pane drawRoom(Scene scene, Room room, Canvas canvas) {
         Pane root = new Pane();
         Pane main = new Pane();
-        Pane bgPane = new Pane();
         main.getChildren().addAll(root);
-
         double rootHeight = getPx(room.getHeight());
         double rootWidth = getPx(room.getWidth());
         root.setMaxHeight(rootHeight);

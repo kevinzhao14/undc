@@ -20,6 +20,8 @@ import dungeoncrawler.objects.RangedWeapon;
 import dungeoncrawler.objects.Room;
 import dungeoncrawler.objects.RoomType;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -53,8 +55,8 @@ public class LayoutGenerator {
     public static final int DOORBOTTOM_HEIGHT = (int) Math.round(ROOM_HEIGHT * 0.125);
     public static final int DOORBOTTOM_WIDTH = (int) Math.round(DOORBOTTOM_HEIGHT * 1.75757576);
 
-    private static final int PATH_MIN = 1;
-    private static final int PATH_MAX = 2;
+    private static final int PATH_MIN = 6;
+    private static final int PATH_MAX = 10;
 
     private static final double CHALLENGE_ODDS = 0.25;
 
@@ -101,14 +103,16 @@ public class LayoutGenerator {
     private void reset() {
         startRoom = new Room(ROOM_HEIGHT, ROOM_WIDTH, (int) ((ROOM_WIDTH
                 - GameSettings.PLAYER_WIDTH) / 2.0), (int) (ROOM_HEIGHT / 2.0
-                - GameSettings.PLAYER_HEIGHT), new Obstacle[0], RoomType.STARTROOM);
+                - GameSettings.PLAYER_HEIGHT), RoomType.STARTROOM);
         startRoom.setMonsters(new Monster[0]);
+        generateObstacles(startRoom);
 
         int exitWidth = 832;
         int exitHeight = 444;
 
-        exitRoom = new Room(exitHeight, exitWidth, 100, 100,
-                new Obstacle[0], RoomType.EXITROOM);
+        exitRoom = new Room(exitHeight, exitWidth, 100, 100, RoomType.EXITROOM);
+        generateObstacles(exitRoom, 4);
+
         Monster boss = DataManager.FINALBOSS;
         boss.setX(exitWidth / 2 - boss.getWidth() / 2);
         boss.setY(exitHeight - boss.getHeight() - 5);
@@ -116,8 +120,8 @@ public class LayoutGenerator {
         ExitDoor ed = new ExitDoor((exitWidth - DOORTOP_WIDTH) / 2, exitHeight - 1, DOORTOP_WIDTH, DOORTOP_HEIGHT);
         exitRoom.setTopDoor(ed);
 
-        cr1 = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[0], cr1Rewards);
-        cr2 = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[0], cr2Rewards);
+        cr1 = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, cr1Rewards);
+        cr2 = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, cr2Rewards);
 
         setMonsters(cr1);
         setMonsters(cr2);
@@ -149,7 +153,7 @@ public class LayoutGenerator {
         //check exit distance
         double exitDistance = Math.abs(exitCoords[0] - GRID_WIDTH / 2) + Math.abs(exitCoords[1]
                 - GRID_HEIGHT / 2);
-        if (!exitPlaced || exitDistance < 1 || challengeCount < 2) {
+        if (!exitPlaced || exitDistance < 6 || challengeCount < 2) {
             return generateLayout();
         }
         printGrid(roomGrid);
@@ -204,8 +208,11 @@ public class LayoutGenerator {
             y--;
         }
         //create origin room
-        roomGrid[x][y] = new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, new Obstacle[0], RoomType.EMPTYROOM);
-        setMonsters(roomGrid[x][y]);
+        Room r = new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, RoomType.EMPTYROOM);
+        setMonsters(r);
+        generateObstacles(r);
+        roomGrid[x][y] = r;
+
 
         int[] coords = generateRoom(roomGrid, x, y, 0);
         Random rand = new Random();
@@ -271,30 +278,31 @@ public class LayoutGenerator {
              * 2 - right
              * 3 - down
              */
+            int nx = x;
+            int ny = y;
             switch (newDirection) {
             case 0:
-                grid[x - 1][y] = new Room(ROOM_HEIGHT, ROOM_WIDTH,
-                        100, 100, new Obstacle[5], RoomType.EMPTYROOM);
-                setMonsters(grid[x - 1][y]);
-                return new int[]{x - 1, y};
+                nx--;
+                break;
             case 1:
-                grid[x][y - 1] = new Room(ROOM_HEIGHT, ROOM_WIDTH,
-                        100, 100, new Obstacle[5], RoomType.EMPTYROOM);
-                setMonsters(grid[x][y - 1]);
-                return new int[]{x, y - 1};
+                ny--;
+                break;
             case 2:
-                grid[x + 1][y] = new Room(ROOM_HEIGHT, ROOM_WIDTH,
-                        100, 100, new Obstacle[5], RoomType.EMPTYROOM);
-                setMonsters(grid[x + 1][y]);
-                return new int[]{x + 1, y};
+                nx++;
+                break;
             case 3:
-                grid[x][y + 1] = new Room(ROOM_HEIGHT, ROOM_WIDTH,
-                        100, 100, new Obstacle[5], RoomType.EMPTYROOM);
-                setMonsters(grid[x][y + 1]);
-                return new int[]{x, y + 1};
+                ny++;
+                break;
             default:
-                return null;
+                break;
             }
+            Room r = new Room(ROOM_HEIGHT, ROOM_WIDTH,
+                    100, 100, RoomType.EMPTYROOM);
+            setMonsters(r);
+            generateObstacles(r);
+            grid[nx][ny] = r;
+
+            return new int[]{nx, ny};
         } else {
             return null;
         }
@@ -330,6 +338,41 @@ public class LayoutGenerator {
             monsters[i].setY(monsterY);
         }
         room.setMonsters(monsters);
+    }
+
+    private void generateObstacles(Room room, int modifier) {
+        Random rand = new Random();
+        int numObstacles = rand.nextInt(modifier * (GameSettings.OBSTACLES_MAX
+                - GameSettings.OBSTACLES_MIN) + 1) + modifier * GameSettings.OBSTACLES_MIN;
+        for (int i = 0; i < numObstacles; i++) {
+            //random num for obstacle
+            int index = rand.nextInt(DataManager.OBSTACLES.length);
+            Obstacle o = DataManager.OBSTACLES[index].copy();
+            int posX;
+            int posY;
+            boolean validPos;
+            do {
+                posX = rand.nextInt((int) (room.getWidth() - o.getWidth()) - 99) + 50;
+                posY = rand.nextInt((int) (room.getHeight() - o.getHeight()) - 99) + 50;
+                validPos = true;
+                for (Obstacle oc : room.getObstacles()) {
+                    double distX = Math.pow(posX - oc.getX(), 2);
+                    double distY = Math.pow(posY - oc.getY(), 2);
+                    double dist = Math.sqrt(distX + distY);
+                    if (dist < GameSettings.OBSTACLES_DISTANCE) {
+                        validPos = false;
+                    }
+                }
+            } while (!validPos);
+            System.out.println("Obstacle " + posX + " " + posY);
+            o.setX(posX);
+            o.setY(posY);
+            room.getObstacles().add(o);
+        }
+    }
+
+    private void generateObstacles(Room room) {
+        generateObstacles(room, 1);
     }
 
     /**

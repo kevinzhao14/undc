@@ -7,6 +7,8 @@ import dungeoncrawler.objects.Bomb;
 import dungeoncrawler.objects.Item;
 import dungeoncrawler.objects.Monster;
 import dungeoncrawler.objects.MonsterType;
+import dungeoncrawler.objects.Obstacle;
+import dungeoncrawler.objects.ObstacleType;
 import dungeoncrawler.objects.Potion;
 import dungeoncrawler.objects.PotionType;
 import dungeoncrawler.objects.Projectile;
@@ -47,6 +49,12 @@ public class DataManager {
         new Ammunition("Rockets", "weapons/rocket-right.png", 5, PROJECTILES[0])
     };
 
+    public static final Obstacle[] OBSTACLES = new Obstacle[] {
+            new Obstacle("obstacles/boulders.png", 0, 0, 23, 17, ObstacleType.SOLID),
+            new Obstacle("obstacles/ruin1.png", 0, 0, 10, 11, ObstacleType.SOLID),
+            new Obstacle("obstacles/ruin2.png", 0, 0, 31, 18, ObstacleType.SOLID)
+    };
+
     public static final Key EXITKEY = new Key("Special Key", "items/key.png", true);
 
     public static final Monster[] MONSTERS = new Monster[]{
@@ -55,7 +63,7 @@ public class DataManager {
         new Monster(80, 10, 50.0 / GameSettings.FPS, 2, MonsterType.TANK, 21, 31)
     };
 
-    public static final Monster FINALBOSS = new Monster(400, 15, 100.0 / GameSettings.FPS, 1.0, MonsterType.FINALBOSS, 48, 48);
+    public static final Monster FINALBOSS = new Monster(200, 15, 100.0 / GameSettings.FPS, 1.0, MonsterType.FINALBOSS, 48, 48);
     public static final String EXPLOSION = "textures/boom.gif";
 
     public static boolean unlockedAmmo = false;

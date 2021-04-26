@@ -67,12 +67,17 @@ public class GameSettings {
     public static final int MIN_MONSTERS = 1;
     public static final int MAX_MONSTERS = 1;
 
+    //obstacles
+    public static final int OBSTACLES_MIN = 2;
+    public static final int OBSTACLES_MAX = 5;
+    public static final double OBSTACLES_DISTANCE = 64;
+
     //monster kill reward settings
     public static final double MONSTER_KILL_GOLD = 20;
 
     //monster drop reward settings
-    public static final int MIN_ITEM_DROP = 4;
-    public static final int MAX_ITEM_DROP = 4;
+    public static final int MIN_ITEM_DROP = 1;
+    public static final int MAX_ITEM_DROP = 2;
     public static final double DROP_ITEM_SPRITE_SCALE = 0.75;
     public static final double DROP_ITEM_DISTANCE = 25;
 

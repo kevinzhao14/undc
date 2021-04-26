@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -384,25 +385,35 @@ public class GameController {
                 newPosX = movePos[0];
                 newPosY = movePos[1];
 
-                //set player sprite
-                int dir;
-                if (newPosX < posX) {
-                    dir = 4;
-                } else if (newPosX > posX) {
-                    dir = 6;
-                } else if (newPosY > posY) {
-                    dir = 5;
-                } else {
-                    dir = 7;
+                //check collisions with obstacles
+                ArrayList<Obstacle> obstacles = room.getObstacles();
+                Obstacle[] obs = new Obstacle[obstacles.size()];
+                for (int i = 0; i < obstacles.size(); i++) {
+                    obs[i] = obstacles.get(i);
                 }
-                player.setDirection(dir);
+                Obstacle checkObs = (Obstacle) checkCollisions(obs, player, posX, posY, newPosX, newPosY)[0];
+                if (checkObs == null) {
 
-                //check for door intersections
-                if (checkDoors(posX, posY, newPosX, newPosY)) {
-                    return;
+                    //set player sprite
+                    int dir;
+                    if (newPosX < posX) {
+                        dir = 4;
+                    } else if (newPosX > posX) {
+                        dir = 6;
+                    } else if (newPosY > posY) {
+                        dir = 5;
+                    } else {
+                        dir = 7;
+                    }
+                    player.setDirection(dir);
+
+                    //check for door intersections
+                    if (checkDoors(posX, posY, newPosX, newPosY)) {
+                        return;
+                    }
+                    player.setX(newPosX);
+                    player.setY(newPosY);
                 }
-                player.setX(newPosX);
-                player.setY(newPosY);
             }
 
             //check item pickup
@@ -470,7 +481,6 @@ public class GameController {
                                     Ammo ammo = ((RangedWeapon) item.getItem()).getAmmo();
                                     Ammunition a = (Ammunition) d.getItem();
                                     if (ammo == null || ammo.getProjectile() == null) {
-                                        System.out.println("Ammo is null");
                                         continue;
                                     }
                                     if (ammo.getProjectile().equals(a.getProjectile())) {
@@ -562,7 +572,7 @@ public class GameController {
                     //check for entity collisions
                     newX = checked[0];
                     newY = checked[1];
-                    Monster m = checkCollisions(room.getMonsters(), p, x, y, newX, newY);
+                    Monster m = (Monster) checkCollisions(room.getMonsters(), p, x, y, newX, newY)[0];
                     //hit a monster
                     if (m != null) {
                         p.hit(m);
@@ -857,7 +867,7 @@ public class GameController {
             return true;
         }
 
-        private <T extends Movable> T checkCollisions(T[] list, Movable m, double x, double y ,double newX, double newY) {
+        private <T extends Movable> Object[] checkCollisions(T[] list, Movable m, double x, double y ,double newX, double newY) {
             for (T t: list) {
                 if (t == null) {
                     continue;
@@ -888,10 +898,10 @@ public class GameController {
 
                 //intersects
                 if (intersects != null) {
-                    return t;
+                    return new Object[]{t, intersects};
                 }
             }
-            return null;
+            return new Object[]{null, null};
         }
 
         /**
@@ -911,7 +921,7 @@ public class GameController {
             };
 
             //loop through doors
-            Door d = checkCollisions(doors, player, x, y, newX, newY);
+            Door d = (Door) checkCollisions(doors, player, x, y, newX, newY)[0];
             if (d != null) {
                 Room newRoom = d.getGoesTo();
 
@@ -1014,6 +1024,10 @@ public class GameController {
             if (moveUp) {
                 intY = (o.getY() - h - b) / m;
             }
+            //check for zero slope ie NaN intY
+            if (m == 0) {
+                intY = b;
+            }
             /* if the player is moving vertically, then slope and y-intercept will be
              * infinity/undefined. If so, set the intY/x position of the intersect to the x
              * coordinate of the movement vector, which will be stored in the y-intercept variable
@@ -1023,7 +1037,7 @@ public class GameController {
             }
 
             //check if intersect is on the obstacle
-            if (intY <= o.getX() + o.getWidth() || intY + w >= o.getX()) {
+            if (intY <= o.getX() + o.getWidth() && intY + w >= o.getX()) {
                 double coord = m * intY + b;
                 return new double[]{intY, coord};
             }
@@ -1035,8 +1049,11 @@ public class GameController {
             }
 
             //check if intersect is on the obstacle
-            if (intX <= o.getY() + o.getHeight() || intX + h >= o.getY()) {
+            if (intX <= o.getY() + o.getHeight() && intX + h >= o.getY()) {
                 double coord = (intX - b) / m;
+                if (m == 0) {
+                    coord = o.getX() + ((moveRight) ? -w : o.getWidth());
+                }
                 return new double[]{coord, intX};
             }
 

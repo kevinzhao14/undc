@@ -342,6 +342,14 @@ public class GameScreen extends GameState {
         restartButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
         endButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
 
+        Button newGameButton = new Button("New Game");
+        newGameButton.setMinWidth(600);
+        newGameButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+
+        newGameButton.setOnAction((e) -> {
+            Controller.setState(new HomeScreen(sceneWidth, sceneHeight));
+        });
+
         restartButton.setOnAction((e) -> {
             restartGame();
         });
@@ -351,7 +359,7 @@ public class GameScreen extends GameState {
 
         //box.getChildren().addAll(deathLabel, restartButton, endButton);
         box.getChildren().addAll(deathLabel, monstersKilled, totalDamageDealt,
-                totalItemsConsumed, restartButton, endButton);
+                totalItemsConsumed, newGameButton, restartButton, endButton);
         box.setAlignment(Pos.CENTER);
         root.getChildren().addAll(backdrop, box);
         hud.getChildren().add(root);
