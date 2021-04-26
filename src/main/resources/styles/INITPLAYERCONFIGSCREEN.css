@@ -1,20 +1,19 @@
 .root{
-    -fx-background-image: url("../textures/dungeon1-big.png");
+    -fx-background-image: url("../textures/background.png");
     -fx-background-position: left;
     -fx-background-size: contain;
 }
 .label{
-    /*-fx-text-fill: white;*/
+    -fx-text-fill: white;
     -fx-font-family:VT323;
     -fx-font-size:20;
 }
 .radioButton{
-    /*-fx-text-fill: white;*/
+    -fx-text-fill: white;
     -fx-font-family:VT323;
     -fx-font-size:20;
 }
 .nextButton{
-    /*-fx-text-fill: white;*/
     -fx-font-family:VT323;
     -fx-font-size:20;
 }
