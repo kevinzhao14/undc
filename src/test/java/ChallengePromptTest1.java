@@ -54,7 +54,8 @@ public class ChallengePromptTest1 extends ApplicationTest {
 
         ((GameScreen) c.getState()).getGame().setRoom(challenge);
 
-        FxAssert.verifyThat(new Label("You have entered a Challenge Room. Would you like to partake in the trial?"),
+        FxAssert.verifyThat(new Label("You have entered a Challenge Room."
+                        + "Would you like to partake in the trial?"),
                 NodeMatchers.isNotNull());
 
     }

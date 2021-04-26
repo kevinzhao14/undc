@@ -239,7 +239,8 @@ public class GameScreen extends GameState {
                 ? player.getItemSelected().getItem() : null;
         if (item instanceof RangedWeapon) {
             RangedWeapon w = (RangedWeapon) item;
-            String text = "Ammo: " + w.getAmmo().getRemaining() + " / " + w.getAmmo().getBackupRemaining();
+            String text = "Ammo: " + w.getAmmo().getRemaining() + " / "
+                    + w.getAmmo().getBackupRemaining();
             if (w.isReloading()) {
                 text = "Ammo: Reloading";
             }
@@ -331,7 +332,8 @@ public class GameScreen extends GameState {
         totalDamageDealt.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
         Label totalItemsConsumed = new Label("Total items consumed/used: "
                 + getPlayer().getTotalItemsConsumed());
-        totalItemsConsumed.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+        totalItemsConsumed.setStyle("-fx-text-fill: white; -fx-font-family:VT323;"
+                + "-fx-font-size:25");
 
         Button restartButton = new Button("Restart");
         Button endButton = new Button("Exit Game");
@@ -557,7 +559,8 @@ public class GameScreen extends GameState {
         Rectangle backdrop = new Rectangle(scene.getWidth(), scene.getHeight());
         backdrop.setFill(Color.BLACK);
 
-        Label pauseLabel = new Label("You have entered a Challenge Room. Would you like to partake in the trial?");
+        Label pauseLabel = new Label("You have entered a Challenge Room."
+                + "Would you like to partake in the trial?");
         pauseLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:40");
 
         Button yesButton = new Button("Proceed");
@@ -624,7 +627,8 @@ public class GameScreen extends GameState {
         totalDamageDealt.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
         Label totalItemsConsumed = new Label("Total items consumed/used: "
                 + getPlayer().getTotalItemsConsumed());
-        totalItemsConsumed.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+        totalItemsConsumed.setStyle("-fx-text-fill: white; -fx-font-family:VT323;"
+                + "-fx-font-size:25");
 
         Button newGameButton = new Button("New Game");
         newGameButton.setMinWidth(600);
