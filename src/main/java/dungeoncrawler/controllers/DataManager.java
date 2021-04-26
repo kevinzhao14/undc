@@ -50,9 +50,9 @@ public class DataManager {
     };
 
     public static final Obstacle[] OBSTACLES = new Obstacle[] {
-            new Obstacle("obstacles/boulders.png", 0, 0, 23, 17, ObstacleType.SOLID),
-            new Obstacle("obstacles/ruin1.png", 0, 0, 10, 11, ObstacleType.SOLID),
-            new Obstacle("obstacles/ruin2.png", 0, 0, 31, 18, ObstacleType.SOLID)
+        new Obstacle("obstacles/boulders.png", 0, 0, 23, 17, ObstacleType.SOLID),
+        new Obstacle("obstacles/ruin1.png", 0, 0, 10, 11, ObstacleType.SOLID),
+        new Obstacle("obstacles/ruin2.png", 0, 0, 31, 18, ObstacleType.SOLID)
     };
 
     public static final Key EXITKEY = new Key("Special Key", "items/key.png", true);
