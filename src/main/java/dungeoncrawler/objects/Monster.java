@@ -116,12 +116,13 @@ public class Monster extends Entity {
                 }
                 if (allDead) {
                     ((ChallengeRoom) screen.getRoom()).setCompleted(true);
+                    Platform.runLater(screen::updateRoom);
                     for (InventoryItem[] itemRow
                             : ((ChallengeRoom) screen.getRoom()).getRewards().getItems()) {
                         if (itemRow != null) {
                             for (InventoryItem item : itemRow) {
                                 if (item != null) {
-                                    if (item.equals(DataManager.ITEMS[6])) {
+                                    if (item.getItem().equals(DataManager.ITEMS[6])) {
                                         DataManager.unlockedAmmo = true;
                                     }
                                     for (int i = 0; i < item.getQuantity(); i++) {
@@ -169,9 +170,7 @@ public class Monster extends Entity {
             }
 
             //use run later to prevent any thread issues
-            Platform.runLater(() -> {
-                screen.updateHud();
-            });
+            Platform.runLater(screen::updateHud);
             return true;
         }
         return false;

@@ -587,6 +587,7 @@ public class GameController {
             Item item = player.getItemSelected() != null
                     ? player.getItemSelected().getItem() : null;
             if (isAttacking && player.getAttackCooldown() == 0.0) {
+                isAttacking = false;
                 double damage = GameSettings.PLAYER_FIST_DAMAGE;
                 double cooldown = GameSettings.PLAYER_FIST_COOLDOWN;
                 double modifier = player.getAttack();
@@ -628,6 +629,8 @@ public class GameController {
                     weapon.reload();
                     return;
                 }
+
+                isFiring = false;
 
                 //set fire delay
                 weapon.setDelay(weapon.getFireRate() * 1000);
@@ -928,8 +931,8 @@ public class GameController {
                     return false;
 
                     // if in challenge room, don't let player leave if not completed
-                } else if (room.getType() == RoomType.CHALLENGEROOM) {
-                    return ((ChallengeRoom) room).isCompleted();
+                } else if (room.getType() == RoomType.CHALLENGEROOM && !((ChallengeRoom) room).isCompleted()) {
+                    return false;
                 }
 
                 //check if not visited & if there are still monsters

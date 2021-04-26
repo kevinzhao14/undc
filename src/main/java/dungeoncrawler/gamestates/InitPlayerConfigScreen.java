@@ -156,7 +156,7 @@ public class InitPlayerConfigScreen extends GameState {
 
 
         this.scene = new Scene(root, this.windowWidth, this.windowHeight);
-        scene.getStylesheets().addAll("styles/INITPLAYERCONFIGSCREEN.css",
+        scene.getStylesheets().addAll("styles/InitPlayerConfigScreen.css",
                 "http://fonts.googleapis.com/css?family=VT323");
         enterPlayerName.getStyleClass().add("label");
         selectDifficulty.getStyleClass().add("label");

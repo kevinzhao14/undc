@@ -1,5 +1,5 @@
 .root{
-    -fx-background-image: url("https://www.worldatlas.com/r/w1200/upload/96/32/4d/shutterstock-707700613.jpg");
+    -fx-background-image: url("../textures/background.png");
     -fx-background-position: left;
     -fx-background-size: contain;
 }
@@ -11,17 +11,17 @@
             radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));
     -fx-background-radius: 5,4,3,5;
     -fx-background-insets: 0,1,2,0;
-    -fx-text-fill: white;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
-    -fx-font-family: "Arial";
+    -fx-font-family: "VT323";
     -fx-text-fill: linear-gradient(white, #d0d0d0);
-    -fx-font-size: 12px;
-    -fx-padding: 10 20 10 20;
+    -fx-font-size: 24px;
+    -fx-padding: 15 25 15 25;
 }
 .title {
     -fx-text-fill: white;
-    -fx-font-family : "Arial";
-    -fx-font-size: 24px;
+    -fx-font-family : "VT323";
+    -fx-font-size: 48px;
+    -fx-padding: 0 0 25 0;
 }
 
 

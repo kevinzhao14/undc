@@ -76,9 +76,9 @@ public class LayoutGenerator {
         Item[] items = DataManager.ITEMS;
         cr1Rewards = new Inventory(2, 5);
         RangedWeapon rl = ((RangedWeapon) items[6]).copy();
-        Ammo ammo = new Ammo(2, 20, DataManager.PROJECTILES[0].copy());
+        Ammo ammo = new Ammo(2, 50, DataManager.PROJECTILES[0].copy());
         ammo.setRemaining(2);
-        ammo.setBackupRemaining(10);
+        ammo.setBackupRemaining(20);
         rl.setAmmo(ammo);
 
         cr1Rewards.add(items[2], 1);
@@ -93,7 +93,7 @@ public class LayoutGenerator {
         cr2Rewards.add(items[3], 2);
         cr2Rewards.add(items[4], 1);
         cr2Rewards.add(items[5], 3);
-        Ammunition rockets = (Ammunition) items[7];
+        Ammunition rockets = (Ammunition) items[7].copy();
         rockets.setAmount(20);
         cr2Rewards.add(rockets);
     }

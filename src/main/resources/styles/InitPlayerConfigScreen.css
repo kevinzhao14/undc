@@ -6,14 +6,14 @@
 .label{
     -fx-text-fill: white;
     -fx-font-family:VT323;
-    -fx-font-size:20;
+    -fx-font-size:24px;
 }
 .radioButton{
     -fx-text-fill: white;
     -fx-font-family:VT323;
-    -fx-font-size:20;
+    -fx-font-size:24px;
 }
 .nextButton{
     -fx-font-family:VT323;
-    -fx-font-size:20;
+    -fx-font-size:24px;
 }

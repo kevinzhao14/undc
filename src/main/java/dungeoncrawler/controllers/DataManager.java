@@ -55,7 +55,7 @@ public class DataManager {
         new Monster(80, 10, 50.0 / GameSettings.FPS, 2, MonsterType.TANK, 21, 31)
     };
 
-    public static final Monster FINALBOSS = new Monster(40, 15, 100.0 / GameSettings.FPS, 1.0, MonsterType.FINALBOSS, 48, 48);
+    public static final Monster FINALBOSS = new Monster(400, 15, 100.0 / GameSettings.FPS, 1.0, MonsterType.FINALBOSS, 48, 48);
     public static final String EXPLOSION = "textures/boom.gif";
 
     public static boolean unlockedAmmo = false;

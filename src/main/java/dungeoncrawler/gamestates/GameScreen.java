@@ -94,6 +94,14 @@ public class GameScreen extends GameState {
         return newRoom.equals(dungeonLayout.getExitRoom());
     }
 
+    public void updateRoom() {
+        StackPane root = new StackPane();
+        Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
+        root.getChildren().addAll(roomPane, hud);
+        root.setStyle("-fx-background-color: #34311b");
+        scene.setRoot(root);
+    }
+
     private void createRoom() {
         //set new room
         StackPane root = new StackPane();

@@ -84,6 +84,9 @@ public class RoomRenderer {
 
         if (room.getTopDoor() != null) {
             ImageView imageView = new ImageView("textures/dungeon1-topdoor.png");
+            if (room instanceof ChallengeRoom && !((ChallengeRoom) room).isCompleted()) {
+                imageView = new ImageView("textures/dungeon1-topdoor-blocked.png");
+            }
             double y = getPx(room.getHeight() - room.getTopDoor().getY()
                     - room.getTopDoor().getHeight()) + 2;
             if (room.getTopDoor() instanceof ExitDoor) {
@@ -98,6 +101,10 @@ public class RoomRenderer {
         }
         if (room.getRightDoor() != null) {
             ImageView imageView = new ImageView("textures/dungeon1-rightdoor.png");
+            if (room instanceof ChallengeRoom && !((ChallengeRoom) room).isCompleted()) {
+                imageView = new ImageView("textures/dungeon1-rightdoor-blocked.png");
+            }
+
             imageView.setX(getPx(room.getRightDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getRightDoor().getY()
                     - room.getRightDoor().getHeight() * 2));
@@ -107,6 +114,10 @@ public class RoomRenderer {
         }
         if (room.getBottomDoor() != null) {
             ImageView imageView = new ImageView("textures/dungeon1-bottomdoor.png");
+            if (room instanceof ChallengeRoom && !((ChallengeRoom) room).isCompleted()) {
+                imageView = new ImageView("textures/dungeon1-bottomdoor-blocked.png");
+            }
+
             imageView.setX(getPx(room.getBottomDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getBottomDoor().getY()
                     - room.getBottomDoor().getHeight()) + 2);
@@ -116,6 +127,10 @@ public class RoomRenderer {
         }
         if (room.getLeftDoor() != null) {
             ImageView imageView = new ImageView("textures/dungeon1-leftdoor.png");
+            if (room instanceof ChallengeRoom && !((ChallengeRoom) room).isCompleted()) {
+                imageView = new ImageView("textures/dungeon1-leftdoor-blocked.png");
+            }
+
             imageView.setX(getPx(room.getLeftDoor().getX()));
             imageView.setY(getPx(room.getHeight() - room.getLeftDoor().getY()
                     - room.getLeftDoor().getHeight() * 2));
