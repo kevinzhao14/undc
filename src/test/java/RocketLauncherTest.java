@@ -12,7 +12,6 @@ import dungeoncrawler.objects.Room;
 import javafx.stage.Stage;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
-import org.w3c.dom.ranges.Range;
 
 import static org.junit.Assert.assertTrue;
 
@@ -52,7 +51,8 @@ public class RocketLauncherTest extends ApplicationTest {
                 if (r instanceof ChallengeRoom) {
                     Inventory inv = ((ChallengeRoom) r).getRewards();
                     for (InventoryItem i : inv.getItemsList()) {
-                        if (i.getItem() instanceof RangedWeapon && i.getItem().getName().equals("Rocket Launcher")) {
+                        if (i.getItem() instanceof RangedWeapon
+                                && i.getItem().getName().equals("Rocket Launcher")) {
                             canDropRocketLauncher = true;
                         }
                     }
