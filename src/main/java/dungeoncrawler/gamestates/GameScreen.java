@@ -30,8 +30,9 @@ import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 
-
 public class GameScreen extends GameState {
+    private static GameScreen instance;
+
     private GameController game;
     private Player player;
     private DungeonLayout dungeonLayout;
@@ -45,14 +46,20 @@ public class GameScreen extends GameState {
     private boolean inventoryVisible;
     private boolean paused;
 
-    public GameScreen(int width, int height) {
-        sceneWidth = width;
-        sceneHeight = height;
+    private GameScreen(int width, int height) {
+        super(width, height);
         dungeonLayout = new LayoutGenerator().generateLayout();
         scene = new Scene(new Pane(), width, height);
         canvas = new Canvas();
         inventoryVisible = false;
         paused = false;
+    }
+
+    public static GameScreen getInstance() {
+        if (instance == null) {
+            instance = new GameScreen(GameSettings.SCREEN_WIDTH, GameSettings.SCREEN_HEIGHT);
+        }
+        return instance;
     }
 
     public void start() {
@@ -70,7 +77,7 @@ public class GameScreen extends GameState {
             break;
         }
         game.start(dungeonLayout.getStartingRoom());
-        scene.getStylesheets().add("http://fonts.googleapis.com/css?family=VT323");
+        scene.getStylesheets().add("styles/global.css");
     }
 
     public boolean setRoom(Room newRoom) {
@@ -349,7 +356,7 @@ public class GameScreen extends GameState {
         newGameButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
 
         newGameButton.setOnAction((e) -> {
-            Controller.setState(new HomeScreen(sceneWidth, sceneHeight));
+            Controller.setState(new HomeScreen(width, height));
         });
 
         restartButton.setOnAction((e) -> {
@@ -639,7 +646,7 @@ public class GameScreen extends GameState {
         endButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
 
         newGameButton.setOnAction((e) -> {
-            Controller.setState(new HomeScreen(sceneWidth, sceneHeight));
+            Controller.setState(new HomeScreen(width, height));
         });
 
         endButton.setOnAction((e) -> {

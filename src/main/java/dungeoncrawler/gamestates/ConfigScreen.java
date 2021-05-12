@@ -26,15 +26,10 @@ import javafx.scene.layout.VBox;
  * @version 1.0
  * @userid mharbola3
  */
-public class InitPlayerConfigScreen extends GameState {
+public class ConfigScreen extends GameState {
     //Application Window dimensions
-    private int windowHeight;
-    private int windowWidth;
     private Button nextButton;
     private TextField playerNameEntry;
-
-    //Stores the entered player name
-    private String playerName;
 
     /**
      * Constructor for creating instance of InitPlayerConfigScreen.
@@ -53,9 +48,8 @@ public class InitPlayerConfigScreen extends GameState {
      * @param width width of scene window, in pixels
      * @param height height of the scene window, in pixels
      */
-    public InitPlayerConfigScreen(int width, int height) {
-        this.windowWidth = width;
-        this.windowHeight = height;
+    public ConfigScreen(int width, int height) {
+        super(width, height);
         nextButton = new Button("Next");
         nextButton.setAlignment(Pos.CENTER);
 
@@ -144,7 +138,7 @@ public class InitPlayerConfigScreen extends GameState {
 
             try {
                 if (Controller.getDataManager().newGame(playerName, difficultyRef, weaponRef)) {
-                    GameScreen gameScreen = new GameScreen(width, height);
+                    GameScreen gameScreen = GameScreen.getInstance();
                     Controller.setState(gameScreen);
                     gameScreen.start();
                 }
@@ -155,9 +149,8 @@ public class InitPlayerConfigScreen extends GameState {
         });
 
 
-        this.scene = new Scene(root, this.windowWidth, this.windowHeight);
-        scene.getStylesheets().addAll("styles/InitPlayerConfigScreen.css",
-                "http://fonts.googleapis.com/css?family=VT323");
+        this.scene = new Scene(root, this.width, this.height);
+        scene.getStylesheets().addAll("styles/config.css", "styles/global.css");
         enterPlayerName.getStyleClass().add("label");
         selectDifficulty.getStyleClass().add("label");
         selectStarterWeapon.getStyleClass().add("label");

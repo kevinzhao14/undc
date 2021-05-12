@@ -1,6 +1,5 @@
 package dungeoncrawler.controllers;
 
-import dungeoncrawler.gamestates.GameState;
 import dungeoncrawler.handlers.Controls;
 import dungeoncrawler.handlers.RoomRenderer;
 import dungeoncrawler.objects.*;
@@ -13,10 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * Class for running the game. Does all the calculations and stuff.
@@ -40,14 +36,7 @@ public class GameController {
     private double totalTime;
 
     //boolean variables for tracking event
-    private boolean pressLeft;
-    private boolean pressRight;
-    private boolean pressUp;
-    private boolean pressDown;
-    private boolean frictionX;
-    private boolean frictionY;
-    private boolean isAttacking;
-    private boolean isFiring;
+    private HashMap<String, Boolean> states;
 
     /**
      * Secondary constructor for no player
@@ -61,11 +50,12 @@ public class GameController {
      * @param room Current/first room
      */
     public void start(Room room) {
+        //reset the game on start
         reset();
 
-        //Render room
+        //set the current room & scene
         setRoom(room);
-        scene = Controller.getState().getScene();
+        scene = getScreen().getScene();
 
         //Handle key events
         scene.setOnKeyPressed(e -> handleKey(e.getCode().toString(), true));
@@ -90,11 +80,7 @@ public class GameController {
     }
 
     private GameScreen getScreen() {
-        GameState state = Controller.getState();
-        if (!(state instanceof GameScreen)) {
-            throw new IllegalStateException("Illegal Gamestate");
-        }
-        return (GameScreen) state;
+        return GameScreen.getInstance();
     }
 
     /**
@@ -158,14 +144,19 @@ public class GameController {
         accelY = 0.0;
         isRunning = false;
         isStopped = false;
-        pressLeft = false;
-        pressRight = false;
-        pressUp = false;
-        pressDown = false;
-        frictionX = false;
-        frictionY = false;
-        isAttacking = false;
-        isFiring = false;
+        states = new HashMap<>();
+        states.put("left", false);
+        states.put("up", false);
+        states.put("right", false);
+        states.put("down", false);
+        states.put("frictionX", false);
+        states.put("frictionY", false);
+        states.put("attacking", false);
+        states.put("firing", false);
+        states.put("pausePress", false);
+        states.put("inventory", false);
+        states.put("use", false);
+        states.put("drop", false);
         ticks = 0;
         totalTime = 0;
     }
@@ -175,12 +166,11 @@ public class GameController {
      */
     public void pause() {
         if (isRunning) {
-            //System.out.println("Game has been paused");
-            //System.out.println("Average FPS in " + ticks + " ticks: " + round(1000.0
-            //        / (totalTime / ticks)));
+            System.out.println("Game has been paused");
+            System.out.println("Average FPS in " + ticks + " ticks: " + round(1000.0 / (totalTime / ticks)));
             timer.cancel();
         } else {
-            //System.out.println("Game has been resumed");
+            System.out.println("Game has been resumed");
             startTimer();
         }
         if (!isRunning && isStopped) {
@@ -210,42 +200,11 @@ public class GameController {
      * @param isPress Whether the event is a press or release event
      */
     private void handleKey(String key, boolean isPress) {
+        String control = Controls.getInstance().getControl(key);
+
         //movement keys
-        int sign = 0;
-        boolean xval = false;
-        if (key.equals(controls.getKey("up"))) {
-            if (isPress == pressUp) {
-                return;
-            }
-            sign = isPress ? 1 : -1;
-            pressUp = isPress;
-        } else if (key.equals(controls.getKey("down"))) {
-            if (isPress == pressDown) {
-                return;
-            }
-            sign = isPress ? -1 : 1;
-            pressDown = isPress;
-        } else if (key.equals(controls.getKey("right"))) {
-            if (isPress == pressRight) {
-                return;
-            }
-            sign = isPress ? 1 : -1;
-            pressRight = isPress;
-            xval = true;
-        } else if (key.equals(controls.getKey("left"))) {
-            if (isPress == pressLeft) {
-                return;
-            }
-            sign = isPress ? -1 : 1;
-            pressLeft = isPress;
-            xval = true;
-        }
-        if (xval) {
-            accelX += sign * GameSettings.ACCEL;
-            accelX = round(accelX);
-        } else {
-            accelY += sign * GameSettings.ACCEL;
-            accelY = round(accelY);
+        if (control.equals("up") || control.equals("down") || control.equals("right") || control.equals("left")) {
+            handleMovement(control, isPress);
         }
 
         if (isStopped) {
@@ -253,8 +212,8 @@ public class GameController {
         }
 
         //Global key binds, regardless of game play/pause state
-        if (key.equals(controls.getKey("pause"))) {
-            if (!isPress) {
+        if (control.equals("pause")) {
+            if (!states.get("pausePress") && isPress) {
                 pause();
                 GameScreen screen = getScreen();
                 //esc is used to leave inventory if it's currently open
@@ -265,82 +224,78 @@ public class GameController {
                     screen.togglePause();
                 }
             }
-        } else if (key.equals(controls.getKey("inventory"))) {
-            if (!isPress) {
-                if (!getScreen().isPaused()) {
+            states.put("pausePress", isPress);
+        } else if (control.equals("inventory")) {
+            if (!states.get("inventory") && isPress) {
+                if (isRunning || getScreen().isInventoryVisible()) {
                     pause();
                     getScreen().toggleInventory();
                 }
             }
+            states.put("inventory", isPress);
         }
 
         if (!isRunning) {
             return;
         }
 
-        //non-movement keys
-        if (key.equals(controls.getKey("attack"))) {
-            isAttacking = isPress;
-        } else if (key.equals(controls.getKey("attack2"))) {
-            isFiring = isPress;
-        } else if (key.equals(controls.getKey("use"))) {
-            if (isPress) {
-                InventoryItem selected = player.getItemSelected();
-                if (selected != null) {
-                    selected.getItem().use();
+        switch(control) {
+            case "attack":
+                states.put("attacking", isPress);
+                break;
+            case "attack2":
+                states.put("firing", isPress);
+                break;
+            case "use":
+                if (!states.get("usePress") && isPress) {
+                    InventoryItem selected = player.getItemSelected();
+                    if (selected != null) {
+                        selected.getItem().use();
+                    }
                 }
-            }
-        } else if (key.equals(controls.getKey("nextinv"))) {
-            player.moveRight();
-            getScreen().updateHud();
-        } else if (key.equals(controls.getKey("previnv"))) {
-            player.moveLeft();
-            getScreen().updateHud();
-        } else if (key.equals(controls.getKey("drop"))) {
-            InventoryItem currentItem = player.getItemSelected();
-            if (currentItem == null || !isPress) {
-                return;
-            }
-            //remove from inventory
-            if (currentItem.getQuantity() > 1) {
-                currentItem.setQuantity(currentItem.getQuantity() - 1);
-            } else {
-                if (!player.getInventory().remove(currentItem)) {
-                    return;
-                }
-            }
-            double d = GameSettings.DROP_ITEM_DISTANCE;
-            double x = player.getX() + player.getWidth() / 2;
-            double y = player.getY() + player.getHeight() / 2;
-            Image itemSprite = currentItem.getItem().getSprite();
-            int dir = player.getDirection() % 4;
-            x += dir == 0 ? -d : (dir == 2 ? d : 0);
-            y += dir == 3 ? -d : (dir == 1 ? d : 0);
-            x -= itemSprite.getWidth() / 2;
-            y -= itemSprite.getHeight() / 2;
-
-            //keep inside room
-            x = Math.max(0, x);
-            y = Math.max(0, y);
-            x = Math.min(room.getWidth() - itemSprite.getWidth(), x);
-            y = Math.min(room.getHeight() - itemSprite.getHeight(), y);
-
-            DroppedItem di = new DroppedItem(currentItem.getItem(), x, y, itemSprite.getWidth(),
-                    itemSprite.getHeight());
-            room.getDroppedItems().add(di);
-            getScreen().updateHud();
-        } else if (key.equals(controls.getKey("rotateinv"))) {
-            if (isPress) {
-                player.getInventory().rotate();
+                break;
+            case "nextinv":
+                player.moveRight();
                 getScreen().updateHud();
-            }
-        } else if (key.equals(controls.getKey("reload"))) {
-            //get held weapon
-            Item item = player.getItemSelected() != null
-                    ? player.getItemSelected().getItem() : null;
-            if (item instanceof RangedWeapon) {
-                ((RangedWeapon) item).reload();
-            }
+                break;
+            case "previnv":
+                player.moveLeft();
+                getScreen().updateHud();
+                break;
+            case "drop":
+                states.put("drop", isPress);
+                break;
+            case "rotateinv":
+                if (isPress) {
+                    player.getInventory().rotate();
+                    getScreen().updateHud();
+                }
+                break;
+            case "reload":
+                Item item = player.getItemSelected() != null ? player.getItemSelected().getItem() : null;
+                if (item instanceof RangedWeapon) {
+                    ((RangedWeapon) item).reload();
+                }
+                break;
+        }
+    }
+
+    private void handleMovement(String dir, boolean isPress) {
+        if (isPress == states.get(dir)) {
+            return;
+        }
+        System.out.println("Moving " + dir + " " + isPress);
+        int sign = isPress ? 1 : -1;
+        if (dir.equals("left") || dir.equals("down")) {
+            sign *= -1;
+        }
+        states.put(dir, isPress);
+        if (dir.equals("left") || dir.equals("right")) {
+            accelX += sign * GameSettings.ACCEL;
+            accelX = round(accelX);
+        } else {
+            accelY += sign * GameSettings.ACCEL;
+            accelY = round(accelY);
         }
     }
 
@@ -419,6 +374,8 @@ public class GameController {
 
             //check item pickup
             pickupItems();
+
+            dropItems();
 
             //lower cooldowns
             checkCooldowns();
@@ -538,6 +495,41 @@ public class GameController {
             }
         }
 
+        private void dropItems() {
+            InventoryItem currentItem = player.getItemSelected();
+            if (currentItem == null || !states.get("drop")) {
+                return;
+            }
+            //remove from inventory
+            if (currentItem.getQuantity() > 1) {
+                currentItem.setQuantity(currentItem.getQuantity() - 1);
+            } else {
+                if (!player.getInventory().remove(currentItem)) {
+                    return;
+                }
+            }
+            double d = GameSettings.DROP_ITEM_DISTANCE;
+            double x = player.getX() + player.getWidth() / 2;
+            double y = player.getY() + player.getHeight() / 2;
+            Image itemSprite = currentItem.getItem().getSprite();
+            int dir = player.getDirection() % 4;
+            x += dir == 0 ? -d : (dir == 2 ? d : 0);
+            y += dir == 3 ? -d : (dir == 1 ? d : 0);
+            x -= itemSprite.getWidth() / 2;
+            y -= itemSprite.getHeight() / 2;
+
+            //keep inside room
+            x = Math.max(0, x);
+            y = Math.max(0, y);
+            x = Math.min(room.getWidth() - itemSprite.getWidth(), x);
+            y = Math.min(room.getHeight() - itemSprite.getHeight(), y);
+
+            DroppedItem di = new DroppedItem(currentItem.getItem(), x, y, itemSprite.getWidth(),
+                    itemSprite.getHeight());
+            room.getDroppedItems().add(di);
+            Platform.runLater(() -> getScreen().updateHud());
+        }
+
         private void checkCooldowns() {
             //lower player attack cooldown
             if (player.getAttackCooldown() > 0) {
@@ -600,8 +592,8 @@ public class GameController {
         private void checkPlayerAttack() {
             Item item = player.getItemSelected() != null
                     ? player.getItemSelected().getItem() : null;
-            if (isAttacking && player.getAttackCooldown() == 0.0) {
-                isAttacking = false;
+            if (states.get("attacking") && player.getAttackCooldown() == 0.0) {
+                states.put("attacking", false);
                 double damage = GameSettings.PLAYER_FIST_DAMAGE;
                 double cooldown = GameSettings.PLAYER_FIST_COOLDOWN;
                 double modifier = player.getAttack();
@@ -630,7 +622,7 @@ public class GameController {
             }
 
             //firing ranged weapon
-            if (isFiring && item instanceof RangedWeapon) {
+            if (states.get("firing") && item instanceof RangedWeapon) {
                 RangedWeapon weapon = (RangedWeapon) item;
                 if (weapon.getDelay() > 0) {
                     return;
@@ -644,7 +636,7 @@ public class GameController {
                     return;
                 }
 
-                isFiring = false;
+                states.put("firing", false);
 
                 //set fire delay
                 weapon.setDelay(weapon.getFireRate() * 1000);
@@ -775,8 +767,8 @@ public class GameController {
         }
 
         private void updatePlayerVelocity() {
-            double ovx = velX;
-            double ovy = velY;
+            double originalVelX = velX;
+            double originalVelY = velY;
             velX += accelX;
             velX = round(velX);
             velY += accelY;
@@ -786,31 +778,32 @@ public class GameController {
             if (Math.abs(velX) >= GameSettings.MAX_VEL) {
                 velX = (velX > 0 ? 1 : -1) * GameSettings.MAX_VEL;
                 //was moving before and decelerated to 0
-            } else if (frictionX && Math.abs(ovx) <= Math.abs(accelX)) {
+            } else if (states.get("frictionX") && Math.abs(originalVelX) <= Math.abs(accelX)) {
                 if (velY == 0) {
-                    player.setDirection((ovx > 0) ? 2 : 0);
+                    player.setDirection((originalVelX > 0) ? 2 : 0);
                 }
                 velX = 0;
                 accelX -= (accelX > 0 ? 1 : -1) * GameSettings.FRICTION;
-                frictionX = false;
+                states.put("frictionX", false);
             }
             if (Math.abs(velY) >= GameSettings.MAX_VEL) {
                 velY = (velY > 0 ? 1 : -1) * GameSettings.MAX_VEL;
-            } else if (frictionY && Math.abs(ovy) <= Math.abs(accelY)) {
+            } else if (states.get("frictionY") && Math.abs(originalVelY) <= Math.abs(accelY)) {
                 if (velX == 0) {
-                    player.setDirection((ovy > 0) ? 1 : 3);
+                    player.setDirection((originalVelY > 0) ? 1 : 3);
                 }
                 velY = 0;
                 accelY -= (accelY > 0 ? 1 : -1) * GameSettings.FRICTION;
-                frictionY = false;
+                states.put("frictionY", false);
             }
             //apply friction if not currently moving forward
             if (accelX == 0 && velX != 0) {
-                frictionX = true;
+                states.put("frictionX", true);
                 accelX += (velX > 0 ? -1 : 1) * GameSettings.FRICTION;
             }
             if (accelY == 0 && velY != 0) {
-                frictionY = true;
+                System.out.println("Adding friction");
+                states.put("frictionY", true);
                 accelY += (velY > 0 ? -1 : 1) * GameSettings.FRICTION;
             }
         }

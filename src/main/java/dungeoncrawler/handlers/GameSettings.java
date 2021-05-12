@@ -40,6 +40,9 @@ public class GameSettings {
      * Please note: All calculations except for actually moving JavaFX nodes should be calculated
      * using system 1.
      */
+    public static final int SCREEN_WIDTH = 1920;
+    public static final int SCREEN_HEIGHT = 1080;
+
     public static final int FPS = 200;
     //units per second
     public static final double ACCEL = 1000.0 / FPS / FPS;

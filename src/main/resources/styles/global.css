@@ -1,0 +1,7 @@
+@font-face {
+    font-family: VT323;
+    src: url("fonts/VT323.ttf");
+}
+* {
+    -fx-font-family: "VT323", monospace;
+}

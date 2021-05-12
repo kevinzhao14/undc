@@ -17,36 +17,16 @@ import java.util.Map;
  * @author Kevin Zhao
  */
 public class Controls {
-    /*
-     * Please note: The use of F13-F24 is reserved for special/mouse keys. Mapping is as follows:
-     *      F13 - mouse1/left click
-     *      F14 - mouse2/right click
-     *      F15 - mouse wheel up
-     *      F16 - mouse wheel down
-     */
-    private static final BiMap<String, KeyCode> MOUSEKEYS = new BiMap<>(
-            new String[]{
-                "MOUSE1",
-                "MOUSE2",
-                "MWHEELUP",
-                "MWHEELDOWN"
-            },
-            new KeyCode[]{
-                KeyCode.F13,
-                KeyCode.F14,
-                KeyCode.F15,
-                KeyCode.F16
-            }
-    );
+    public static Controls instance;
 
     private File saveFile;
-    private HashMap<String, KeyCode> keyMap = new HashMap<>();
+    private HashMap<String, String> keyMap = new HashMap<>();
 
     /**
      * Constructor for a Controls config object.
      * @param file File for the save file.
      */
-    public Controls(File file) {
+    private Controls(File file) {
         saveFile = file;
 
         //If save file exists, then load data from file
@@ -60,6 +40,13 @@ public class Controls {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static Controls getInstance() {
+        if (instance == null) {
+            instance = new Controls();
+        }
+        return instance;
     }
 
     /**
@@ -122,10 +109,10 @@ public class Controls {
             throw new IllegalArgumentException("Invalid command format");
         }
         //<KEY> value and <CONTROL> value
-        String key = args[1].toUpperCase();
+        String key = args[1].toLowerCase();
         String control = args[2].toLowerCase();
         try {
-            setKey(control, key);
+            setKey(key, control);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
@@ -138,34 +125,34 @@ public class Controls {
         keyMap.clear();
 
         //Movement Controls
-        keyMap.put("up", KeyCode.W);
-        keyMap.put("down", KeyCode.S);
-        keyMap.put("left", KeyCode.A);
-        keyMap.put("right", KeyCode.D);
-        keyMap.put("sprint", KeyCode.SHIFT);
+        keyMap.put("w", "up");
+        keyMap.put("s", "down");
+        keyMap.put("a", "left");
+        keyMap.put("d", "right");
+        keyMap.put("shift", "sprint");
 
         //Interaction Controls
-        keyMap.put("interact", KeyCode.E);
-        keyMap.put("use", KeyCode.SPACE);
-        keyMap.put("map", KeyCode.TAB);
-        keyMap.put("pause", KeyCode.ESCAPE);
-        keyMap.put("inventory", KeyCode.I);
-        keyMap.put("drop", KeyCode.G);
+        keyMap.put("e", "interact");
+        keyMap.put("space", "use");
+        keyMap.put("tab", "map");
+        keyMap.put("escape", "pause");
+        keyMap.put("i", "inventory");
+        keyMap.put("g", "drop");
 
         //Inventory Controls
-        keyMap.put("nextinv", KeyCode.F16);
-        keyMap.put("previnv", KeyCode.F15);
-        keyMap.put("slot1", KeyCode.DIGIT1);
-        keyMap.put("slot2", KeyCode.DIGIT2);
-        keyMap.put("slot3", KeyCode.DIGIT3);
-        keyMap.put("slot4", KeyCode.DIGIT4);
-        keyMap.put("slot5", KeyCode.DIGIT5);
+        keyMap.put("mwheeldown", "nextinv");
+        keyMap.put("mwheelup", "previnv");
+        keyMap.put("digit1", "slot1");
+        keyMap.put("digit2", "slot2");
+        keyMap.put("digit3", "slot3");
+        keyMap.put("digit4", "slot4");
+        keyMap.put("digit5", "slot5");
 
         //Weapon Controls
-        keyMap.put("attack", KeyCode.F13);
-        keyMap.put("attack2", KeyCode.F14);
-        keyMap.put("rotateinv", KeyCode.F);
-        keyMap.put("reload", KeyCode.R);
+        keyMap.put("mouse1", "attack");
+        keyMap.put("mouse2", "attack2");
+        keyMap.put("f", "rotateinv");
+        keyMap.put("r", "reload");
 
         try {
             save();
@@ -188,9 +175,9 @@ public class Controls {
 
         //generate a string with all the key binds
         String saveString = "";
-        for (Map.Entry<String, KeyCode> e : keyMap.entrySet()) {
-            saveString += "bind " + e.getValue().toString().toLowerCase() + " "
-                    + e.getKey().toLowerCase() + "\n";
+        for (Map.Entry<String, String> e : keyMap.entrySet()) {
+            saveString += "bind " + e.getKey().toLowerCase() + " "
+                    + e.getValue().toLowerCase() + "\n";
         }
 
         //write to file
@@ -201,25 +188,20 @@ public class Controls {
 
     /**
      * Returns the KeyCode associated with a control.
-     * @param controlName String name of the control to retrieve the key for
+     * @param key String name of the control to retrieve the key for
      * @return Returns a String for the specified control to include mouse buttons.
      */
-    public String getKey(String controlName) {
-        if (controlName == null) {
+    public String getControl(String key) {
+        if (key == null) {
             throw new IllegalArgumentException("Control cannot be null.");
         }
         //get the KeyCode associated with the control name. If null, then the bind doesn't exist.
-        KeyCode foundCode = keyMap.get(controlName);
-        if (foundCode == null) {
-            throw new IllegalArgumentException("No such control.");
+        String foundControl = keyMap.get(key.toLowerCase());
+        if (foundControl == null) {
+            return "";
+            //throw new IllegalArgumentException("Key is not bound.");
         }
-
-        //if the keycode corresponds to a mouse button, then return the mouse button code
-        if (MOUSEKEYS.getKey(foundCode) != null) {
-            //note the "key" in "getKey" refers to key in "key value pair", not "keycode"
-            return MOUSEKEYS.getKey(foundCode);
-        }
-        return foundCode.toString();
+        return foundControl;
     }
 
     /**
@@ -232,11 +214,11 @@ public class Controls {
 
     /**
      * Sets the KeyCode for a control.
-     * @param controlName String name of the control to change
      * @param key KeyCode to change the control to
+     * @param control String name of the control to change
      */
-    public void setKey(String controlName, String key) {
-        if (controlName == null) {
+    public void setKey(String key, String control) {
+        if (control == null) {
             System.out.println("Control cannot be null.");
             return;
         }
@@ -245,30 +227,8 @@ public class Controls {
             return;
         }
 
-        //get KeyCode object from the key string
-        KeyCode code;
-        try {
-            //if the key is a mousebutton, get the KeyCode corresponding to it.
-            if (MOUSEKEYS.get(key) != null) {
-                code = MOUSEKEYS.get(key);
-            } else {
-                code = KeyCode.valueOf(key);
-            }
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid key.");
-        }
-
-        //if the key is already mapped to another control, throw an exception
-        if (keyMap.get(controlName) != code && keyMap.containsValue(code)) {
-            System.out.println("That key is already mapped to another control.");
-            return;
-        }
         //if the control is already mapped, overwrite it
-        if (keyMap.containsKey(controlName)) {
-            keyMap.replace(controlName, code);
-        } else {
-            keyMap.put(controlName, code);
-        }
+        keyMap.put(key, control);
 
         try {
             save();
