@@ -22,9 +22,7 @@ import java.util.*;
  */
 public class GameController {
     private Timer timer;
-    private Controls controls;
     private Room room;
-    private Scene scene;
     private Player player;
     private double velX;
     private double velY;
@@ -32,6 +30,8 @@ public class GameController {
     private double accelY;
     private boolean isRunning;
     private boolean isStopped;
+
+    //debug variables
     private long ticks;
     private double totalTime;
 
@@ -39,15 +39,14 @@ public class GameController {
     private HashMap<String, Boolean> states;
 
     /**
-     * Secondary constructor for no player
+     * Constructor for GameController
      */
     public GameController() {
-        this.controls = new Controls();
     }
 
     /**
-     * Starts the game.
-     * @param room Current/first room
+     * Starts the game in the provided room.
+     * @param room Room to start in
      */
     public void start(Room room) {
         //reset the game on start
@@ -55,52 +54,19 @@ public class GameController {
 
         //set the current room & scene
         setRoom(room);
-        scene = getScreen().getScene();
+        Scene scene = getScreen().getScene();
 
         //Handle key events
         scene.setOnKeyPressed(e -> handleKey(e.getCode().toString(), true));
         scene.setOnKeyReleased(e -> handleKey(e.getCode().toString(), false));
-        scene.setOnMousePressed(e -> handleKey(mouseButton(e.getButton()), true));
-        scene.setOnMouseReleased(e -> handleKey(mouseButton(e.getButton()), false));
-        scene.setOnScroll(e -> handleKey(handleScroll(e.getDeltaY()), false));
+        scene.setOnMousePressed(e -> handleKey(mbStringify(e.getButton()), true));
+        scene.setOnMouseReleased(e -> handleKey(mbStringify(e.getButton()), false));
+        scene.setOnScroll(e -> handleKey(scrollStringify(e.getDeltaY()), false));
     }
 
     /**
-     * Handles mousebutton events and returns the appropriate button name.
-     * @param button MouseButton event
-     * @return Returns the corresponding button name
-     */
-    private String mouseButton(MouseButton button) {
-        if (button == MouseButton.PRIMARY) {
-            return "MOUSE1";
-        } else if (button == MouseButton.SECONDARY) {
-            return "MOUSE2";
-        }
-        return "";
-    }
-
-    private GameScreen getScreen() {
-        return GameScreen.getInstance();
-    }
-
-    /**
-     * Handle when the player uses the mouse scroll wheel.
-     * @param val Scroll length
-     * @return String of the keycode
-     */
-    private String handleScroll(double val) {
-        if (val < 0) {
-            return "MWHEELDOWN";
-        } else if (val > 0) {
-            return "MWHEELUP";
-        } else {
-            return "";
-        }
-    }
-
-    /**
-     * Sets the player object of the game.
-     * @param player Player node
+     * Sets the player of the game
+     * @param player Player object to set to
      */
     public void setPlayer(Player player) {
         this.player = player;
@@ -126,7 +92,7 @@ public class GameController {
     }
 
     /**
-     * Resets the player's position to the starting position.
+     * Resets the player's position to the room's starting position.
      */
     public void resetPos() {
         player.setX(room.getStartX());
@@ -180,6 +146,10 @@ public class GameController {
         }
         isRunning = !isRunning;
     }
+
+    /**
+     * Stops the game.
+     */
     public void stop() {
         isRunning = true;
         pause();
@@ -197,8 +167,37 @@ public class GameController {
     }
 
     /**
+     * Handles mousebutton events and returns the appropriate button name.
+     * @param button MouseButton event
+     * @return Returns the corresponding button name
+     */
+    private String mbStringify(MouseButton button) {
+        if (button == MouseButton.PRIMARY) {
+            return "MOUSE1";
+        } else if (button == MouseButton.SECONDARY) {
+            return "MOUSE2";
+        }
+        return "";
+    }
+
+    /**
+     * Handle when the player uses the mouse scroll wheel.
+     * @param val Scroll length
+     * @return String of the keycode
+     */
+    private String scrollStringify(double val) {
+        if (val < 0) {
+            return "MWHEELDOWN";
+        } else if (val > 0) {
+            return "MWHEELUP";
+        } else {
+            return "";
+        }
+    }
+
+    /**
      * Handler for key events.
-     * @param key KeyCode of the key that was pressed
+     * @param key String of the key that was pressed
      * @param isPress Whether the event is a press or release event
      */
     private void handleKey(String key, boolean isPress) {
@@ -206,7 +205,7 @@ public class GameController {
 
         //movement keys
         if (control.equals("up") || control.equals("down") || control.equals("right") || control.equals("left")) {
-            handleMovement(control, isPress);
+            handleMovementKey(control, isPress);
         }
 
         if (isStopped) {
@@ -282,7 +281,12 @@ public class GameController {
         }
     }
 
-    private void handleMovement(String dir, boolean isPress) {
+    /**
+     * Method to handle movement when the player presses a movement key.
+     * @param dir Direction to apply force to
+     * @param isPress Whether player is pressing or releasing the key
+     */
+    private void handleMovementKey(String dir, boolean isPress) {
         if (isPress == states.get(dir)) {
             return;
         }
@@ -309,8 +313,19 @@ public class GameController {
         return Math.round(number * GameSettings.PRECISION) / GameSettings.PRECISION;
     }
 
+    /**
+     * Shortcut to refresh/draw the frame.
+     */
     private void refresh() {
         Platform.runLater(() -> RoomRenderer.drawFrame(getScreen().getCanvas(), room, player));
+    }
+
+    /**
+     * Shortcut to get the GameScreen instance.
+     * @return
+     */
+    private GameScreen getScreen() {
+        return GameScreen.getInstance();
     }
 
     /**
@@ -331,45 +346,51 @@ public class GameController {
             long startTime = System.nanoTime();
 
             //move the player
-            movePlayer();
+            managePlayerMovement();
 
             //check item pickup
-            pickupItems();
+            manageItemPickup();
 
             //drop the items
-            dropItems();
+            manageItemDropping();
 
             //lower cooldowns
-            checkCooldowns();
+            manageCooldowns();
 
             //check for projectiles
-            checkProjectiles();
+            manageProjectiles();
 
             //check for player attacking
-            checkPlayerAttack();
+            managePlayerAttack();
 
             //Manage Monsters
-            monsterAI();
+            manageMonsters();
 
             //manage items (bombs)
-            if (checkObstacleItems()) {
+            if (manageObstacleItems()) {
                 return;
             }
 
             //manage player status effects
-            manageEffects();
+            managePlayerEffects();
 
+            //draw the frame
             refresh();
 
             //update velocity
             updatePlayerVelocity();
 
-            long endTime = System.nanoTime();
-            double execTime = round((endTime - startTime) / 1000000.0); //in milliseconds
-            totalTime += execTime;
+            if (GameSettings.DEBUG) {
+                long endTime = System.nanoTime();
+                double execTime = round((endTime - startTime) / 1000000.0); //in milliseconds
+                totalTime += execTime;
+            }
         }
 
-        private void movePlayer() {
+        /**
+         * Calculates and moves the player based on their velocity. Takes collisions into account.
+         */
+        private void managePlayerMovement() {
             double posX = player.getX();
             double posY = player.getY();
             double newPosX = round(posX + velX);
@@ -382,8 +403,8 @@ public class GameController {
                 newPosY = movePos.getY();
 
                 //check collisions with obstacles
-                Obstacle[] obs = room.getObstacles().toArray(new Obstacle[room.getObstacles().size()]);
-                Collision check = checkCollisions(obs, player, new Coords(newPosX, newPosY));
+                Obstacle[] obs = room.getObstacles().toArray(new Obstacle[0]);
+                Collision<Obstacle> check = checkCollisions(obs, player, new Coords(newPosX, newPosY));
                 if (check.getCollider() == null) {
                     //set player sprite
                     int dir;
@@ -408,7 +429,10 @@ public class GameController {
             }
         }
 
-        private void pickupItems() {
+        /**
+         * Manages player item pickup.
+         */
+        private void manageItemPickup() {
             boolean itemPickedUp = false;
             droploop:
             for (int i = 0; i < room.getDroppedItems().size(); i++) {
@@ -475,7 +499,10 @@ public class GameController {
             }
         }
 
-        private void dropItems() {
+        /**
+         * Manages player dropping items. If the drop key is held down, will drop 1 item per tick.
+         */
+        private void manageItemDropping() {
             InventoryItem currentItem = player.getItemSelected();
             if (!states.get("drop") || currentItem == null) {
                 return;
@@ -509,7 +536,10 @@ public class GameController {
             Platform.runLater(() -> getScreen().updateHud());
         }
 
-        private void checkCooldowns() {
+        /**
+         * Manages all cooldowns.
+         */
+        private void manageCooldowns() {
             //lower player attack cooldown
             if (player.getAttackCooldown() > 0) {
                 player.setAttackCooldown(Math.max(0.0, player.getAttackCooldown() - 1000.0 / GameSettings.FPS));
@@ -519,14 +549,17 @@ public class GameController {
             Item item = player.getItemSelected() != null ? player.getItemSelected().getItem() : null;
             if (item instanceof RangedWeapon && ((RangedWeapon) item).getDelay() > 0) {
                 RangedWeapon weapon = (RangedWeapon) item;
-                weapon.setDelay(Math.max(0, weapon.getDelay() - 1000 / GameSettings.FPS));
+                weapon.setDelay(Math.max(0, weapon.getDelay() - 1000.0 / GameSettings.FPS));
                 if (weapon.isReloading() && weapon.getDelay() == 0) {
                     weapon.finishReloading();
                 }
             }
         }
 
-        private void checkProjectiles() {
+        /**
+         * Manages projectiles, including movement & damage.
+         */
+        private void manageProjectiles() {
             for (int i = 0; i < room.getProjectiles().size(); i++) {
                 ShotProjectile p = room.getProjectiles().get(i);
                 //move
@@ -567,7 +600,10 @@ public class GameController {
             }
         }
 
-        private void checkPlayerAttack() {
+        /**
+         * Manages player's ability to attack.
+         */
+        private void managePlayerAttack() {
             Item item = player.getItemSelected() != null ? player.getItemSelected().getItem() : null;
             if (states.get("attacking") && player.getAttackCooldown() == 0) {
                 double damage = GameSettings.PLAYER_FIST_DAMAGE;
@@ -666,7 +702,10 @@ public class GameController {
             }
         }
 
-        private void monsterAI() {
+        /**
+         * Manages monsters
+         */
+        private void manageMonsters() {
             for (Monster m : room.getMonsters()) {
                 if (m == null || m.getHealth() == 0) {
                     continue;
@@ -678,7 +717,11 @@ public class GameController {
             }
         }
 
-        private boolean checkObstacleItems() {
+        /**
+         * Manages obstacle items.
+         * @return Whether to continue the tick or not
+         */
+        private boolean manageObstacleItems() {
             for (int i = 0; i < room.getObstacles().size(); i++) {
                 if (!(room.getObstacles().get(i) instanceof ObstacleItem)) {
                     continue;
@@ -689,13 +732,10 @@ public class GameController {
                 if (item instanceof Bomb) {
                     Bomb b = (Bomb) item;
                     //decrement fuse
-                    b.setLivefuse(b.getLivefuse() - 1000 / GameSettings.FPS);
+                    b.setLivefuse(b.getLivefuse() - 1000.0 / GameSettings.FPS);
 
                     //if bomb has blown up
                     if (b.getLivefuse() <= 0) {
-                        double x = o.getX() + o.getHeight() / 2;
-                        double y = o.getY() + o.getWidth() / 2;
-
                         //attack player
                         double dist = distance(player, o);
 
@@ -728,6 +768,9 @@ public class GameController {
             return false;
         }
 
+        /**
+         * Updates the player's velocity and acceleration.
+         */
         private void updatePlayerVelocity() {
             double originalVelX = velX;
             double originalVelY = velY;
@@ -770,10 +813,13 @@ public class GameController {
             }
         }
 
-        private void manageEffects() {
+        /**
+         * Manages player effects, such as speed or attack boost.
+         */
+        private void managePlayerEffects() {
             for (int i = 0; i < player.getEffects().size(); i++) {
                 Effect e = player.getEffects().get(i);
-                e.setDuration(e.getDuration() - 1000 / GameSettings.FPS);
+                e.setDuration(e.getDuration() - 1000.0 / GameSettings.FPS);
                 if (e.getDuration() <= 0) {
                     player.getEffects().remove(i--);
                     Platform.runLater(() -> getScreen().updateHud());
@@ -781,6 +827,13 @@ public class GameController {
             }
         }
 
+        /**
+         * Checks if the specified coordinates are out of bounds of the game.
+         * @param coords Coordinates of the object
+         * @param w Width of the object
+         * @param h Height of the object
+         * @return Returns the coordinates to move to, the original if no change is required
+         */
         private Coords checkPos(Coords coords, double w, double h) {
             double x = coords.getX();
             double y = coords.getY();
@@ -793,6 +846,13 @@ public class GameController {
             return new Coords(x, y);
         }
 
+        /**
+         * Checks whether Movable o is in range of Movable m's movement, using its new coordinates.
+         * @param o Object to check if it is within range of the other object
+         * @param m Object that is moving
+         * @param newPos New coordinates of object m's movmement
+         * @return Whether object o is in range of object m's movement
+         */
         private boolean inRange(Movable o, Movable m, Coords newPos) {
             /* Checks if the object is in range of the player's movement
              *          _________
@@ -820,6 +880,14 @@ public class GameController {
             return true;
         }
 
+        /**
+         * Checks if a Movable object collides with any objects in a list.
+         * @param list List of objects to check
+         * @param m Object that is moving
+         * @param newPos New coordinates of the object m
+         * @param <T> Type of object to check
+         * @return Returns with the collision data of the collision, with null values if no collision
+         */
         private <T extends Movable> Collision<T> checkCollisions(T[] list, Movable m, Coords newPos) {
             double x = m.getX();
             double y = m.getY();
@@ -856,6 +924,11 @@ public class GameController {
             return new Collision<>();
         }
 
+        /**
+         * Checks if the player has entered a door. If so, teleport player.
+         * @param newPos New coordinates of the player's movement
+         * @return Whether to continue the tick
+         */
         private boolean checkDoors(Coords newPos) {
             Door[] doors = {
                 room.getTopDoor(),
@@ -921,6 +994,15 @@ public class GameController {
             return false;
         }
 
+        /**
+         * Gets the intersection point of Movable mo's movement equation with an object o
+         * @param o Object to check collision with
+         * @param mo Object that is moving
+         * @param eq Equation of object mo's movement
+         * @param moveUp Whether mo is moving up or down
+         * @param moveRight Whether mo is moving right or left
+         * @return The coordinates of the intersection point
+         */
         private Coords getIntersect(Movable o, Movable mo, Equation eq, boolean moveUp, boolean moveRight) {
             /* Calculate x-coordinate intersection point on the y-axis
              *
@@ -947,41 +1029,42 @@ public class GameController {
             double w = mo.getWidth();
             double h = mo.getHeight();
 
-            double intY = (o.getY() + o.getHeight() - b) / m;
+            //x value of the y/vertical intersection point
+            double yIntXVal = (o.getY() + o.getHeight() - b) / m;
             if (moveUp) {
-                intY = (o.getY() - h - b) / m;
+                yIntXVal = (o.getY() - h - b) / m;
             }
-            //check for zero slope ie NaN intY
+            //check for zero slope ie NaN yIntXVal
             if (m == 0) {
-                intY = b;
+                yIntXVal = b;
             }
             /* if the player is moving vertically, then slope and y-intercept will be
-             * infinity/undefined. If so, set the intY/x position of the intersect to the x
+             * infinity/undefined. If so, set the yIntXVal/x position of the intersect to the x
              * coordinate of the movement vector, which will be stored in the y-intercept variable
              */
             if (eq.isVertical()) {
-                intY = b;
+                yIntXVal = b;
             }
 
             //check if intersect is on the obstacle
-            if (intY <= o.getX() + o.getWidth() && intY + w >= o.getX()) {
-                double coord = m * intY + b;
-                return new Coords(intY, coord);
+            if (yIntXVal <= o.getX() + o.getWidth() && yIntXVal + w >= o.getX()) {
+                double coord = m * yIntXVal + b;
+                return new Coords(yIntXVal, coord);
             }
 
             //Calculate y-coordinate intersection point on the x-axis, using y = mx + b
-            double intX = m * (o.getX() + o.getWidth()) + b;
+            double xIntYVal = m * (o.getX() + o.getWidth()) + b;
             if (moveRight) { //intersect is the right side of player to the left side of obstacle
-                intX = m * (o.getX() - w) + b;
+                xIntYVal = m * (o.getX() - w) + b;
             }
 
             //check if intersect is on the obstacle
-            if (intX <= o.getY() + o.getHeight() && intX + h >= o.getY()) {
-                double coord = (intX - b) / m;
+            if (xIntYVal <= o.getY() + o.getHeight() && xIntYVal + h >= o.getY()) {
+                double coord = (xIntYVal - b) / m;
                 if (m == 0) {
                     coord = o.getX() + ((moveRight) ? -w : o.getWidth());
                 }
-                return new Coords(coord, intX);
+                return new Coords(coord, xIntYVal);
             }
 
             return null;
@@ -1008,12 +1091,24 @@ public class GameController {
             return eq;
         }
 
+        /**
+         * Calculates the shortest distance between two objects.
+         * @param a First object to check
+         * @param b Second object to check
+         * @return Returns the distance between the two objects
+         */
         private double distance(Movable a, Movable b) {
             double distX = (a.getX() + a.getWidth() / 2) - (b.getX() + b.getWidth() / 2);
             double distY = (a.getY() + a.getHeight() / 2) - (b.getY() + b.getHeight() / 2);
             return round(Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2)));
         }
 
+        /**
+         * Calculates the angle of the shortest distance between two objects.
+         * @param a First object to check
+         * @param b Second object to check
+         * @return Angle of the distance between the two objects
+         */
         private double angle(Movable a, Movable b) {
             double distX = (a.getX() + a.getWidth() / 2) - (b.getX() + b.getWidth() / 2);
             double distY = (a.getY() + a.getHeight() / 2) - (b.getY() + b.getHeight() / 2);
@@ -1023,7 +1118,7 @@ public class GameController {
         /**
          * Monster AI for calculating movement and attacking.
          * @param m Monster to calculate for
-         * @return Returns if the program should stop
+         * @return Returns if the tick should stop
          */
         private boolean monsterMove(Monster m) {
             //check queue
@@ -1098,15 +1193,6 @@ public class GameController {
             return false;
         }
 
-        private void gameOver() {
-            System.out.println("Game Over");
-            GameScreen screen = getScreen();
-            Platform.runLater(() -> {
-                room = screen.getLayout().getStartingRoom();
-                screen.gameOver();
-            });
-        }
-
         /**
          * Checks if a monster can attack or not.
          * @param m Monster to check
@@ -1129,6 +1215,18 @@ public class GameController {
             } else {
                 return false;
             }
+        }
+
+        /**
+         * Shortcut for handling game-over.
+         */
+        private void gameOver() {
+            System.out.println("Game Over");
+            GameScreen screen = getScreen();
+            Platform.runLater(() -> {
+                room = screen.getLayout().getStartingRoom();
+                screen.gameOver();
+            });
         }
     }
 }

@@ -32,7 +32,7 @@ public class Monster extends Entity {
         this.speed = speed;
         this.attackSpeed = attackSpeed;
         this.reaction = -1;
-        moveQueue = new LinkedList<>();
+        moveQueue = new ArrayList<>();
         opacity = 1;
         switch (type) {
         case FAST:
