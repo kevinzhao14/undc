@@ -75,13 +75,6 @@ public class Player extends Entity {
         totalItemsConsumed++;
     }
 
-    public void clearGameStats() {
-        //DOES NOT CLEAR GOLD
-        monstersKilled = 0;
-        totalDamageDealt = 0.0;
-        totalItemsConsumed = 0;
-    }
-
     public void setDirection(int dir) {
         this.setImage(sprites[dir]);
         direction = dir;
@@ -93,10 +86,6 @@ public class Player extends Entity {
 
     public int getSelected() {
         return this.selected;
-    }
-
-    public void setSelected(int selected) {
-        this.selected = selected;
     }
 
     public InventoryItem getItemSelected() {

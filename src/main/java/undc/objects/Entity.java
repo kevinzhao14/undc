@@ -82,10 +82,6 @@ public abstract class Entity implements Movable {
         this.attackCooldown = attackCooldown;
     }
 
-    public String getNode() {
-        return node.getUrl();
-    }
-
     public void setNode(String node) {
         this.node = new Image(node);
     }

@@ -322,7 +322,7 @@ public class GameController {
 
     /**
      * Shortcut to get the GameScreen instance.
-     * @return
+     * @return Returns the GameScreen instance
      */
     private GameScreen getScreen() {
         return GameScreen.getInstance();
@@ -449,17 +449,17 @@ public class GameController {
                             if (item != null) {
                                 //if item is a ranged weapon, check for ammo
                                 if (item.getItem() instanceof RangedWeapon) {
-                                    Ammo ammo = ((RangedWeapon) item.getItem()).getAmmo();
+                                    WeaponAmmo weaponAmmo = ((RangedWeapon) item.getItem()).getAmmo();
                                     //if the weapon's ammo exists & is the same as the dropped item
-                                    if (ammo != null && ammo.getProjectile() != null && ammo.getProjectile().equals(a.getProjectile())) {
-                                        int maxChange = ammo.getBackupMax() - ammo.getBackupRemaining();
+                                    if (weaponAmmo != null && weaponAmmo.getProjectile() != null && weaponAmmo.getProjectile().equals(a.getProjectile())) {
+                                        int maxChange = weaponAmmo.getBackupMax() - weaponAmmo.getBackupRemaining();
                                         if (a.getAmount() <= maxChange) {
-                                            ammo.setBackupRemaining(ammo.getBackupRemaining() + a.getAmount());
+                                            weaponAmmo.setBackupRemaining(weaponAmmo.getBackupRemaining() + a.getAmount());
                                             itemPickedUp = true;
                                             room.getDroppedItems().remove(i);
                                             i--;
                                         } else {
-                                            ammo.setBackupRemaining(ammo.getBackupMax());
+                                            weaponAmmo.setBackupRemaining(weaponAmmo.getBackupMax());
                                             a.setAmount(a.getAmount() - maxChange);
                                         }
                                         continue droploop;
@@ -639,10 +639,10 @@ public class GameController {
                     return;
                 }
 
-                Ammo ammo = weapon.getAmmo();
+                WeaponAmmo weaponAmmo = weapon.getAmmo();
 
                 //check for ammo
-                if (ammo.getRemaining() <= 0) {
+                if (weaponAmmo.getRemaining() <= 0) {
                     weapon.reload();
                     return;
                 }
@@ -653,7 +653,7 @@ public class GameController {
                 weapon.setDelay(weapon.getFireRate() * 1000);
 
                 //reduce ammo
-                ammo.setRemaining(ammo.getRemaining() - 1);
+                weaponAmmo.setRemaining(weaponAmmo.getRemaining() - 1);
 
                 //update ammo on HUD
                 Platform.runLater(() -> getScreen().updateHud());
@@ -662,13 +662,13 @@ public class GameController {
                 int dir = player.getDirection() % 4;
                 double x = player.getX() + player.getWidth() / 2;
                 double y = player.getY() + player.getHeight();
-                Image sprite = ammo.getProjectile().getSpriteLeft();
+                Image sprite = weaponAmmo.getProjectile().getSpriteLeft();
                 if (dir == 1) {
-                    sprite = ammo.getProjectile().getSpriteUp();
+                    sprite = weaponAmmo.getProjectile().getSpriteUp();
                 } else if (dir == 2) {
-                    sprite = ammo.getProjectile().getSpriteRight();
+                    sprite = weaponAmmo.getProjectile().getSpriteRight();
                 } else if (dir == 3) {
-                    sprite = ammo.getProjectile().getSpriteDown();
+                    sprite = weaponAmmo.getProjectile().getSpriteDown();
                 }
                 double height = sprite.getHeight();
                 double width = sprite.getWidth();
@@ -691,12 +691,12 @@ public class GameController {
 
 
                 //velocity
-                double speed = ammo.getProjectile().getSpeed();
+                double speed = weaponAmmo.getProjectile().getSpeed();
                 double velX = dir == 0 ? -speed : (dir == 2 ? speed : 0);
                 double velY = dir == 1 ? speed : (dir == 3 ? -speed : 0);
 
                 //create projectile
-                ShotProjectile sp = new ShotProjectile(ammo.getProjectile(), x, y, velX, velY, width, height);
+                ShotProjectile sp = new ShotProjectile(weaponAmmo.getProjectile(), x, y, velX, velY, width, height);
                 sp.setSprite(sprite);
                 room.getProjectiles().add(sp);
             }

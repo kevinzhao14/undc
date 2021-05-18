@@ -5,7 +5,7 @@ import undc.gamestates.GameScreen;
 import javafx.application.Platform;
 
 public class RangedWeapon extends Weapon {
-    private Ammo ammo;
+    private WeaponAmmo weaponAmmo;
 
     //reload time in seconds
     private double reloadTime;
@@ -17,30 +17,30 @@ public class RangedWeapon extends Weapon {
     private double delay;
 
     public RangedWeapon(String name, String sprite, double damage, boolean droppable,
-                        double reloadTime, double fireRate, Ammo ammo) {
+                        double reloadTime, double fireRate, WeaponAmmo weaponAmmo) {
         super(name, sprite, damage, 1, droppable);
         this.reloadTime = reloadTime;
         this.fireRate = fireRate;
         isReloading = false;
         delay = 0;
 
-        this.ammo = ammo;
+        this.weaponAmmo = weaponAmmo;
     }
     public RangedWeapon(String name, String sprite, double damage, boolean droppable,
                         double reloadTime, double fireRate) {
         this(name, sprite, damage, droppable, reloadTime, fireRate, null);
-        Ammo ammo = new Ammo(0, 0, null);
-        this.ammo = ammo;
+        WeaponAmmo weaponAmmo = new WeaponAmmo(0, 0, null);
+        this.weaponAmmo = weaponAmmo;
     }
 
     public RangedWeapon copy() {
         RangedWeapon nw = new RangedWeapon(getName(), getSprite().getUrl(), getDamage(),
-                isDroppable(), reloadTime, fireRate, ammo.copy());
+                isDroppable(), reloadTime, fireRate, weaponAmmo.copy());
         return nw;
     }
 
     public void reload() {
-        if (ammo.getRemaining() >= ammo.getSize()) {
+        if (weaponAmmo.getRemaining() >= weaponAmmo.getSize()) {
             return;
         }
         isReloading = true;
@@ -49,19 +49,19 @@ public class RangedWeapon extends Weapon {
     }
 
     public void finishReloading() {
-        int change = ammo.getSize() - ammo.getRemaining();
-        ammo.setRemaining(ammo.getSize());
-        ammo.setBackupRemaining(ammo.getBackupRemaining() - change);
+        int change = weaponAmmo.getSize() - weaponAmmo.getRemaining();
+        weaponAmmo.setRemaining(weaponAmmo.getSize());
+        weaponAmmo.setBackupRemaining(weaponAmmo.getBackupRemaining() - change);
         isReloading = false;
         Platform.runLater(() -> ((GameScreen) Controller.getState()).updateHud());
     }
 
-    public Ammo getAmmo() {
-        return ammo;
+    public WeaponAmmo getAmmo() {
+        return weaponAmmo;
     }
 
-    public void setAmmo(Ammo ammo) {
-        this.ammo = ammo;
+    public void setAmmo(WeaponAmmo weaponAmmo) {
+        this.weaponAmmo = weaponAmmo;
     }
 
     public double getReloadTime() {

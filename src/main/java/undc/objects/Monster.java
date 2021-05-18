@@ -58,7 +58,7 @@ public class Monster extends Entity {
                 m.attackSpeed, m.type, m.getHeight(), m.getWidth());
     }
 
-    public boolean attackMonster(double damageAmount, boolean givePlayerGoldIfSlain) {
+    public boolean attackMonster(double damageAmount, boolean giveGold) {
         if (this.getHealth() <= 0) {
             return false;
         }
@@ -72,7 +72,7 @@ public class Monster extends Entity {
         if (this.getHealth() == 0.0) {
             GameScreen screen = (GameScreen) Controller.getState();
 
-            if (givePlayerGoldIfSlain) {
+            if (giveGold) {
                 double modifier;
                 switch (Controller.getDataManager().getDifficulty()) {
                 case MEDIUM:

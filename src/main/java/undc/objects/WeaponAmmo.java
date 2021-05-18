@@ -1,6 +1,6 @@
 package undc.objects;
 
-public class Ammo {
+public class WeaponAmmo {
     //type of ammo in use
     private Projectile projectile;
 
@@ -10,7 +10,7 @@ public class Ammo {
     private int backupMax;
     private int backupRemaining;
 
-    public Ammo(int size, int backupMax, Projectile projectile) {
+    public WeaponAmmo(int size, int backupMax, Projectile projectile) {
         this.size = size;
         this.backupMax = backupMax;
         this.remaining = 0;
@@ -18,8 +18,8 @@ public class Ammo {
         this.projectile = projectile;
     }
 
-    public Ammo copy() {
-        return new Ammo(size, backupMax, projectile != null ? projectile.copy() : null);
+    public WeaponAmmo copy() {
+        return new WeaponAmmo(size, backupMax, projectile != null ? projectile.copy() : null);
     }
 
     public int getSize() {

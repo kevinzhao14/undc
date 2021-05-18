@@ -17,15 +17,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 
-/**
- * Class that renders the GUI for each Room
- * @author Ishaan Guha
- * @version  1.0
- */
 public class RoomRenderer {
 
     /**
-     * draws the room, adding all the doors, obstacles, and treasures
+     * Draws the room, adding all the doors, obstacles, and treasures.
      * @param scene The room's scene
      * @param room The room to draw
      * @param canvas Canvas to draw on

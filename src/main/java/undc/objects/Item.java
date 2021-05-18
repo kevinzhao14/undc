@@ -32,12 +32,6 @@ public abstract class Item {
     public void setName(String itemName) {
         name = itemName;
     }
-    public void setMaxStackSize(int size) {
-        maxStackSize = size;
-    }
-    public void setDroppable(boolean isDroppable) {
-        droppable = isDroppable;
-    }
 
     public Image getSprite() {
         return sprite;

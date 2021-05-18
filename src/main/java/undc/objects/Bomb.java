@@ -41,10 +41,9 @@ public class Bomb extends Item {
         //place object as an obstacle
         double width = 20;
         double height = 20;
-        Obstacle o = new Obstacle(getSprite(), player.getX() + player.getWidth() / 2 - width / 2,
-                player.getY() + player.getHeight() / 2 - height / 2, width, height,
-                ObstacleType.NONSOLID);
-        o.setSprite(getSprite());
+        double x = player.getX() + player.getWidth() / 2 - width / 2;
+        double y = player.getY() + player.getHeight() / 2 - height / 2;
+        ObstacleItem o = new ObstacleItem(getSprite(), x, y, width, height, ObstacleType.NONSOLID);
         Bomb timer = copy();
         o.setItem(timer);
         room.getObstacles().add(o);
@@ -61,14 +60,8 @@ public class Bomb extends Item {
     public double getRadius() {
         return this.radius;
     }
-    public void setRadius(double radius) {
-        this.radius = radius;
-    }
     public double getFuse() {
         return this.fuse;
-    }
-    public void setFuse(double fuse) {
-        this.fuse = fuse;
     }
 
     public double getLivefuse() {

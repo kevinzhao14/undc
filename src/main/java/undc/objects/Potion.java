@@ -18,10 +18,6 @@ public class Potion extends Item {
         type = potionType;
         modifier = potionModifier;
     }
-    public Potion(String path, String itemName, PotionType potionType) {
-        super(new Image(path), itemName);
-        type = potionType;
-    }
 
     public Potion copy() {
         return new Potion(getName(), getSprite().getUrl(), getMaxStackSize(),

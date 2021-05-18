@@ -2,7 +2,7 @@ package undc.handlers;
 
 import undc.controllers.Controller;
 import undc.controllers.DataManager;
-import undc.objects.Ammo;
+import undc.objects.WeaponAmmo;
 import undc.objects.Ammunition;
 import undc.objects.ChallengeRoom;
 import undc.objects.Door;
@@ -72,10 +72,10 @@ public class LayoutGenerator {
         Item[] items = DataManager.ITEMS;
         cr1Rewards = new Inventory(2, 5);
         RangedWeapon rl = ((RangedWeapon) items[6]).copy();
-        Ammo ammo = new Ammo(2, 50, DataManager.PROJECTILES[0].copy());
-        ammo.setRemaining(2);
-        ammo.setBackupRemaining(20);
-        rl.setAmmo(ammo);
+        WeaponAmmo weaponAmmo = new WeaponAmmo(2, 50, DataManager.PROJECTILES[0].copy());
+        weaponAmmo.setRemaining(2);
+        weaponAmmo.setBackupRemaining(20);
+        rl.setAmmo(weaponAmmo);
 
         cr1Rewards.add(items[2], 1);
         cr1Rewards.add(items[3], 1);
