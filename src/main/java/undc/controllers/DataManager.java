@@ -33,7 +33,7 @@ public class DataManager {
         new Projectile("Rocket",
                 new String[]{"weapons/rocket-left.png", "weapons/rocket-up.png",
                     "weapons/rocket-right.png", "weapons/rocket-down.png"},
-                25, 500.0 / GameSettings.FPS, 400, true, 25)};
+                25, 500.0, 400, true, 25)};
 
     public static final Item[] ITEMS = new Item[]{
         new Potion("Small Health Potion", "items/health-potion-small.png", 10, true,
@@ -58,12 +58,12 @@ public class DataManager {
     public static final Key EXITKEY = new Key("Special Key", "items/key.png", true);
 
     public static final Monster[] MONSTERS = new Monster[]{
-        new Monster(20, 4, 150.0 / GameSettings.FPS, 0.5, MonsterType.FAST, 11, 9),
-        new Monster(40, 5, 100.0 / GameSettings.FPS, 0.75, MonsterType.NORMAL, 24, 12),
-        new Monster(80, 10, 50.0 / GameSettings.FPS, 2, MonsterType.TANK, 21, 31)
+        new Monster(20, 4, 150.0, 0.5, MonsterType.FAST, 11, 9),
+        new Monster(40, 5, 100.0, 0.75, MonsterType.NORMAL, 24, 12),
+        new Monster(80, 10, 50.0, 2, MonsterType.TANK, 21, 31)
     };
 
-    public static final Monster FINALBOSS = new Monster(200, 15, 100.0 / GameSettings.FPS, 1.0,
+    public static final Monster FINALBOSS = new Monster(200, 15, 100.0, 1.0,
             MonsterType.FINALBOSS, 48, 48);
     public static final String EXPLOSION = "textures/boom.gif";
 

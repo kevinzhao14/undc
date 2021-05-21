@@ -1,12 +1,9 @@
 package undc.controllers;
 
-import undc.handlers.Controls;
-import undc.handlers.RoomRenderer;
+import undc.handlers.*;
 import undc.objects.*;
 
 import undc.gamestates.GameScreen;
-import undc.handlers.GameSettings;
-import undc.handlers.LayoutGenerator;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -17,7 +14,7 @@ import java.util.*;
 /**
  * Class for running the game. Does all the calculations and stuff.
  *
- * @author Kevin Zhao, Manas Harbola
+ * @author Kevin Zhao
  * @version 1.0
  */
 public class GameController {
@@ -104,10 +101,10 @@ public class GameController {
      * Resets all game values.
      */
     private void reset() {
-        velX = 0.0;
-        velY = 0.0;
-        accelX = 0.0;
-        accelY = 0.0;
+        velX = 0;
+        velY = 0;
+        accelX = 0;
+        accelY = 0;
         isRunning = false;
         isStopped = false;
         states = new HashMap<>();
@@ -121,7 +118,7 @@ public class GameController {
         states.put("firing", false);
         states.put("pausePress", false);
         states.put("inventory", false);
-        states.put("use", false);
+        states.put("usePress", false);
         states.put("drop", false);
         ticks = 0;
         totalTime = 0;
@@ -132,13 +129,13 @@ public class GameController {
      */
     public void pause() {
         if (isRunning) {
-            if (GameSettings.DEBUG) {
-                System.out.println("Game has been paused");
-                System.out.println("Average FPS in " + ticks + " ticks: " + round(1000.0 / (totalTime / ticks)));
+            if (Vars.DEBUG) {
+                Console.print("Game has been paused");
+                Console.print("Average Server FPS in " + ticks + " ticks: " + round(1000.0 / (totalTime / ticks)));
             }
             timer.cancel();
         } else {
-            if (GameSettings.DEBUG) System.out.println("Game has been resumed");
+            if (Vars.DEBUG) Console.print("Game has been resumed");
             startTimer();
         }
         if (!isRunning && isStopped) {
@@ -154,7 +151,7 @@ public class GameController {
         isRunning = true;
         pause();
         isStopped = true;
-        if (GameSettings.DEBUG) System.out.println("Game has been stopped.");
+        if (Vars.DEBUG) Console.print("Game has been stopped.");
     }
 
     /**
@@ -163,7 +160,7 @@ public class GameController {
     private void startTimer() {
         refresh();
         timer = new Timer();
-        timer.schedule(new GameRunner(), 0, 1000 / GameSettings.FPS);
+        timer.schedule(new GameRunner(), 0, 1000 / Vars.i("fps"));
     }
 
     /**
@@ -254,6 +251,7 @@ public class GameController {
                         selected.getItem().use();
                     }
                 }
+                states.put("usePress", isPress);
                 break;
             case "nextinv":
                 player.moveRight();
@@ -295,11 +293,12 @@ public class GameController {
             sign *= -1;
         }
         states.put(dir, isPress);
+        double accel = Vars.d("accel") / Vars.i("sv_tickrate") / Vars.i("sv_tickrate");
         if (dir.equals("left") || dir.equals("right")) {
-            accelX += sign * GameSettings.ACCEL;
+            accelX += sign * accel;
             accelX = round(accelX);
         } else {
-            accelY += sign * GameSettings.ACCEL;
+            accelY += sign * accel;
             accelY = round(accelY);
         }
     }
@@ -310,7 +309,7 @@ public class GameController {
      * @return Returns the rounded number.
      */
     private double round(double number) {
-        return Math.round(number * GameSettings.PRECISION) / GameSettings.PRECISION;
+        return Math.round(number * Vars.d("precision")) / Vars.d("precision");
     }
 
     /**
@@ -328,6 +327,10 @@ public class GameController {
         return GameScreen.getInstance();
     }
 
+    private double tickTime() {
+        return 1000.0 / Vars.i("sv_tickrate");
+    }
+
     /**
      * Class that is used to calculate stuff on each tick.
      */
@@ -337,7 +340,7 @@ public class GameController {
          */
         public void run() {
             if (!(Controller.getState() instanceof GameScreen)) {
-                System.out.println("Invalid Run Instance!");
+                Console.error("Invalid Run Instance!");
                 this.cancel();
                 return;
             }
@@ -380,7 +383,7 @@ public class GameController {
             //update velocity
             updatePlayerVelocity();
 
-            if (GameSettings.DEBUG) {
+            if (Vars.DEBUG) {
                 long endTime = System.nanoTime();
                 double execTime = round((endTime - startTime) / 1000000.0); //in milliseconds
                 totalTime += execTime;
@@ -439,31 +442,29 @@ public class GameController {
                 DroppedItem d = room.getDroppedItems().get(i);
                 double dist = distance(player, d);
                 //pick up item
-                if (dist <= GameSettings.PLAYER_PICKUP_RANGE) {
+                if (dist <= Vars.i("sv_player_pickup_range")) {
                     //check if ammunition
                     if (d.getItem() instanceof Ammunition) {
                         //check if a weapon that uses this ammunition exists
                         Ammunition a = (Ammunition) d.getItem();
                         //loop through items
                         for (InventoryItem item : player.getInventory()) {
-                            if (item != null) {
-                                //if item is a ranged weapon, check for ammo
-                                if (item.getItem() instanceof RangedWeapon) {
-                                    WeaponAmmo weaponAmmo = ((RangedWeapon) item.getItem()).getAmmo();
-                                    //if the weapon's ammo exists & is the same as the dropped item
-                                    if (weaponAmmo != null && weaponAmmo.getProjectile() != null && weaponAmmo.getProjectile().equals(a.getProjectile())) {
-                                        int maxChange = weaponAmmo.getBackupMax() - weaponAmmo.getBackupRemaining();
-                                        if (a.getAmount() <= maxChange) {
-                                            weaponAmmo.setBackupRemaining(weaponAmmo.getBackupRemaining() + a.getAmount());
-                                            itemPickedUp = true;
-                                            room.getDroppedItems().remove(i);
-                                            i--;
-                                        } else {
-                                            weaponAmmo.setBackupRemaining(weaponAmmo.getBackupMax());
-                                            a.setAmount(a.getAmount() - maxChange);
-                                        }
-                                        continue droploop;
+                            //if item is a weapon
+                            if (item != null && item.getItem() instanceof RangedWeapon) {
+                                WeaponAmmo weaponAmmo = ((RangedWeapon) item.getItem()).getAmmo();
+                                //if the weapon's ammo exists & is the same as the dropped item
+                                if (weaponAmmo != null && weaponAmmo.getProjectile() != null && weaponAmmo.getProjectile().equals(a.getProjectile())) {
+                                    int maxChange = weaponAmmo.getBackupMax() - weaponAmmo.getBackupRemaining();
+                                    if (a.getAmount() <= maxChange) {
+                                        weaponAmmo.setBackupRemaining(weaponAmmo.getBackupRemaining() + a.getAmount());
+                                        itemPickedUp = true;
+                                        room.getDroppedItems().remove(i);
+                                        i--;
+                                    } else {
+                                        weaponAmmo.setBackupRemaining(weaponAmmo.getBackupMax());
+                                        a.setAmount(a.getAmount() - maxChange);
                                     }
+                                    continue droploop;
                                 }
                             }
                         }
@@ -515,7 +516,7 @@ public class GameController {
                     return;
                 }
             }
-            double d = GameSettings.DROP_ITEM_DISTANCE;
+            double d = Vars.d("sv_dropitem_distance");
             //get player center
             double x = player.getX() + player.getWidth() / 2;
             double y = player.getY() + player.getHeight() / 2;
@@ -542,14 +543,14 @@ public class GameController {
         private void manageCooldowns() {
             //lower player attack cooldown
             if (player.getAttackCooldown() > 0) {
-                player.setAttackCooldown(Math.max(0.0, player.getAttackCooldown() - 1000.0 / GameSettings.FPS));
+                player.setAttackCooldown(Math.max(0.0, player.getAttackCooldown() - tickTime()));
             }
 
             //lower held weapon delay if rangedweapon
             Item item = player.getItemSelected() != null ? player.getItemSelected().getItem() : null;
             if (item instanceof RangedWeapon && ((RangedWeapon) item).getDelay() > 0) {
                 RangedWeapon weapon = (RangedWeapon) item;
-                weapon.setDelay(Math.max(0, weapon.getDelay() - 1000.0 / GameSettings.FPS));
+                weapon.setDelay(Math.max(0, weapon.getDelay() - tickTime()));
                 if (weapon.isReloading() && weapon.getDelay() == 0) {
                     weapon.finishReloading();
                 }
@@ -565,8 +566,8 @@ public class GameController {
                 //move
                 double x = p.getX();
                 double y = p.getY();
-                double newX = x + p.getVelX();
-                double newY = y + p.getVelY();
+                double newX = x + p.getVelX() / Vars.i("sv_tickrate");
+                double newY = y + p.getVelY() / Vars.i("sv_tickrate");
 
                 //check collisions
                 Coords check = checkPos(new Coords(newX, newY), p.getWidth(), p.getHeight());
@@ -589,7 +590,7 @@ public class GameController {
                         p.setY(newY);
 
                         //calculate distance
-                        double d = Math.sqrt(Math.pow(p.getVelX(), 2) + Math.pow(p.getVelY(), 2));
+                        double d = Math.sqrt(Math.pow(p.getVelX() / Vars.i("sv_tickrate"), 2) + Math.pow(p.getVelY() / Vars.i("sv_tickrate"), 2));
                         p.setDistance(round(p.getDistance() + d));
                         if (p.getDistance() >= p.getProjectile().getRange()) {
                             p.hit();
@@ -606,8 +607,8 @@ public class GameController {
         private void managePlayerAttack() {
             Item item = player.getItemSelected() != null ? player.getItemSelected().getItem() : null;
             if (states.get("attacking") && player.getAttackCooldown() == 0) {
-                double damage = GameSettings.PLAYER_FIST_DAMAGE;
-                double cooldown = GameSettings.PLAYER_FIST_COOLDOWN;
+                double damage = Vars.d("sv_fist_damage");
+                double cooldown = Vars.d("sv_fist_cooldown");
                 double modifier = player.getAttack();
                 if (item instanceof Weapon) {
                     Weapon weapon = (Weapon) item;
@@ -624,7 +625,7 @@ public class GameController {
                 for (Monster m : room.getMonsters()) {
                     if (m != null) {
                         double dist = distance(player, m);
-                        if (dist <= GameSettings.PLAYER_ATTACK_RANGE) {
+                        if (dist <= Vars.i("sv_player_attack_range")) {
                             m.attackMonster(modifier * damage, true);
                             break;
                         }
@@ -732,7 +733,7 @@ public class GameController {
                 if (item instanceof Bomb) {
                     Bomb b = (Bomb) item;
                     //decrement fuse
-                    b.setLivefuse(b.getLivefuse() - 1000.0 / GameSettings.FPS);
+                    b.setLivefuse(b.getLivefuse() - tickTime());
 
                     //if bomb has blown up
                     if (b.getLivefuse() <= 0) {
@@ -743,7 +744,7 @@ public class GameController {
                         ShotProjectile.addExplosion(room, o, b.getRadius() * 2);
 
                         if (dist <= b.getRadius()) {
-                            player.setHealth(Math.max(0, player.getHealth() - b.getDamage() * GameSettings.PLAYER_ATTACK_SELF_MODIFIER));
+                            player.setHealth(Math.max(0, player.getHealth() - b.getDamage() * Vars.d("sv_self_damage_modifier")));
                             Platform.runLater(() -> getScreen().updateHud());
                             if (player.getHealth() == 0) {
                                 gameOver();
@@ -780,36 +781,38 @@ public class GameController {
             velY = round(velY);
 
             //don't allow speed to exceed max
-            if (Math.abs(velX) > GameSettings.MAX_VEL) {
-                velX = (velX > 0 ? 1 : -1) * GameSettings.MAX_VEL;
+            double maxVel = Vars.d("sv_max_velocity") / Vars.i("sv_tickrate");
+            double friction = Vars.d("friction") / Vars.i("sv_tickrate") / Vars.i("sv_tickrate");
+            if (Math.abs(velX) > maxVel) {
+                velX = (velX > 0 ? 1 : -1) * maxVel;
                 //was moving before and decelerated to 0
             } else if (states.get("frictionX") && Math.abs(originalVelX) < Math.abs(accelX)) {
                 if (velY == 0) {
                     player.setDirection((originalVelX > 0) ? 2 : 0);
                 }
                 velX = 0;
-                accelX -= (accelX > 0 ? 1 : -1) * GameSettings.FRICTION;
+                accelX -= (accelX > 0 ? 1 : -1) * friction;
                 states.put("frictionX", false);
             }
-            if (Math.abs(velY) > GameSettings.MAX_VEL) {
-                velY = (velY > 0 ? 1 : -1) * GameSettings.MAX_VEL;
+            if (Math.abs(velY) > maxVel) {
+                velY = (velY > 0 ? 1 : -1) * maxVel;
             } else if (states.get("frictionY") && Math.abs(originalVelY) < Math.abs(accelY)) {
                 if (velX == 0) {
                     player.setDirection((originalVelY > 0) ? 1 : 3);
                 }
                 velY = 0;
-                accelY -= (accelY > 0 ? 1 : -1) * GameSettings.FRICTION;
+                accelY -= (accelY > 0 ? 1 : -1) * friction;
                 states.put("frictionY", false);
             }
 
             //apply friction if not currently moving forward
             if (accelX == 0 && velX != 0) {
                 states.put("frictionX", true);
-                accelX += (velX > 0 ? -1 : 1) * GameSettings.FRICTION;
+                accelX += (velX > 0 ? -1 : 1) * friction;
             }
             if (accelY == 0 && velY != 0) {
                 states.put("frictionY", true);
-                accelY += (velY > 0 ? -1 : 1) * GameSettings.FRICTION;
+                accelY += (velY > 0 ? -1 : 1) * friction;
             }
         }
 
@@ -819,7 +822,7 @@ public class GameController {
         private void managePlayerEffects() {
             for (int i = 0; i < player.getEffects().size(); i++) {
                 Effect e = player.getEffects().get(i);
-                e.setDuration(e.getDuration() - 1000.0 / GameSettings.FPS);
+                e.setDuration(e.getDuration() - tickTime());
                 if (e.getDuration() <= 0) {
                     player.getEffects().remove(i--);
                     Platform.runLater(() -> getScreen().updateHud());
@@ -970,20 +973,20 @@ public class GameController {
                 } else if (d.equals(room.getTopDoor())) {
                     newDoor = newRoom.getBottomDoor();
                     newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
-                            - GameSettings.PLAYER_WIDTH / 2;
+                            - player.getWidth() / 2;
                     newStartY = newDoor.getY() + LayoutGenerator.DOORBOTTOM_HEIGHT + 10;
                 } else if (d.equals(room.getBottomDoor())) {
                     newDoor = newRoom.getTopDoor();
                     newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
-                            - GameSettings.PLAYER_WIDTH / 2;
-                    newStartY = newDoor.getY() - GameSettings.PLAYER_HEIGHT - 1;
+                            - player.getWidth() / 2;
+                    newStartY = newDoor.getY() - player.getHeight() - 1;
                 } else if (d.equals(room.getRightDoor())) {
                     newDoor = newRoom.getLeftDoor();
                     newStartX = newDoor.getX() + 10 + LayoutGenerator.DOOR_WIDTH;
                     newStartY = newDoor.getY() + newDoor.getHeight() / 5.0;
                 } else {
                     newDoor = newRoom.getRightDoor();
-                    newStartX = newDoor.getX() - 10 - GameSettings.PLAYER_WIDTH;
+                    newStartX = newDoor.getX() - 10 - player.getWidth();
                     newStartY = newDoor.getY() + newDoor.getHeight() / 5.0;
                 }
                 newRoom.setStartX((int) newStartX);
@@ -1124,7 +1127,7 @@ public class GameController {
             //check queue
             for (int i = 0; i < m.getMoveQueue().size(); i++) {
                 Move move = m.getMoveQueue().get(i);
-                move.setDelay(move.getDelay() - 1000.0 / GameSettings.FPS);
+                move.setDelay(move.getDelay() - tickTime());
 
                 //time to apply the move
                 if (move.getDelay() <= 0) {
@@ -1147,18 +1150,19 @@ public class GameController {
             double d = distance(md, player);
 
 
-            double range = GameSettings.MONSTER_MOVE_RANGE;
-            double reactTime = GameSettings.MONSTER_REACTION_TIME;
+            double range = Vars.i("ai_monster_move_range");
+            double reactTime = Vars.i("ai_monster_reaction_time");
             if (m.getType() == MonsterType.FINALBOSS) {
-                range = GameSettings.BOSS_MOVE_RANGE;
-                reactTime = GameSettings.BOSS_REACTION_TIME;
+                range = Vars.i("ai_boss_move_range");
+                reactTime = Vars.i("ai_boss_reaction_time");
             }
 
-            if (d <= range && d >= GameSettings.MONSTER_MOVE_MIN) {
+            if (d <= range && d >= Vars.i("ai_monster_move_min")) {
                 //move monster towards player
                 double angle = angle(md, player) - Math.PI;
-                double newPosX = mPosX + round(Math.cos(angle) * m.getSpeed());
-                double newPosY = mPosY + round(Math.sin(angle) * m.getSpeed());
+                double speed = m.getSpeed() / Vars.i("sv_tickrate");
+                double newPosX = mPosX + round(Math.cos(angle) * speed);
+                double newPosY = mPosY + round(Math.sin(angle) * speed);
 
                 //check collisions with obstacles
                 Coords newPos = checkPos(new Coords(newPosX, newPosY), m.getWidth(), m.getHeight());
@@ -1170,7 +1174,7 @@ public class GameController {
             d = distance(m, player);
 
             //check for current attack
-            if (d <= GameSettings.MONSTER_ATTACK_RANGE) {
+            if (d <= Vars.i("ai_monster_attack_range")) {
                 if (checkAttack(m)) {
                     //set attack cooldown
                     m.setAttackCooldown(m.getAttackSpeed() * 1000);
@@ -1200,11 +1204,11 @@ public class GameController {
          */
         private boolean checkAttack(Monster m) {
             if (m.getReaction() <= 0 && m.getAttackCooldown() <= 0) {
-                m.setReaction(GameSettings.MONSTER_REACTION_TIME);
+                m.setReaction(Vars.i("ai_monster_reaction_time"));
                 return false;
             }
-            double newCooldown = m.getAttackCooldown() - 1000.0 / GameSettings.FPS;
-            double newTime = m.getReaction() - 1000.0 / GameSettings.FPS;
+            double newCooldown = m.getAttackCooldown() - tickTime();
+            double newTime = m.getReaction() - tickTime();
             m.setAttackCooldown(newCooldown);
             m.setReaction(newTime);
 
@@ -1221,7 +1225,7 @@ public class GameController {
          * Shortcut for handling game-over.
          */
         private void gameOver() {
-            System.out.println("Game Over");
+            Console.print("Game Over");
             GameScreen screen = getScreen();
             Platform.runLater(() -> {
                 room = screen.getLayout().getStartingRoom();

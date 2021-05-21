@@ -1,5 +1,5 @@
 package undc.objects;
-import undc.controllers.Controller;
+import undc.controllers.*;
 import undc.gamestates.GameScreen;
 import javafx.scene.image.Image;
 
@@ -86,7 +86,7 @@ public class Potion extends Item {
             }
             break;
         default:
-            System.err.println("Potion type not yet implemented.");
+            Console.error("Potion type does not exist");
         }
     }
 }

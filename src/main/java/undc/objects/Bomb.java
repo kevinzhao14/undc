@@ -1,6 +1,6 @@
 package undc.objects;
 
-import undc.controllers.Controller;
+import undc.controllers.*;
 import undc.gamestates.GameScreen;
 import javafx.scene.image.Image;
 
@@ -33,7 +33,7 @@ public class Bomb extends Item {
 
         //remove from inventory
         if (!player.getInventory().remove(this)) {
-            System.out.println("Failed to use bomb");
+            Console.error("Failed to use bomb");
             return;
         }
         screen.updateHud();

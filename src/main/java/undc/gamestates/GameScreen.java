@@ -45,7 +45,7 @@ public class GameScreen extends GameState {
 
     public static GameScreen getInstance() {
         if (instance == null) {
-            instance = new GameScreen(GameSettings.SCREEN_WIDTH, GameSettings.SCREEN_HEIGHT);
+            instance = new GameScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
         }
         return instance;
     }
@@ -125,7 +125,7 @@ public class GameScreen extends GameState {
     }
 
     private void createPlayer() {
-        player = new Player(GameSettings.PLAYER_HEALTH, 1, Controller.getDataManager().getWeapon());
+        player = new Player(Vars.i("sv_player_health"), 1, Controller.getDataManager().getWeapon());
         player.setDirection(3);
         game.setPlayer(player);
     }
@@ -148,10 +148,8 @@ public class GameScreen extends GameState {
             if (e.getType().equals(EffectType.ATTACKBOOST)) {
                 Image attackBoostImg = new Image("effects/attackboost.png");
                 ImageView attackBoost = new ImageView(attackBoostImg);
-                attackBoost.setFitWidth(attackBoostImg.getWidth()
-                        * GameSettings.EFFECT_INDICATOR_SCALE);
-                attackBoost.setFitHeight(attackBoostImg.getHeight()
-                        * GameSettings.EFFECT_INDICATOR_SCALE);
+                attackBoost.setFitWidth(attackBoostImg.getWidth() * Vars.d("gc_effect_scale"));
+                attackBoost.setFitHeight(attackBoostImg.getHeight() * Vars.d("gc_effect_scale"));
                 upperHUD.getChildren().add(attackBoost);
             }
         }
@@ -418,7 +416,7 @@ public class GameScreen extends GameState {
         inventory = new StackPane();
         VBox box = new VBox(50);
         VBox itemRows = new VBox(30);
-        HBox[] itemSlots = new HBox[GameSettings.INVENTORY_COLUMNS];
+        HBox[] itemSlots = new HBox[player.getInventory().getCols()];
         StackPane allItemLabels = new StackPane();
 
         ArrayList<Label> itemNameList = new ArrayList<>();
@@ -554,7 +552,7 @@ public class GameScreen extends GameState {
             int x = (int) player.getX();
             int y = (int) player.getY();
 
-            if (x < 100 || x > room.getWidth() - GameSettings.PLAYER_WIDTH - 100) {
+            if (x < 100 || x > room.getWidth() - player.getWidth() - 100) {
                 // left/right
                 previous.setStartX(room.getWidth() - room.getStartX());
                 previous.setStartY(y);

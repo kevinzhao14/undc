@@ -1,7 +1,6 @@
 package undc.handlers;
 
-import undc.controllers.Controller;
-import undc.controllers.DataManager;
+import undc.controllers.*;
 import undc.objects.WeaponAmmo;
 import undc.objects.Ammunition;
 import undc.objects.ChallengeRoom;
@@ -96,8 +95,8 @@ public class LayoutGenerator {
 
     private void reset() {
         startRoom = new Room(ROOM_HEIGHT, ROOM_WIDTH, (int) ((ROOM_WIDTH
-                - GameSettings.PLAYER_WIDTH) / 2.0), (int) (ROOM_HEIGHT / 2.0
-                - GameSettings.PLAYER_HEIGHT), RoomType.STARTROOM);
+                - Vars.i("sv_player_width")) / 2.0), (int) (ROOM_HEIGHT / 2.0
+                - Vars.i("sv_player_height")), RoomType.STARTROOM);
         startRoom.setMonsters(new Monster[0]);
         generateObstacles(startRoom);
 
@@ -308,10 +307,9 @@ public class LayoutGenerator {
      * @param room the room to add the monsters to
      */
     private void setMonsters(Room room) {
-        int numMonsters =
-                (int) (Math.random()
-                        * (GameSettings.MAX_MONSTERS - GameSettings.MIN_MONSTERS + 1))
-                        +  GameSettings.MIN_MONSTERS;
+        int min = Vars.i("sv_monsters_min");
+        int max = Vars.i("sv_monsters_max");
+        int numMonsters = (int) (Math.random() * (max - min + 1)) +  min;
         if (room instanceof ChallengeRoom) {
             numMonsters = 5;
         }
@@ -321,9 +319,9 @@ public class LayoutGenerator {
             Difficulty diff = Controller.getDataManager().getDifficulty();
             double modifier = 1;
             if (diff == Difficulty.MEDIUM) {
-                modifier = GameSettings.MODIFIER_MEDIUM;
+                modifier = Vars.d("sv_modifier_medium");
             } else if (diff == Difficulty.HARD) {
-                modifier = GameSettings.MODIFIER_HARD;
+                modifier = Vars.d("sv_modifier_hard");
             }
             monsters[i] = new Monster(Controller.getDataManager().MONSTERS[n], modifier);
 
@@ -337,8 +335,9 @@ public class LayoutGenerator {
 
     private void generateObstacles(Room room, int modifier) {
         Random rand = new Random();
-        int numObstacles = rand.nextInt(modifier * (GameSettings.OBSTACLES_MAX
-                - GameSettings.OBSTACLES_MIN) + 1) + modifier * GameSettings.OBSTACLES_MIN;
+        int min = Vars.i("sv_obstacles_min");
+        int max = Vars.i("sv_obstacles_max");
+        int numObstacles = rand.nextInt(modifier * (max - min) + 1) + modifier * min;
         for (int i = 0; i < numObstacles; i++) {
             //random num for obstacle
             int index = rand.nextInt(DataManager.OBSTACLES.length);
@@ -354,12 +353,11 @@ public class LayoutGenerator {
                     double distX = Math.pow(posX - oc.getX(), 2);
                     double distY = Math.pow(posY - oc.getY(), 2);
                     double dist = Math.sqrt(distX + distY);
-                    if (dist < GameSettings.OBSTACLES_DISTANCE) {
+                    if (dist < Vars.d("sv_obstacle_gendist")) {
                         validPos = false;
                     }
                 }
             } while (!validPos);
-            System.out.println("Obstacle " + posX + " " + posY);
             o.setX(posX);
             o.setY(posY);
             room.getObstacles().add(o);
@@ -392,9 +390,9 @@ public class LayoutGenerator {
                     col += "_ ";
                 }
             }
-            System.out.println(col);
+            Console.print(col);
         }
-        System.out.println();
+        Console.print("");
     }
 
 }

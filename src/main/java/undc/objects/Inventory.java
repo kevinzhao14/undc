@@ -121,6 +121,10 @@ public class Inventory implements Iterable<InventoryItem> {
         this.items = items;
     }
 
+    public int getCols() {
+        return columns;
+    }
+
     @Override
     public Iterator<InventoryItem> iterator() {
         return new InventoryIterator(items);
@@ -139,12 +143,18 @@ public class Inventory implements Iterable<InventoryItem> {
 
         @Override
         public boolean hasNext() {
-            return row < items.length || col < items[0].length;
+            return row < items.length && col < items[0].length;
         }
 
         @Override
         public InventoryItem next() {
-            return items[row][col];
+            InventoryItem i = items[row][col];
+            col++;
+            if (col >= items[0].length) {
+                row++;
+                col = 0;
+            }
+            return i;
         }
     }
 }

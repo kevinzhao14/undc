@@ -1,6 +1,6 @@
 package undc.objects;
 
-import undc.handlers.GameSettings;
+import undc.handlers.*;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
@@ -28,9 +28,9 @@ public class Player extends Entity {
     private ArrayList<Effect> effects;
 
     public Player(int maxHealth, double attack, Weapon weapon) {
-        super(maxHealth, attack, GameSettings.PLAYER_HEIGHT, GameSettings.PLAYER_WIDTH, null);
+        super(maxHealth, attack, Vars.i("sv_player_height"), Vars.i("sv_player_width"), null);
         this.gold = 0;
-        this.inventory = new Inventory(GameSettings.INVENTORY_ROWS, GameSettings.INVENTORY_COLUMNS);
+        this.inventory = new Inventory(Vars.i("sv_inventory_rows"), Vars.i("sv_inventory_cols"));
         inventory.add(weapon);
         //RangedWeapon w = (RangedWeapon) DataManager.ITEMS[6].copy();
         //Ammo ammo = new Ammo(50, 500, DataManager.PROJECTILES[0].copy());
@@ -93,12 +93,11 @@ public class Player extends Entity {
     }
 
     public void moveRight() {
-        this.selected = (this.selected + 1) % GameSettings.INVENTORY_COLUMNS;
+        this.selected = (this.selected + 1) % inventory.getCols();
     }
 
     public void moveLeft() {
-        this.selected = (this.selected - 1 + GameSettings.INVENTORY_COLUMNS)
-                % GameSettings.INVENTORY_COLUMNS;
+        this.selected = (this.selected - 1 + inventory.getCols()) % inventory.getCols();
     }
 
     public void select(int selected) {

@@ -47,9 +47,9 @@ public class GameSettings {
 
     public static final int FPS = 200;
     //units per second
-    public static final double ACCEL = 1000.0 / FPS / FPS;
-    public static final double MAX_VEL = 100.0 / FPS;
-    public static final double FRICTION = ACCEL * 2;
+    public static final double ACCEL = 1000.0;
+    public static final double MAX_VEL = 100.0;
+    public static final double FRICTION = 0;
     //pixels per unit
     public static final double PPU = 2.0;
     public static final double PRECISION = 10000;
@@ -57,7 +57,7 @@ public class GameSettings {
     //Player stats
     //hitbox
     public static final double PLAYER_WIDTH = 16;
-    public static final double PLAYER_HEIGHT = PLAYER_WIDTH;
+    public static final double PLAYER_HEIGHT = 16;
     public static final int PLAYER_HEALTH = 100;
     public static final int PLAYER_ATTACK_RANGE = 20;
     public static final double PLAYER_ATTACK_SELF_MODIFIER = 0.75;
@@ -92,13 +92,13 @@ public class GameSettings {
 
     //how close to a player a monster must be to move towards it
     public static final int MONSTER_MOVE_RANGE = 300;
-    public static final int BOSS_MOVE_RANGE = MONSTER_MOVE_RANGE * 2;
+    public static final int BOSS_MOVE_RANGE = 300;
     public static final int MONSTER_MOVE_MIN = 10;
     //how close to a player a monster must be to attack
     public static final int MONSTER_ATTACK_RANGE = 10;
     //monster reaction time to a player being in range in milliseconds
     public static final int MONSTER_REACTION_TIME = 300;
-    public static final int BOSS_REACTION_TIME = MONSTER_REACTION_TIME / 2;
+    public static final int BOSS_REACTION_TIME = 150;
     public static final int MONSTER_FADE_TIME = 400;
 
     public static final double EXPLOSION_MAX_WIDTH = 75;

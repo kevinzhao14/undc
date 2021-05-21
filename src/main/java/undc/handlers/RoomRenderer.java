@@ -65,10 +65,11 @@ public class RoomRenderer {
         }
 
         //add canvas to root
-        canvas.setHeight(rootHeight + GameSettings.CANVAS_PADDING * 2);
-        canvas.setWidth(rootWidth + GameSettings.CANVAS_PADDING * 2);
-        canvas.setTranslateX(-GameSettings.CANVAS_PADDING);
-        canvas.setTranslateY(-GameSettings.CANVAS_PADDING);
+        int pad = Vars.i("gc_canvas_padding");
+        canvas.setHeight(rootHeight + pad * 2);
+        canvas.setWidth(rootWidth + pad * 2);
+        canvas.setTranslateX(-pad);
+        canvas.setTranslateY(-pad);
 
         main.setStyle("-fx-padding: 50px");
 
@@ -172,12 +173,10 @@ public class RoomRenderer {
                     y = getPx(room.getHeight() - m.getY() - m.getHeight());
                     gc.setGlobalAlpha(m.getOpacity());
                     drawImg(gc, m.getImage(), h, w, x, y);
-                    drawHealthbar(gc, GameSettings.MONSTER_HEALTHBAR_HEIGHT, w, x, y
-                            - GameSettings.MONSTER_HEALTHBAR_HEIGHT - 10, m.getHealth()
-                            / m.getMaxHealth());
+                    int hbh = Vars.i("gc_healthbar_height");
+                    drawHealthbar(gc, hbh, w, x, y - hbh - 10, m.getHealth() / m.getMaxHealth());
                     if (m.getOpacity() < 1) {
-                        m.setOpacity(m.getOpacity() - (1000.0 / (GameSettings.MONSTER_FADE_TIME
-                                * GameSettings.FPS)));
+                        m.setOpacity(m.getOpacity() - (1000.0 / Vars.i("gc_monster_fade_dur") / Vars.i("sv_tickrate")));
                     }
                 }
             }
@@ -185,12 +184,11 @@ public class RoomRenderer {
         gc.setGlobalAlpha(1);
         if (room.getDroppedItems() != null) {
             for (DroppedItem item : room.getDroppedItems()) {
-                h = getPx(item.getHeight()) * GameSettings.DROP_ITEM_SPRITE_SCALE;
-                w = getPx(item.getWidth()) * GameSettings.DROP_ITEM_SPRITE_SCALE;
-                x = getPx(item.getX() + item.getWidth()
-                        * (1 - GameSettings.DROP_ITEM_SPRITE_SCALE) / 2);
-                y = getPx(room.getHeight() - item.getY() - item.getHeight() + item.getHeight()
-                        * (1 - GameSettings.DROP_ITEM_SPRITE_SCALE) / 2);
+                double scale = Vars.d("gc_dropitem_scale");
+                h = getPx(item.getHeight()) * scale;
+                w = getPx(item.getWidth()) * scale;
+                x = getPx(item.getX() + item.getWidth() * (1 - scale) / 2);
+                y = getPx(room.getHeight() - item.getY() - item.getHeight() + item.getHeight() * (1 - scale) / 2);
                 img = item.getItem().getSprite();
                 drawImg(gc, img, h, w, x, y);
             }
@@ -218,13 +216,13 @@ public class RoomRenderer {
 
     private static void drawImg(GraphicsContext gc, Image img, double h, double w, double x,
                                 double y) {
-        gc.drawImage(img, x + GameSettings.CANVAS_PADDING, y + GameSettings.CANVAS_PADDING, w, h);
+        gc.drawImage(img, x + Vars.i("gc_canvas_padding"), y + Vars.i("gc_canvas_padding"), w, h);
     }
 
     private static void drawHealthbar(GraphicsContext gc, double h, double w, double x, double y,
                                       double percent) {
         //draw health bar
-        int pad = GameSettings.CANVAS_PADDING;
+        int pad = Vars.i("gc_canvas_padding");
         gc.setFill(Color.GREEN);
         gc.fillRect(x + pad, y + pad, percent * w, h);
         gc.setFill(Color.GRAY);
@@ -237,6 +235,6 @@ public class RoomRenderer {
      * @return the converted coordinate
      */
     public static double getPx(double coord) {
-        return (coord * GameSettings.PPU);
+        return (coord * Vars.d("gc_ppu"));
     }
 }

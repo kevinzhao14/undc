@@ -1,5 +1,7 @@
 package undc.handlers;
 
+import undc.controllers.*;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -79,11 +81,10 @@ public class Controls {
                         loadKey(lineData);
                         break;
                     default:
-                        System.out.println("Unknown command on line "
-                                + lineNumber + ": \"" + lineData[0] + "\"");
+                        Console.error("Unknown command on line " + lineNumber + ": '" + lineData[0] + "'");
                     }
                 } catch (IllegalArgumentException e) {
-                    System.out.println(e.getMessage() + " on line " + lineNumber);
+                    Console.error(e.getMessage() + " on line " + lineNumber);
                 }
 
                 //next line
@@ -206,8 +207,8 @@ public class Controls {
      * Prints the key mapping.
      */
     public void printMapping() {
-        System.out.println("Printing size " + keyMap.size());
-        keyMap.forEach((k, v) -> System.out.println(k + ", " + v));
+        Console.print("Printing size " + keyMap.size());
+        keyMap.forEach((k, v) -> Console.print(k + ", " + v));
     }
 
     /**
@@ -217,11 +218,11 @@ public class Controls {
      */
     public void setKey(String key, String control) {
         if (control == null) {
-            System.out.println("Control cannot be null.");
+            Console.error("Control cannot be null.");
             return;
         }
         if (key == null) {
-            System.out.println("Key cannot be null.");
+            Console.error("Key cannot be null.");
             return;
         }
 
@@ -232,7 +233,7 @@ public class Controls {
             save();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Failed to save properly");
+            Console.error("Failed to save properly");
         }
     }
 }

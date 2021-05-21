@@ -4,6 +4,7 @@ import undc.gamestates.GameState;
 import undc.gamestates.HomeScreen;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import undc.handlers.*;
 
 public class Controller extends Application {
     private static Controller instance;
@@ -20,7 +21,9 @@ public class Controller extends Application {
     public void start(Stage stage) {
         instance = this;
 
+        //load things
         this.dataManager = new DataManager();
+        Vars.load();
 
         this.stage = stage;
         this.state = new HomeScreen(1920, 1080); // placeholder gamestate, this should never be null

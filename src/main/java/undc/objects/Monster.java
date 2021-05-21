@@ -3,7 +3,7 @@ package undc.objects;
 import undc.controllers.Controller;
 import undc.controllers.DataManager;
 import undc.gamestates.GameScreen;
-import undc.handlers.GameSettings;
+import undc.handlers.*;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 
@@ -76,25 +76,24 @@ public class Monster extends Entity {
                 double modifier;
                 switch (Controller.getDataManager().getDifficulty()) {
                 case MEDIUM:
-                    modifier = GameSettings.MODIFIER_MEDIUM;
+                    modifier = Vars.d("sv_modifier_medium");
                     break;
                 case HARD:
-                    modifier = GameSettings.MODIFIER_HARD;
+                    modifier = Vars.d("sv_modifier_hard");
                     break;
                 default:
                     modifier = 1.0;
                     break;
                 }
                 screen.getPlayer().setGold(screen.getPlayer().getGold()
-                        + (int) (GameSettings.MONSTER_KILL_GOLD / modifier));
+                        + (int) (Vars.d("sv_monster_gold") / modifier));
 
                 //update number of monsters player killed
                 screen.getPlayer().addMonsterKilled();
             }
 
             //make monster disappear
-            this.setOpacity(1 - (1000.0 / (GameSettings.MONSTER_FADE_TIME
-                    * GameSettings.FPS)));
+            this.setOpacity(1 - (1000.0 / Vars.i("sv_tickrate") / Vars.i("gc_monster_fade_dur")));
 
             //only drop items if it's not a challenge room
             if (!(screen.getRoom() instanceof ChallengeRoom)) {
@@ -131,7 +130,7 @@ public class Monster extends Entity {
                                         newItem.setWidth(width);
                                         newItem.setHeight(height);
 
-                                        double maxRadius = GameSettings.PLAYER_PICKUP_RANGE * 1;
+                                        double maxRadius = Vars.i("sv_player_pickup_range") * 1;
                                         Random generator = new Random();
                                         Player player = screen.getPlayer();
                                         double x = 0;
@@ -197,8 +196,9 @@ public class Monster extends Entity {
         }
         Random generator = new Random();
         //Calculate number of items to drop
-        int numItems = GameSettings.MIN_ITEM_DROP
-                + generator.nextInt(GameSettings.MAX_ITEM_DROP - GameSettings.MIN_ITEM_DROP + 1);
+        int min = Vars.i("sv_itemdrop_min");
+        int max = Vars.i("sv_itemdrop_max");
+        int numItems = generator.nextInt(max - min + 1) + min;
 
         DroppedItem[] droppedItems = new DroppedItem[numItems];
 

@@ -3,7 +3,7 @@ package undc.objects;
 import undc.controllers.Controller;
 import undc.controllers.DataManager;
 import undc.gamestates.GameScreen;
-import undc.handlers.GameSettings;
+import undc.handlers.*;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 
@@ -34,8 +34,8 @@ public class ShotProjectile implements Movable {
     }
 
     public static void addExplosion(Room room, Movable m, double width) {
-        if (width > GameSettings.EXPLOSION_MAX_WIDTH) {
-            width = GameSettings.EXPLOSION_MAX_WIDTH;
+        if (width > Vars.d("gc_explosion_maxwidth")) {
+            width = Vars.d("gc_explosion_maxwidth");
         }
 
         //draw explosion animation
@@ -91,7 +91,7 @@ public class ShotProjectile implements Movable {
             double dist = Math.sqrt(distX + distY);
             if (dist <= projectile.getSplashRange()) {
                 player.setHealth(Math.max(0, player.getHealth() - projectile.getDamage()
-                        * GameSettings.PLAYER_ATTACK_SELF_MODIFIER));
+                        * Vars.d("sv_self_damage_modifier")));
                 Platform.runLater(() -> screen.updateHud());
                 if (player.getHealth() == 0) {
                     Platform.runLater(() -> screen.gameOver());
