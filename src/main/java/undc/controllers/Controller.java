@@ -1,5 +1,6 @@
 package undc.controllers;
 
+import javafx.scene.layout.StackPane;
 import undc.gamestates.GameState;
 import undc.gamestates.HomeScreen;
 import javafx.application.Application;
@@ -24,13 +25,13 @@ public class Controller extends Application {
         //load things
         this.dataManager = new DataManager();
         Vars.load();
+        Console.create();
 
         this.stage = stage;
         this.state = new HomeScreen(1920, 1080); // placeholder gamestate, this should never be null
 
         stage.setTitle("Luckless Dungeon Crawler");
         this.stage.setScene(this.state.getScene());
-
         stage.show();
     }
 
@@ -60,5 +61,11 @@ public class Controller extends Application {
      */
     public static DataManager getDataManager() {
         return instance.dataManager;
+    }
+
+    public static void openConsole() {
+        System.out.println("hi");
+        StackPane pane = new StackPane();
+        pane.getChildren().addAll(instance.stage.getScene().getRoot(), Console.getScene());
     }
 }

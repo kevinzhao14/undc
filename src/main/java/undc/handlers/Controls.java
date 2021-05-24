@@ -137,6 +137,7 @@ public class Controls {
         keyMap.put("escape", "pause");
         keyMap.put("i", "inventory");
         keyMap.put("g", "drop");
+        keyMap.put("back_quote", "console");
 
         //Inventory Controls
         keyMap.put("mwheeldown", "nextinv");

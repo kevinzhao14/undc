@@ -1,0 +1,14 @@
+* {
+    -fx-focus-color: transparent;
+    -fx-font-family: monospace;
+    -fx-font-size: 12px;
+}
+#box {
+    -fx-border-width: 1px;
+    -fx-border-color: black;
+}
+#input {
+    -fx-background-color: white;
+    -fx-border-width: 0;
+    -fx-border-radius: 0;
+}

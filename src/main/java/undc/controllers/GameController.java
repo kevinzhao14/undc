@@ -204,6 +204,10 @@ public class GameController {
         if (control.equals("up") || control.equals("down") || control.equals("right") || control.equals("left")) {
             handleMovementKey(control, isPress);
         }
+        if (control.equals("console")) {
+            System.out.println("open");
+            Controller.openConsole();
+        }
 
         if (isStopped) {
             return;
