@@ -1,0 +1,54 @@
+.root {
+    -fx-background-color:  #7E7B68;
+}
+.button {
+     -fx-background-color:
+             #090a0c,
+             linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),
+             linear-gradient(#20262b, #191d22),
+             radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));
+     -fx-background-radius: 5,4,3,5;
+     -fx-background-insets: 0,1,2,0;
+     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+     -fx-font-family: "VT323";
+     -fx-text-fill: linear-gradient(white, #d0d0d0);
+     -fx-font-size: 24px;
+     -fx-padding: 15 25 15 25;
+    -fx-pref-width: 190px;
+ }
+#pageHeader {
+    -fx-text-fill: white;
+    -fx-font-family : "VT323";
+    -fx-font-size: 48px;
+    -fx-padding: 0 0 25 0;
+}
+#save-button {
+    -fx-background-color: #499C54;
+}
+#reset-button {
+    -fx-background-color: #CB974E;
+}
+#general-pane {
+    -fx-background-color: #A96875;
+}
+#video-pane {
+    -fx-background-color: #6F0CFC;
+}
+#audio-pane {
+    -fx-background-color: #EAD326;
+}
+#keyMouse-pane {
+    -fx-background-color: #0026D3;
+}
+#menu {
+    -fx-background-color:
+            #090a0c,
+            linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),
+            linear-gradient(#20262b, #191d22),
+            radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));
+    -fx-pref-width: 569;
+    -fx-pref-height: 385;
+
+    -fx-border-radius: 5,4,3,5;
+    -fx-background-radius: 5,4,3,5;
+}

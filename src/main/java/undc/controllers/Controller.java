@@ -1,5 +1,6 @@
 package undc.controllers;
 
+import javafx.stage.StageStyle;
 import undc.gamestates.GameState;
 import undc.gamestates.HomeScreen;
 import javafx.application.Application;
