@@ -1,6 +1,5 @@
 package undc.controllers;
 
-import javafx.stage.StageStyle;
 import undc.gamestates.GameState;
 import undc.gamestates.HomeScreen;
 import javafx.application.Application;
@@ -25,13 +24,13 @@ public class Controller extends Application {
         //load things
         this.dataManager = new DataManager();
         Vars.load();
+        Console.create();
 
         this.stage = stage;
         this.state = new HomeScreen(1920, 1080); // placeholder gamestate, this should never be null
 
         stage.setTitle("Luckless Dungeon Crawler");
         this.stage.setScene(this.state.getScene());
-
         stage.show();
     }
 

@@ -387,7 +387,7 @@ public class LayoutGenerator {
                         col += "* ";
                     }
                 } else {
-                    col += "_ ";
+                    col += "- ";
                 }
             }
             Console.print(col);

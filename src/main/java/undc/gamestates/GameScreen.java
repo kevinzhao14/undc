@@ -32,6 +32,7 @@ public class GameScreen extends GameState {
     private StackPane inventory;
     private StackPane pause;
     private StackPane challenge;
+    private boolean consoleOpen;
 
     private boolean inventoryVisible;
 
@@ -41,6 +42,7 @@ public class GameScreen extends GameState {
         scene = new Scene(new Pane(), width, height);
         canvas = new Canvas();
         inventoryVisible = false;
+        consoleOpen = false;
     }
 
     public static GameScreen getInstance() {
@@ -282,6 +284,17 @@ public class GameScreen extends GameState {
         transition.setFromValue(0.1);
         transition.setToValue(0.5);
         transition.play();
+    }
+
+    public void toggleConsole() {
+        StackPane root = (StackPane) scene.getRoot();
+        if (!consoleOpen) {
+            Pane console = Console.getScene();
+            root.getChildren().add(console);
+        } else {
+            root.getChildren().remove(root.getChildren().size() - 1);
+        }
+        consoleOpen = !consoleOpen;
     }
 
     public void gameOver() {
@@ -595,5 +608,8 @@ public class GameScreen extends GameState {
     }
     public Room getRoom() {
         return room;
+    }
+    public boolean isConsoleOpen() {
+        return consoleOpen;
     }
 }

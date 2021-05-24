@@ -28,23 +28,22 @@ public class Controls {
      */
     private Controls(File file) {
         saveFile = file;
-
-        //If save file exists, then load data from file
-        if (file.exists() && !file.isDirectory()) {
-            loadConfig(file.getPath());
-        } else { //file doesn't exist, create new file and save
-            resetKeys();
-            try {
-                save();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public static Controls getInstance() {
         if (instance == null) {
             instance = new Controls();
+            //If save file exists, then load data from file
+            if (instance.saveFile.exists() && !instance.saveFile.isDirectory()) {
+                instance.loadConfig(instance.saveFile.getPath());
+            } else { //file doesn't exist, create new file and save
+                instance.resetKeys();
+                try {
+                    instance.save();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return instance;
     }
@@ -73,19 +72,7 @@ public class Controls {
                 String[] lineData = line.split(" ");
 
                 //check command validity and act
-                try {
-                    switch (lineData[0]) {
-                    case "": //empty line or bad spacing
-                        break;
-                    case "bind": //bind key
-                        loadKey(lineData);
-                        break;
-                    default:
-                        Console.error("Unknown command on line " + lineNumber + ": '" + lineData[0] + "'");
-                    }
-                } catch (IllegalArgumentException e) {
-                    Console.error(e.getMessage() + " on line " + lineNumber);
-                }
+                Console.run(line, false, true);
 
                 //next line
                 line = loader.readLine();
@@ -137,6 +124,7 @@ public class Controls {
         keyMap.put("escape", "pause");
         keyMap.put("i", "inventory");
         keyMap.put("g", "drop");
+        keyMap.put("back_quote", "console");
 
         //Inventory Controls
         keyMap.put("mwheeldown", "nextinv");
@@ -197,8 +185,8 @@ public class Controls {
         //get the KeyCode associated with the control name. If null, then the bind doesn't exist.
         String foundControl = keyMap.get(key.toLowerCase());
         if (foundControl == null) {
+            //Console.error("Key is not bound.");
             return "";
-            //throw new IllegalArgumentException("Key is not bound.");
         }
         return foundControl;
     }
@@ -233,6 +221,23 @@ public class Controls {
             save();
         } catch (IOException e) {
             e.printStackTrace();
+            Console.error("Failed to save properly");
+        }
+    }
+
+    public void removeKey(String key) {
+        if (key == null) {
+            Console.error("Key cannot be null.");
+            return;
+        }
+        if (keyMap.get(key) == null) {
+            Console.error("Key is not bound.");
+            return;
+        }
+        keyMap.remove(key);
+        try {
+            save();
+        } catch(IOException e) {
             Console.error("Failed to save properly");
         }
     }
