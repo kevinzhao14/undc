@@ -1,11 +1,12 @@
 package undc.controllers;
 
+import javafx.scene.*;
+import javafx.scene.layout.*;
 import undc.handlers.*;
 import undc.objects.*;
 
 import undc.gamestates.GameScreen;
 import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 
@@ -205,11 +206,18 @@ public class GameController {
             handleMovementKey(control, isPress);
         }
         if (control.equals("console")) {
-            System.out.println("open");
-            Controller.openConsole();
+            if (isPress) {
+                Platform.runLater(() -> getScreen().toggleConsole());
+            }
+        }
+        if (getScreen().isConsoleOpen() && control.equals("pause")) {
+            if (isPress) {
+                Platform.runLater(() -> getScreen().toggleConsole());
+                return;
+            }
         }
 
-        if (isStopped) {
+        if (isStopped || getScreen().isConsoleOpen()) {
             return;
         }
 

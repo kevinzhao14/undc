@@ -1,6 +1,7 @@
 package undc.controllers;
 
-import javafx.scene.layout.StackPane;
+import javafx.scene.*;
+import javafx.scene.layout.*;
 import undc.gamestates.GameState;
 import undc.gamestates.HomeScreen;
 import javafx.application.Application;
@@ -61,11 +62,5 @@ public class Controller extends Application {
      */
     public static DataManager getDataManager() {
         return instance.dataManager;
-    }
-
-    public static void openConsole() {
-        System.out.println("hi");
-        StackPane pane = new StackPane();
-        pane.getChildren().addAll(instance.stage.getScene().getRoot(), Console.getScene());
     }
 }

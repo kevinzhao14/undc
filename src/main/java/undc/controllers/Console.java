@@ -10,14 +10,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import undc.handlers.*;
 
 import java.util.LinkedList;
 
 public class Console {
     private static final int MAX_SIZE = 100;
     private static final String PREFIX = "> ";
-    private static final int WIDTH = 400;
-    private static final int HEIGHT = 400;
+    private static final int WIDTH = 600;
+    private static final int HEIGHT = 600;
     private static final Font FONT = new Font("Monospaced", 12);
 
 
@@ -43,17 +44,49 @@ public class Console {
         print(str, "red");
     }
 
-    public static void run(String command, boolean echo) {
+    public static void run(String command, boolean echo, boolean silent) {
         if (echo) add(PREFIX + command);
         String[] cmd = command.split(" ");
         switch (cmd[0].toLowerCase()) {
             case "echo":
                 add(cmd[1]);
                 break;
+            case "bind":
+                if (cmd.length < 2) {
+                    error("Invalid arguments for bind.");
+                    return;
+                }
+                cmd[1] = cmd[1].toLowerCase().replaceAll("[\"']", "");
+                if (cmd.length == 3) {
+                    cmd[2] = cmd[2].toLowerCase().replaceAll("[\"']", "");
+                    Controls.getInstance().setKey(cmd[1], cmd[2]);
+                    if (!silent) print("Key bound.");
+                } else if (cmd.length == 2) {
+                    String control = Controls.getInstance().getControl(cmd[1]);
+                    if (control.equals("")) error("Key is not bound.");
+                    else print(control);
+                }
+                break;
+            case "unbind" :
+                if (cmd.length < 2) {
+                    error("Invalid arguments for unbind.");
+                    return;
+                }
+                String key = cmd[1].toLowerCase().replaceAll("[\"']", "");
+                Controls.getInstance().removeKey(key);
+                break;
             default:
                 add("Unrecognized command.");
                 break;
         }
+    }
+
+    public static void run(String command, boolean echo) {
+        run(command, echo, false);
+    }
+
+    public static void run(String command) {
+        run(command, true, false);
     }
 
     private static void add(String message, String color) {
@@ -65,21 +98,17 @@ public class Console {
         temp.setStyle("-fx-padding: 2px");
         temp.setFont(FONT);
         history.add(temp);
-        Platform.runLater(() -> refresh());
+        refresh();
     }
 
     private static void add(String message) {
         add(message, "black");
     }
 
-    public static void run(String command) {
-        run(command, true);
-    }
-
     private static void refresh() {
         historyBox.getChildren().clear();
         historyBox.getChildren().addAll(history);
-        historyScroll.setVvalue(1);
+        historyScroll.setVvalue(2);
     }
 
     public static Pane getScene() {
@@ -91,17 +120,18 @@ public class Console {
         scene = new Pane();
         VBox box = new VBox();
         box.setId("box");
+        box.setTranslateY(Vars.i("gc_screen_height") - HEIGHT);
 
         historyScroll = new ScrollPane();
         historyScroll.setFitToWidth(true);
 
         historyBox = new VBox();
         historyBox.setPrefWidth(WIDTH);
-        historyBox.setPrefHeight(HEIGHT - 50);
+        historyBox.setPrefHeight(HEIGHT - 30);
         refresh();
 
         input = new TextField();
-        input.setPrefHeight(50);
+        input.setPrefHeight(30);
         input.setMaxWidth(WIDTH);
         input.setId("input");
 

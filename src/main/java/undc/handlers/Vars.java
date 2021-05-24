@@ -19,8 +19,8 @@ public class Vars {
          * ai - AI: things related to ai, such as monsters
          */
 
-        INT_VARS[0] = new IntCVar("gc_screen_width", "screenWidth", 400, 7680, 1366, false);
-        INT_VARS[1] = new IntCVar("gc_screen_height", "screenHeight", 200, 4320, 768, false);
+        INT_VARS[0] = new IntCVar("gc_screen_width", "screenWidth", 400, 7680, 1920, false);
+        INT_VARS[1] = new IntCVar("gc_screen_height", "screenHeight", 200, 4320, 1080, false);
         INT_VARS[2] = new IntCVar("sv_tickrate", "fps", 10, 1000, 200, false);
         INT_VARS[3] = new IntCVar("sv_player_health", "playerHP", 1, 10000, 100);
         INT_VARS[4] = new IntCVar("sv_player_attack_range", "playerRange", 0, 1000, 20);
