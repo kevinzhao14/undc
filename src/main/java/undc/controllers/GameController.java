@@ -19,6 +19,8 @@ import java.util.*;
  * @version 1.0
  */
 public class GameController {
+    private static GameController instance;
+
     private Timer timer;
     private Room room;
     private Player player;
@@ -39,7 +41,18 @@ public class GameController {
     /**
      * Constructor for GameController
      */
-    public GameController() {
+    private GameController() {
+    }
+
+    public static GameController getInstance() {
+        if (instance == null) {
+            resetInstance();
+        }
+        return instance;
+    }
+
+    public static void resetInstance() {
+        instance = new GameController();
     }
 
     /**
@@ -204,15 +217,12 @@ public class GameController {
         //movement keys
         if (control.equals("up") || control.equals("down") || control.equals("right") || control.equals("left")) {
             handleMovementKey(control, isPress);
+            return;
         }
-        if (control.equals("console")) {
+        if (control.equals("console") || (getScreen().isConsoleOpen() && control.equals("pause"))) {
             if (isPress) {
                 Platform.runLater(() -> getScreen().toggleConsole());
-            }
-        }
-        if (getScreen().isConsoleOpen() && control.equals("pause")) {
-            if (isPress) {
-                Platform.runLater(() -> getScreen().toggleConsole());
+                pause();
                 return;
             }
         }

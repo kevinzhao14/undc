@@ -24,6 +24,10 @@ public class StringCVar extends CVar {
         return value;
     }
 
+    public String getDef() {
+        return def;
+    }
+
     @Override
     public void setVal(String val) {
         if (!checkSet()) return;

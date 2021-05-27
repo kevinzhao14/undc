@@ -33,6 +33,18 @@ public class IntCVar extends CVar {
         return value;
     }
 
+    public int getDef() {
+        return def;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
     @Override
     public void setVal(String val) {
         if (!checkSet()) return;

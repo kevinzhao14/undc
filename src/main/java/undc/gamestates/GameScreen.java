@@ -22,7 +22,6 @@ import java.util.ArrayList;
 public class GameScreen extends GameState {
     private static GameScreen instance;
 
-    private GameController game;
     private Player player;
     private DungeonLayout dungeonLayout;
     private Room previous;
@@ -53,9 +52,9 @@ public class GameScreen extends GameState {
     }
 
     public void start() {
-        game = new GameController();
+        GameController.resetInstance();
         createPlayer();
-        game.start(dungeonLayout.getStartingRoom());
+        getGame().start(dungeonLayout.getStartingRoom());
         scene.getStylesheets().add("styles/global.css");
         createHud();
         createPauseMenu();
@@ -95,7 +94,7 @@ public class GameScreen extends GameState {
         StackPane root = new StackPane();
 
         //create player and hud
-        game.resetPos();
+        getGame().resetPos();
         if (room.getType() == RoomType.CHALLENGEROOM) {
             createChallengeOverlay();
         }
@@ -109,7 +108,7 @@ public class GameScreen extends GameState {
                 fadeIn(roomPane, false);
             }
         } else {
-            game.updateRoom();
+            getGame().updateRoom();
         }
         if (room.getType() == RoomType.CHALLENGEROOM && !((ChallengeRoom) room).isCompleted()) {
             onChallengeEnter();
@@ -129,7 +128,7 @@ public class GameScreen extends GameState {
     private void createPlayer() {
         player = new Player(Vars.i("sv_player_health"), 1, Controller.getDataManager().getWeapon());
         player.setDirection(3);
-        game.setPlayer(player);
+        getGame().setPlayer(player);
     }
 
     private void createHud() {
@@ -257,7 +256,7 @@ public class GameScreen extends GameState {
         FadeTransition transition = new FadeTransition();
         setFade(transition, pane, true);
         if (unpause) {
-            transition.setOnFinished((e) -> game.updateRoom());
+            transition.setOnFinished((e) -> getGame().updateRoom());
         }
     }
 
@@ -298,7 +297,7 @@ public class GameScreen extends GameState {
     }
 
     public void gameOver() {
-        game.stop();
+        getGame().stop();
 
         StackPane root = new StackPane();
         VBox box = new VBox(40);
@@ -374,7 +373,7 @@ public class GameScreen extends GameState {
         endButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
 
         resumeButton.setOnAction((e) -> {
-            game.pause();
+            getGame().pause();
             togglePause();
         });
         endButton.setOnAction((e) -> {
@@ -422,7 +421,7 @@ public class GameScreen extends GameState {
         createPlayer();
 
         //go to starting room
-        game.start(dungeonLayout.getStartingRoom());
+        getGame().start(dungeonLayout.getStartingRoom());
     }
 
     public void updateInventory() {
@@ -557,7 +556,7 @@ public class GameScreen extends GameState {
 
         yesButton.setOnAction((e) -> {
             challenge.setVisible(false);
-            game.pause();
+            getGame().pause();
         });
 
         noButton.setOnAction((e) -> {
@@ -578,7 +577,7 @@ public class GameScreen extends GameState {
                 previous.setStartY(room.getHeight() - room.getStartY());
                 previous.setStartX(x);
             }
-            game.setRoom(previous);
+            getGame().setRoom(previous);
 
             challenge.setVisible(false);
         });
@@ -603,8 +602,8 @@ public class GameScreen extends GameState {
     public Canvas getCanvas() {
         return canvas;
     }
-    public GameController getGame() {
-        return game;
+    private GameController getGame() {
+        return GameController.getInstance();
     }
     public Room getRoom() {
         return room;

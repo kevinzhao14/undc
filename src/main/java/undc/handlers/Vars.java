@@ -9,7 +9,7 @@ public class Vars {
     private static final IntCVar[] INT_VARS = new IntCVar[25];
     private static final DoubleCVar[] DOUBLE_VARS = new DoubleCVar[16];
 
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
     public static boolean CHEATS = false;
 
     public static void load() {
@@ -113,7 +113,7 @@ public class Vars {
         return 0;
     }
 
-    private static CVar find(String var) {
+    public static CVar find(String var) {
         int lens = STRING_VARS.length;
         int lenb = BOOLEAN_VARS.length;
         int leni = INT_VARS.length;
@@ -138,15 +138,25 @@ public class Vars {
         return null;
     }
 
-    public static void set(String var, String val) {
+    public static boolean set(String var, String val) {
+        if (var == null) {
+            return false;
+        }
         CVar v = find(var);
-        if (var == null) return;
+        if (v == null) {
+            return false;
+        }
         v.setVal(val);
+        return true;
     }
 
-    public static void reset(String var) {
+    public static boolean reset(String var) {
+        if (var == null) return false;
         CVar v = find(var);
-        if (var == null) return;
+        if (v == null) {
+            return false;
+        }
         v.reset();
+        return true;
     }
 }

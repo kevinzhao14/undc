@@ -8,8 +8,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class for managing and saving/loading user configuration data.
@@ -38,11 +37,7 @@ public class Controls {
                 instance.loadConfig(instance.saveFile.getPath());
             } else { //file doesn't exist, create new file and save
                 instance.resetKeys();
-                try {
-                    instance.save();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                instance.save();
             }
         }
         return instance;
@@ -64,42 +59,16 @@ public class Controls {
             //file reader for reading the save file line by line
             BufferedReader loader = new BufferedReader(new FileReader(filePath));
             String line = loader.readLine();
-            int lineNumber = 1;
 
             //loop through each line in the file.
             while (line != null) {
-                //the command stored on the line
-                String[] lineData = line.split(" ");
-
                 //check command validity and act
                 Console.run(line, false, true);
 
                 //next line
                 line = loader.readLine();
-                lineNumber++;
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Handler for the "bind" config command. If a bind is invalid, such as
-     * invalid key or control, then it simply does nothing and prints an error.
-     * As a result, some controls may not be bound due to typos.
-     * @param args Args should be a 3-long String array with elements "bind", [KEY], and [CONTROL]
-     */
-    private void loadKey(String[] args) {
-        //format should be "bind <KEY> <CONTROL>"
-        if (args.length != 3) {
-            throw new IllegalArgumentException("Invalid command format");
-        }
-        //<KEY> value and <CONTROL> value
-        String key = args[1].toLowerCase();
-        String control = args[2].toLowerCase();
-        try {
-            setKey(key, control);
-        } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
     }
@@ -141,36 +110,40 @@ public class Controls {
         keyMap.put("f", "rotateinv");
         keyMap.put("r", "reload");
 
-        try {
-            save();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        save();
     }
 
     /**
      * Saves keymappings to file. Generates new file if one doesn't exist.
-     * @throws IOException Throws exception for any file issues.
      */
-    public void save() throws IOException {
+    public void save() {
         //if file doesn't exist, create it
-        if (!saveFile.exists()) {
-            //make directory(s) if they don't exist
-            saveFile.getParentFile().mkdirs();
-            saveFile.createNewFile();
-        }
+        try {
+            if (!saveFile.exists()) {
+                //make directory(s) if they don't exist
+                if (!saveFile.getParentFile().mkdirs()) {
+                    Console.error("Failed to create config directory.");
+                    return;
+                }
+                if (!saveFile.createNewFile()) {
+                    Console.error("Failed to create config file.");
+                    return;
+                }
+            }
 
-        //generate a string with all the key binds
-        String saveString = "";
-        for (Map.Entry<String, String> e : keyMap.entrySet()) {
-            saveString += "bind " + e.getKey().toLowerCase() + " "
-                    + e.getValue().toLowerCase() + "\n";
-        }
+            //generate a string with all the key binds
+            StringBuilder saveString = new StringBuilder();
+            for (Map.Entry<String, String> e : keyMap.entrySet()) {
+                saveString.append("bind ").append(e.getKey().toLowerCase()).append(" ").append(e.getValue().toLowerCase()).append("\n");
+            }
 
-        //write to file
-        BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile.getPath()));
-        writer.write(saveString);
-        writer.close();
+            //write to file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile.getPath()));
+            writer.write(saveString.toString());
+            writer.close();
+        } catch(IOException e) {
+            Console.error("Failed to save controls.");
+        }
     }
 
     /**
@@ -180,15 +153,13 @@ public class Controls {
      */
     public String getControl(String key) {
         if (key == null) {
-            throw new IllegalArgumentException("Control cannot be null.");
+            Console.error("Control cannot be null.");
+            return "";
         }
         //get the KeyCode associated with the control name. If null, then the bind doesn't exist.
         String foundControl = keyMap.get(key.toLowerCase());
-        if (foundControl == null) {
-            //Console.error("Key is not bound.");
-            return "";
-        }
-        return foundControl;
+        //Console.error("Key is not bound.");
+        return Objects.requireNonNullElse(foundControl, "");
     }
 
     /**
@@ -217,12 +188,7 @@ public class Controls {
         //if the control is already mapped, overwrite it
         keyMap.put(key, control);
 
-        try {
-            save();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Console.error("Failed to save properly");
-        }
+        save();
     }
 
     public void removeKey(String key) {
@@ -235,10 +201,6 @@ public class Controls {
             return;
         }
         keyMap.remove(key);
-        try {
-            save();
-        } catch(IOException e) {
-            Console.error("Failed to save properly");
-        }
+        save();
     }
 }

@@ -20,6 +20,10 @@ public class BooleanCVar extends CVar {
         return value;
     }
 
+    public boolean getDef() {
+        return def;
+    }
+
     @Override
     public void setVal(String val) {
         if (!checkSet()) return;
