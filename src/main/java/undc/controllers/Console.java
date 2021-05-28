@@ -14,7 +14,7 @@ import undc.objects.*;
 import java.util.*;
 
 public class Console {
-    private static final int MAX_SIZE = 100;
+    private static final int MAX_SIZE = 200;
     private static final String PREFIX = "> ";
     private static final int WIDTH = 600;
     private static final int HEIGHT = 600;
@@ -158,7 +158,10 @@ public class Console {
         scene = new Pane();
         VBox box = new VBox();
         box.setId("box");
-        box.setTranslateY(Vars.i("gc_screen_height") - HEIGHT);
+
+        box.setPrefHeight(HEIGHT);
+        box.setPrefWidth(WIDTH);
+        Draggable.Nature nature = new Draggable.Nature(box);
 
         historyScroll = new ScrollPane();
         historyScroll.setFitToWidth(true);
@@ -169,6 +172,9 @@ public class Console {
         historyBox.setPrefHeight(HEIGHT - 30);
         historyBox.setId("history-box");
         refresh();
+
+        VBox spacer = new VBox();
+        spacer.getStyleClass().add("spacer");
 
         input = new TextField();
         input.setPrefHeight(30);
@@ -183,10 +189,9 @@ public class Console {
         input.setOnKeyPressed(e -> handleKey(e.getCode().toString()));
 
         historyScroll.setContent(historyBox);
-        box.getChildren().addAll(historyScroll, input);
+        box.getChildren().addAll(historyScroll, spacer, input);
         scene.getChildren().add(box);
         scene.getStylesheets().add("styles/console.css");
-//        scene.getStylesheets().add("styles/caspian.css");
     }
 
     private static void handleKey(String key) {

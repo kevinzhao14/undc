@@ -4,16 +4,30 @@
     -fx-font-family: monospace;
     -fx-font-size: 12px;
 }
+.spacer {
+    -fx-padding: 5px;
+}
 #box {
     -fx-border-width: 1px;
     -fx-border-color: #aaa;
-    -fx-background-color: white;
+    -fx-background-color: #eee;
+    -fx-padding: 7px;
+    -fx-background-radius: 3px;
+    -fx-border-radius: 3px;
 }
 #history-box {
-    -fx-background-color: #eee;
-    -fx-padding: 5px;
+    -fx-background-color: #ddd;
+    -fx-padding: 2px;
+}
+#history-scroll {
+    -fx-border-color: #aaa;
+    -fx-border-width: 1px;
+    -fx-fit-to-height: true;
 }
 #input {
-    -fx-background-color: white;
+    -fx-background-color: #eee;
     -fx-background-radius: 0;
+    -fx-border-color: #aaa;
+    -fx-border-width: 1px;
+    -fx-padding: 5px;
 }
