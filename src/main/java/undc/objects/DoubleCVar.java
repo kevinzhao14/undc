@@ -46,17 +46,19 @@ public class DoubleCVar extends CVar {
     }
 
     @Override
-    public void setVal(String val) {
-        if (!checkSet()) return;
+    public boolean setVal(String val) {
+        if (!checkSet()) return false;
         try {
             double temp = Double.parseDouble(val);
             if (temp < min || temp > max) {
                 Console.error("Value out of range");
-                return;
+                return false;
             }
             value = temp;
+            return true;
         } catch (NumberFormatException e) {
             Console.error("Invalid value format");
+            return false;
         }
     }
 

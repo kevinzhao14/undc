@@ -25,15 +25,19 @@ public class BooleanCVar extends CVar {
     }
 
     @Override
-    public void setVal(String val) {
-        if (!checkSet()) return;
+    public boolean setVal(String val) {
+        if (!checkSet()) return false;
         if (val == null) {
             Console.error("CVar value cannot be null");
-            return;
+            return false;
         }
         if (val.equalsIgnoreCase("true")) value = true;
         else if (val.equalsIgnoreCase("false")) value = false;
-        else Console.error("Invalid value");
+        else {
+            Console.error("Invalid value");
+            return false;
+        }
+        return true;
     }
 
     @Override

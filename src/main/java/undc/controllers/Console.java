@@ -1,10 +1,9 @@
 package undc.controllers;
 
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.geometry.*;
+import javafx.scene.control.*;
+import javafx.scene.image.*;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import undc.gamestates.*;
@@ -36,6 +35,8 @@ public class Console {
         commands.put("set cvar", "<cvar> <value> - Sets the value of a cvar.");
         commands.put("get cvar", "<cvar> - Gets the value of a cvar.");
         commands.put("find command", "find <search> - Finds commands with a search value.");
+        commands.put("reset", "reset <cvar> - Resets a cvar.");
+        commands.put("clear console", "clear - Clears the console.");
     }
 
     private static void print(String str, String color) {
@@ -95,12 +96,12 @@ public class Console {
                 if (Vars.set(var, val)) {
                     print(var + " has been set to " + val);
                 } else if (!silent) {
-                    error("Failed to set " + var);
+                    error("Failed to set " + var + ".");
                 }
                 break;
-            case "cvar":
+            case "get":
                 if (cmd.length < 2) {
-                   error("Invalid arguments for cvar.");
+                   error("Invalid arguments for get.");
                    return;
                 }
                 var = clean(cmd[1]);
@@ -121,9 +122,23 @@ public class Console {
                     error(var + " could not be found.");
                 }
                 break;
+            case "reset":
+                if (cmd.length < 2) {
+                    error("Invalid arguments for reset.");
+                    return;
+                }
+                var = clean(cmd[1]);
+                cvar = Vars.find(var);
+                if (cvar == null) {
+                    error("Could not find " + var);
+                    return;
+                }
+                cvar.reset();
+                print(var + " was reset.");
+                break;
             case "find":
                 if (cmd.length < 2) {
-                    error("Invalid arguments for find.");
+                    run("find \"\"", false);
                     return;
                 }
                 String search = clean(cmd[1]);
@@ -142,11 +157,12 @@ public class Console {
             case "clear":
                 history.clear();
                 refresh();
+                historyScroll.setVvalue(0);
                 break;
             default:
                 if (Vars.find(clean(cmd[0])) != null) {
                     if (cmd.length == 1) {
-                        run("cvar " + command, false);
+                        run("get " + command, false);
                     } else if (cmd.length == 2) {
                         run("set " + command, false);
                     }
@@ -209,7 +225,22 @@ public class Console {
 
         box.setPrefHeight(HEIGHT);
         box.setPrefWidth(WIDTH);
-        Draggable.Nature nature = new Draggable.Nature(box);
+        box.setLayoutX(50);
+        box.setLayoutY(50);
+        //makes the console draggable, via Draggable library
+        new Draggable.Nature(box);
+
+        HBox closeBtnBox = new HBox();
+        Label closeBtn = new Label("×");
+        closeBtnBox.getChildren().add(closeBtn);
+        closeBtnBox.setPrefWidth(WIDTH);
+        closeBtnBox.setId("close-button-box");
+        closeBtn.setId("close-button");
+
+        closeBtn.setOnMouseClicked(e -> {
+            GameScreen.getInstance().toggleConsole();
+            GameController.getInstance().pause();
+        });
 
         historyScroll = new ScrollPane();
         historyScroll.setFitToWidth(true);
@@ -220,6 +251,9 @@ public class Console {
         historyBox.setPrefHeight(HEIGHT - 30);
         historyBox.setId("history-box");
         refresh();
+
+        //controls the scroll speed of the scrollpane
+        historyBox.setOnScroll(e -> historyScroll.setVvalue(historyScroll.getVvalue() - e.getDeltaY() * 0.0025));
 
         VBox spacer = new VBox();
         spacer.getStyleClass().add("spacer");
@@ -238,8 +272,10 @@ public class Console {
 
         input.setOnKeyPressed(e -> handleKey(e.getCode().toString()));
 
+        input.requestFocus();
+
         historyScroll.setContent(historyBox);
-        box.getChildren().addAll(historyScroll, spacer, input);
+        box.getChildren().addAll(closeBtnBox, historyScroll, spacer, input);
         scene.getChildren().add(box);
         scene.getStylesheets().add("styles/console.css");
     }

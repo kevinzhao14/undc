@@ -20,7 +20,7 @@ public abstract class CVar {
         modifiable = true;
     }
 
-    public abstract void setVal(String val);
+    public abstract boolean setVal(String val);
 
     public abstract void reset();
 

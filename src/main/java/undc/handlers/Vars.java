@@ -83,6 +83,11 @@ public class Vars {
         return "";
     }
     public static boolean b(String var) {
+        if (var.equals("debug")) {
+            return DEBUG;
+        } else if (var.equalsIgnoreCase("cheats")) {
+            return CHEATS;
+        }
         for (BooleanCVar v : BOOLEAN_VARS) {
             if (v == null) continue;
             if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
@@ -114,6 +119,15 @@ public class Vars {
     }
 
     public static CVar find(String var) {
+        if (var.equalsIgnoreCase("debug")) {
+            BooleanCVar temp = new BooleanCVar("debug", "debug", false, false);
+            temp.setVal("" + DEBUG);
+            return temp;
+        } else if (var.equalsIgnoreCase("cheats")) {
+            BooleanCVar temp = new BooleanCVar("cheats", "cheats", false, false);
+            temp.setVal("" + CHEATS);
+            return temp;
+        }
         int lens = STRING_VARS.length;
         int lenb = BOOLEAN_VARS.length;
         int leni = INT_VARS.length;
@@ -141,13 +155,33 @@ public class Vars {
         if (var == null) {
             return false;
         }
+        if (var.equalsIgnoreCase("debug")) {
+            if (val.equalsIgnoreCase("true")) {
+                DEBUG = true;
+            } else if (val.equalsIgnoreCase("false")) {
+                DEBUG = false;
+            } else {
+                Console.error("Invalid Value.");
+                return false;
+            }
+            return true;
+        } else if (var.equalsIgnoreCase("cheats")) {
+            if (val.equalsIgnoreCase("true")) {
+                CHEATS = true;
+            } else if (val.equalsIgnoreCase("false")) {
+                CHEATS = false;
+            } else {
+                Console.error("Invalid Value.");
+                return false;
+            }
+            return true;
+        }
         CVar v = find(var);
         if (v == null) {
             Console.error("Could not set " + var);
             return false;
         }
-        v.setVal(val);
-        return true;
+        return v.setVal(val);
     }
 
     public static boolean reset(String var) {
