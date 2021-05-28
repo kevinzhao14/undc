@@ -22,6 +22,8 @@ public class Console {
 
     private static Pane scene;
     private static LinkedList<Label> history = new LinkedList<>();
+    private static ArrayList<String> commandHistory = new ArrayList<>();
+    private static int commandPos = -1;
     private static VBox historyBox;
     private static ScrollPane historyScroll;
     private static TextField input;
@@ -182,6 +184,8 @@ public class Console {
         input.setId("input");
 
         input.setOnAction((e) -> {
+            commandPos = -1;
+            commandHistory.add(0, input.getText());
             run(input.getText());
             input.clear();
         });
@@ -194,12 +198,34 @@ public class Console {
         scene.getStylesheets().add("styles/console.css");
     }
 
+    private static void loadCommand() {
+        if (commandPos < -1 || commandPos >= commandHistory.size()) {
+            error("Could not load command. Position out of bounds.");
+            return;
+        }
+        String command = commandPos == -1 ? "" : commandHistory.get(commandPos);
+        input.setText(command);
+        input.positionCaret(command.length());
+    }
+
     private static void handleKey(String key) {
         String control = Controls.getInstance().getControl(key);
 
         if (control.equals("console")) {
             GameScreen.getInstance().toggleConsole();
             GameController.getInstance().pause();
+        } else if (key.equals("UP")) {
+            commandPos++;
+            if (commandPos >= commandHistory.size()) {
+                commandPos = commandHistory.size() - 1;
+            }
+            loadCommand();
+        } else if (key.equals("DOWN")) {
+            commandPos--;
+            if (commandPos < -1) {
+                commandPos = -1;
+            }
+            loadCommand();
         }
     }
 }
