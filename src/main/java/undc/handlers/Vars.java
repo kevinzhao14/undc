@@ -134,7 +134,6 @@ public class Vars {
                 return v;
             }
         }
-        Console.error("CVar does not exist.");
         return null;
     }
 
@@ -144,6 +143,7 @@ public class Vars {
         }
         CVar v = find(var);
         if (v == null) {
+            Console.error("Could not set " + var);
             return false;
         }
         v.setVal(val);
@@ -154,6 +154,7 @@ public class Vars {
         if (var == null) return false;
         CVar v = find(var);
         if (v == null) {
+            Console.error("Could not reset " + var);
             return false;
         }
         v.reset();

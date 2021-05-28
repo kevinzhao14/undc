@@ -19,6 +19,8 @@ public class Console {
     private static final int WIDTH = 600;
     private static final int HEIGHT = 600;
     private static final Font FONT = new Font("Monospaced", 12);
+    private static final HashMap<String, String> commands = new HashMap<>();
+
 
     private static Pane scene;
     private static LinkedList<Label> history = new LinkedList<>();
@@ -27,6 +29,14 @@ public class Console {
     private static VBox historyBox;
     private static ScrollPane historyScroll;
     private static TextField input;
+
+    private static void loadCommandsList() {
+        commands.put("bind key", "bind <key> <command> - Binds a key to a command.");
+        commands.put("unbind key", "unbind <key> - Unbinds a key.");
+        commands.put("set cvar", "<cvar> <value> - Sets the value of a cvar.");
+        commands.put("get cvar", "<cvar> - Gets the value of a cvar.");
+        commands.put("find command", "find <search> - Finds commands with a search value.");
+    }
 
     private static void print(String str, String color) {
         add(str, color);
@@ -82,7 +92,11 @@ public class Console {
                 }
                 String var = clean(cmd[1]);
                 String val = clean(cmd[2]);
-                Vars.set(var, val);
+                if (Vars.set(var, val)) {
+                    print(var + " has been set to " + val);
+                } else if (!silent) {
+                    error("Failed to set " + var);
+                }
                 break;
             case "cvar":
                 if (cmd.length < 2) {
@@ -103,12 +117,42 @@ public class Console {
                 } else if (cvar instanceof  DoubleCVar) {
                     DoubleCVar v = (DoubleCVar) cvar;
                     print("" + v.getVal() + " (default: " + v.getDef() + ", min: " + v.getMin() + ", max: " + v.getMax() + ")");
-                } else {
-                    error("Could not find cvar.");
+                } else if (!silent) {
+                    error(var + " could not be found.");
                 }
                 break;
+            case "find":
+                if (cmd.length < 2) {
+                    error("Invalid arguments for find.");
+                    return;
+                }
+                String search = clean(cmd[1]);
+                StringBuilder res = new StringBuilder();
+                for (HashMap.Entry<String, String> e : commands.entrySet()) {
+                    if (e.getKey().contains(search)) {
+                        res.append(e.getValue());
+                        res.append("\n");
+                    }
+                }
+                if (res.toString().equals("")) {
+                    res.append("No results found.");
+                }
+                print(res.toString());
+                break;
+            case "clear":
+                history.clear();
+                refresh();
+                break;
             default:
-                error("Unrecognized command.");
+                if (Vars.find(clean(cmd[0])) != null) {
+                    if (cmd.length == 1) {
+                        run("cvar " + command, false);
+                    } else if (cmd.length == 2) {
+                        run("set " + command, false);
+                    }
+                } else {
+                    error("Unrecognized command.");
+                }
                 break;
         }
     }
@@ -157,6 +201,8 @@ public class Console {
     }
 
     public static void create() {
+        loadCommandsList();
+
         scene = new Pane();
         VBox box = new VBox();
         box.setId("box");
