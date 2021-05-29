@@ -1,8 +1,17 @@
 package undc.handlers;
 
-import undc.controllers.*;
-import undc.objects.*;
+import undc.controllers.Console;
+import undc.objects.BooleanCVar;
+import undc.objects.CVar;
+import undc.objects.DoubleCVar;
+import undc.objects.IntCVar;
+import undc.objects.StringCVar;
 
+import javax.print.DocFlavor;
+
+/**
+ * Class representing the collection of all CVars.
+ */
 public class Vars {
     private static final StringCVar[] STRING_VARS = new StringCVar[0];
     private static final BooleanCVar[] BOOLEAN_VARS = new BooleanCVar[0];
@@ -12,6 +21,9 @@ public class Vars {
     public static boolean DEBUG = false;
     public static boolean CHEATS = false;
 
+    /**
+     * Loads all of the CVars and their default values. These will be overwritten by the Config for anyu custom values.
+     */
     public static void load() {
         /* CVar Prefixes:
          * gc - Graphics: things to do with graphics, such as window size, quality, etc.
@@ -19,6 +31,7 @@ public class Vars {
          * ai - AI: things related to ai, such as monsters
          */
 
+        // Integer CVars
         INT_VARS[0] = new IntCVar("gc_screen_width", "screenWidth", 400, 7680, 1920, false);
         INT_VARS[1] = new IntCVar("gc_screen_height", "screenHeight", 200, 4320, 1080, false);
         INT_VARS[2] = new IntCVar("sv_tickrate", "fps", 10, 1000, 200, false);
@@ -48,7 +61,7 @@ public class Vars {
         INT_VARS[23] = new IntCVar("sv_player_height", "playerHeight", 0, 100, 16);
         INT_VARS[24] = new IntCVar("sv_player_pickup_range", "playerPickup", 0, 1000, 10);
 
-
+        // Double CVars
         DOUBLE_VARS[0] = new DoubleCVar("sv_acceleration", "accel", 0, 10000, 1000);
         DOUBLE_VARS[1] = new DoubleCVar("sv_max_velocity", "maxVel", 0, 1000, 100);
         DOUBLE_VARS[2] = new DoubleCVar("sv_friction", "friction", 0, 10000, 2000);
@@ -72,9 +85,16 @@ public class Vars {
         DOUBLE_VARS[15] = new DoubleCVar("gc_effect_scale", "effectScale", 0, 10, 1.5);
     }
 
+    /**
+     * Retriever method for finding the value of a String CVar.
+     * @param var Name of the CVar
+     * @return Returns the value
+     */
     public static String s(String var) {
         for (StringCVar v : STRING_VARS) {
-            if (v == null) continue;
+            if (v == null) {
+                continue;
+            }
             if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
                 return v.getVal();
             }
@@ -82,6 +102,12 @@ public class Vars {
         Console.error("String CVar '" + var + "' not found.");
         return "";
     }
+
+    /**
+     * Retriever method for finding the value of a boolean CVar.
+     * @param var Name of the CVar
+     * @return Returns the value
+     */
     public static boolean b(String var) {
         if (var.equals("debug")) {
             return DEBUG;
@@ -89,7 +115,9 @@ public class Vars {
             return CHEATS;
         }
         for (BooleanCVar v : BOOLEAN_VARS) {
-            if (v == null) continue;
+            if (v == null) {
+                continue;
+            }
             if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
                 return v.getVal();
             }
@@ -97,9 +125,17 @@ public class Vars {
         Console.error("Boolean CVar '" + var + "' not found.");
         return false;
     }
+
+    /**
+     * Retriever method for finding the value of an integer CVar.
+     * @param var Name of the CVar
+     * @return Returns the value
+     */
     public static int i(String var) {
         for (IntCVar v : INT_VARS) {
-            if (v == null) continue;
+            if (v == null) {
+                continue;
+            }
             if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
                 return v.getVal();
             }
@@ -107,9 +143,17 @@ public class Vars {
         Console.error("Integer CVar '" + var + "' not found.");
         return 0;
     }
+
+    /**
+     * Retriever method for finding the value of a double CVar.
+     * @param var Name of the CVar
+     * @return Returns the value
+     */
     public static double d(String var) {
         for (DoubleCVar v : DOUBLE_VARS) {
-            if (v == null) continue;
+            if (v == null) {
+                continue;
+            }
             if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
                 return v.getVal();
             }
@@ -118,7 +162,13 @@ public class Vars {
         return 0;
     }
 
+    /**
+     * Retriever method for finding a generalized CVar (or more specifically, if it exists).
+     * @param var Name of the CVar
+     * @return Returns the CVar
+     */
     public static CVar find(String var) {
+        // check for static variables
         if (var.equalsIgnoreCase("debug")) {
             BooleanCVar temp = new BooleanCVar("debug", "debug", false, false);
             temp.setVal("" + DEBUG);
@@ -128,29 +178,43 @@ public class Vars {
             temp.setVal("" + CHEATS);
             return temp;
         }
-        int lens = STRING_VARS.length;
-        int lenb = BOOLEAN_VARS.length;
-        int leni = INT_VARS.length;
-        int lend = DOUBLE_VARS.length;
-        for (int i = 0; i < lens + lenb + leni + lend; i++) {
-            CVar v;
-            if (i >= lens + lenb + leni) {
-                v = DOUBLE_VARS[i - (lens + lenb + leni)];
-            } else if (i >= lens + lenb) {
-                v = INT_VARS[i - (lens + lenb)];
-            } else if (i >= lens) {
-                v = BOOLEAN_VARS[i - lens];
-            } else {
-                v = STRING_VARS[i];
+        for (StringCVar v : STRING_VARS) {
+            if (v == null) {
+                break;
+            } else if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
+                return v;
             }
-            if (v == null) continue;
-            if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
+        }
+        for (BooleanCVar v : BOOLEAN_VARS) {
+            if (v == null) {
+                break;
+            } else if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
+                return v;
+            }
+        }
+        for (IntCVar v : INT_VARS) {
+            if (v == null) {
+                break;
+            } else if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
+                return v;
+            }
+        }
+        for (DoubleCVar v : DOUBLE_VARS) {
+            if (v == null) {
+                break;
+            } else if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
                 return v;
             }
         }
         return null;
     }
 
+    /**
+     * Sets the value of a CVar.
+     * @param var Name of the CVar
+     * @param val New value of the CVar
+     * @return Returns true if successful, false otherwise
+     */
     public static boolean set(String var, String val) {
         if (var == null) {
             return false;
@@ -184,8 +248,15 @@ public class Vars {
         return v.setVal(val);
     }
 
+    /**
+     * Resets the value of a CVar to the default.
+     * @param var Name of the CVar
+     * @return Returns true if successful, false otherwise
+     */
     public static boolean reset(String var) {
-        if (var == null) return false;
+        if (var == null) {
+            return false;
+        }
         CVar v = find(var);
         if (v == null) {
             Console.error("Could not reset " + var);

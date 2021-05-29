@@ -1,7 +1,10 @@
 package undc.objects;
 
-import undc.controllers.*;
+import undc.controllers.Console;
 
+/**
+ * Represents a CVar with integer values.
+ */
 public class IntCVar extends CVar {
     //inclusive min and max
     private int min;
@@ -9,6 +12,15 @@ public class IntCVar extends CVar {
     private int def;
     private int value;
 
+    /**
+     * Constructor for an IntCVar.
+     * @param name Name of the CVar
+     * @param nick Nickname of the CVar
+     * @param min Minimum value of the CVar
+     * @param max Maximum value of the CVar
+     * @param def Default value of the CVar
+     * @param rc Whether the CVar requires cheats. Defaults to true
+     */
     public IntCVar(String name, String nick, int min, int max, int def, boolean rc) {
         super(name, nick, rc);
         if (min > max) {
@@ -33,21 +45,11 @@ public class IntCVar extends CVar {
         return value;
     }
 
-    public int getDef() {
-        return def;
-    }
-
-    public int getMin() {
-        return min;
-    }
-
-    public int getMax() {
-        return max;
-    }
-
     @Override
     public boolean setVal(String val) {
-        if (!checkSet()) return false;
+        if (!checkSet()) {
+            return false;
+        }
         try {
             int temp = Integer.parseInt(val);
             if (temp < min || temp > max) {
@@ -65,5 +67,10 @@ public class IntCVar extends CVar {
     @Override
     public void reset() {
         value = def;
+    }
+
+    @Override
+    public String toString() {
+        return value + " (default: " + def + ", min: " + min + ", max: " + max + ")";
     }
 }

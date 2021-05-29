@@ -1,39 +1,45 @@
 package undc.objects;
 
-import undc.controllers.*;
+import undc.controllers.Console;
 
+/**
+ * Class representing a CVar with boolean values.
+ */
 public class BooleanCVar extends CVar {
-    private boolean def;
+    private final boolean def;
     private boolean value;
 
+    /**
+     * Constructor for a BooleanCVar.
+     * @param name Name of the CVar
+     * @param nick Nickname of the CVar
+     * @param def Default value of the CVar
+     * @param rc Whether the CVar requires cheats to modify. Defaults to true
+     */
     public BooleanCVar(String name, String nick, boolean def, boolean rc) {
         super(name, nick, rc);
         this.def = def;
         this.value = def;
     }
 
-    public BooleanCVar(String name, String nick, boolean def) {
-        this(name, nick, def, true);
-    }
-
     public boolean getVal() {
         return value;
     }
 
-    public boolean getDef() {
-        return def;
-    }
-
     @Override
     public boolean setVal(String val) {
-        if (!checkSet()) return false;
+        if (!checkSet()) {
+            return false;
+        }
         if (val == null) {
             Console.error("CVar value cannot be null");
             return false;
         }
-        if (val.equalsIgnoreCase("true")) value = true;
-        else if (val.equalsIgnoreCase("false")) value = false;
-        else {
+        if (val.equalsIgnoreCase("true")) {
+            value = true;
+        } else if (val.equalsIgnoreCase("false")) {
+            value = false;
+        } else {
             Console.error("Invalid value");
             return false;
         }
@@ -43,5 +49,10 @@ public class BooleanCVar extends CVar {
     @Override
     public void reset() {
         value = def;
+    }
+
+    @Override
+    public String toString() {
+        return value + " (default: " + def + ")";
     }
 }
