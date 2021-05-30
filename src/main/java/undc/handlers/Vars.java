@@ -7,8 +7,6 @@ import undc.objects.DoubleCVar;
 import undc.objects.IntCVar;
 import undc.objects.StringCVar;
 
-import javax.print.DocFlavor;
-
 /**
  * Class representing the collection of all CVars.
  */

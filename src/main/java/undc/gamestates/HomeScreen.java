@@ -42,7 +42,7 @@ public class HomeScreen extends GameState {
         });
         settingsBtn.setOnAction(event -> {
             //System.out.println("Settings button clicked");
-            Controller.setState(new SettingsScreen(800  , 542));
+            Controller.setState(new SettingsScreen(this.width, this.height));
         });
         exitBtn.setOnAction(event -> {
             // System.out.println("Exit button clicked");
