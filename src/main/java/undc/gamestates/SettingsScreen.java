@@ -6,8 +6,16 @@ import javafx.scene.Scene;
 
 import java.io.IOException;
 
+/**
+ * Class containing constructor for the settings screen.
+ */
 public class SettingsScreen extends GameState {
 
+    /**
+     * Constructor for SettingsScreen.
+     * @param width Width of the screen
+     * @param height Height of the screen
+     */
     SettingsScreen(int width, int height) {
         super(width, height);
         try {

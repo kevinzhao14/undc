@@ -10,7 +10,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
- * HomeScreen Page for the Dungeon Crawler
+ * HomeScreen Page for the Dungeon Crawler.
  */
 public class HomeScreen extends GameState {
     private Button startBtn;
@@ -18,8 +18,7 @@ public class HomeScreen extends GameState {
     private Button exitBtn;
 
     /**
-     * HomeScreen constructor which also sets the start, settings, and exit button functionality
-     *
+     * HomeScreen constructor which also sets the start, settings, and exit button functionality.
      * @param width  the width of the window
      * @param height the height of the window
      */
@@ -35,10 +34,9 @@ public class HomeScreen extends GameState {
         exitBtn.setId("exit-button");
 
 
-        //Event handling for start, settings, and exit button
+        // Event handling for start, settings, and exit button
         startBtn.setOnAction(event -> {
             PlayScreen playScreen = new PlayScreen(this.width, this.height);
-//            ConfigScreen playScreen = new ConfigScreen(this.width, this.height);
             Controller.setState(playScreen);
         });
         settingsBtn.setOnAction(event -> {
@@ -50,7 +48,7 @@ public class HomeScreen extends GameState {
     }
 
     /**
-     * creates the home screen scene
+     * Creates the home screen scene.
      *
      * @return the home screen scene
      */
@@ -69,6 +67,7 @@ public class HomeScreen extends GameState {
     }
 
     /**
+     * Accessor method for the start button.
      * @return the start button
      */
     public Button getStartBtn() {
