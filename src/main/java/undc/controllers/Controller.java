@@ -29,7 +29,7 @@ public class Controller extends Application {
         this.stage = stage;
         this.state = new HomeScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height")); // placeholder gamestate, this should never be null
 
-        stage.setTitle("Luckless Dungeon Crawler");
+        stage.setTitle("UNDC");
         this.stage.setScene(this.state.getScene());
         stage.show();
     }

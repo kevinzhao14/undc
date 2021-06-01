@@ -69,9 +69,9 @@ public class GameController {
         //Handle key events
         scene.setOnKeyPressed(e -> handleKey(e.getCode().toString(), true));
         scene.setOnKeyReleased(e -> handleKey(e.getCode().toString(), false));
-        scene.setOnMousePressed(e -> handleKey(mbStringify(e.getButton()), true));
-        scene.setOnMouseReleased(e -> handleKey(mbStringify(e.getButton()), false));
-        scene.setOnScroll(e -> handleKey(scrollStringify(e.getDeltaY()), false));
+        scene.setOnMousePressed(e -> handleKey(Controls.mbStringify(e.getButton()), true));
+        scene.setOnMouseReleased(e -> handleKey(Controls.mbStringify(e.getButton()), false));
+        scene.setOnScroll(e -> handleKey(Controls.scrollStringify(e.getDeltaY()), false));
     }
 
     /**
@@ -175,35 +175,6 @@ public class GameController {
         refresh();
         timer = new Timer();
         timer.schedule(new GameRunner(), 0, 1000 / Vars.i("fps"));
-    }
-
-    /**
-     * Handles mousebutton events and returns the appropriate button name.
-     * @param button MouseButton event
-     * @return Returns the corresponding button name
-     */
-    private String mbStringify(MouseButton button) {
-        if (button == MouseButton.PRIMARY) {
-            return "MOUSE1";
-        } else if (button == MouseButton.SECONDARY) {
-            return "MOUSE2";
-        }
-        return "";
-    }
-
-    /**
-     * Handle when the player uses the mouse scroll wheel.
-     * @param val Scroll length
-     * @return String of the keycode
-     */
-    private String scrollStringify(double val) {
-        if (val < 0) {
-            return "MWHEELDOWN";
-        } else if (val > 0) {
-            return "MWHEELUP";
-        } else {
-            return "";
-        }
     }
 
     /**

@@ -1,10 +1,11 @@
 package undc.fxml.controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import undc.controllers.Console;
 import undc.controllers.Controller;
@@ -12,26 +13,30 @@ import undc.gamestates.HomeScreen;
 import undc.handlers.Controls;
 import undc.handlers.Vars;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+
 /**
  * Controller for SettingsScreen.fxml
  */
 public class SettingsController {
-    @FXML
-    private ScrollPane video;
-    @FXML
-    private ScrollPane audio;
-    @FXML
-    private ScrollPane game;
-    @FXML
-    private ScrollPane controls;
+    private static ScrollPane video;
+    private static ScrollPane audio;
+    private static ScrollPane game;
+    private static ScrollPane controls;
+
     @FXML
     private AnchorPane master;
     @FXML
-    private TextField upTextField;
+    private Button videoButton;
 
     private Button lastButton;
-    private ScrollPane lastPane = video;
-    private Controls keyControls = Controls.getInstance();
+
+    public SettingsController() {
+        load();
+        Platform.runLater(() -> show(video, videoButton));
+    }
 
     /**
      * Makes specific settings pane visible.
@@ -40,41 +45,70 @@ public class SettingsController {
      */
     private void show(ScrollPane childPane, Object button) {
         if (master == null) {
-            Console.error("Failed to load settings.");
+            Console.error("Failed to load master settings.");
             return;
         }
         if (!(button instanceof Button)) {
             Console.error("Invalid button type.");
             return;
         }
-        if (lastPane == childPane) {
-            return;
-        }
-        ((Button) button).getStyleClass().add("button-active");
+
+        // set the button as the active button
         if (lastButton != null) {
             lastButton.getStyleClass().remove("button-active");
         }
-        if (lastPane != null) {
-            lastPane.setVisible(false);
-        }
         lastButton = (Button) button;
-        childPane.setVisible(true);
-        lastPane = childPane;
+        lastButton.getStyleClass().add("button-active");
+
+        // add the new pane to master
+        master.getChildren().clear();
+        master.getChildren().add(childPane);
+        // sets anchor points of new pane so it fills master
+        AnchorPane.setTopAnchor(childPane, 0.0);
+        AnchorPane.setBottomAnchor(childPane, 0.0);
+        AnchorPane.setLeftAnchor(childPane, 0.0);
+        AnchorPane.setRightAnchor(childPane, 0.0);
+
+        master.layout();
+    }
+
+    private void load() {
+        try {
+            game = FXMLLoader.load(new File("src/main/java/undc/fxml/GameSettings.fxml").toURI().toURL());
+            video = FXMLLoader.load(new File("src/main/java/undc/fxml/VideoSettings.fxml").toURI().toURL());
+            audio = FXMLLoader.load(new File("src/main/java/undc/fxml/AudioSettings.fxml").toURI().toURL());
+            controls = FXMLLoader.load(new File("src/main/java/undc/fxml/ControlsSettings.fxml").toURI().toURL());
+        } catch (IOException e) {
+            Console.error("Failed to load settings.");
+            e.printStackTrace();
+        }
     }
 
     public void showVideo(ActionEvent e) {
+        if (video == null) {
+            load();
+        }
         show(video, e.getSource());
     }
 
     public void showAudio(ActionEvent e) {
+        if (audio == null) {
+            load();
+        }
         show(audio, e.getSource());
     }
 
     public void showGame(ActionEvent e) {
+        if (game == null) {
+            load();
+        }
         show(game, e.getSource());
     }
 
     public void showControls(ActionEvent e) {
+        if (controls == null) {
+            load();
+        }
         show(controls, e.getSource());
     }
 
@@ -84,18 +118,7 @@ public class SettingsController {
      * @param button Button pressed to change key bind
      */
     public void changeKey(String control, Object button) {
-        if (!(button instanceof Button)) {
-            Console.error("Invalid button type.");
-            return;
-        }
-        Button keyButton = (Button) button;
-        keyButton.setText("Press a key");
 
-        Controller.getState().getScene().setOnKeyPressed(event -> {
-            String newKeyBind = event.getCode().toString().toLowerCase();
-            keyControls.setKey(newKeyBind, control);
-            keyButton.setText(newKeyBind);
-        });
     }
 
     public void changeUp(ActionEvent e) {
@@ -123,6 +146,6 @@ public class SettingsController {
     }
 
     public void reset(ActionEvent e) {
-        keyControls.resetKeys();
+//        keyControls.resetKeys();
     }
 }

@@ -1,5 +1,6 @@
 package undc.handlers;
 
+import javafx.scene.input.MouseButton;
 import undc.controllers.*;
 
 import java.io.BufferedReader;
@@ -162,6 +163,16 @@ public class Controls {
         return Objects.requireNonNullElse(foundControl, "");
     }
 
+    public String getKey(String control) {
+        for (Map.Entry<String, String> e : keyMap.entrySet()) {
+            if (e.getValue().equalsIgnoreCase(control)) {
+                return e.getKey().toUpperCase();
+            }
+        }
+        Console.error("Could not find the control.");
+        return "";
+    }
+
     /**
      * Prints the key mapping.
      */
@@ -186,7 +197,7 @@ public class Controls {
         }
 
         //if the control is already mapped, overwrite it
-        keyMap.put(key, control);
+        keyMap.put(key.toLowerCase(), control.toLowerCase());
 
         save();
     }
@@ -196,11 +207,49 @@ public class Controls {
             Console.error("Key cannot be null.");
             return;
         }
+        key = key.toLowerCase();
         if (keyMap.get(key) == null) {
             Console.error("Key is not bound.");
             return;
         }
         keyMap.remove(key);
         save();
+    }
+
+    public HashMap<String, String> getMapUnmodifiable() {
+        HashMap<String, String> temp = new HashMap<>();
+        keyMap.forEach((k, v) -> {
+            temp.put(k, v);
+        });
+        return temp;
+    }
+
+    /**
+     * Handles mousebutton events and returns the appropriate button name.
+     * @param button MouseButton event
+     * @return Returns the corresponding button name
+     */
+    public static String mbStringify(MouseButton button) {
+        if (button == MouseButton.PRIMARY) {
+            return "MOUSE1";
+        } else if (button == MouseButton.SECONDARY) {
+            return "MOUSE2";
+        }
+        return "";
+    }
+
+    /**
+     * Handle when the player uses the mouse scroll wheel.
+     * @param val Scroll length
+     * @return String of the keycode
+     */
+    public static String scrollStringify(double val) {
+        if (val < 0) {
+            return "MWHEELDOWN";
+        } else if (val > 0) {
+            return "MWHEELUP";
+        } else {
+            return "";
+        }
     }
 }

@@ -2,6 +2,8 @@ package undc.fxml.controllers;
 
 import undc.controllers.Controller;
 import undc.gamestates.GameScreen;
+import undc.gamestates.HomeScreen;
+import undc.handlers.Vars;
 
 public class PlayScreenController {
     public void newGame() {
@@ -20,6 +22,6 @@ public class PlayScreenController {
     }
 
     public void back() {
-
+        Controller.setState(new HomeScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height")));
     }
 }
