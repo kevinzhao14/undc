@@ -60,6 +60,7 @@ public class Console {
      * @param color Color of the message
      */
     private static void print(String str, String color) {
+        System.out.println(str);
         if (history.size() >= MAX_SIZE) {
             history.remove();
         }

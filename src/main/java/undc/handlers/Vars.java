@@ -63,7 +63,7 @@ public class Vars {
         DOUBLE_VARS[0] = new DoubleCVar("sv_acceleration", "accel", 0, 10000, 1000);
         DOUBLE_VARS[1] = new DoubleCVar("sv_max_velocity", "maxVel", 0, 1000, 100);
         DOUBLE_VARS[2] = new DoubleCVar("sv_friction", "friction", 0, 10000, 2000);
-        DOUBLE_VARS[3] = new DoubleCVar("gc_ppu", "ppu", 0, 100, 2);
+        DOUBLE_VARS[3] = new DoubleCVar("gc_ppu", "ppu", 0, 100, 1);
         DOUBLE_VARS[3].setModifiable(false);
         DOUBLE_VARS[4] = new DoubleCVar("sv_precision", "precision", 0, 1000000, 10000);
         DOUBLE_VARS[4].setModifiable(false);

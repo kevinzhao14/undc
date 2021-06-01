@@ -38,6 +38,7 @@ public class HomeScreen extends GameState {
         //Event handling for start, settings, and exit button
         startBtn.setOnAction(event -> {
             PlayScreen playScreen = new PlayScreen(this.width, this.height);
+//            ConfigScreen playScreen = new ConfigScreen(this.width, this.height);
             Controller.setState(playScreen);
         });
         settingsBtn.setOnAction(event -> {

@@ -99,6 +99,7 @@ public class GameController {
      * Updates data after room change.
      */
     public void updateRoom() {
+        System.out.println("Updating room");
         pause();
     }
 

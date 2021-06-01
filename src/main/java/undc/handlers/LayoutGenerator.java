@@ -185,7 +185,7 @@ public class LayoutGenerator {
             }
         }
 
-        return new DungeonLayout(roomGrid[GRID_WIDTH / 2][GRID_HEIGHT / 2], exitRoom, roomGrid);
+        return new DungeonLayout(startRoom, exitRoom, roomGrid);
     }
 
     private void generatePath(int dir) {

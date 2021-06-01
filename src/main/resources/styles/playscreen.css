@@ -1,0 +1,31 @@
+* {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+#title {
+    -fx-font-size: 4em;
+    -fx-padding: 20px;
+}
+.save-item {
+    -fx-font-size: 2em;
+}
+.save-name {
+    -fx-text-fill: black;
+}
+.save-date, .save-mode {
+    -fx-text-fill: #777;
+}
+#save-box {
+    -fx-padding: 20px;
+    -fx-spacing: 10px;
+}
+#save-scroll {
+    -fx-border-width: 1px 0 1px 0;
+    -fx-border-color: #555;
+}
+.button {
+    -fx-font-size: 2em;
+    -fx-padding: 5px 10px 5px 10px;
+    -fx-border-width: 1px;
+    -fx-border-color: #555;
+}

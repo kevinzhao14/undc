@@ -21,6 +21,8 @@ import java.util.ArrayList;
 
 public class GameScreen extends GameState {
     private static GameScreen instance;
+    private static int SANDBOX_WIDTH = 1000;
+    private static int SANDBOX_HEIGHT = 1000;
 
     private Player player;
     private DungeonLayout dungeonLayout;
@@ -32,16 +34,12 @@ public class GameScreen extends GameState {
     private StackPane pause;
     private StackPane challenge;
     private boolean consoleOpen;
+    private GameMode mode;
 
     private boolean inventoryVisible;
 
     private GameScreen(int width, int height) {
         super(width, height);
-        dungeonLayout = new LayoutGenerator().generateLayout();
-        scene = new Scene(new Pane(), width, height);
-        canvas = new Canvas();
-        inventoryVisible = false;
-        consoleOpen = false;
     }
 
     public static GameScreen getInstance() {
@@ -51,7 +49,35 @@ public class GameScreen extends GameState {
         return instance;
     }
 
+    public void newGame(GameMode mode) {
+        if (mode == GameMode.SANDBOX) {
+            Controller.getDataManager().newGame("example", Difficulty.EASY, DataManager.WEAPONS[0]);
+
+            Room start = new Room(SANDBOX_HEIGHT,SANDBOX_WIDTH, (int) ((SANDBOX_WIDTH - Vars.i("sv_player_width")) / 2.0),
+                    (int) (SANDBOX_HEIGHT / 2.0 - Vars.i("sv_player_height")), RoomType.STARTROOM);
+            start.setMonsters(new Monster[0]);
+
+            Room exit = new Room(10, 10, 0, 0, RoomType.EXITROOM);
+            exit.setMonsters(new Monster[0]);
+
+            Room[][] arr = new Room[][]{new Room[]{start, exit}};
+            dungeonLayout = new DungeonLayout(start, exit, arr);
+        } else if (mode == GameMode.STORY) {
+            dungeonLayout = new LayoutGenerator().generateLayout();
+        }
+        scene = new Scene(new Pane(), this.width, this.height);
+        canvas = new Canvas();
+        inventoryVisible = false;
+        consoleOpen = false;
+        this.mode = mode;
+    }
+
     public void start() {
+        System.out.println("Starting " + mode);
+        if (mode == null) {
+            Console.error("Game Mode not set!");
+            return;
+        }
         GameController.resetInstance();
         createPlayer();
         getGame().start(dungeonLayout.getStartingRoom());
@@ -61,6 +87,7 @@ public class GameScreen extends GameState {
     }
 
     public boolean setRoom(Room newRoom) {
+        System.out.println("Setting game screen room");
         //store old room
         previous = room;
 
@@ -90,6 +117,7 @@ public class GameScreen extends GameState {
     }
 
     private void createRoom() {
+        System.out.println("Creating room");
         //set new room
         StackPane root = new StackPane();
 
@@ -101,7 +129,10 @@ public class GameScreen extends GameState {
 
         Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
         root.getChildren().addAll(roomPane, hud);
+        root.setStyle("-fx-background-color: #34311b");
+        scene.setRoot(root);
         if (scene.getRoot().getChildrenUnmodifiable().size() > 0) {
+            System.out.println("Fading in");
             if (room.getType() != RoomType.CHALLENGEROOM || ((ChallengeRoom) room).isCompleted()) {
                 fadeIn(roomPane);
             } else {
@@ -113,9 +144,6 @@ public class GameScreen extends GameState {
         if (room.getType() == RoomType.CHALLENGEROOM && !((ChallengeRoom) room).isCompleted()) {
             onChallengeEnter();
         }
-
-        root.setStyle("-fx-background-color: #34311b");
-        scene.setRoot(root);
     }
 
     public void updateHud() {
@@ -610,5 +638,13 @@ public class GameScreen extends GameState {
     }
     public boolean isConsoleOpen() {
         return consoleOpen;
+    }
+
+    public GameMode getMode() {
+        return mode;
+    }
+
+    public enum GameMode {
+        SANDBOX, STORY;
     }
 }

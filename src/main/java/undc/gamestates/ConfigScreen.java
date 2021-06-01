@@ -139,6 +139,7 @@ public class ConfigScreen extends GameState {
             try {
                 if (Controller.getDataManager().newGame(playerName, difficultyRef, weaponRef)) {
                     GameScreen gameScreen = GameScreen.getInstance();
+                    gameScreen.newGame(GameScreen.GameMode.STORY);
                     Controller.setState(gameScreen);
                     gameScreen.start();
                 }
