@@ -1,54 +1,47 @@
 .root {
-    -fx-background-color:  #7E7B68;
+    -fx-background-color: white;
 }
 .button {
-     -fx-background-color:
-             #090a0c,
-             linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),
-             linear-gradient(#20262b, #191d22),
-             radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));
-     -fx-background-radius: 5,4,3,5;
-     -fx-background-insets: 0,1,2,0;
-     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
-     -fx-font-family: "VT323";
-     -fx-text-fill: linear-gradient(white, #d0d0d0);
-     -fx-font-size: 24px;
-     -fx-padding: 15 25 15 25;
-    -fx-pref-width: 190px;
- }
-#pageHeader {
-    -fx-text-fill: white;
-    -fx-font-family : "VT323";
-    -fx-font-size: 48px;
-    -fx-padding: 0 0 25 0;
+    -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-border-width: 0;
+    -fx-font-size: 24px;
+    -fx-padding: 10px 15px 10px 15px;
 }
-#save-button {
-    -fx-background-color: #499C54;
+.button-active {
+    -fx-border-width: 0 0 2px 0;
+}
+#title {
+    -fx-font-size: 48px;
+    -fx-padding: 20px 20px 20px 30px;
+}
+#back-button {
+    -fx-background-color: #ED1C24;
+    -fx-padding: 20px 20px 20px 20px;
 }
 #reset-button {
-    -fx-background-color: #CB974E;
+    -fx-background-color: #064E9A;
+    -fx-padding: 20px 20px 20px 20px;
 }
-#general-pane {
-    -fx-background-color: #A96875;
+#buttons-container {
+    -fx-padding: 10px 10px 10px 30px;
+    -fx-spacing: 15px;
+    -fx-border-width: 1px 0 1px 0;
+    -fx-border-color: #ccc;
+    -fx-alignment: center-left;
 }
-#video-pane {
-    -fx-background-color: #6F0CFC;
+#controls-container {
+    -fx-font-size: 18px;
+    -fx-padding: 10px 10px 10px 75px;
 }
-#audio-pane {
-    -fx-background-color: #EAD326;
+.controls-subtitle {
+    -fx-font-size: 30px;
+    -fx-padding: 20px 0px 5px 0px;
 }
-#keyMouse-pane {
-    -fx-background-color: #0026D3;
+.controls-grid {
+    -fx-hgap: 50px;
+    -fx-vgap: 25px;
 }
-#menu {
-    -fx-background-color:
-            #090a0c,
-            linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),
-            linear-gradient(#20262b, #191d22),
-            radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));
-    -fx-pref-width: 569;
-    -fx-pref-height: 385;
-
-    -fx-border-radius: 5,4,3,5;
-    -fx-background-radius: 5,4,3,5;
+.key-button {
+    -fx-background-color: #EDEDED;
 }

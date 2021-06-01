@@ -13,6 +13,8 @@ public class SettingsScreen extends GameState {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("../fxml/SettingsScreen.fxml"));
             scene = new Scene(root, this.width, this.height);
+            scene.getStylesheets().add("styles/global.css");
+            scene.getStylesheets().add("styles/settings.css");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,6 @@
 package undc.gamestates;
 
-import javafx.stage.Stage;
+import javafx.application.Platform;
 import undc.controllers.Controller;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,7 +19,8 @@ public class HomeScreen extends GameState {
 
     /**
      * HomeScreen constructor which also sets the start, settings, and exit button functionality
-     * @param width the width of the window
+     *
+     * @param width  the width of the window
      * @param height the height of the window
      */
     public HomeScreen(int width, int height) {
@@ -34,7 +35,6 @@ public class HomeScreen extends GameState {
         exitBtn.setId("exit-button");
 
 
-
         //Event handling for start, settings, and exit button
         startBtn.setOnAction(event -> {
             PlayScreen playScreen = new PlayScreen(this.width, this.height);
@@ -42,17 +42,16 @@ public class HomeScreen extends GameState {
             Controller.setState(playScreen);
         });
         settingsBtn.setOnAction(event -> {
-            //System.out.println("Settings button clicked");
             Controller.setState(new SettingsScreen(this.width, this.height));
         });
         exitBtn.setOnAction(event -> {
-            // System.out.println("Exit button clicked");
-            exitGame(exitBtn);
+            Platform.exit();
         });
     }
 
     /**
      * creates the home screen scene
+     *
      * @return the home screen scene
      */
     public Scene getScene() {
@@ -74,13 +73,5 @@ public class HomeScreen extends GameState {
      */
     public Button getStartBtn() {
         return startBtn;
-    }
-
-    /**
-     * Closes the game, should be called from handle method.
-     * @param btn The button that triggers the game closing
-     */
-    public void exitGame(Button btn) {
-        ((Stage)(btn.getScene().getWindow())).close();
     }
 }
