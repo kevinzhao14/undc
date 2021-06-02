@@ -12,6 +12,7 @@ import undc.handlers.Controls;
 import undc.handlers.Vars;
 import undc.objects.CVar;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -40,6 +41,7 @@ public class Console {
     private static VBox historyBox; // Box that contains all the messages
     private static ScrollPane historyScroll; // Pane that does the scrolling
     private static TextField input; // Input field
+    private static boolean silent;
 
     /**
      * Loads the commands list, the list used with the "find" command.
@@ -60,6 +62,9 @@ public class Console {
      * @param color Color of the message
      */
     private static void print(String str, String color) {
+        if (silent) {
+            return;
+        }
         System.out.println(str);
         if (history.size() >= MAX_SIZE) {
             history.remove();
@@ -96,105 +101,33 @@ public class Console {
         if (echo) {
             print(PREFIX + command);
         }
+        Console.silent = silent;
         String[] cmd = command.split(" ");
+        String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
         switch (cmd[0].toLowerCase()) {
             case "echo": // Echos the message back to the user
-                print(cmd[1]);
+                echo(args);
                 break;
             case "bind": // Binds a command to a key or retrieves the command bound to a key.
-                if (cmd.length < 2) {
-                    error("Invalid arguments for bind.");
-                    return;
-                }
-                String key = clean(cmd[1]);
-                if (cmd.length == 3) { // New bind. Format: bind <key> <command>
-                    String control = clean(cmd[2]);
-                    Controls.getInstance().setKey(key, control);
-                    if (!silent) {
-                        print("Key bound.");
-                    }
-                } else if (cmd.length == 2) { // Retrieval. Format: bind <key>
-                    String control = Controls.getInstance().getControl(key);
-                    if (control.equals("")) {
-                        error("Key is not bound.");
-                    } else {
-                        print(control);
-                    }
-                }
+                bind(args);
                 break;
             case "unbind": // Unbinds a key. Format: unbind <key>
-                if (cmd.length < 2) {
-                    error("Invalid arguments for unbind.");
-                    return;
-                }
-                key = clean(cmd[1]);
-                Controls.getInstance().removeKey(key);
+                unbind(args);
                 break;
             case "set": // Sets a CVar. Format: set <cvar> <value>
-                if (cmd.length < 3) {
-                    error("Invalid arguments for set.");
-                    return;
-                }
-                String var = clean(cmd[1]);
-                String val = clean(cmd[2]);
-                if (Vars.set(var, val)) {
-                    print(var + " has been set to " + val);
-                } else if (!silent) {
-                    error("Failed to set " + var + ".");
-                }
+                set(args);
                 break;
             case "get": // Retrieves the value of a CVar. Format: get <cvar>
-                if (cmd.length < 2) {
-                    error("Invalid arguments for get.");
-                    return;
-                }
-                var = clean(cmd[1]);
-                CVar cvar = Vars.find(var);
-                if (cvar == null) {
-                    if (!silent) {
-                        error("CVar could not be found.");
-                        return;
-                    }
-                } else {
-                    print(cvar.toString());
-                }
+                get(args);
                 break;
             case "reset": // Resets the value of a CVar. Format: reset <cvar>
-                if (cmd.length < 2) {
-                    error("Invalid arguments for reset.");
-                    return;
-                }
-                var = clean(cmd[1]);
-                cvar = Vars.find(var);
-                if (cvar == null) {
-                    error("Could not find " + var);
-                    return;
-                }
-                cvar.reset();
-                print(var + " was reset.");
+                reset(args);
                 break;
             case "find": // Searches for commands. Format: find <search>
-                if (cmd.length < 2) {
-                    run("find \"\"", false);
-                    return;
-                }
-                String search = clean(cmd[1]);
-                StringBuilder res = new StringBuilder();
-                for (HashMap.Entry<String, String> e : commands.entrySet()) {
-                    if (e.getKey().contains(search)) {
-                        res.append(e.getValue());
-                        res.append("\n");
-                    }
-                }
-                if (res.toString().equals("")) {
-                    res.append("No results found.");
-                }
-                print(res.toString());
+                find(args);
                 break;
             case "clear": // Clears the console's history. Format: clear
-                history.clear();
-                refresh();
-                historyScroll.setVvalue(0);
+                clear(args);
                 break;
             default: // Defaults to modifying/retrieving a CVar.
                 if (Vars.find(clean(cmd[0])) != null) {
@@ -208,6 +141,7 @@ public class Console {
                 }
                 break;
         }
+        Console.silent = false;
     }
 
     public static void run(String command, boolean echo) {
@@ -221,6 +155,119 @@ public class Console {
     private static String clean(String s) {
         return s.toLowerCase().replaceAll("[\"']", "");
     }
+
+    /*
+     *
+     *      COMMAND METHODS
+     *
+     *      Should all take as parameters:
+     *      - String[] args: arguments passed after the command, eg {key, command} in "bind <key> <command>"
+     *
+     */
+
+    private static void echo(String[] args) {
+        if (args.length != 1) {
+            error("Invalid arguments for echo.");
+        }
+        print(args[0]);
+    }
+
+    private static void bind(String[] args) {
+        if (args.length == 2) { // New bind. Format: bind <key> <command>
+            String key = clean(args[0]);
+            String control = clean(args[1]);
+            Controls.getInstance().setKey(key, control);
+            print("Key bound.");
+        } else if (args.length == 1) { // Retrieval. Format: bind <key>
+            String key = clean(args[0]);
+            String control = Controls.getInstance().getControl(key);
+            if (control.equals("")) {
+                error("Key is not bound.");
+            } else {
+                print(control);
+            }
+        } else {
+            error("Invalid arguments for bind.");
+        }
+    }
+
+    private static void unbind(String[] args) {
+        if (args.length != 1) {
+            error("Invalid arguments for unbind.");
+            return;
+        }
+        String key = clean(args[0]);
+        Controls.getInstance().removeKey(key);
+    }
+
+    private static void set(String[] args) {
+        if (args.length != 2) {
+            error("Invalid arguments for set.");
+            return;
+        }
+        String var = clean(args[0]);
+        String val = clean(args[1]);
+        if (Vars.set(var, val)) {
+            print(var + " has been set to " + val);
+        } else {
+            error("Failed to set " + var + ".");
+        }
+    }
+
+    private static void get(String[] args) {
+        if (args.length != 1) {
+            error("Invalid arguments for get.");
+            return;
+        }
+        String var = clean(args[0]);
+        CVar cvar = Vars.find(var);
+        if (cvar == null) {
+            error("CVar could not be found.");
+        } else {
+            print(cvar.toString());
+        }
+    }
+
+    private static void reset(String[] args) {
+        if (args.length != 1) {
+            error("Invalid arguments for reset.");
+            return;
+        }
+        String var = clean(args[0]);
+        CVar cvar = Vars.find(var);
+        if (cvar == null) {
+            error("Could not find " + var);
+            return;
+        }
+        cvar.reset();
+        print(var + " was reset.");
+    }
+
+    private static void find(String[] args) {
+        if (args.length != 1) {
+            run("find \"\"", false);
+            return;
+        }
+        String search = clean(args[0]);
+        StringBuilder res = new StringBuilder();
+        for (HashMap.Entry<String, String> e : commands.entrySet()) {
+            if (e.getKey().contains(search)) {
+                res.append(e.getValue());
+                res.append("\n");
+            }
+        }
+        if (res.toString().equals("")) {
+            res.append("No results found.");
+        }
+        print(res.toString());
+    }
+
+    private static void clear(String[] args) {
+        history.clear();
+        refresh();
+        historyScroll.setVvalue(0);
+    }
+
 
     /**
      * Refreshes the JavaFX elements to display any new messages.
