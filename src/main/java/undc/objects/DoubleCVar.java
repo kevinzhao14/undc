@@ -41,6 +41,12 @@ public class DoubleCVar extends CVar {
         this(name, nick, min, max, def, true);
     }
 
+    public DoubleCVar(String name, String nick, double min, double max, double def, boolean rc, boolean modifiable) {
+        this(name, nick, min, max, def, rc);
+        this.modifiable = modifiable;
+    }
+
+
     public double getVal() {
         return value;
     }

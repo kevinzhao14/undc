@@ -8,11 +8,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import undc.handlers.Vars;
 
 /**
  * HomeScreen Page for the Dungeon Crawler.
  */
 public class HomeScreen extends GameState {
+    private static HomeScreen instance;
     private Button startBtn;
     private Button settingsBtn;
     private Button exitBtn;
@@ -22,7 +24,7 @@ public class HomeScreen extends GameState {
      * @param width  the width of the window
      * @param height the height of the window
      */
-    public HomeScreen(int width, int height) {
+    private HomeScreen(int width, int height) {
         super(width, height);
         startBtn = new Button("Start");
         startBtn.setId("start-button");
@@ -33,26 +35,17 @@ public class HomeScreen extends GameState {
         exitBtn = new Button("Exit Game");
         exitBtn.setId("exit-button");
 
-
         // Event handling for start, settings, and exit button
         startBtn.setOnAction(event -> {
-            PlayScreen playScreen = new PlayScreen(this.width, this.height);
-            Controller.setState(playScreen);
+            Controller.setState(PlayScreen.getInstance());
         });
         settingsBtn.setOnAction(event -> {
-            Controller.setState(new SettingsScreen(this.width, this.height));
+            Controller.setState(SettingsScreen.getInstance());
         });
         exitBtn.setOnAction(event -> {
             Platform.exit();
         });
-    }
 
-    /**
-     * Creates the home screen scene.
-     *
-     * @return the home screen scene
-     */
-    public Scene getScene() {
         Label label = new Label("Title Here");
         label.getStyleClass().add("title");
 
@@ -61,9 +54,19 @@ public class HomeScreen extends GameState {
         layout.setSpacing(10);
 
         StackPane root = new StackPane(layout);
-        Scene scene = new Scene(root, width, height);
+        scene = new Scene(root, width, height);
         scene.getStylesheets().addAll("styles/menu.css", "styles/global.css");
-        return scene;
+    }
+
+    public static HomeScreen getInstance() {
+        if (instance == null) {
+            instance = new HomeScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
+        }
+        return instance;
+    }
+
+    public static void resetInstance(int width, int height) {
+        instance = new HomeScreen(width, height);
     }
 
     /**

@@ -41,6 +41,11 @@ public class IntCVar extends CVar {
         this(name, nick, min, max, def, true);
     }
 
+    public IntCVar(String name, String nick, int min, int max, int def, boolean rc, boolean modifiable) {
+        this(name, nick, min, max, def, rc);
+        this.modifiable = modifiable;
+    }
+
     public int getVal() {
         return value;
     }

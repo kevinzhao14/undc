@@ -21,10 +21,6 @@ import javafx.scene.layout.VBox;
 /**
  * Class implementation of the initial player configuration screen
  * for the Team Luckless Dungeon Crawler game.
- *
- * @author Manas Harbola
- * @version 1.0
- * @userid mharbola3
  */
 public class ConfigScreen extends GameState {
     //Application Window dimensions

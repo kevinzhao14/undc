@@ -142,7 +142,7 @@ public class SettingsController {
     }
 
     public void back(ActionEvent e) {
-        Controller.setState(new HomeScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height")));
+        Controller.setState(HomeScreen.getInstance());
     }
 
     public void reset(ActionEvent e) {

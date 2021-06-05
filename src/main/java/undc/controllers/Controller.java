@@ -1,5 +1,6 @@
 package undc.controllers;
 
+import javafx.application.Platform;
 import undc.gamestates.GameState;
 import undc.gamestates.HomeScreen;
 import javafx.application.Application;
@@ -27,10 +28,10 @@ public class Controller extends Application {
         Console.create();
 
         this.stage = stage;
-        this.state = new HomeScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height")); // placeholder gamestate, this should never be null
+        state = HomeScreen.getInstance();
 
         stage.setTitle("UNDC");
-        this.stage.setScene(this.state.getScene());
+        stage.setScene(state.getScene());
         stage.show();
     }
 
@@ -60,5 +61,9 @@ public class Controller extends Application {
      */
     public static DataManager getDataManager() {
         return instance.dataManager;
+    }
+
+    public static void quit() {
+        Platform.exit();
     }
 }

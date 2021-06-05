@@ -9,11 +9,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import undc.gamestates.GameScreen;
 import undc.handlers.Controls;
-import undc.handlers.Vars;
-import undc.objects.CVar;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
@@ -28,8 +26,8 @@ public class Console {
     private static final String PREFIX = "> "; // Prefix for printing the user's command
     private static final int WIDTH = 600; // Default width of the console
     private static final int HEIGHT = 600; // Default height of the console
-    private static final HashMap<String, String> commands = new HashMap<>(); // List of all available commands
     private static final LinkedList<Label> history = new LinkedList<>(); // List of all messages, max size of MAX_SIZE
+    static final ArrayList<Command> commands = Command.load(); // List of all available commands
     // List of all issued commands by the user
     private static final ArrayList<String> commandHistory = new ArrayList<>();
 
@@ -42,19 +40,6 @@ public class Console {
     private static ScrollPane historyScroll; // Pane that does the scrolling
     private static TextField input; // Input field
     private static boolean silent;
-
-    /**
-     * Loads the commands list, the list used with the "find" command.
-     */
-    private static void loadCommandsList() {
-        commands.put("bind key", "bind <key> <command> - Binds a key to a command.");
-        commands.put("unbind key", "unbind <key> - Unbinds a key.");
-        commands.put("set cvar", "<cvar> <value> - Sets the value of a cvar.");
-        commands.put("get cvar", "<cvar> - Gets the value of a cvar.");
-        commands.put("find command", "find <search> - Finds commands with a search value.");
-        commands.put("reset", "reset <cvar> - Resets a cvar.");
-        commands.put("clear console", "clear - Clears the console.");
-    }
 
     /**
      * Prints a message to the console in a specified color.
@@ -101,46 +86,20 @@ public class Console {
         if (echo) {
             print(PREFIX + command);
         }
+
         Console.silent = silent;
         String[] cmd = command.split(" ");
         String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
-        switch (cmd[0].toLowerCase()) {
-            case "echo": // Echos the message back to the user
-                echo(args);
-                break;
-            case "bind": // Binds a command to a key or retrieves the command bound to a key.
-                bind(args);
-                break;
-            case "unbind": // Unbinds a key. Format: unbind <key>
-                unbind(args);
-                break;
-            case "set": // Sets a CVar. Format: set <cvar> <value>
-                set(args);
-                break;
-            case "get": // Retrieves the value of a CVar. Format: get <cvar>
-                get(args);
-                break;
-            case "reset": // Resets the value of a CVar. Format: reset <cvar>
-                reset(args);
-                break;
-            case "find": // Searches for commands. Format: find <search>
-                find(args);
-                break;
-            case "clear": // Clears the console's history. Format: clear
-                clear(args);
-                break;
-            default: // Defaults to modifying/retrieving a CVar.
-                if (Vars.find(clean(cmd[0])) != null) {
-                    if (cmd.length == 1) {
-                        run("get " + command, false);
-                    } else if (cmd.length == 2) {
-                        run("set " + command, false);
-                    }
-                } else {
-                    error("Unrecognized command.");
-                }
-                break;
+
+        for (Command c : commands) {
+            if (c.getName().equalsIgnoreCase(cmd[0])) {
+                c.run(args);
+                Console.silent = false;
+                return;
+            }
         }
+
+        error("Invalid command.");
         Console.silent = false;
     }
 
@@ -151,123 +110,6 @@ public class Console {
     public static void run(String command) {
         run(command, true, false);
     }
-
-    private static String clean(String s) {
-        return s.toLowerCase().replaceAll("[\"']", "");
-    }
-
-    /*
-     *
-     *      COMMAND METHODS
-     *
-     *      Should all take as parameters:
-     *      - String[] args: arguments passed after the command, eg {key, command} in "bind <key> <command>"
-     *
-     */
-
-    private static void echo(String[] args) {
-        if (args.length != 1) {
-            error("Invalid arguments for echo.");
-        }
-        print(args[0]);
-    }
-
-    private static void bind(String[] args) {
-        if (args.length == 2) { // New bind. Format: bind <key> <command>
-            String key = clean(args[0]);
-            String control = clean(args[1]);
-            Controls.getInstance().setKey(key, control);
-            print("Key bound.");
-        } else if (args.length == 1) { // Retrieval. Format: bind <key>
-            String key = clean(args[0]);
-            String control = Controls.getInstance().getControl(key);
-            if (control.equals("")) {
-                error("Key is not bound.");
-            } else {
-                print(control);
-            }
-        } else {
-            error("Invalid arguments for bind.");
-        }
-    }
-
-    private static void unbind(String[] args) {
-        if (args.length != 1) {
-            error("Invalid arguments for unbind.");
-            return;
-        }
-        String key = clean(args[0]);
-        Controls.getInstance().removeKey(key);
-    }
-
-    private static void set(String[] args) {
-        if (args.length != 2) {
-            error("Invalid arguments for set.");
-            return;
-        }
-        String var = clean(args[0]);
-        String val = clean(args[1]);
-        if (Vars.set(var, val)) {
-            print(var + " has been set to " + val);
-        } else {
-            error("Failed to set " + var + ".");
-        }
-    }
-
-    private static void get(String[] args) {
-        if (args.length != 1) {
-            error("Invalid arguments for get.");
-            return;
-        }
-        String var = clean(args[0]);
-        CVar cvar = Vars.find(var);
-        if (cvar == null) {
-            error("CVar could not be found.");
-        } else {
-            print(cvar.toString());
-        }
-    }
-
-    private static void reset(String[] args) {
-        if (args.length != 1) {
-            error("Invalid arguments for reset.");
-            return;
-        }
-        String var = clean(args[0]);
-        CVar cvar = Vars.find(var);
-        if (cvar == null) {
-            error("Could not find " + var);
-            return;
-        }
-        cvar.reset();
-        print(var + " was reset.");
-    }
-
-    private static void find(String[] args) {
-        if (args.length != 1) {
-            run("find \"\"", false);
-            return;
-        }
-        String search = clean(args[0]);
-        StringBuilder res = new StringBuilder();
-        for (HashMap.Entry<String, String> e : commands.entrySet()) {
-            if (e.getKey().contains(search)) {
-                res.append(e.getValue());
-                res.append("\n");
-            }
-        }
-        if (res.toString().equals("")) {
-            res.append("No results found.");
-        }
-        print(res.toString());
-    }
-
-    private static void clear(String[] args) {
-        history.clear();
-        refresh();
-        historyScroll.setVvalue(0);
-    }
-
 
     /**
      * Refreshes the JavaFX elements to display any new messages.
@@ -280,7 +122,13 @@ public class Console {
         //setting the vvalue works properly
         historyScroll.applyCss();
         historyScroll.layout();
-        historyScroll.setVvalue(2);
+        historyScroll.setVvalue(1);
+    }
+
+    public static void clear() {
+        history.clear();
+        refresh();
+        historyScroll.setVvalue(0);
     }
 
     /**
@@ -298,8 +146,6 @@ public class Console {
      * Creates the JavaFX for the Console.
      */
     public static void create() {
-        loadCommandsList();
-
         // overall containers
         scene = new Pane();
         VBox box = new VBox();
@@ -336,6 +182,7 @@ public class Console {
         historyBox.setPrefHeight(HEIGHT - 30);
         historyBox.setId("history-box");
         refresh();
+        historyScroll.setVvalue(0);
         // controls the scroll speed of the scrollpane
         historyBox.setOnScroll(e -> historyScroll.setVvalue(historyScroll.getVvalue() - e.getDeltaY() * 0.0025));
 
