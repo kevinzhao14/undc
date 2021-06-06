@@ -7,7 +7,6 @@ import undc.objects.*;
 import undc.gamestates.GameScreen;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseButton;
 
 import java.util.*;
 
@@ -446,14 +445,14 @@ public class GameController {
                                 WeaponAmmo weaponAmmo = ((RangedWeapon) item.getItem()).getAmmo();
                                 //if the weapon's ammo exists & is the same as the dropped item
                                 if (weaponAmmo != null && weaponAmmo.getProjectile() != null && weaponAmmo.getProjectile().equals(a.getProjectile())) {
-                                    int maxChange = weaponAmmo.getBackupMax() - weaponAmmo.getBackupRemaining();
+                                    int maxChange = weaponAmmo.getBackupSize() - weaponAmmo.getBackupRemaining();
                                     if (a.getAmount() <= maxChange) {
                                         weaponAmmo.setBackupRemaining(weaponAmmo.getBackupRemaining() + a.getAmount());
                                         itemPickedUp = true;
                                         room.getDroppedItems().remove(i);
                                         i--;
                                     } else {
-                                        weaponAmmo.setBackupRemaining(weaponAmmo.getBackupMax());
+                                        weaponAmmo.setBackupRemaining(weaponAmmo.getBackupSize());
                                         a.setAmount(a.getAmount() - maxChange);
                                     }
                                     continue droploop;

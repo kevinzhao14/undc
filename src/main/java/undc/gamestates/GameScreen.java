@@ -558,6 +558,9 @@ public class GameScreen extends GameState {
     }
 
     public void toggleInventory() {
+        if (!inventoryVisible) {
+            updateInventory();
+        }
         inventoryVisible = !inventoryVisible;
         inventory.setVisible(inventoryVisible);
     }

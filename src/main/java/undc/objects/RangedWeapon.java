@@ -1,5 +1,9 @@
 package undc.objects;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.gamestates.GameScreen;
 import javafx.application.Platform;
@@ -16,7 +20,7 @@ public class RangedWeapon extends Weapon {
     private boolean isReloading;
     private double delay;
 
-    public RangedWeapon(String name, String sprite, double damage, boolean droppable,
+    private RangedWeapon(String name, String sprite, double damage, boolean droppable,
                         double reloadTime, double fireRate, WeaponAmmo weaponAmmo) {
         super(name, sprite, damage, 1, droppable);
         this.reloadTime = reloadTime;
@@ -26,11 +30,9 @@ public class RangedWeapon extends Weapon {
 
         this.weaponAmmo = weaponAmmo;
     }
-    public RangedWeapon(String name, String sprite, double damage, boolean droppable,
-                        double reloadTime, double fireRate) {
-        this(name, sprite, damage, droppable, reloadTime, fireRate, null);
-        WeaponAmmo weaponAmmo = new WeaponAmmo(0, 0, null);
-        this.weaponAmmo = weaponAmmo;
+
+    private RangedWeapon() {
+
     }
 
     public RangedWeapon copy() {
@@ -64,10 +66,6 @@ public class RangedWeapon extends Weapon {
         this.weaponAmmo = weaponAmmo;
     }
 
-    public double getReloadTime() {
-        return reloadTime;
-    }
-
     public double getFireRate() {
         return fireRate;
     }
@@ -76,15 +74,44 @@ public class RangedWeapon extends Weapon {
         return isReloading;
     }
 
-    public void setReloading(boolean reloading) {
-        isReloading = reloading;
-    }
-
     public double getDelay() {
         return delay;
     }
 
     public void setDelay(double delay) {
         this.delay = delay;
+    }
+
+    static RangedWeapon parseJSON(JSONObject o) {
+        RangedWeapon weapon = new RangedWeapon();
+        try {
+            weapon.reloadTime = o.getDouble("reloadTime");
+        } catch (JSONException e) {
+            Console.error("Invalid value for ranged weapon reload time.");
+            return null;
+        }
+        try {
+            weapon.fireRate = o.getDouble("fireRate");
+        } catch (JSONException e) {
+            Console.error("Invalid value for ranged weapon fire rate.");
+            return null;
+        }
+        try {
+            weapon.damage = o.getDouble("damage");
+        } catch (JSONException e) {
+            weapon.damage = 1;
+        }
+        try {
+            weapon.attackSpeed = o.getDouble("attackSpeed");
+        } catch (JSONException e) {
+            weapon.attackSpeed = 1;
+        }
+        try {
+            weapon.weaponAmmo = WeaponAmmo.parseJSON(o.getJSONObject("ammo"));
+        } catch (JSONException e) {
+            Console.error("Invalid value for ranged weapon ammo.");
+            return null;
+        }
+        return weapon;
     }
 }

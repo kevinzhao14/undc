@@ -1,5 +1,7 @@
 package undc.objects;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import undc.controllers.*;
 import undc.gamestates.GameScreen;
 import javafx.scene.image.Image;
@@ -10,13 +12,17 @@ public class Bomb extends Item {
     private double fuse;
     private double livefuse;
 
-    public Bomb(String name, String spriteLocation, int stackSize,
+    private Bomb(String name, String spriteLocation, int stackSize,
                 double damage, double radius, double fuse) {
         super(new Image(spriteLocation), name, stackSize, true);
         this.damage = damage;
         this.radius = radius;
         this.fuse = fuse;
         livefuse = -1;
+    }
+
+    private Bomb() {
+
     }
 
     public Bomb copy() {
@@ -70,5 +76,29 @@ public class Bomb extends Item {
 
     public void setLivefuse(double livefuse) {
         this.livefuse = livefuse;
+    }
+
+    static Bomb parseJSON(JSONObject o) {
+        Bomb bomb = new Bomb();
+        try {
+            bomb.damage = o.getDouble("damage");
+        } catch (JSONException e) {
+            Console.error("Invalid value for bomb damage.");
+            return null;
+        }
+        try {
+            bomb.radius = o.getDouble("radius");
+        } catch (JSONException e) {
+            Console.error("Invalid value for bomb radius.");
+            return null;
+        }
+        try {
+            bomb.fuse = o.getDouble("fuse");
+        } catch (JSONException e) {
+            Console.error("Invalid value for bomb fuse.");
+            return null;
+        }
+        bomb.livefuse = -1;
+        return bomb;
     }
 }

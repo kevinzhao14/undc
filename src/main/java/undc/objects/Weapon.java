@@ -1,6 +1,9 @@
 package undc.objects;
 
 import javafx.scene.image.Image;
+import org.json.JSONException;
+import org.json.JSONObject;
+import undc.controllers.Console;
 
 /**
  * Class for handling all weapon types.
@@ -10,9 +13,9 @@ import javafx.scene.image.Image;
  */
 public class Weapon extends Item {
     //damage per hit
-    private double damage;
+    protected double damage;
     //number of seconds between hits
-    private double attackSpeed;
+    protected double attackSpeed;
 
     /**
      * Full constructor for a weapon.
@@ -22,7 +25,7 @@ public class Weapon extends Item {
      * @param attackSpeed Attack speed of the weapon, in seconds per attack
      * @param droppable whether Weapon is droppable or not
      */
-    public Weapon(String name, String spriteLocation, double damage, double attackSpeed,
+    private Weapon(String name, String spriteLocation, double damage, double attackSpeed,
                   boolean droppable) {
         //super(spriteLocation, name);
         super(new Image(spriteLocation), name, 1, droppable);
@@ -31,11 +34,8 @@ public class Weapon extends Item {
         this.attackSpeed = attackSpeed;
     }
 
-    /**
-     * Empty constructor for a weapon.
-     */
-    public Weapon() {
-        this("", null, 0, 0, false);
+    protected Weapon() {
+
     }
 
     public Weapon copy() {
@@ -51,5 +51,21 @@ public class Weapon extends Item {
     }
     public void use() {
 
+    }
+    static Weapon parseJSON(JSONObject o) {
+        Weapon weapon = new Weapon();
+        try {
+            weapon.damage = o.getDouble("damage");
+        } catch (JSONException e) {
+            Console.error("Invalid value for weapon damage.");
+            return null;
+        }
+        try {
+            weapon.attackSpeed = o.getDouble("attackSpeed");
+        } catch (JSONException e) {
+            Console.error("Invalid value for weapon attack speed.");
+            return null;
+        }
+        return weapon;
     }
 }

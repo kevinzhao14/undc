@@ -1,4 +1,6 @@
 package undc.objects;
+import org.json.JSONException;
+import org.json.JSONObject;
 import undc.controllers.*;
 import undc.gamestates.GameScreen;
 import javafx.scene.image.Image;
@@ -12,11 +14,15 @@ public class Potion extends Item {
     private PotionType type;
     private double modifier;
 
-    public Potion(String name, String path, int stackSize,
+    private Potion(String name, String path, int stackSize,
                   boolean isDroppable, PotionType potionType, double potionModifier) {
         super(new Image(path), name, stackSize, isDroppable);
         type = potionType;
         modifier = potionModifier;
+    }
+
+    private Potion() {
+
     }
 
     public Potion copy() {
@@ -88,5 +94,25 @@ public class Potion extends Item {
         default:
             Console.error("Potion type does not exist");
         }
+    }
+
+    static Potion parseJSON(JSONObject o) {
+        Potion potion = new Potion();
+        try {
+            potion.type = PotionType.valueOf(o.getString("potionType").toUpperCase());
+        } catch (JSONException e) {
+            Console.error("Invalid value for potion type.");
+            return null;
+        } catch (IllegalArgumentException i) {
+            Console.error("Invalid option for potion type.");
+            return null;
+        }
+        try {
+            potion.modifier = o.getDouble("amount");
+        } catch (JSONException e) {
+            Console.error("Invalid value for potion amount.");
+            return null;
+        }
+        return potion;
     }
 }

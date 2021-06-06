@@ -1,5 +1,7 @@
 package undc.controllers;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import undc.handlers.Difficulty;
 import undc.handlers.GameSettings;
 import undc.objects.Ammunition;
@@ -16,6 +18,12 @@ import undc.objects.RangedWeapon;
 import undc.objects.Weapon;
 import undc.objects.Key;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Class for storing and handling all session data.
  *
@@ -23,11 +31,11 @@ import undc.objects.Key;
  * @author Kevin Zhao
  */
 public class DataManager {
-    public static final Weapon[] WEAPONS = new Weapon[]{
-        new Weapon("Axe", "weapons/axe.png", 16, 1, false),
-        new Weapon("Mace", "weapons/mace.png", 12, 0.75, false),
-        new Weapon("Sword", "weapons/sword.png", 8, 0.5, false)
-    };
+//    public static final Weapon[] WEAPONS = new Weapon[]{
+//        new Weapon("Axe", "weapons/axe.png", 16, 1, false),
+//        new Weapon("Mace", "weapons/mace.png", 12, 0.75, false),
+//        new Weapon("Sword", "weapons/sword.png", 8, 0.5, false)
+//    };
 
     public static final Projectile[] PROJECTILES = new Projectile[] {
         new Projectile("Rocket",
@@ -35,19 +43,7 @@ public class DataManager {
                     "weapons/rocket-right.png", "weapons/rocket-down.png"},
                 25, 500.0, 400, true, 25)};
 
-    public static final Item[] ITEMS = new Item[]{
-        new Potion("Small Health Potion", "items/health-potion-small.png", 10, true,
-                PotionType.HEALTH, 25),
-        new Potion("Medium Health Potion", "items/health-potion-med.png", 10, true,
-                PotionType.HEALTH, 50),
-        new Potion("Large Health Potion", "items/health-potion-large.png", 10, true,
-                PotionType.HEALTH, 100),
-        new Potion("Attack Potion", "items/attack-potion.png", 10, true, PotionType.ATTACK, 30),
-        new Weapon("Dagger", "weapons/dagger.png", 5, 0.25, true),
-        new Bomb("Bomb", "items/bomb.png", 10, 50, 100, 3000),
-        new RangedWeapon("Rocket Launcher", "weapons/rocketlauncher.png", 4, false, 1, 1),
-        new Ammunition("Rockets", "weapons/rocket-right.png", 5, PROJECTILES[0])
-    };
+    public static final HashMap<Integer, Item> ITEMS = new HashMap<>();
 
     public static final Obstacle[] OBSTACLES = new Obstacle[] {
         new Obstacle("obstacles/boulders.png", 0, 0, 23, 17, ObstacleType.SOLID),
@@ -159,5 +155,34 @@ public class DataManager {
      */
     public Weapon getWeapon() {
         return weapon;
+    }
+
+    public static void load() {
+
+    }
+
+    public static boolean loadItems() {
+        String file;
+        try {
+            file = Files.readString(Paths.get("data/items.json"));
+        } catch (IOException e) {
+            Console.error("Failed to load items.");
+            return false;
+        }
+        JSONObject obj = new JSONObject(file);
+        JSONArray items = obj.getJSONArray("items");
+        for (int i = 0; i < items.length(); i++) {
+            JSONObject o = items.getJSONObject(i);
+            Item item = Item.parse(o);
+            if (item == null) {
+                return false;
+            }
+            if (ITEMS.containsKey(item.getId())) {
+                Console.error("Invalid item ID: " + item.getId());
+                return false;
+            }
+            ITEMS.put(item.getId(), item);
+        }
+        return true;
     }
 }

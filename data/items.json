@@ -1,0 +1,131 @@
+{
+  "projectiles": [
+    {
+      "id": 0,
+      "type": "projectile",
+      "name": "Rocket",
+      "sprites": [
+        "weapons/rocket-left.png",
+        "weapons/rocket-up.png",
+        "weapons/rocket-right.png",
+        "weapons/rocket-down.png"
+      ],
+      "damage": 25,
+      "speed": 500,
+      "range": 400,
+      "splash": true,
+      "splashRange": 25,
+      "droppable": true
+    }
+  ],
+  "items": [
+    {
+      "id": 0,
+      "type": "weapon",
+      "name": "Axe",
+      "sprite": "weapons/axe.png",
+      "damage": 16,
+      "attackSpeed": 1
+    },
+    {
+      "id": 1,
+      "type": "weapon",
+      "name": "Mace",
+      "sprite": "weapons/mace.png",
+      "damage": 12,
+      "attackSpeed": 0.75
+    },
+    {
+      "id": 2,
+      "type": "weapon",
+      "name": "Sword",
+      "sprite": "weapons/sword.png",
+      "damage": 8,
+      "attackSpeed": 0.5
+    },
+    {
+      "id": 3,
+      "type": "potion",
+      "name": "Small Health Potion",
+      "sprite": "items/health-potion-small.png",
+      "stackSize": 10,
+      "potionType": "health",
+      "amount": 25,
+      "droppable": true
+    },
+    {
+      "id": 4,
+      "type": "potion",
+      "name": "Medium Health Potion",
+      "sprite": "items/health-potion-med.png",
+      "stackSize": 10,
+      "potionType": "health",
+      "amount": 50,
+      "droppable": true
+    },
+    {
+      "id": 5,
+      "type": "potion",
+      "name": "Large Health Potion",
+      "sprite": "items/health-potion-large.png",
+      "stackSize": 10,
+      "potionType": "health",
+      "amount": 100,
+      "droppable": true
+    },
+    {
+      "id": 6,
+      "type": "potion",
+      "name": "Attack Potion",
+      "sprite": "items/attack-potion.png",
+      "stackSize": 10,
+      "potionType": "attack",
+      "amount": 30,
+      "droppable": true
+    },
+    {
+      "id": 7,
+      "type": "weapon",
+      "name": "Dagger",
+      "sprite": "weapons/dagger.png",
+      "damage": 5,
+      "attackSpeed": 0.25,
+      "droppable": true
+    },
+    {
+      "id": 8,
+      "type": "bomb",
+      "name": "Bomb",
+      "sprite": "items/bomb.png",
+      "stackSize": 10,
+      "damage": 50,
+      "radius": 100,
+      "fuse": 3000,
+      "droppable": true
+    },
+    {
+      "id": 9,
+      "type": "rangedweapon",
+      "name": "Rocket Launcher",
+      "sprite": "weapons/rocketlauncher.png",
+      "damage": 4,
+      "reloadTime": 1,
+      "fireRate": 1,
+      "droppable": true,
+      "ammo": {
+        "projectile": 0,
+        "size": 2,
+        "backupSize": 40
+      }
+    },
+    {
+      "id": 10,
+      "type": "ammunition",
+      "name": "Rockets",
+      "sprite": "weapons/rocket-right.png",
+      "amount": 5,
+      "projectile": 0,
+      "droppable": true
+    }
+  ]
+}
