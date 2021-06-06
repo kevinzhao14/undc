@@ -1,27 +1,21 @@
 package undc.controllers;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import undc.handlers.Difficulty;
-import undc.handlers.GameSettings;
-import undc.objects.Ammunition;
-import undc.objects.Bomb;
 import undc.objects.Item;
 import undc.objects.Monster;
 import undc.objects.MonsterType;
 import undc.objects.Obstacle;
 import undc.objects.ObstacleType;
-import undc.objects.Potion;
-import undc.objects.PotionType;
 import undc.objects.Projectile;
-import undc.objects.RangedWeapon;
 import undc.objects.Weapon;
 import undc.objects.Key;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -31,11 +25,7 @@ import java.util.HashMap;
  * @author Kevin Zhao
  */
 public class DataManager {
-//    public static final Weapon[] WEAPONS = new Weapon[]{
-//        new Weapon("Axe", "weapons/axe.png", 16, 1, false),
-//        new Weapon("Mace", "weapons/mace.png", 12, 0.75, false),
-//        new Weapon("Sword", "weapons/sword.png", 8, 0.5, false)
-//    };
+    public static final Weapon[] WEAPONS = new Weapon[0];
 
     public static final Projectile[] PROJECTILES = new Projectile[] {
         new Projectile("Rocket",
@@ -51,8 +41,6 @@ public class DataManager {
         new Obstacle("obstacles/ruin2.png", 0, 0, 31, 18, ObstacleType.SOLID)
     };
 
-    public static final Key EXITKEY = new Key("Special Key", "items/key.png", true);
-
     public static final Monster[] MONSTERS = new Monster[]{
         new Monster(20, 4, 150.0, 0.5, MonsterType.FAST, 11, 9),
         new Monster(40, 5, 100.0, 0.75, MonsterType.NORMAL, 24, 12),
@@ -64,6 +52,8 @@ public class DataManager {
     public static final String EXPLOSION = "textures/boom.gif";
 
     private static boolean unlockedAmmo = false;
+    private static Key exitKey;
+    private static Weapon[] startingWeapons;
 
     private String username;
     private Difficulty difficulty;
@@ -76,6 +66,7 @@ public class DataManager {
         username = "";
         difficulty = null;
         weapon = null;
+        loadItems();
     }
 
     public static boolean isUnlockedAmmo() {
@@ -116,7 +107,7 @@ public class DataManager {
          * 2 -
          */
         boolean validWeapon = false;
-        for (Weapon w : WEAPONS) {
+        for (Weapon w : startingWeapons) {
             if (weapon == w) {
                 validWeapon = true;
                 break;
@@ -149,16 +140,20 @@ public class DataManager {
         return difficulty;
     }
 
+    public static Key getExitKey() {
+        return exitKey;
+    }
+
+    public static Weapon[] getStartingWeapons() {
+        return startingWeapons;
+    }
+
     /**
      * Getter for the weapon.
      * @return The weapon
      */
     public Weapon getWeapon() {
         return weapon;
-    }
-
-    public static void load() {
-
     }
 
     public static boolean loadItems() {
@@ -183,6 +178,45 @@ public class DataManager {
             }
             ITEMS.put(item.getId(), item);
         }
+
+        // load the exit key
+        try {
+            int exitkeyid = obj.getInt("exitkey");
+            if (!(ITEMS.get(exitkeyid) instanceof Key)) {
+                Console.error("Invalid type for exit key.");
+                return false;
+            }
+            exitKey = (Key) ITEMS.get(exitKey);
+        } catch(JSONException e) {
+            Console.error("Invalid value for exit key.");
+            return false;
+        }
+
+        // load the starting weapons
+        JSONArray sw;
+        try {
+            sw = obj.getJSONArray("startingWeapons");
+        } catch (JSONException e) {
+            Console.error("Invalid value for starting weapons.");
+            return false;
+        }
+        Weapon[] weapons = new Weapon[sw.length()];
+        for (int i = 0; i < sw.length(); i++) {
+            try {
+                int wid = sw.getInt(i);
+                if (!(ITEMS.get(wid) instanceof Weapon)) {
+                    Console.error("Invalid type for starting weapon " + i + ".");
+                    return false;
+                }
+                Weapon weapon = (Weapon) ITEMS.get(wid);
+                weapons[i] = weapon;
+            } catch (JSONException e) {
+                Console.error("Invalid starting weapon " + i + ".");
+                return false;
+            }
+        }
+        startingWeapons = weapons;
+
         return true;
     }
 }

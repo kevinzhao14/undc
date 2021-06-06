@@ -1,10 +1,15 @@
 package undc.objects;
 import javafx.scene.image.Image;
+import org.json.JSONObject;
 
 public class Key extends Item {
-    public Key(String name, String path, boolean isDroppable) {
+    private Key(String name, String path, boolean isDroppable) {
         //note: keys are not stackable
-        super(new Image(path), name, 0, isDroppable);
+        super(11, new Image(path), name, 0, isDroppable);
+    }
+
+    private Key() {
+
     }
 
     public Item copy() {
@@ -14,5 +19,10 @@ public class Key extends Item {
     //does nothing
     public void use() {
         return;
+    }
+
+    static Key parseJSON(JSONObject o) {
+        Key key = new Key();
+        return key;
     }
 }

@@ -15,6 +15,8 @@ import undc.objects.Obstacle;
 import undc.objects.RangedWeapon;
 import undc.objects.Room;
 import undc.objects.RoomType;
+
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -68,27 +70,27 @@ public class LayoutGenerator {
 
     public LayoutGenerator() {
         //set challenge rooms
-        Item[] items = DataManager.ITEMS;
+        HashMap<Integer, Item> items = DataManager.ITEMS;
         cr1Rewards = new Inventory(2, 5);
-        RangedWeapon rl = ((RangedWeapon) items[6]).copy();
+        RangedWeapon rl = ((RangedWeapon) items.get(9)).copy();
         WeaponAmmo weaponAmmo = new WeaponAmmo(2, 50, DataManager.PROJECTILES[0].copy());
         weaponAmmo.setRemaining(2);
         weaponAmmo.setBackupRemaining(20);
         rl.setAmmo(weaponAmmo);
 
-        cr1Rewards.add(items[2], 1);
-        cr1Rewards.add(items[3], 1);
-        cr1Rewards.add(items[5], 2);
-        cr1Rewards.add(rl, 1);
+        cr1Rewards.add(items.get(5), 1); // large health potion
+        cr1Rewards.add(items.get(6), 1); // attack potion
+        cr1Rewards.add(items.get(8), 2); // bomb
+        cr1Rewards.add(rl, 1); //rocket launcher
 
         cr2Rewards = new Inventory(2, 5);
-        cr2Rewards.add(items[0], 3);
-        cr2Rewards.add(items[1], 2);
-        cr2Rewards.add(items[2], 1);
-        cr2Rewards.add(items[3], 2);
-        cr2Rewards.add(items[4], 1);
-        cr2Rewards.add(items[5], 3);
-        Ammunition rockets = (Ammunition) items[7].copy();
+        cr2Rewards.add(items.get(3), 3); // small health potion
+        cr2Rewards.add(items.get(4), 2); // medium health potion
+        cr2Rewards.add(items.get(5), 1); // large health potion
+        cr2Rewards.add(items.get(6), 2); // attack potion
+        cr2Rewards.add(items.get(7), 1); // dagger
+        cr2Rewards.add(items.get(8), 3); // bomb
+        Ammunition rockets = (Ammunition) items.get(10).copy(); // ammunition
         rockets.setAmount(20);
         cr2Rewards.add(rockets);
     }

@@ -55,7 +55,7 @@ public class GameScreen extends GameState {
 
     public void newGame(GameMode mode) {
         if (mode == GameMode.SANDBOX) {
-            Controller.getDataManager().newGame("example", Difficulty.EASY, DataManager.WEAPONS[0]);
+            Controller.getDataManager().newGame("example", Difficulty.EASY, DataManager.getStartingWeapons()[0]);
 
             Room start = new Room(SANDBOX_HEIGHT,SANDBOX_WIDTH, (int) ((SANDBOX_WIDTH - Vars.i("sv_player_width")) / 2.0),
                     (int) (SANDBOX_HEIGHT / 2.0 - Vars.i("sv_player_height")), RoomType.STARTROOM);

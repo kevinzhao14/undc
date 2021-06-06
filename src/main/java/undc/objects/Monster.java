@@ -120,7 +120,7 @@ public class Monster extends Entity {
                         if (itemRow != null) {
                             for (InventoryItem item : itemRow) {
                                 if (item != null) {
-                                    if (item.getItem().equals(DataManager.ITEMS[6])) {
+                                    if (item.getItem().equals(DataManager.ITEMS.get(9))) {
                                         DataManager.setUnlockedAmmo(true);
                                     }
                                     for (int i = 0; i < item.getQuantity(); i++) {
@@ -130,7 +130,7 @@ public class Monster extends Entity {
                                         newItem.setWidth(width);
                                         newItem.setHeight(height);
 
-                                        double maxRadius = Vars.i("sv_player_pickup_range") * 1;
+                                        double maxRadius = Vars.i("sv_player_pickup_range");
                                         Random generator = new Random();
                                         Player player = screen.getPlayer();
                                         double x = 0;
@@ -182,11 +182,11 @@ public class Monster extends Entity {
     }
 
     public DroppedItem[] dropItems() {
-        if (Controller.getDataManager().ITEMS.length == 0 && type != MonsterType.FINALBOSS) {
+        if (DataManager.ITEMS.size() == 0 && type != MonsterType.FINALBOSS) {
             return new DroppedItem[0];
         }
         if (type == MonsterType.FINALBOSS) {
-            Item key = Controller.getDataManager().EXITKEY.copy();
+            Item key = DataManager.getExitKey().copy();
             Image sprite = key.getSprite();
             double x = getX() + getWidth() / 2 - sprite.getWidth() / 2;
             double y = getY() + getHeight() / 2 - sprite.getHeight() / 2;
@@ -218,15 +218,15 @@ public class Monster extends Entity {
         for (int i = 0; i < numItems; i++) {
             isValidLocation = false; //reset flag
 
-            randIdx = generator.nextInt(DataManager.ITEMS.length);
+            randIdx = generator.nextInt(DataManager.ITEMS.size());
 
             //keep generating a new index until a droppable item is found
-            while (!DataManager.ITEMS[randIdx].isDroppable() || (DataManager.ITEMS[randIdx]
-                    instanceof Ammunition && !DataManager.isUnlockedAmmo())) {
-                randIdx = generator.nextInt(DataManager.ITEMS.length);
+            Item item = DataManager.ITEMS.get(randIdx);
+            while (!item.isDroppable() || (item instanceof Ammunition && !DataManager.isUnlockedAmmo())) {
+                randIdx = generator.nextInt(DataManager.ITEMS.size());
             }
 
-            droppedItems[i] = new DroppedItem(DataManager.ITEMS[randIdx].copy());
+            droppedItems[i] = new DroppedItem(item.copy());
 
             //Set width and height
             droppedItems[i].setWidth(droppedItems[i].getItem().getSprite().getWidth());

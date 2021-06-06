@@ -12,22 +12,17 @@ public class Bomb extends Item {
     private double fuse;
     private double livefuse;
 
-    private Bomb(String name, String spriteLocation, int stackSize,
-                double damage, double radius, double fuse) {
-        super(new Image(spriteLocation), name, stackSize, true);
-        this.damage = damage;
-        this.radius = radius;
-        this.fuse = fuse;
+    private Bomb() {
         livefuse = -1;
     }
 
-    private Bomb() {
-
-    }
-
     public Bomb copy() {
-        return new Bomb(getName(), getSprite().getUrl(), getMaxStackSize(),
-                damage, radius, fuse);
+        Bomb bomb = new Bomb();
+        copy(bomb);
+        bomb.damage = this.damage;
+        bomb.radius = this.radius;
+        bomb.fuse = this.fuse;
+        return bomb;
     }
     public void use() {
         GameScreen screen = (GameScreen) Controller.getState();

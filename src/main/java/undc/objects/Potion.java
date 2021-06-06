@@ -14,20 +14,16 @@ public class Potion extends Item {
     private PotionType type;
     private double modifier;
 
-    private Potion(String name, String path, int stackSize,
-                  boolean isDroppable, PotionType potionType, double potionModifier) {
-        super(new Image(path), name, stackSize, isDroppable);
-        type = potionType;
-        modifier = potionModifier;
-    }
-
     private Potion() {
 
     }
 
     public Potion copy() {
-        return new Potion(getName(), getSprite().getUrl(), getMaxStackSize(),
-                isDroppable(), type, modifier);
+        Potion potion = new Potion();
+        copy(potion);
+        potion.type = this.type;
+        potion.modifier = this.modifier;
+        return potion;
     }
 
     public PotionType getType() {

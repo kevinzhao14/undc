@@ -10,11 +10,11 @@ import undc.controllers.Console;
  * @author Manas Harbola
  */
 public abstract class Item {
-    private int id;
-    private Image sprite;
-    private String name;
-    private int maxStackSize;
-    private boolean droppable;
+    protected int id;
+    protected Image sprite;
+    protected String name;
+    protected int maxStackSize;
+    protected boolean droppable;
 
     protected Item() {
 
@@ -33,6 +33,15 @@ public abstract class Item {
     }
 
     public abstract Item copy();
+
+    protected void copy(Item copy) {
+        copy.id = -this.id;
+        copy.sprite = this.sprite;
+        copy.name = this.name;
+        copy.maxStackSize = this.maxStackSize;
+        copy.droppable = this.droppable;
+    }
+
     public abstract void use();
 
     public void setSprite(Image img) {
@@ -128,6 +137,9 @@ public abstract class Item {
             case "ammunition":
                 item = Ammunition.parseJSON(o);
                 break;
+            case "key":
+                item = Key.parseJSON(o);
+                break;
             default:
                 Console.error("Invalid item type.");
                 return null;
@@ -142,6 +154,7 @@ public abstract class Item {
         item.sprite = new Image(sprite);
         item.maxStackSize = stackSize;
         item.droppable = droppable;
+
         return item;
     }
 

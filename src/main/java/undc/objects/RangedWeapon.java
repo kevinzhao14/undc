@@ -3,6 +3,7 @@ package undc.objects;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.ranges.Range;
 import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.gamestates.GameScreen;
@@ -20,25 +21,18 @@ public class RangedWeapon extends Weapon {
     private boolean isReloading;
     private double delay;
 
-    private RangedWeapon(String name, String sprite, double damage, boolean droppable,
-                        double reloadTime, double fireRate, WeaponAmmo weaponAmmo) {
-        super(name, sprite, damage, 1, droppable);
-        this.reloadTime = reloadTime;
-        this.fireRate = fireRate;
+    private RangedWeapon() {
         isReloading = false;
         delay = 0;
-
-        this.weaponAmmo = weaponAmmo;
-    }
-
-    private RangedWeapon() {
-
     }
 
     public RangedWeapon copy() {
-        RangedWeapon nw = new RangedWeapon(getName(), getSprite().getUrl(), getDamage(),
-                isDroppable(), reloadTime, fireRate, weaponAmmo.copy());
-        return nw;
+        RangedWeapon weapon = new RangedWeapon();
+        copy(weapon);
+        weapon.weaponAmmo = this.weaponAmmo.copy();
+        weapon.reloadTime = this.reloadTime;
+        weapon.fireRate = this.fireRate;
+        return weapon;
     }
 
     public void reload() {

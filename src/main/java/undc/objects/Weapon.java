@@ -17,29 +17,16 @@ public class Weapon extends Item {
     //number of seconds between hits
     protected double attackSpeed;
 
-    /**
-     * Full constructor for a weapon.
-     * @param name Name of the weapon
-     * @param spriteLocation Sprite of the weapon
-     * @param damage Damage dealt per hit
-     * @param attackSpeed Attack speed of the weapon, in seconds per attack
-     * @param droppable whether Weapon is droppable or not
-     */
-    private Weapon(String name, String spriteLocation, double damage, double attackSpeed,
-                  boolean droppable) {
-        //super(spriteLocation, name);
-        super(new Image(spriteLocation), name, 1, droppable);
-        //this.sprite = spriteLocation == null ? null : new ImageView(spriteLocation);
-        this.damage = damage;
-        this.attackSpeed = attackSpeed;
-    }
-
     protected Weapon() {
 
     }
 
     public Weapon copy() {
-        return new Weapon(getName(), getSprite().getUrl(), damage, attackSpeed, isDroppable());
+        Weapon weapon = new Weapon();
+        copy(weapon);
+        weapon.damage = this.damage;
+        weapon.attackSpeed = this.attackSpeed;
+        return weapon;
     }
 
     public double getAttackSpeed() {

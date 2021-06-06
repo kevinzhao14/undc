@@ -1,6 +1,5 @@
 package undc.objects;
 
-import javafx.scene.image.Image;
 import org.json.JSONException;
 import org.json.JSONObject;
 import undc.controllers.Console;
@@ -10,21 +9,17 @@ public class Ammunition extends Item {
     private int amount;
     private Projectile projectile;
 
-    private Ammunition(String name, String sprite, int amount, Projectile projectile) {
-        super(sprite == null ? null : new Image(sprite), name, 1, true);
-        this.amount = amount;
-        this.projectile = projectile;
-    }
-
     private Ammunition() {
 
     }
 
     @Override
     public Item copy() {
-        Ammunition n = new Ammunition(getName(), null, amount, projectile);
-        n.setSprite(getSprite());
-        return n;
+        Ammunition ammo = new Ammunition();
+        copy(ammo);
+        ammo.amount = amount;
+        ammo.projectile = this.projectile;
+        return ammo;
     }
 
     @Override

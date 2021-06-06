@@ -939,7 +939,7 @@ public class GameController {
 
                 //if next room is the exit, don't let player go through unless they have key
                 if (room.getType() == RoomType.EXITROOM && d instanceof ExitDoor) {
-                    return player.getInventory().contains(DataManager.EXITKEY);
+                    return player.getInventory().contains(DataManager.getExitKey());
 
                     // if in challenge room, don't let player leave if not completed
                 } else if (room instanceof ChallengeRoom && !((ChallengeRoom) room).isCompleted()) {

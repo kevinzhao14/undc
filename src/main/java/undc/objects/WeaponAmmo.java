@@ -28,6 +28,12 @@ public class WeaponAmmo {
     }
 
     public WeaponAmmo copy() {
+        WeaponAmmo ammo = new WeaponAmmo();
+        ammo.projectile = this.projectile;
+        ammo.size = this.size;
+        ammo.remaining = this.remaining;
+        ammo.backupSize = this.backupSize;
+        ammo.backupRemaining = this.backupRemaining;
         return new WeaponAmmo(size, backupSize, projectile != null ? projectile.copy() : null);
     }
 

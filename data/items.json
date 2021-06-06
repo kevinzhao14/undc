@@ -1,4 +1,6 @@
 {
+  "exitkey": 11,
+  "startingWeapons": [0,1,2],
   "projectiles": [
     {
       "id": 0,
@@ -125,6 +127,13 @@
       "sprite": "weapons/rocket-right.png",
       "amount": 5,
       "projectile": 0,
+      "droppable": true
+    },
+    {
+      "id": 11,
+      "type": "key",
+      "name": "Special Key",
+      "sprite": "items/key.png",
       "droppable": true
     }
   ]
