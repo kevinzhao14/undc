@@ -167,12 +167,12 @@ public class RoomRenderer {
         if (room.getMonsters() != null) {
             for (Monster m : room.getMonsters()) {
                 if (m != null && (m.getHealth() > 0 || m.getOpacity() > 0)) {
-                    h = getPx(m.getHeight() / m.getSpriteHeight());
-                    w = getPx(m.getWidth() / m.getSpriteWidth());
+                    h = getPx(m.getHeight());
+                    w = getPx(m.getWidth());
                     x = getPx(m.getX());
                     y = getPx(room.getHeight() - m.getY() - m.getHeight());
                     gc.setGlobalAlpha(m.getOpacity());
-                    drawImg(gc, m.getImage(), h, w, x, y);
+                    drawImg(gc, m.getSprite(), h, w, x, y);
                     int hbh = Vars.i("gc_healthbar_height");
                     drawHealthbar(gc, hbh, w, x, y - hbh - 10, m.getHealth() / m.getMaxHealth());
                     if (m.getOpacity() < 1) {
@@ -209,7 +209,7 @@ public class RoomRenderer {
             y = getPx(room.getHeight() - player.getY() - player.getHeight() * 2);
             h = getPx(player.getHeight() * 2);
             w = getPx(player.getWidth());
-            img = player.getImage();
+            img = player.getSprite();
             drawImg(gc, img, h, w, x, y);
         }
     }

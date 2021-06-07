@@ -3,9 +3,14 @@ package undc.controllers;
 import undc.handlers.Controls;
 import undc.handlers.Vars;
 import undc.objects.CVar;
+import undc.objects.Item;
+import undc.objects.Monster;
+import undc.objects.Obstacle;
+import undc.objects.Projectile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 class Command {
     String name;
@@ -48,7 +53,7 @@ class Command {
         commands.add(new Command("reset", "<cvar>", "Resets a cvar.", Command::reset));
         commands.add(new Command("clear", "", "Clears the console.", Command::clear));
         commands.add(new Command("quit", "", "Quits the game.", Command::quit));
-        commands.add(new Command("get", "<cvar>", "TEST", Command::get));
+        commands.add(new Command("test", "", "TEST", Command::test));
 
         //add cvars
         for (CVar v : Vars.all()) {
@@ -93,6 +98,22 @@ class Command {
      *      - String[] args: arguments passed after the command, eg {key, command} in "bind <key> <command>"
      *
      */
+
+    private static void test(String[] args) {
+        for (HashMap.Entry<Integer, Item> e : DataManager.ITEMS.entrySet()) {
+            System.out.println(e.getValue());
+        }
+        for (HashMap.Entry<Integer, Monster> e : DataManager.MONSTERS.entrySet()) {
+            System.out.println(e.getValue());
+        }
+        for (HashMap.Entry<Integer, Projectile> e : DataManager.PROJECTILES.entrySet()) {
+            System.out.println(e.getValue());
+        }
+        for (HashMap.Entry<Integer, Obstacle> e : DataManager.OBSTACLES.entrySet()) {
+            System.out.println(e.getValue());
+        }
+
+    }
 
     private static void echo(String[] args) {
         if (args.length != 1) {
@@ -198,6 +219,4 @@ class Command {
         Controller.quit();
     }
 
-    private static void get(String[] args) {
-    }
 }

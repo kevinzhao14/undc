@@ -34,7 +34,7 @@ public class WeaponAmmo {
         ammo.remaining = this.remaining;
         ammo.backupSize = this.backupSize;
         ammo.backupRemaining = this.backupRemaining;
-        return new WeaponAmmo(size, backupSize, projectile != null ? projectile.copy() : null);
+        return ammo;
     }
 
     public int getSize() {
@@ -68,7 +68,7 @@ public class WeaponAmmo {
     static WeaponAmmo parseJSON(JSONObject o) {
         WeaponAmmo ammo = new WeaponAmmo();
         try {
-            ammo.projectile = DataManager.PROJECTILES[o.getInt("projectile")];
+            ammo.projectile = DataManager.PROJECTILES.get(o.getInt("projectile"));
         } catch(JSONException e) {
             Console.error("Invalid value for weapon ammo projectile.");
             return null;

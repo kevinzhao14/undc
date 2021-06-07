@@ -2,6 +2,7 @@ package undc.objects;
 
 
 import javafx.scene.image.Image;
+import org.json.JSONObject;
 
 /**
  * Implementation of the Entity abstract class
@@ -11,27 +12,41 @@ import javafx.scene.image.Image;
  */
 
 public abstract class Entity implements Movable {
-    private int maxHealth;
-    private double health;
-    private double attack;
-    private double height;
-    private double width;
+    protected int maxHealth;
+    protected double health;
+    protected double attack;
+    protected Image sprite;
+    protected double height;
+    protected double width;
     private double posX;
     private double posY;
     private double attackCooldown;
-    private Image node;
-    private double spriteWidth;
-    private double spriteHeight;
 
-    public Entity(int maxHealth, double attack, double height, double width, String node) {
+    public Entity(int maxHealth, double attack, double height, double width, String sprite) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.attack = attack;
         this.height = height;
         this.width = width;
-        this.node = (node == null) ? null : new Image(node);
-        this.spriteHeight = 1;
-        this.spriteWidth = 1;
+        this.sprite = (sprite == null) ? null : new Image(sprite);
+    }
+
+    protected Entity() {
+        posX = 0;
+        posY = 0;
+        attackCooldown = 0;
+    }
+
+    protected void copy(Entity copy) {
+        copy.maxHealth = this.maxHealth;
+        copy.health = this.health;
+        copy.attack = this.attack;
+        copy.height = this.height;
+        copy.width = this.width;
+        copy.posX = this.posX;
+        copy.posY = this.posY;
+        copy.attackCooldown = 0;
+        copy.sprite = this.sprite;
     }
 
     public int getMaxHealth() {
@@ -82,28 +97,20 @@ public abstract class Entity implements Movable {
         this.attackCooldown = attackCooldown;
     }
 
-    public void setNode(String node) {
-        this.node = new Image(node);
+    public void setSprite(String spriteUrl) {
+        this.sprite = new Image(spriteUrl);
     }
 
-    public Image getImage() {
-        return node;
+    public void setSprite(Image sprite) {
+        this.sprite = sprite;
     }
 
-    public void setImage(Image image) {
-        this.node = image;
+    public Image getSprite() {
+        return sprite;
     }
 
     public String toString() {
         return "HP: " + health + "/" + maxHealth + " | Pos: " + posX + ", " + posY + " | Size: "
-                + height + ", " + width + " | Node: " + node;
-    }
-
-    public double getSpriteWidth() {
-        return spriteWidth;
-    }
-
-    public double getSpriteHeight() {
-        return spriteHeight;
+                + height + ", " + width;
     }
 }

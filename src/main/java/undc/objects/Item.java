@@ -70,7 +70,8 @@ public abstract class Item {
     }
 
     public String toString() {
-        return name + " " + (droppable ? "droppable" : "not droppable") + ", " + maxStackSize;
+        return "ID: " + id + " | Name: " + name + " | D: " + (droppable ? "droppable" : "not droppable")
+                + " | Stack: " + maxStackSize;
     }
 
     public int getId() {
@@ -156,19 +157,5 @@ public abstract class Item {
         item.droppable = droppable;
 
         return item;
-    }
-
-    private static boolean tc(TcObj o, String str) {
-        try {
-            o.run();
-            return true;
-        } catch (JSONException e) {
-            Console.error("Invalid value for " + str + ".");
-            return false;
-        }
-    }
-
-    private abstract class TcObj {
-        public abstract void run();
     }
 }

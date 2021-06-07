@@ -71,7 +71,7 @@ public class ShotProjectile implements Movable {
         }
 
         //splash damage
-        if (projectile.isMulti()) {
+        if (projectile.isSplash()) {
             for (Monster m : room.getMonsters()) {
                 if (m == e) {
                     continue;

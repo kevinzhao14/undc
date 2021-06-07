@@ -1,10 +1,10 @@
 {
   "exitkey": 11,
   "startingWeapons": [0,1,2],
+  "finalboss": 3,
   "projectiles": [
     {
       "id": 0,
-      "type": "projectile",
       "name": "Rocket",
       "sprites": [
         "weapons/rocket-left.png",
@@ -16,8 +16,79 @@
       "speed": 500,
       "range": 400,
       "splash": true,
-      "splashRange": 25,
-      "droppable": true
+      "splashRange": 25
+    }
+  ],
+  "monsters": [
+    {
+      "id": 0,
+      "name": "Fast Monster",
+      "health": 20,
+      "attack": 4,
+      "speed": 150,
+      "attackSpeed": 0.5,
+      "type": "fast",
+      "height": 11,
+      "width": 9
+    },
+    {
+      "id": 1,
+      "name": "Normal Monster",
+      "health": 40,
+      "attack": 5,
+      "speed": 100,
+      "attackSpeed": 0.75,
+      "type": "normal",
+      "height": 24,
+      "width": 12
+    },
+    {
+      "id": 2,
+      "name": "Tank Monster",
+      "health": 80,
+      "attack": 10,
+      "speed": 50,
+      "attackSpeed": 2,
+      "type": "tank",
+      "height": 21,
+      "width": 31
+    },
+    {
+      "id": 3,
+      "name": "Final Boss",
+      "health": 200,
+      "attack": 15,
+      "speed": 100,
+      "attackSpeed": 1,
+      "type": "finalboss",
+      "height": 48,
+      "width": 48
+    }
+  ],
+  "obstacles": [
+    {
+      "id": 0,
+      "name": "Boulders",
+      "type": "solid",
+      "sprite": "obstacles/boulders.png",
+      "width": 23,
+      "height": 17
+    },
+    {
+      "id": 1,
+      "name": "Small Ruins",
+      "type": "solid",
+      "sprite": "obstacles/ruin1.png",
+      "width": 10,
+      "height": 11
+    },
+    {
+      "id": 2,
+      "name": "Large Ruins",
+      "type": "solid",
+      "sprite": "obstacles/ruin2.png",
+      "width": 31,
+      "height": 18
     }
   ],
   "items": [

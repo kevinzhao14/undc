@@ -25,35 +25,20 @@ import java.util.HashMap;
  * @author Kevin Zhao
  */
 public class DataManager {
-    public static final Weapon[] WEAPONS = new Weapon[0];
-
-    public static final Projectile[] PROJECTILES = new Projectile[] {
-        new Projectile("Rocket",
-                new String[]{"weapons/rocket-left.png", "weapons/rocket-up.png",
-                    "weapons/rocket-right.png", "weapons/rocket-down.png"},
-                25, 500.0, 400, true, 25)};
+    public static final HashMap<Integer, Projectile> PROJECTILES = new HashMap<>();
 
     public static final HashMap<Integer, Item> ITEMS = new HashMap<>();
 
-    public static final Obstacle[] OBSTACLES = new Obstacle[] {
-        new Obstacle("obstacles/boulders.png", 0, 0, 23, 17, ObstacleType.SOLID),
-        new Obstacle("obstacles/ruin1.png", 0, 0, 10, 11, ObstacleType.SOLID),
-        new Obstacle("obstacles/ruin2.png", 0, 0, 31, 18, ObstacleType.SOLID)
-    };
+    public static final HashMap<Integer, Obstacle> OBSTACLES = new HashMap<>();
 
-    public static final Monster[] MONSTERS = new Monster[]{
-        new Monster(20, 4, 150.0, 0.5, MonsterType.FAST, 11, 9),
-        new Monster(40, 5, 100.0, 0.75, MonsterType.NORMAL, 24, 12),
-        new Monster(80, 10, 50.0, 2, MonsterType.TANK, 21, 31)
-    };
+    public static final HashMap<Integer, Monster> MONSTERS = new HashMap<>();
 
-    public static final Monster FINALBOSS = new Monster(200, 15, 100.0, 1.0,
-            MonsterType.FINALBOSS, 48, 48);
     public static final String EXPLOSION = "textures/boom.gif";
 
     private static boolean unlockedAmmo = false;
     private static Key exitKey;
     private static Weapon[] startingWeapons;
+    private static Monster finalBoss;
 
     private String username;
     private Difficulty difficulty;
@@ -66,7 +51,7 @@ public class DataManager {
         username = "";
         difficulty = null;
         weapon = null;
-        loadItems();
+        load();
     }
 
     public static boolean isUnlockedAmmo() {
@@ -148,6 +133,10 @@ public class DataManager {
         return startingWeapons;
     }
 
+    public static Monster getFinalBoss() {
+        return finalBoss;
+    }
+
     /**
      * Getter for the weapon.
      * @return The weapon
@@ -156,15 +145,87 @@ public class DataManager {
         return weapon;
     }
 
-    public static boolean loadItems() {
+    private static void load() {
         String file;
         try {
-            file = Files.readString(Paths.get("data/items.json"));
+            file = Files.readString(Paths.get("data/data.json"));
         } catch (IOException e) {
             Console.error("Failed to load items.");
-            return false;
+            //TODO: stop game
+            return;
         }
         JSONObject obj = new JSONObject(file);
+        if (!loadProjectiles(obj) || !loadMonsters(obj) || !loadObstacles(obj) || !loadItems(obj)) {
+            //TODO: stop game
+            return;
+        }
+    }
+
+    private static boolean loadProjectiles(JSONObject obj) {
+        JSONArray projectiles = obj.getJSONArray("projectiles");
+        for (int i = 0; i < projectiles.length(); i++) {
+            JSONObject o = projectiles.getJSONObject(i);
+            Projectile proj = Projectile.parse(o);
+            if (proj == null) {
+                return false;
+            }
+            if (PROJECTILES.containsKey(proj.getId())) {
+                Console.error("Duplicate projectile id " + proj.getId());
+                return false;
+            }
+            PROJECTILES.put(proj.getId(), proj);
+        }
+        return true;
+    }
+
+    private static boolean loadMonsters(JSONObject obj) {
+        JSONArray monsters = obj.getJSONArray("monsters");
+        for (int i = 0; i < monsters.length(); i++) {
+            JSONObject o = monsters.getJSONObject(i);
+            Monster monster = Monster.parse(o);
+            if (monster == null) {
+                return false;
+            }
+            if (MONSTERS.containsKey(monster.getId())) {
+                Console.error("Duplicate monster id " + monster.getId());
+                return false;
+            }
+            MONSTERS.put(monster.getId(), monster);
+        }
+
+        // load the final boss
+        try {
+            int finalbossid = obj.getInt("finalboss");
+            if (MONSTERS.get(finalbossid) == null) {
+                Console.error("Invalid final boss id.");
+                return false;
+            }
+            finalBoss = MONSTERS.get(finalbossid);
+        } catch (JSONException e) {
+            Console.error("Invalid value for final boss.");
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean loadObstacles(JSONObject obj) {
+        JSONArray obstacles = obj.getJSONArray("obstacles");
+        for (int i = 0; i < obstacles.length(); i++) {
+            JSONObject o = obstacles.getJSONObject(i);
+            Obstacle obs = Obstacle.parse(o);
+            if (obs == null) {
+                return false;
+            }
+            if (OBSTACLES.containsKey(obs.getId())) {
+                Console.error("Duplicate item id " + obs.getId());
+                return false;
+            }
+            OBSTACLES.put(obs.getId(), obs);
+        }
+        return true;
+    }
+
+    private static boolean loadItems(JSONObject obj) {
         JSONArray items = obj.getJSONArray("items");
         for (int i = 0; i < items.length(); i++) {
             JSONObject o = items.getJSONObject(i);
@@ -173,7 +234,7 @@ public class DataManager {
                 return false;
             }
             if (ITEMS.containsKey(item.getId())) {
-                Console.error("Invalid item ID: " + item.getId());
+                Console.error("Duplicate item id " + item.getId());
                 return false;
             }
             ITEMS.put(item.getId(), item);

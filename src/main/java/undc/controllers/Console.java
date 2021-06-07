@@ -115,6 +115,9 @@ public class Console {
      * Refreshes the JavaFX elements to display any new messages.
      */
     private static void refresh() {
+        if (historyBox == null) {
+            create();
+        }
         historyBox.getChildren().clear();
         historyBox.getChildren().addAll(history);
 
@@ -146,6 +149,11 @@ public class Console {
      * Creates the JavaFX for the Console.
      */
     public static void create() {
+        // don't recreate the console if it already exists. If necessary, create an override method that sets scene to
+        // null before calling this method.
+        if (scene != null) {
+            return;
+        }
         // overall containers
         scene = new Pane();
         VBox box = new VBox();

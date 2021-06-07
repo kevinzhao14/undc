@@ -73,7 +73,7 @@ public class LayoutGenerator {
         HashMap<Integer, Item> items = DataManager.ITEMS;
         cr1Rewards = new Inventory(2, 5);
         RangedWeapon rl = ((RangedWeapon) items.get(9)).copy();
-        WeaponAmmo weaponAmmo = new WeaponAmmo(2, 50, DataManager.PROJECTILES[0].copy());
+        WeaponAmmo weaponAmmo = new WeaponAmmo(2, 50, DataManager.PROJECTILES.get(0));
         weaponAmmo.setRemaining(2);
         weaponAmmo.setBackupRemaining(20);
         rl.setAmmo(weaponAmmo);
@@ -108,10 +108,10 @@ public class LayoutGenerator {
         exitRoom = new Room(exitHeight, exitWidth, 100, 100, RoomType.EXITROOM);
         generateObstacles(exitRoom, 4);
 
-        Monster boss = DataManager.FINALBOSS;
-        boss.setX(exitWidth / 2 - boss.getWidth() / 2);
+        Monster boss = DataManager.getFinalBoss();
+        boss.setX(exitWidth / 2.0 - boss.getWidth() / 2);
         boss.setY(exitHeight - boss.getHeight() - 5);
-        exitRoom.setMonsters(new Monster[]{DataManager.FINALBOSS});
+        exitRoom.setMonsters(new Monster[]{DataManager.getFinalBoss()});
         ExitDoor ed = new ExitDoor((exitWidth - DOORTOP_WIDTH) / 2,
                 exitHeight - 1, DOORTOP_WIDTH, DOORTOP_HEIGHT);
         exitRoom.setTopDoor(ed);
@@ -325,7 +325,7 @@ public class LayoutGenerator {
             } else if (diff == Difficulty.HARD) {
                 modifier = Vars.d("sv_modifier_hard");
             }
-            monsters[i] = new Monster(Controller.getDataManager().MONSTERS[n], modifier);
+            monsters[i] = new Monster(DataManager.MONSTERS.get(n), modifier);
 
             int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
             int monsterY = (int) (Math.random() * (room.getHeight() - 39)) + 20;
@@ -342,8 +342,8 @@ public class LayoutGenerator {
         int numObstacles = rand.nextInt(modifier * (max - min) + 1) + modifier * min;
         for (int i = 0; i < numObstacles; i++) {
             //random num for obstacle
-            int index = rand.nextInt(DataManager.OBSTACLES.length);
-            Obstacle o = DataManager.OBSTACLES[index].copy();
+            int index = rand.nextInt(DataManager.OBSTACLES.size());
+            Obstacle o = DataManager.OBSTACLES.get(index).copy();
             int posX;
             int posY;
             boolean validPos;
