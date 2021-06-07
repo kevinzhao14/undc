@@ -16,6 +16,7 @@ import undc.objects.RangedWeapon;
 import undc.objects.Room;
 import undc.objects.RoomType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -99,7 +100,7 @@ public class LayoutGenerator {
         startRoom = new Room(ROOM_HEIGHT, ROOM_WIDTH, (int) ((ROOM_WIDTH
                 - Vars.i("sv_player_width")) / 2.0), (int) (ROOM_HEIGHT / 2.0
                 - Vars.i("sv_player_height")), RoomType.STARTROOM);
-        startRoom.setMonsters(new Monster[0]);
+        startRoom.setMonsters(new ArrayList<>());
         generateObstacles(startRoom);
 
         int exitWidth = 832;
@@ -111,7 +112,8 @@ public class LayoutGenerator {
         Monster boss = DataManager.getFinalBoss();
         boss.setX(exitWidth / 2.0 - boss.getWidth() / 2);
         boss.setY(exitHeight - boss.getHeight() - 5);
-        exitRoom.setMonsters(new Monster[]{DataManager.getFinalBoss()});
+        exitRoom.setMonsters(new ArrayList<>());
+        exitRoom.getMonsters().add(DataManager.getFinalBoss());
         ExitDoor ed = new ExitDoor((exitWidth - DOORTOP_WIDTH) / 2,
                 exitHeight - 1, DOORTOP_WIDTH, DOORTOP_HEIGHT);
         exitRoom.setTopDoor(ed);
@@ -315,8 +317,8 @@ public class LayoutGenerator {
         if (room instanceof ChallengeRoom) {
             numMonsters = 5;
         }
-        Monster[] monsters = new Monster[numMonsters];
-        for (int i = 0; i < monsters.length; i++) {
+        ArrayList<Monster> monsters = new ArrayList<>();
+        for (int i = 0; i < numMonsters; i++) {
             int n = (int) (Math.random() * 3);
             Difficulty diff = Controller.getDataManager().getDifficulty();
             double modifier = 1;
@@ -325,12 +327,12 @@ public class LayoutGenerator {
             } else if (diff == Difficulty.HARD) {
                 modifier = Vars.d("sv_modifier_hard");
             }
-            monsters[i] = new Monster(DataManager.MONSTERS.get(n), modifier);
-
+            Monster m = new Monster(DataManager.MONSTERS.get(n), modifier);
             int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
             int monsterY = (int) (Math.random() * (room.getHeight() - 39)) + 20;
-            monsters[i].setX(monsterX);
-            monsters[i].setY(monsterY);
+            m.setX(monsterX);
+            m.setY(monsterY);
+            monsters.add(m);
         }
         room.setMonsters(monsters);
     }

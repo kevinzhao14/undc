@@ -49,20 +49,16 @@ public class GameScreen extends GameState {
         return instance;
     }
 
-    public static void resetInstance(int width, int height) {
-        instance = new GameScreen(width, height);
-    }
-
     public void newGame(GameMode mode) {
         if (mode == GameMode.SANDBOX) {
             Controller.getDataManager().newGame("example", Difficulty.EASY, DataManager.getStartingWeapons()[0]);
 
             Room start = new Room(SANDBOX_HEIGHT,SANDBOX_WIDTH, (int) ((SANDBOX_WIDTH - Vars.i("sv_player_width")) / 2.0),
                     (int) (SANDBOX_HEIGHT / 2.0 - Vars.i("sv_player_height")), RoomType.STARTROOM);
-            start.setMonsters(new Monster[0]);
+            start.setMonsters(new ArrayList<>());
 
             Room exit = new Room(10, 10, 0, 0, RoomType.EXITROOM);
-            exit.setMonsters(new Monster[0]);
+            exit.setMonsters(new ArrayList<>());
 
             Room[][] arr = new Room[][]{new Room[]{start, exit}};
             dungeonLayout = new DungeonLayout(start, exit, arr);

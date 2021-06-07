@@ -160,6 +160,8 @@ public class Vars {
         list.addAll(BOOLEAN_VARS);
         list.addAll(INT_VARS);
         list.addAll(DOUBLE_VARS);
+        list.add(find("cheats"));
+        list.add(find("debug"));
         return list;
     }
 
