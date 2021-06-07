@@ -47,6 +47,11 @@
   </module>
 
   <module name="TreeWalker">
+	<module name="ConstantName"/>
+    <module name="LocalFinalVariableName"/>
+	<module name="RedundantImport"/>
+	<module name="UnusedImports"/>
+  
     <module name="OuterTypeFilename"/>
     <module name="IllegalTokenText">
       <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
