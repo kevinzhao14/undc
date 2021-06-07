@@ -6,9 +6,7 @@ import org.json.JSONObject;
 import undc.handlers.Difficulty;
 import undc.objects.Item;
 import undc.objects.Monster;
-import undc.objects.MonsterType;
 import undc.objects.Obstacle;
-import undc.objects.ObstacleType;
 import undc.objects.Projectile;
 import undc.objects.Weapon;
 import undc.objects.Key;
@@ -21,8 +19,6 @@ import java.util.HashMap;
 /**
  * Class for storing and handling all session data.
  *
- * @version 1.0
- * @author Kevin Zhao
  */
 public class DataManager {
     public static final HashMap<Integer, Projectile> PROJECTILES = new HashMap<>();
@@ -40,7 +36,6 @@ public class DataManager {
     private static Weapon[] startingWeapons;
     private static Monster finalBoss;
 
-    private String username;
     private Difficulty difficulty;
     private Weapon weapon;
 
@@ -48,7 +43,6 @@ public class DataManager {
      * Basic constructor for creating a DataManager.
      */
     public DataManager() {
-        username = "";
         difficulty = null;
         weapon = null;
         load();
@@ -103,18 +97,9 @@ public class DataManager {
         }
 
         //save data
-        this.username = username.replaceAll("\\s{2,}", " ").trim();
         this.difficulty = difficulty;
         this.weapon = weapon.copy();
         return true;
-    }
-
-    /**
-     * Getter for the player's username.
-     * @return The username
-     */
-    public String getUsername() {
-        return username;
     }
 
     /**
@@ -145,6 +130,9 @@ public class DataManager {
         return weapon;
     }
 
+    /**
+     * Loads static data (items, monsters, obstacles, etc.) from the data file.
+     */
     private static void load() {
         String file;
         try {
@@ -157,10 +145,14 @@ public class DataManager {
         JSONObject obj = new JSONObject(file);
         if (!loadProjectiles(obj) || !loadMonsters(obj) || !loadObstacles(obj) || !loadItems(obj)) {
             //TODO: stop game
-            return;
         }
     }
 
+    /**
+     * Loads all projectiles and their data into Projectile objects.
+     * @param obj JSON object to load from
+     * @return Returns true if successful, false otherwise
+     */
     private static boolean loadProjectiles(JSONObject obj) {
         JSONArray projectiles = obj.getJSONArray("projectiles");
         for (int i = 0; i < projectiles.length(); i++) {
@@ -177,6 +169,12 @@ public class DataManager {
         }
         return true;
     }
+
+    /**
+     * Loads all monsters and their data into Monster objects.
+     * @param obj JSON object to load from
+     * @return Returns true if successful, false otherwise
+     */
 
     private static boolean loadMonsters(JSONObject obj) {
         JSONArray monsters = obj.getJSONArray("monsters");
@@ -208,6 +206,11 @@ public class DataManager {
         return true;
     }
 
+    /**
+     * Loads all obstacles and their data into Obstacle objects.
+     * @param obj JSON object to load from
+     * @return Returns true if successful, false otherwise
+     */
     private static boolean loadObstacles(JSONObject obj) {
         JSONArray obstacles = obj.getJSONArray("obstacles");
         for (int i = 0; i < obstacles.length(); i++) {
@@ -224,6 +227,12 @@ public class DataManager {
         }
         return true;
     }
+
+    /**
+     * Loads all items and their data into their respective Item objects.
+     * @param obj JSON object to load from
+     * @return Returns true if successful, false otherwise
+     */
 
     private static boolean loadItems(JSONObject obj) {
         JSONArray items = obj.getJSONArray("items");
@@ -247,8 +256,8 @@ public class DataManager {
                 Console.error("Invalid type for exit key.");
                 return false;
             }
-            exitKey = (Key) ITEMS.get(exitKey);
-        } catch(JSONException e) {
+            exitKey = (Key) ITEMS.get(exitkeyid);
+        } catch (JSONException e) {
             Console.error("Invalid value for exit key.");
             return false;
         }

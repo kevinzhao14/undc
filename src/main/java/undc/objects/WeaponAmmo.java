@@ -5,6 +5,9 @@ import org.json.JSONObject;
 import undc.controllers.Console;
 import undc.controllers.DataManager;
 
+/**
+ * Represents the ammunition data of a RangedWeapon.
+ */
 public class WeaponAmmo {
     //type of ammo in use
     private Projectile projectile;
@@ -15,6 +18,12 @@ public class WeaponAmmo {
     private int backupSize;
     private int backupRemaining;
 
+    /**
+     * Constructor.
+     * @param size Size of a magazine
+     * @param backupSize Size of the backup ammo
+     * @param projectile Projectile used
+     */
     public WeaponAmmo(int size, int backupSize, Projectile projectile) {
         this.size = size;
         this.backupSize = backupSize;
@@ -27,6 +36,10 @@ public class WeaponAmmo {
 
     }
 
+    /**
+     * Method used to copy the WeaponAmmo into a new object.
+     * @return Returns a new WeaponAmmo with the same data
+     */
     public WeaponAmmo copy() {
         WeaponAmmo ammo = new WeaponAmmo();
         ammo.projectile = this.projectile;
@@ -65,34 +78,39 @@ public class WeaponAmmo {
         return projectile;
     }
 
+    /**
+     * Method used to parse JSON data into a WeaponAmmo.
+     * @param o JSON object to parse
+     * @return Returns a WeaponAmmo with the data or null if failed
+     */
     static WeaponAmmo parseJSON(JSONObject o) {
         WeaponAmmo ammo = new WeaponAmmo();
         try {
             ammo.projectile = DataManager.PROJECTILES.get(o.getInt("projectile"));
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             Console.error("Invalid value for weapon ammo projectile.");
             return null;
         }
         try {
             ammo.size = o.getInt("size");
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             Console.error("Invalid value for weapon ammo size.");
             return null;
         }
         try {
             ammo.remaining = o.getInt("remaining");
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             ammo.remaining = ammo.size;
         }
         try {
             ammo.backupSize = o.getInt("backupSize");
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             Console.error("Invalid value for weapon ammo backup size.");
             return null;
         }
         try {
             ammo.backupRemaining = o.getInt("backupRemaining");
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             ammo.backupRemaining = ammo.backupSize / 2;
         }
         return ammo;

@@ -5,6 +5,9 @@ import org.json.JSONObject;
 import undc.controllers.Console;
 import undc.controllers.DataManager;
 
+/**
+ * Class that represents an ammunition item. Is used to give players extra ammunition.
+ */
 public class Ammunition extends Item {
     private int amount;
     private Projectile projectile;
@@ -39,6 +42,11 @@ public class Ammunition extends Item {
         return projectile;
     }
 
+    /**
+     * Method used to parse some JSON data into an Ammunition object.
+     * @param o JSON object to parse
+     * @return Returns an Ammunition object with the data or null if failed
+     */
     static Ammunition parseJSON(JSONObject o) {
         Ammunition ammo = new Ammunition();
         try {
@@ -49,7 +57,7 @@ public class Ammunition extends Item {
         }
         try {
             ammo.projectile = DataManager.PROJECTILES.get(o.getInt("projectile"));
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             Console.error("Invalid value for ammunition projectile.");
             return null;
         }

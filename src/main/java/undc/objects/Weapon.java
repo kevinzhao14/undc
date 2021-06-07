@@ -1,15 +1,11 @@
 package undc.objects;
 
-import javafx.scene.image.Image;
 import org.json.JSONException;
 import org.json.JSONObject;
 import undc.controllers.Console;
 
 /**
  * Class for handling all weapon types.
- *
- * @version 1.0
- * @author Kevin Zhao
  */
 public class Weapon extends Item {
     //damage per hit
@@ -21,6 +17,7 @@ public class Weapon extends Item {
 
     }
 
+    @Override
     public Weapon copy() {
         Weapon weapon = new Weapon();
         copy(weapon);
@@ -36,9 +33,16 @@ public class Weapon extends Item {
     public double getDamage() {
         return damage;
     }
+
     public void use() {
 
     }
+
+    /**
+     * Method used to parse JSON data into a Weapon.
+     * @param o JSON object to parse
+     * @return Returns a Weapon with the data or null if failed
+     */
     static Weapon parseJSON(JSONObject o) {
         Weapon weapon = new Weapon();
         try {

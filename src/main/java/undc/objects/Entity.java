@@ -1,14 +1,9 @@
 package undc.objects;
 
-
 import javafx.scene.image.Image;
-import org.json.JSONObject;
 
 /**
- * Implementation of the Entity abstract class
- *
- * @author Manas Harbola
- * @version 1.0
+ * Representation of an Entity object. Entities are objects that are "alive" and can interact with things in the game.
  */
 
 public abstract class Entity implements Movable {
@@ -22,6 +17,14 @@ public abstract class Entity implements Movable {
     private double posY;
     private double attackCooldown;
 
+    /**
+     * Constructor.
+     * @param maxHealth Max HP of the entity
+     * @param attack Base attack damage
+     * @param height Height of the entity
+     * @param width Width of the entity
+     * @param sprite The sprite of the entity (URL)
+     */
     public Entity(int maxHealth, double attack, double height, double width, String sprite) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
@@ -31,12 +34,19 @@ public abstract class Entity implements Movable {
         this.sprite = (sprite == null) ? null : new Image(sprite);
     }
 
+    /**
+     * Constructor used by some children.
+     */
     protected Entity() {
         posX = 0;
         posY = 0;
         attackCooldown = 0;
     }
 
+    /**
+     * Method to copy an Entity's data to another entity.
+     * @param copy The Entity to copy the data to
+     */
     protected void copy(Entity copy) {
         copy.maxHealth = this.maxHealth;
         copy.health = this.health;
@@ -52,36 +62,49 @@ public abstract class Entity implements Movable {
     public int getMaxHealth() {
         return maxHealth;
     }
+
     public double getHealth() {
         return this.health;
     }
+
     public double getAttack() {
         return this.attack;
     }
+
     @Override
     public double getHeight() {
         return this.height;
     }
+
     @Override
     public double getWidth() {
         return this.width;
     }
+
     @Override
     public double getX() {
         return this.posX;
     }
+
     @Override
     public double getY() {
         return this.posY;
     }
+
     @Override
     public void setX(double newX) {
         this.posX = newX;
     }
+
     @Override
     public void setY(double newY) {
         this.posY = newY;
     }
+
+    /**
+     * Sets the health of the Entity.
+     * @param newHealth New health of the Entity
+     */
     public void setHealth(double newHealth) {
         if (newHealth < 0 || newHealth > this.maxHealth) {
             throw new IllegalArgumentException("Invalid new health");

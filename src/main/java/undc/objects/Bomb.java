@@ -2,10 +2,13 @@ package undc.objects;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import undc.controllers.*;
+import undc.controllers.Console;
+import undc.controllers.Controller;
 import undc.gamestates.GameScreen;
-import javafx.scene.image.Image;
 
+/**
+ * Class that represents a Bomb item. Can be placed to deal damage to all entities within a specific range.
+ */
 public class Bomb extends Item {
     private double damage;
     private double radius;
@@ -16,6 +19,7 @@ public class Bomb extends Item {
         livefuse = -1;
     }
 
+    @Override
     public Bomb copy() {
         Bomb bomb = new Bomb();
         copy(bomb);
@@ -24,9 +28,10 @@ public class Bomb extends Item {
         bomb.fuse = this.fuse;
         return bomb;
     }
+
+    @Override
     public void use() {
         GameScreen screen = (GameScreen) Controller.getState();
-        Room room = screen.getRoom();
         Player player = screen.getPlayer();
 
         //update items consumed stat for player
@@ -47,20 +52,24 @@ public class Bomb extends Item {
         ObstacleItem o = new ObstacleItem(getSprite(), x, y, width, height, ObstacleType.NONSOLID);
         Bomb timer = copy();
         o.setItem(timer);
-        room.getObstacles().add(o);
+        screen.getRoom().getObstacles().add(o);
 
         //start fuse
         timer.livefuse = fuse;
     }
+
     public double getDamage() {
         return this.damage;
     }
+
     public void setDamage(double damage) {
         this.damage = damage;
     }
+
     public double getRadius() {
         return this.radius;
     }
+
     public double getFuse() {
         return this.fuse;
     }
@@ -73,6 +82,11 @@ public class Bomb extends Item {
         this.livefuse = livefuse;
     }
 
+    /**
+     * Method used to parse JSON data into a Bomb object.
+     * @param o JSON data to parse
+     * @return Returns a Bomb object with the data or null if failed
+     */
     static Bomb parseJSON(JSONObject o) {
         Bomb bomb = new Bomb();
         try {

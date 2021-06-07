@@ -1,14 +1,15 @@
 package undc.objects;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.ranges.Range;
 import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.gamestates.GameScreen;
 import javafx.application.Platform;
 
+/**
+ * Represents a ranged weapon. Ranged weapons are weapons that fire a projectile and can deal damage from a distance.
+ */
 public class RangedWeapon extends Weapon {
     private WeaponAmmo weaponAmmo;
 
@@ -26,6 +27,7 @@ public class RangedWeapon extends Weapon {
         delay = 0;
     }
 
+    @Override
     public RangedWeapon copy() {
         RangedWeapon weapon = new RangedWeapon();
         copy(weapon);
@@ -35,6 +37,9 @@ public class RangedWeapon extends Weapon {
         return weapon;
     }
 
+    /**
+     * Method used to start reloading the weapon.
+     */
     public void reload() {
         if (weaponAmmo.getRemaining() >= weaponAmmo.getSize()) {
             return;
@@ -44,6 +49,9 @@ public class RangedWeapon extends Weapon {
         Platform.runLater(() -> ((GameScreen) Controller.getState()).updateHud());
     }
 
+    /**
+     * Method used at the conclusion of reloading to fill the ammo capacity.
+     */
     public void finishReloading() {
         int change = weaponAmmo.getSize() - weaponAmmo.getRemaining();
         weaponAmmo.setRemaining(weaponAmmo.getSize());
@@ -76,6 +84,11 @@ public class RangedWeapon extends Weapon {
         this.delay = delay;
     }
 
+    /**
+     * Method used to parse JSON data into a RangedWeapon.
+     * @param o JSON object to parse
+     * @return Returns a RangedWeapon with the data, null otherwise
+     */
     static RangedWeapon parseJSON(JSONObject o) {
         RangedWeapon weapon = new RangedWeapon();
         try {

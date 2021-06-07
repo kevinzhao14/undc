@@ -1,13 +1,12 @@
 package undc.objects;
+
 import javafx.scene.image.Image;
 import org.json.JSONException;
 import org.json.JSONObject;
 import undc.controllers.Console;
 
 /**
- * Implementation of the Item abstract data class
- *
- * @author Manas Harbola
+ * Represents an Item object. Items that can be stored in inventories, dropped, or used.
  */
 public abstract class Item {
     protected int id;
@@ -17,23 +16,16 @@ public abstract class Item {
     protected boolean droppable;
 
     protected Item() {
-
-    }
-
-    public Item(int id, Image img, String itemName, int stackSize, boolean isDroppable) {
-        this.id = id;
-        sprite = img;
-        name = itemName;
-        maxStackSize = stackSize;
-        droppable = isDroppable;
-    }
-    public Item(Image path, String itemName) {
-        sprite = path;
-        name = itemName;
+        maxStackSize = 1;
+        droppable = false;
     }
 
     public abstract Item copy();
 
+    /**
+     * Method used to clone data to another Item.
+     * @param copy Item object to clone to
+     */
     protected void copy(Item copy) {
         copy.id = -this.id;
         copy.sprite = this.sprite;
@@ -44,9 +36,6 @@ public abstract class Item {
 
     public abstract void use();
 
-    public void setSprite(Image img) {
-        sprite = img;
-    }
     public void setName(String itemName) {
         name = itemName;
     }
@@ -54,12 +43,15 @@ public abstract class Item {
     public Image getSprite() {
         return sprite;
     }
+
     public String getName() {
         return name;
     }
+
     public int getMaxStackSize() {
         return maxStackSize;
     }
+
     public boolean isDroppable() {
         return droppable;
     }
@@ -78,6 +70,11 @@ public abstract class Item {
         return id;
     }
 
+    /**
+     * Method used to parse JSON data into an Item.
+     * @param o JSON object to parse
+     * @return Returns the respective Item object or null if failed
+     */
     public static Item parse(JSONObject o) {
         Item item;
         String type;
@@ -89,7 +86,7 @@ public abstract class Item {
 
         try {
             id = o.getInt("id");
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             Console.error("Invalid value for item id.");
             return null;
         }
