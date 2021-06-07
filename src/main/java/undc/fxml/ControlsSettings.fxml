@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="scroller" id="controls-container" fitToWidth="true" hbarPolicy="NEVER" hmax="0.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="undc.fxml.controllers.ControlsController">
+<ScrollPane id="controls-container" fx:id="scroller" fitToWidth="true" hbarPolicy="NEVER" hmax="0.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="undc.fxml.controllers.ControlsController">
      <content>
-         <GridPane HBox.hgrow="ALWAYS" onScroll="#scroll">
+         <GridPane onScroll="#scroll" HBox.hgrow="ALWAYS">
              <columnConstraints>
                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="10.0" percentWidth="50.0" />
@@ -21,7 +21,7 @@
              </columnConstraints>
              <rowConstraints>
                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
              </rowConstraints>
              <children>
                  <VBox fx:id="master" GridPane.columnIndex="1">
@@ -52,11 +52,11 @@
                                  <Label text="Move Left" GridPane.rowIndex="2" />
                                  <Label text="Move Right" GridPane.rowIndex="3" />
                                  <Label text="Sprint" GridPane.rowIndex="4" />
-                                 <Button id="up" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" />
-                                 <Button id="down" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                 <Button id="left" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                 <Button id="right" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                 <Button id="sprint" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                 <Button id="up" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" />
+                                 <Button id="down" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 <Button id="left" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                 <Button id="right" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                 <Button id="sprint" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                              </children>
                          </GridPane>
                          <Label styleClass="controls-subtitle" text="Weapon Keys">
@@ -83,10 +83,10 @@
                                  <Label text="Attack 2" GridPane.rowIndex="1" />
                                  <Label text="Rotate Inventory" GridPane.rowIndex="2" />
                                  <Label text="Reload" GridPane.rowIndex="3" />
-                                 <Button id="attack" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" />
-                                 <Button id="attack2" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                 <Button id="rotateinv" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                 <Button id="reload" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                 <Button id="attack" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" />
+                                 <Button id="attack2" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 <Button id="rotateinv" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                 <Button id="reload" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                              </children>
                          </GridPane>
                          <Label styleClass="controls-subtitle" text="Interaction Keys">
@@ -119,18 +119,63 @@
                                  <Label text="Inventory" GridPane.rowIndex="4" />
                                  <Label text="Drop" GridPane.rowIndex="5" />
                                  <Label text="Console" GridPane.rowIndex="6" />
-                                 <Button id="interact" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" />
-                                 <Button id="use" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                 <Button id="map" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                 <Button id="pause" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                 <Button id="inventory" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                 <Button id="drop" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                 <Button id="console" onAction="#changeKey" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                 <Button id="interact" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" />
+                                 <Button id="use" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 <Button id="map" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                 <Button id="pause" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                 <Button id="inventory" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                 <Button id="drop" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                 <Button id="console" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                              </children>
                          </GridPane>
+                         <Label styleClass="controls-subtitle" text="Inventory Keys">
+                             <VBox.margin>
+                                 <Insets bottom="20.0" top="20.0" />
+                             </VBox.margin>
+                             <font>
+                                 <Font size="18.0" />
+                             </font>
+                         </Label>
+                         <GridPane styleClass="controls-grid">
+                             <columnConstraints>
+                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                             </columnConstraints>
+                             <rowConstraints>
+                                 <RowConstraints vgrow="SOMETIMES" />
+                                 <RowConstraints vgrow="SOMETIMES" />
+                                 <RowConstraints vgrow="SOMETIMES" />
+                                 <RowConstraints vgrow="SOMETIMES" />
+                                 <RowConstraints vgrow="SOMETIMES" />
+                                 <RowConstraints vgrow="SOMETIMES" />
+                                 <RowConstraints vgrow="SOMETIMES" />
+                             </rowConstraints>
+                             <children>
+                                 <Label text="Next Item" />
+                                 <Label text="Previous Item" GridPane.rowIndex="1" />
+                                 <Label text="Slot 1" GridPane.rowIndex="2" />
+                                 <Label text="Slot 2" GridPane.rowIndex="3" />
+                                 <Label text="Slot 3" GridPane.rowIndex="4" />
+                                 <Label text="Slot 4" GridPane.rowIndex="5" />
+                                 <Label text="Slot 5" GridPane.rowIndex="6" />
+                                 <Button id="nextinv" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" />
+                                 <Button id="previnv" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 <Button id="slot1" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                 <Button id="slot2" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                 <Button id="slot3" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                 <Button id="slot4" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                 <Button id="slot5" mnemonicParsing="false" onAction="#changeKey" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                             </children>
+                         </GridPane>
+
                      </children>
                  </VBox>
-                 <Button id="reset-button" onAction="#reset" mnemonicParsing="false" text="Reset" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <HBox id="reset-hBox" alignment="TOP_RIGHT" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <children>
+                  <Button id="cancel-button" fx:id="cancelButton" mnemonicParsing="false" onAction="#cancel" text="Cancel" visible="false" />
+                       <Button id="reset-button" mnemonicParsing="false" onAction="#reset" text="Reset" />
+               </children>
+            </HBox>
              </children>
          </GridPane>
      </content>

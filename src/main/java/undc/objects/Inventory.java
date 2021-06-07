@@ -125,6 +125,10 @@ public class Inventory implements Iterable<InventoryItem> {
         return columns;
     }
 
+    public int getRows() {
+        return rows;
+    }
+
     @Override
     public Iterator<InventoryItem> iterator() {
         return new InventoryIterator(items);

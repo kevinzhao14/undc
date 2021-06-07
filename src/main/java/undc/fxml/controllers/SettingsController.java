@@ -10,12 +10,9 @@ import javafx.scene.layout.AnchorPane;
 import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.gamestates.HomeScreen;
-import undc.handlers.Controls;
 import undc.handlers.Vars;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * Controller for SettingsScreen.fxml
@@ -72,6 +69,9 @@ public class SettingsController {
         master.layout();
     }
 
+    /**
+     * Creates the panes for the various setting UIs.
+     */
     private void load() {
         try {
             game = FXMLLoader.load(new File("src/main/java/undc/fxml/GameSettings.fxml").toURI().toURL());
@@ -84,6 +84,10 @@ public class SettingsController {
         }
     }
 
+    /**
+     * Makes the video settings UI visible to the player.
+     * @param e ActionEvent to trigger method upon button click
+     */
     public void showVideo(ActionEvent e) {
         if (video == null) {
             load();
@@ -91,6 +95,10 @@ public class SettingsController {
         show(video, e.getSource());
     }
 
+    /**
+     * Makes the audio settings UI visible to the player.
+     * @param e ActionEvent to trigger method upon button click
+     */
     public void showAudio(ActionEvent e) {
         if (audio == null) {
             load();
@@ -98,6 +106,10 @@ public class SettingsController {
         show(audio, e.getSource());
     }
 
+    /**
+     * Makes the game settings UI visible to the player.
+     * @param e ActionEvent to trigger method upon button click
+     */
     public void showGame(ActionEvent e) {
         if (game == null) {
             load();
@@ -105,6 +117,10 @@ public class SettingsController {
         show(game, e.getSource());
     }
 
+    /**
+     * Makes the game settings UI visible to the player.
+     * @param e ActionEvent to trigger method upon button click
+     */
     public void showControls(ActionEvent e) {
         if (controls == null) {
             load();
@@ -112,40 +128,7 @@ public class SettingsController {
         show(controls, e.getSource());
     }
 
-    /**
-     * Changes key binding of input control.
-     * @param control Control being changed
-     * @param button Button pressed to change key bind
-     */
-    public void changeKey(String control, Object button) {
-
-    }
-
-    public void changeUp(ActionEvent e) {
-        changeKey("up", e.getSource());
-    }
-
-    public void changeDown(ActionEvent e) {
-        changeKey("down", e.getSource());
-    }
-
-    public void changeLeft(ActionEvent e) {
-        changeKey("left", e.getSource());
-    }
-
-    public void changeRight(ActionEvent e) {
-        changeKey("right", e.getSource());
-    }
-
-    public void changeSprint(ActionEvent e) {
-        changeKey("sprint", e.getSource());
-    }
-
-    public void back(ActionEvent e) {
+    public void back() {
         Controller.setState(new HomeScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height")));
-    }
-
-    public void reset(ActionEvent e) {
-//        keyControls.resetKeys();
     }
 }

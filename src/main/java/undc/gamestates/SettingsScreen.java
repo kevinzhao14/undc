@@ -3,7 +3,6 @@ package undc.gamestates;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import undc.handlers.Controls;
 
 import java.io.File;
 import java.io.IOException;

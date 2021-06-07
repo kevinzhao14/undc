@@ -1,7 +1,7 @@
 package undc.handlers;
 
 import javafx.scene.input.MouseButton;
-import undc.controllers.*;
+import undc.controllers.Console;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,7 +9,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Class for managing and saving/loading user configuration data.
@@ -30,6 +32,10 @@ public class Controls {
         saveFile = file;
     }
 
+    /**
+     * Static singleton method to allow access to current controls.
+     * @return Controls object with the current controls for the game
+     */
     public static Controls getInstance() {
         if (instance == null) {
             instance = new Controls();
@@ -97,13 +103,13 @@ public class Controls {
         keyMap.put("back_quote", "console");
 
         //Inventory Controls
-        keyMap.put("mwheeldown", "nextinv");
-        keyMap.put("mwheelup", "previnv");
-        keyMap.put("digit1", "slot1");
-        keyMap.put("digit2", "slot2");
-        keyMap.put("digit3", "slot3");
-        keyMap.put("digit4", "slot4");
-        keyMap.put("digit5", "slot5");
+        keyMap.put("mousewheeldown", "nextinv");
+        keyMap.put("mousewheelup", "previnv");
+        keyMap.put("1", "slot1");
+        keyMap.put("2", "slot2");
+        keyMap.put("3", "slot3");
+        keyMap.put("4", "slot4");
+        keyMap.put("5", "slot5");
 
         //Weapon Controls
         keyMap.put("mouse1", "attack");
@@ -135,14 +141,15 @@ public class Controls {
             //generate a string with all the key binds
             StringBuilder saveString = new StringBuilder();
             for (Map.Entry<String, String> e : keyMap.entrySet()) {
-                saveString.append("bind ").append(e.getKey().toLowerCase()).append(" ").append(e.getValue().toLowerCase()).append("\n");
+                saveString.append("bind ").append(e.getKey().toLowerCase())
+                        .append(" ").append(e.getValue().toLowerCase()).append("\n");
             }
 
             //write to file
             BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile.getPath()));
             writer.write(saveString.toString());
             writer.close();
-        } catch(IOException e) {
+        } catch (IOException e) {
             Console.error("Failed to save controls.");
         }
     }
@@ -163,6 +170,11 @@ public class Controls {
         return Objects.requireNonNullElse(foundControl, "");
     }
 
+    /**
+     * Accessor method for a key in keyMap.
+     * @param control String that is the latter part of the key-value pair
+     * @return String that is the key associated with control
+     */
     public String getKey(String control) {
         for (Map.Entry<String, String> e : keyMap.entrySet()) {
             if (e.getValue().equalsIgnoreCase(control)) {
@@ -202,6 +214,10 @@ public class Controls {
         save();
     }
 
+    /**
+     * Removes a key from kepMap (unbinds it).
+     * @param key String representing the key to be removed from keyMap
+     */
     public void removeKey(String key) {
         if (key == null) {
             Console.error("Key cannot be null.");
@@ -216,6 +232,10 @@ public class Controls {
         save();
     }
 
+    /**
+     * Accessor method for a view only clone of keyMap.
+     * @return HashMap object that is keyMap
+     */
     public HashMap<String, String> getMapUnmodifiable() {
         HashMap<String, String> temp = new HashMap<>();
         keyMap.forEach((k, v) -> {
@@ -245,9 +265,9 @@ public class Controls {
      */
     public static String scrollStringify(double val) {
         if (val < 0) {
-            return "MWHEELDOWN";
+            return "MOUSEWHEELDOWN";
         } else if (val > 0) {
-            return "MWHEELUP";
+            return "MOUSEWHEELUP";
         } else {
             return "";
         }
