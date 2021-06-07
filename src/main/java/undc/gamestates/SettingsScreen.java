@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- * Class containing constructor for the settings screen.
+ * Represents the setting screen. The settings screen is used by the player to modify in-game controls.
  */
 public class SettingsScreen extends GameState {
     private static SettingsScreen instance;
@@ -32,14 +32,14 @@ public class SettingsScreen extends GameState {
         }
     }
 
-    public static SettingsScreen     getInstance() {
+    /**
+     * Used to retrieve the singleton instance of SettingsScreen.
+     * @return the singleton instance of SettingsScreen
+     */
+    public static SettingsScreen getInstance() {
         if (instance == null) {
             instance = new SettingsScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
         }
         return instance;
-    }
-
-    public static void resetInstance(int width, int height) {
-        instance = new SettingsScreen(width, height);
     }
 }

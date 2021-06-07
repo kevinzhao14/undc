@@ -7,7 +7,7 @@ import javafx.scene.layout.StackPane;
  * Abstract class for graphics that will act as overlays in game.
  */
 public abstract class Overlay {
-    private StackPane root;
+    private final StackPane root;
 
     /**
      * Constructor that creates a stackPane with the appearance of a blurred background.
@@ -26,6 +26,4 @@ public abstract class Overlay {
     public StackPane getRoot() {
         return root;
     }
-
-    abstract void update();
 }

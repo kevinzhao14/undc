@@ -29,10 +29,10 @@ public class ControlsController {
     @FXML
     private Button cancelButton;
 
-    private boolean activeButton = false;
-    private int clickerCounter = 0;
-    private Button buttonToCancel;
-    private String oldStringToCancel;
+    private boolean buttonActive = false; // whether or not a button is clicked
+    private int clicks = 0;
+    private Button activeButton; // currently active button
+    private String currentKey;
 
     /**
      * Constructor for controls settings UI. Delays the runtime to properly display the page.
@@ -74,10 +74,10 @@ public class ControlsController {
      * @param ae ActionEvent triggered on key press, mouse click, or scroll wheel
      */
     public void changeKey(ActionEvent ae) {
-        if (activeButton) {
+        if (buttonActive) {
             return;
         }
-        activeButton = true;
+        buttonActive = true;
         if (!(ae.getSource() instanceof Button)) {
             Console.error("Invalid button type.");
             return;
@@ -86,8 +86,8 @@ public class ControlsController {
 
         // Setting up values for functionality of cancel method and cancel button
         cancelButton.setVisible(true);
-        buttonToCancel = button;
-        oldStringToCancel = buttonToCancel.getText();
+        activeButton = button;
+        currentKey = activeButton.getText();
 
         button.setText("Press a key");
 
@@ -103,7 +103,7 @@ public class ControlsController {
         });
         scene.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
-                incrementClicker();
+                clicks = (clicks + 1) % 2;
             }
             handleChangeKey(button, Controls.mbStringify(e.getButton()));
         });
@@ -113,22 +113,12 @@ public class ControlsController {
             if (e.getButton() == MouseButton.SECONDARY) {
                 handleChangeKey(button, Controls.mbStringify(e.getButton()));
             } else if (button.getText().equals("Press a key")) {
-                incrementClicker();
-                if (clickerCounter == 2) {
+                clicks = (clicks + 1) % 2;
+                if (clicks == 0) {
                     handleChangeKey(button, Controls.mbStringify(e.getButton()));
                 }
             }
         });
-    }
-
-    /**
-     * Counts the number of primary mouse clicks made, resets to 1 upon exceeding 2.
-     */
-    private void incrementClicker() {
-        clickerCounter++;
-        if (clickerCounter > 2) {
-            clickerCounter = 1;
-        }
     }
 
     /**
@@ -163,8 +153,8 @@ public class ControlsController {
             button.setText(c.getKey(control));
         }
         resetHandlers();
-        activeButton = false;
-        clickerCounter = 0;
+        buttonActive = false;
+        clicks = 0;
 
         cancelButton.setVisible(false);
     }
@@ -193,6 +183,6 @@ public class ControlsController {
      * Resets the most recently changed control button or the control button that is currently being changed.
      */
     public void cancel() {
-        handleChangeKey(buttonToCancel, oldStringToCancel);
+        handleChangeKey(activeButton, currentKey);
     }
 }

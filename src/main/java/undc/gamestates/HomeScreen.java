@@ -15,9 +15,7 @@ import undc.handlers.Vars;
  */
 public class HomeScreen extends GameState {
     private static HomeScreen instance;
-    private Button startBtn;
-    private Button settingsBtn;
-    private Button exitBtn;
+
 
     /**
      * HomeScreen constructor which also sets the start, settings, and exit button functionality.
@@ -26,25 +24,19 @@ public class HomeScreen extends GameState {
      */
     private HomeScreen(int width, int height) {
         super(width, height);
-        startBtn = new Button("Start");
+        Button startBtn = new Button("Start");
         startBtn.setId("start-button");
 
-        settingsBtn = new Button("Settings");
+        Button settingsBtn = new Button("Settings");
         settingsBtn.setId("settings-button");
 
-        exitBtn = new Button("Exit Game");
+        Button exitBtn = new Button("Exit Game");
         exitBtn.setId("exit-button");
 
         // Event handling for start, settings, and exit button
-        startBtn.setOnAction(event -> {
-            Controller.setState(PlayScreen.getInstance());
-        });
-        settingsBtn.setOnAction(event -> {
-            Controller.setState(SettingsScreen.getInstance());
-        });
-        exitBtn.setOnAction(event -> {
-            Platform.exit();
-        });
+        startBtn.setOnAction(event -> Controller.setState(PlayScreen.getInstance()));
+        settingsBtn.setOnAction(event -> Controller.setState(SettingsScreen.getInstance()));
+        exitBtn.setOnAction(event -> Platform.exit());
 
         Label label = new Label("Title Here");
         label.getStyleClass().add("title");
@@ -58,22 +50,14 @@ public class HomeScreen extends GameState {
         scene.getStylesheets().addAll("styles/menu.css", "styles/global.css");
     }
 
+    /**
+     * Used to retrieve the singleton instance of HomeScreen.
+     * @return the singleton instance of HomeScreen
+     */
     public static HomeScreen getInstance() {
         if (instance == null) {
             instance = new HomeScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
         }
         return instance;
-    }
-
-    public static void resetInstance(int width, int height) {
-        instance = new HomeScreen(width, height);
-    }
-
-    /**
-     * Accessor method for the start button.
-     * @return the start button
-     */
-    public Button getStartBtn() {
-        return startBtn;
     }
 }
