@@ -47,6 +47,11 @@
   </module>
 
   <module name="TreeWalker">
+	<module name="ConstantName"/>
+    <module name="LocalFinalVariableName"/>
+	<module name="RedundantImport"/>
+	<module name="UnusedImports"/>
+  
     <module name="OuterTypeFilename"/>
     <module name="IllegalTokenText">
       <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
@@ -180,7 +185,7 @@
              value="Type name ''{0}'' must match pattern ''{1}''."/>
     </module>
     <module name="MemberName">
-      <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9]*$"/>
+      <property name="format" value="^[a-z][a-z0-9]?[a-zA-Z0-9]*$"/>
       <message key="name.invalidPattern"
              value="Member name ''{0}'' must match pattern ''{1}''."/>
     </module>

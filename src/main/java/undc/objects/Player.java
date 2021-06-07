@@ -76,7 +76,7 @@ public class Player extends Entity {
     }
 
     public void setDirection(int dir) {
-        this.setImage(sprites[dir]);
+        this.setSprite(sprites[dir]);
         direction = dir;
     }
 

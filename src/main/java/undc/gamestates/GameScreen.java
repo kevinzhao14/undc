@@ -21,8 +21,8 @@ import java.util.ArrayList;
 
 public class GameScreen extends GameState {
     private static GameScreen instance;
-    private static int SANDBOX_WIDTH = 1000;
-    private static int SANDBOX_HEIGHT = 1000;
+    private static final int SANDBOX_WIDTH = 1000;
+    private static final int SANDBOX_HEIGHT = 1000;
 
     private Player player;
     private DungeonLayout dungeonLayout;
@@ -51,14 +51,14 @@ public class GameScreen extends GameState {
 
     public void newGame(GameMode mode) {
         if (mode == GameMode.SANDBOX) {
-            Controller.getDataManager().newGame("example", Difficulty.EASY, DataManager.WEAPONS[0]);
+            Controller.getDataManager().newGame("example", Difficulty.EASY, DataManager.getStartingWeapons()[0]);
 
             Room start = new Room(SANDBOX_HEIGHT,SANDBOX_WIDTH, (int) ((SANDBOX_WIDTH - Vars.i("sv_player_width")) / 2.0),
                     (int) (SANDBOX_HEIGHT / 2.0 - Vars.i("sv_player_height")), RoomType.STARTROOM);
-            start.setMonsters(new Monster[0]);
+            start.setMonsters(new ArrayList<>());
 
             Room exit = new Room(10, 10, 0, 0, RoomType.EXITROOM);
-            exit.setMonsters(new Monster[0]);
+            exit.setMonsters(new ArrayList<>());
 
             Room[][] arr = new Room[][]{new Room[]{start, exit}};
             dungeonLayout = new DungeonLayout(start, exit, arr);
@@ -73,7 +73,6 @@ public class GameScreen extends GameState {
     }
 
     public void start() {
-        System.out.println("Starting " + mode);
         if (mode == null) {
             Console.error("Game Mode not set!");
             return;
@@ -87,7 +86,6 @@ public class GameScreen extends GameState {
     }
 
     public boolean setRoom(Room newRoom) {
-        System.out.println("Setting game screen room");
         //store old room
         previous = room;
 
@@ -117,7 +115,6 @@ public class GameScreen extends GameState {
     }
 
     private void createRoom() {
-        System.out.println("Creating room");
         //set new room
         StackPane root = new StackPane();
 
@@ -132,7 +129,6 @@ public class GameScreen extends GameState {
         root.setStyle("-fx-background-color: #34311b");
         scene.setRoot(root);
         if (scene.getRoot().getChildrenUnmodifiable().size() > 0) {
-            System.out.println("Fading in");
             if (room.getType() != RoomType.CHALLENGEROOM || ((ChallengeRoom) room).isCompleted()) {
                 fadeIn(roomPane);
             } else {
@@ -362,7 +358,7 @@ public class GameScreen extends GameState {
         newGameButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
 
         newGameButton.setOnAction((e) -> {
-            Controller.setState(new HomeScreen(width, height));
+            Controller.setState(HomeScreen.getInstance());
         });
 
         restartButton.setOnAction((e) -> {
@@ -558,6 +554,9 @@ public class GameScreen extends GameState {
     }
 
     public void toggleInventory() {
+        if (!inventoryVisible) {
+            updateInventory();
+        }
         inventoryVisible = !inventoryVisible;
         inventory.setVisible(inventoryVisible);
     }

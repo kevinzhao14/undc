@@ -16,7 +16,7 @@ public class Room {
     private int startY;
     private boolean visited;
     private ArrayList<Obstacle> obstacles;
-    private Monster[] monsters;
+    private ArrayList<Monster> monsters;
     private ArrayList<DroppedItem> droppedItems;
     private ArrayList<ShotProjectile> projectiles;
     private Door topDoor;
@@ -94,7 +94,7 @@ public class Room {
      * Setter method assigning Monsters to Room
      * @param monsters array of Monsters we have to create
      */
-    public void setMonsters(Monster[] monsters) {
+    public void setMonsters(ArrayList<Monster> monsters) {
         this.monsters = monsters;
     }
     /**
@@ -184,7 +184,7 @@ public class Room {
      * Getter method for accessing all Monsters in Room
      * @return array of Monsters in Room
      */
-    public Monster[] getMonsters() {
+    public ArrayList<Monster> getMonsters() {
         return this.monsters;
     }
 

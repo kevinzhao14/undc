@@ -3,14 +3,16 @@ package undc.gamestates;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import undc.handlers.Vars;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
 public class PlayScreen extends GameState {
+    private static PlayScreen instance;
 
-    public PlayScreen(int width, int height) {
+    private PlayScreen(int width, int height) {
         super(width, height);
         try {
             URL url = new File("src/main/java/undc/fxml/PlayScreen.fxml").toURI().toURL();
@@ -20,5 +22,16 @@ public class PlayScreen extends GameState {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static PlayScreen getInstance() {
+        if (instance == null) {
+            instance = new PlayScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
+        }
+        return instance;
+    }
+
+    public static void resetInstance(int width, int height) {
+        instance = new PlayScreen(width, height);
     }
 }

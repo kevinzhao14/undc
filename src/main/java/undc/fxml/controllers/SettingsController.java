@@ -10,7 +10,6 @@ import javafx.scene.layout.AnchorPane;
 import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.gamestates.HomeScreen;
-import undc.handlers.Vars;
 import java.io.File;
 import java.io.IOException;
 
@@ -129,6 +128,6 @@ public class SettingsController {
     }
 
     public void back() {
-        Controller.setState(new HomeScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height")));
+        Controller.setState(HomeScreen.getInstance());
     }
 }

@@ -43,8 +43,12 @@ public abstract class CVar {
         return nick;
     }
 
-    public void setModifiable(boolean modifiable) {
-        this.modifiable = modifiable;
+    public boolean isModifiable() {
+        return modifiable;
+    }
+
+    public boolean requiresCheats() {
+        return requireCheats;
     }
 
     /**

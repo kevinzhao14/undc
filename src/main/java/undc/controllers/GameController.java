@@ -7,7 +7,6 @@ import undc.objects.*;
 import undc.gamestates.GameScreen;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseButton;
 
 import java.util.*;
 
@@ -98,7 +97,6 @@ public class GameController {
      * Updates data after room change.
      */
     public void updateRoom() {
-        System.out.println("Updating room");
         pause();
     }
 
@@ -166,6 +164,50 @@ public class GameController {
         pause();
         isStopped = true;
         if (Vars.DEBUG) Console.print("Game has been stopped.");
+    }
+
+    public void give(Item item, int quantity) {
+        if (item == null) {
+            Console.error("Item cannot be null.");
+            return;
+        }
+        if (quantity < 1 || quantity > item.getMaxStackSize()) {
+            Console.error("Invalid quantity.");
+            return;
+        }
+        for (int i = 0; i < quantity; i++) {
+            double x = player.getX() + player.getWidth() / 2;
+            double y = player.getY() + player.getHeight() / 2;
+            Image sprite = item.getSprite();
+            x -= sprite.getWidth() / 2;
+            y -= sprite.getHeight() / 2;
+
+            DroppedItem di = new DroppedItem(item, x, y, sprite.getWidth(), sprite.getHeight());
+            room.getDroppedItems().add(di);
+        }
+        refresh();
+    }
+
+    public void spawn(Entity ent, int x, int y) {
+        if (ent == null) {
+            Console.error("Invalid entity to spawn.");
+            return;
+        }
+        if (x < 0 || x + ent.getWidth() > room.getWidth()) {
+            Console.error("Invalid x value.");
+            return;
+        }
+        if (y < 0 || y + ent.getHeight() > room.getHeight()) {
+            Console.error("Invalid y value.");
+            return;
+        }
+        if (ent instanceof Monster) {
+            Monster m = new Monster((Monster) ent, 1);
+            m.setX(x);
+            m.setY(y);
+            room.getMonsters().add(m);
+        }
+        refresh();
     }
 
     /**
@@ -447,14 +489,14 @@ public class GameController {
                                 WeaponAmmo weaponAmmo = ((RangedWeapon) item.getItem()).getAmmo();
                                 //if the weapon's ammo exists & is the same as the dropped item
                                 if (weaponAmmo != null && weaponAmmo.getProjectile() != null && weaponAmmo.getProjectile().equals(a.getProjectile())) {
-                                    int maxChange = weaponAmmo.getBackupMax() - weaponAmmo.getBackupRemaining();
+                                    int maxChange = weaponAmmo.getBackupSize() - weaponAmmo.getBackupRemaining();
                                     if (a.getAmount() <= maxChange) {
                                         weaponAmmo.setBackupRemaining(weaponAmmo.getBackupRemaining() + a.getAmount());
                                         itemPickedUp = true;
                                         room.getDroppedItems().remove(i);
                                         i--;
                                     } else {
-                                        weaponAmmo.setBackupRemaining(weaponAmmo.getBackupMax());
+                                        weaponAmmo.setBackupRemaining(weaponAmmo.getBackupSize());
                                         a.setAmount(a.getAmount() - maxChange);
                                     }
                                     continue droploop;
@@ -572,7 +614,7 @@ public class GameController {
                     //check for entity collisions
                     newX = check.getX();
                     newY = check.getY();
-                    Collision<Monster> c = checkCollisions(room.getMonsters(), p, new Coords(newX, newY));
+                    Collision<Monster> c = checkCollisions(room.getMonsters().toArray(new Monster[0]), p, new Coords(newX, newY));
                     Monster m = c.getCollider();
                     //hit a monster
                     if (m != null) {
@@ -941,7 +983,7 @@ public class GameController {
 
                 //if next room is the exit, don't let player go through unless they have key
                 if (room.getType() == RoomType.EXITROOM && d instanceof ExitDoor) {
-                    return player.getInventory().contains(DataManager.EXITKEY);
+                    return player.getInventory().contains(DataManager.getExitKey());
 
                     // if in challenge room, don't let player leave if not completed
                 } else if (room instanceof ChallengeRoom && !((ChallengeRoom) room).isCompleted()) {

@@ -1,18 +1,28 @@
 package undc.objects;
-import javafx.scene.image.Image;
 
+import org.json.JSONObject;
+
+/**
+ * Represents a Key object. Can be used to unlock/open doors that are locked.
+ */
 public class Key extends Item {
-    public Key(String name, String path, boolean isDroppable) {
-        //note: keys are not stackable
-        super(new Image(path), name, 0, isDroppable);
+    private Key() {
+
     }
 
+    @Override
     public Item copy() {
-        return new Key(getName(), getSprite().getUrl(), isDroppable());
+        Key key = new Key();
+        copy(key);
+        return key;
     }
 
     //does nothing
     public void use() {
-        return;
+
+    }
+
+    static Key parseJSON(JSONObject o) {
+        return new Key();
     }
 }

@@ -21,10 +21,6 @@ import javafx.scene.layout.VBox;
 /**
  * Class implementation of the initial player configuration screen
  * for the Team Luckless Dungeon Crawler game.
- *
- * @author Manas Harbola
- * @version 1.0
- * @userid mharbola3
  */
 public class ConfigScreen extends GameState {
     //Application Window dimensions
@@ -72,10 +68,9 @@ public class ConfigScreen extends GameState {
         Label selectStarterWeapon = new Label("Select starter weapon:");
         selectStarterWeapon.setAlignment(Pos.TOP_LEFT);
         ToggleGroup weaponGroup = new ToggleGroup();
-        ArrayList<RadioButton> weaponButtons = new ArrayList<>(
-                DataManager.WEAPONS.length);
-        for (int i = 0; i < DataManager.WEAPONS.length; i++) {
-            weaponButtons.add(new RadioButton(DataManager.WEAPONS[i].getName()));
+        ArrayList<RadioButton> weaponButtons = new ArrayList<>(DataManager.getStartingWeapons().length);
+        for (int i = 0; i < DataManager.getStartingWeapons().length; i++) {
+            weaponButtons.add(new RadioButton(DataManager.getStartingWeapons()[i].getName()));
             weaponButtons.get(i).setToggleGroup(weaponGroup);
         }
 
@@ -126,7 +121,7 @@ public class ConfigScreen extends GameState {
             Weapon weaponRef = null;
             Difficulty difficultyRef;
 
-            for (Weapon w : DataManager.WEAPONS) {
+            for (Weapon w : DataManager.getStartingWeapons()) {
                 if (w.getName().equals(weaponName)) {
                     weaponRef = w;
                     break;

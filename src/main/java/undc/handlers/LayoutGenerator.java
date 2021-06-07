@@ -15,6 +15,9 @@ import undc.objects.Obstacle;
 import undc.objects.RangedWeapon;
 import undc.objects.Room;
 import undc.objects.RoomType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -68,27 +71,27 @@ public class LayoutGenerator {
 
     public LayoutGenerator() {
         //set challenge rooms
-        Item[] items = DataManager.ITEMS;
+        HashMap<Integer, Item> items = DataManager.ITEMS;
         cr1Rewards = new Inventory(2, 5);
-        RangedWeapon rl = ((RangedWeapon) items[6]).copy();
-        WeaponAmmo weaponAmmo = new WeaponAmmo(2, 50, DataManager.PROJECTILES[0].copy());
+        RangedWeapon rl = ((RangedWeapon) items.get(9)).copy();
+        WeaponAmmo weaponAmmo = new WeaponAmmo(2, 50, DataManager.PROJECTILES.get(0));
         weaponAmmo.setRemaining(2);
         weaponAmmo.setBackupRemaining(20);
         rl.setAmmo(weaponAmmo);
 
-        cr1Rewards.add(items[2], 1);
-        cr1Rewards.add(items[3], 1);
-        cr1Rewards.add(items[5], 2);
-        cr1Rewards.add(rl, 1);
+        cr1Rewards.add(items.get(5), 1); // large health potion
+        cr1Rewards.add(items.get(6), 1); // attack potion
+        cr1Rewards.add(items.get(8), 2); // bomb
+        cr1Rewards.add(rl, 1); //rocket launcher
 
         cr2Rewards = new Inventory(2, 5);
-        cr2Rewards.add(items[0], 3);
-        cr2Rewards.add(items[1], 2);
-        cr2Rewards.add(items[2], 1);
-        cr2Rewards.add(items[3], 2);
-        cr2Rewards.add(items[4], 1);
-        cr2Rewards.add(items[5], 3);
-        Ammunition rockets = (Ammunition) items[7].copy();
+        cr2Rewards.add(items.get(3), 3); // small health potion
+        cr2Rewards.add(items.get(4), 2); // medium health potion
+        cr2Rewards.add(items.get(5), 1); // large health potion
+        cr2Rewards.add(items.get(6), 2); // attack potion
+        cr2Rewards.add(items.get(7), 1); // dagger
+        cr2Rewards.add(items.get(8), 3); // bomb
+        Ammunition rockets = (Ammunition) items.get(10).copy(); // ammunition
         rockets.setAmount(20);
         cr2Rewards.add(rockets);
     }
@@ -97,7 +100,7 @@ public class LayoutGenerator {
         startRoom = new Room(ROOM_HEIGHT, ROOM_WIDTH, (int) ((ROOM_WIDTH
                 - Vars.i("sv_player_width")) / 2.0), (int) (ROOM_HEIGHT / 2.0
                 - Vars.i("sv_player_height")), RoomType.STARTROOM);
-        startRoom.setMonsters(new Monster[0]);
+        startRoom.setMonsters(new ArrayList<>());
         generateObstacles(startRoom);
 
         int exitWidth = 832;
@@ -106,10 +109,11 @@ public class LayoutGenerator {
         exitRoom = new Room(exitHeight, exitWidth, 100, 100, RoomType.EXITROOM);
         generateObstacles(exitRoom, 4);
 
-        Monster boss = DataManager.FINALBOSS;
-        boss.setX(exitWidth / 2 - boss.getWidth() / 2);
+        Monster boss = DataManager.getFinalBoss();
+        boss.setX(exitWidth / 2.0 - boss.getWidth() / 2);
         boss.setY(exitHeight - boss.getHeight() - 5);
-        exitRoom.setMonsters(new Monster[]{DataManager.FINALBOSS});
+        exitRoom.setMonsters(new ArrayList<>());
+        exitRoom.getMonsters().add(DataManager.getFinalBoss());
         ExitDoor ed = new ExitDoor((exitWidth - DOORTOP_WIDTH) / 2,
                 exitHeight - 1, DOORTOP_WIDTH, DOORTOP_HEIGHT);
         exitRoom.setTopDoor(ed);
@@ -313,8 +317,8 @@ public class LayoutGenerator {
         if (room instanceof ChallengeRoom) {
             numMonsters = 5;
         }
-        Monster[] monsters = new Monster[numMonsters];
-        for (int i = 0; i < monsters.length; i++) {
+        ArrayList<Monster> monsters = new ArrayList<>();
+        for (int i = 0; i < numMonsters; i++) {
             int n = (int) (Math.random() * 3);
             Difficulty diff = Controller.getDataManager().getDifficulty();
             double modifier = 1;
@@ -323,12 +327,12 @@ public class LayoutGenerator {
             } else if (diff == Difficulty.HARD) {
                 modifier = Vars.d("sv_modifier_hard");
             }
-            monsters[i] = new Monster(Controller.getDataManager().MONSTERS[n], modifier);
-
+            Monster m = new Monster(DataManager.MONSTERS.get(n), modifier);
             int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
             int monsterY = (int) (Math.random() * (room.getHeight() - 39)) + 20;
-            monsters[i].setX(monsterX);
-            monsters[i].setY(monsterY);
+            m.setX(monsterX);
+            m.setY(monsterY);
+            monsters.add(m);
         }
         room.setMonsters(monsters);
     }
@@ -340,8 +344,8 @@ public class LayoutGenerator {
         int numObstacles = rand.nextInt(modifier * (max - min) + 1) + modifier * min;
         for (int i = 0; i < numObstacles; i++) {
             //random num for obstacle
-            int index = rand.nextInt(DataManager.OBSTACLES.length);
-            Obstacle o = DataManager.OBSTACLES[index].copy();
+            int index = rand.nextInt(DataManager.OBSTACLES.size());
+            Obstacle o = DataManager.OBSTACLES.get(index).copy();
             int posX;
             int posY;
             boolean validPos;

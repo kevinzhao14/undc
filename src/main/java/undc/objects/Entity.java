@@ -1,72 +1,110 @@
 package undc.objects;
 
-
 import javafx.scene.image.Image;
 
 /**
- * Implementation of the Entity abstract class
- *
- * @author Manas Harbola
- * @version 1.0
+ * Representation of an Entity object. Entities are objects that are "alive" and can interact with things in the game.
  */
 
 public abstract class Entity implements Movable {
-    private int maxHealth;
-    private double health;
-    private double attack;
-    private double height;
-    private double width;
+    protected int maxHealth;
+    protected double health;
+    protected double attack;
+    protected Image sprite;
+    protected double height;
+    protected double width;
     private double posX;
     private double posY;
     private double attackCooldown;
-    private Image node;
-    private double spriteWidth;
-    private double spriteHeight;
 
-    public Entity(int maxHealth, double attack, double height, double width, String node) {
+    /**
+     * Constructor.
+     * @param maxHealth Max HP of the entity
+     * @param attack Base attack damage
+     * @param height Height of the entity
+     * @param width Width of the entity
+     * @param sprite The sprite of the entity (URL)
+     */
+    public Entity(int maxHealth, double attack, double height, double width, String sprite) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.attack = attack;
         this.height = height;
         this.width = width;
-        this.node = (node == null) ? null : new Image(node);
-        this.spriteHeight = 1;
-        this.spriteWidth = 1;
+        this.sprite = (sprite == null) ? null : new Image(sprite);
+    }
+
+    /**
+     * Constructor used by some children.
+     */
+    protected Entity() {
+        posX = 0;
+        posY = 0;
+        attackCooldown = 0;
+    }
+
+    /**
+     * Method to copy an Entity's data to another entity.
+     * @param copy The Entity to copy the data to
+     */
+    protected void copy(Entity copy) {
+        copy.maxHealth = this.maxHealth;
+        copy.health = this.health;
+        copy.attack = this.attack;
+        copy.height = this.height;
+        copy.width = this.width;
+        copy.posX = this.posX;
+        copy.posY = this.posY;
+        copy.attackCooldown = 0;
+        copy.sprite = this.sprite;
     }
 
     public int getMaxHealth() {
         return maxHealth;
     }
+
     public double getHealth() {
         return this.health;
     }
+
     public double getAttack() {
         return this.attack;
     }
+
     @Override
     public double getHeight() {
         return this.height;
     }
+
     @Override
     public double getWidth() {
         return this.width;
     }
+
     @Override
     public double getX() {
         return this.posX;
     }
+
     @Override
     public double getY() {
         return this.posY;
     }
+
     @Override
     public void setX(double newX) {
         this.posX = newX;
     }
+
     @Override
     public void setY(double newY) {
         this.posY = newY;
     }
+
+    /**
+     * Sets the health of the Entity.
+     * @param newHealth New health of the Entity
+     */
     public void setHealth(double newHealth) {
         if (newHealth < 0 || newHealth > this.maxHealth) {
             throw new IllegalArgumentException("Invalid new health");
@@ -82,28 +120,20 @@ public abstract class Entity implements Movable {
         this.attackCooldown = attackCooldown;
     }
 
-    public void setNode(String node) {
-        this.node = new Image(node);
+    public void setSprite(String spriteUrl) {
+        this.sprite = new Image(spriteUrl);
     }
 
-    public Image getImage() {
-        return node;
+    public void setSprite(Image sprite) {
+        this.sprite = sprite;
     }
 
-    public void setImage(Image image) {
-        this.node = image;
+    public Image getSprite() {
+        return sprite;
     }
 
     public String toString() {
         return "HP: " + health + "/" + maxHealth + " | Pos: " + posX + ", " + posY + " | Size: "
-                + height + ", " + width + " | Node: " + node;
-    }
-
-    public double getSpriteWidth() {
-        return spriteWidth;
-    }
-
-    public double getSpriteHeight() {
-        return spriteHeight;
+                + height + ", " + width;
     }
 }

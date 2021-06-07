@@ -1,9 +1,15 @@
 package undc.objects;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.gamestates.GameScreen;
 import javafx.application.Platform;
 
+/**
+ * Represents a ranged weapon. Ranged weapons are weapons that fire a projectile and can deal damage from a distance.
+ */
 public class RangedWeapon extends Weapon {
     private WeaponAmmo weaponAmmo;
 
@@ -16,29 +22,24 @@ public class RangedWeapon extends Weapon {
     private boolean isReloading;
     private double delay;
 
-    public RangedWeapon(String name, String sprite, double damage, boolean droppable,
-                        double reloadTime, double fireRate, WeaponAmmo weaponAmmo) {
-        super(name, sprite, damage, 1, droppable);
-        this.reloadTime = reloadTime;
-        this.fireRate = fireRate;
+    private RangedWeapon() {
         isReloading = false;
         delay = 0;
-
-        this.weaponAmmo = weaponAmmo;
-    }
-    public RangedWeapon(String name, String sprite, double damage, boolean droppable,
-                        double reloadTime, double fireRate) {
-        this(name, sprite, damage, droppable, reloadTime, fireRate, null);
-        WeaponAmmo weaponAmmo = new WeaponAmmo(0, 0, null);
-        this.weaponAmmo = weaponAmmo;
     }
 
+    @Override
     public RangedWeapon copy() {
-        RangedWeapon nw = new RangedWeapon(getName(), getSprite().getUrl(), getDamage(),
-                isDroppable(), reloadTime, fireRate, weaponAmmo.copy());
-        return nw;
+        RangedWeapon weapon = new RangedWeapon();
+        copy(weapon);
+        weapon.weaponAmmo = this.weaponAmmo.copy();
+        weapon.reloadTime = this.reloadTime;
+        weapon.fireRate = this.fireRate;
+        return weapon;
     }
 
+    /**
+     * Method used to start reloading the weapon.
+     */
     public void reload() {
         if (weaponAmmo.getRemaining() >= weaponAmmo.getSize()) {
             return;
@@ -48,6 +49,9 @@ public class RangedWeapon extends Weapon {
         Platform.runLater(() -> ((GameScreen) Controller.getState()).updateHud());
     }
 
+    /**
+     * Method used at the conclusion of reloading to fill the ammo capacity.
+     */
     public void finishReloading() {
         int change = weaponAmmo.getSize() - weaponAmmo.getRemaining();
         weaponAmmo.setRemaining(weaponAmmo.getSize());
@@ -64,10 +68,6 @@ public class RangedWeapon extends Weapon {
         this.weaponAmmo = weaponAmmo;
     }
 
-    public double getReloadTime() {
-        return reloadTime;
-    }
-
     public double getFireRate() {
         return fireRate;
     }
@@ -76,15 +76,49 @@ public class RangedWeapon extends Weapon {
         return isReloading;
     }
 
-    public void setReloading(boolean reloading) {
-        isReloading = reloading;
-    }
-
     public double getDelay() {
         return delay;
     }
 
     public void setDelay(double delay) {
         this.delay = delay;
+    }
+
+    /**
+     * Method used to parse JSON data into a RangedWeapon.
+     * @param o JSON object to parse
+     * @return Returns a RangedWeapon with the data, null otherwise
+     */
+    static RangedWeapon parseJSON(JSONObject o) {
+        RangedWeapon weapon = new RangedWeapon();
+        try {
+            weapon.reloadTime = o.getDouble("reloadTime");
+        } catch (JSONException e) {
+            Console.error("Invalid value for ranged weapon reload time.");
+            return null;
+        }
+        try {
+            weapon.fireRate = o.getDouble("fireRate");
+        } catch (JSONException e) {
+            Console.error("Invalid value for ranged weapon fire rate.");
+            return null;
+        }
+        try {
+            weapon.damage = o.getDouble("damage");
+        } catch (JSONException e) {
+            weapon.damage = 1;
+        }
+        try {
+            weapon.attackSpeed = o.getDouble("attackSpeed");
+        } catch (JSONException e) {
+            weapon.attackSpeed = 1;
+        }
+        try {
+            weapon.weaponAmmo = WeaponAmmo.parseJSON(o.getJSONObject("ammo"));
+        } catch (JSONException e) {
+            Console.error("Invalid value for ranged weapon ammo.");
+            return null;
+        }
+        return weapon;
     }
 }
