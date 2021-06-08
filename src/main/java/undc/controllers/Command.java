@@ -9,7 +9,6 @@ import undc.objects.Monster;
 import undc.objects.Obstacle;
 import undc.objects.Projectile;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -58,7 +57,6 @@ class Command {
         commands.add(new Command("give", "<id> [quantity]", "Gives the player an item(s)", Command::give));
         commands.add(new Command("spawn", "<id> [x] [y]", "Spawns an entity. Defaults to the player's coordinates.", Command::spawn));
 
-
         //add cvars
         for (CVar v : Vars.all()) {
             if (!v.isModifiable()) {
@@ -104,18 +102,6 @@ class Command {
      */
 
     private static void test(String[] args) {
-        for (HashMap.Entry<Integer, Item> e : DataManager.ITEMS.entrySet()) {
-            System.out.println(e.getValue());
-        }
-        for (HashMap.Entry<Integer, Monster> e : DataManager.MONSTERS.entrySet()) {
-            System.out.println(e.getValue());
-        }
-        for (HashMap.Entry<Integer, Projectile> e : DataManager.PROJECTILES.entrySet()) {
-            System.out.println(e.getValue());
-        }
-        for (HashMap.Entry<Integer, Obstacle> e : DataManager.OBSTACLES.entrySet()) {
-            System.out.println(e.getValue());
-        }
 
     }
 

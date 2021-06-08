@@ -238,7 +238,7 @@ public class Console {
     private static void handleKey(String key) {
         String control = Controls.getInstance().getControl(key);
 
-        if (control.equals("console")) { // toggle console
+        if (control.equals("console") || control.equals("pause")) { // toggle console
             GameScreen.getInstance().toggleConsole();
             GameController.getInstance().pause();
         } else if (key.equals("UP")) { // go to previous command

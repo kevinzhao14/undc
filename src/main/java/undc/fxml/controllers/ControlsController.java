@@ -1,7 +1,6 @@
 package undc.fxml.controllers;
 
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -9,7 +8,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import undc.controllers.Console;
 import undc.controllers.Controller;
@@ -28,11 +29,11 @@ public class ControlsController {
     private VBox master;
     @FXML
     private Button cancelButton;
+    @FXML
+    private GridPane grid;
 
     private boolean buttonActive = false; // whether or not a button is clicked
-    private int clicks = 0;
     private Button activeButton; // currently active button
-    private String currentKey;
 
     /**
      * Constructor for controls settings UI. Delays the runtime to properly display the page.
@@ -56,7 +57,9 @@ public class ControlsController {
                 return;
             }
             if (n.getId() != null) {
-                ((Button) n).setText(temp.get(n.getId()));
+                Button b = (Button) n;
+                b.setText(temp.get(n.getId()));
+                b.setOnMouseReleased(e -> changeKey(e, b));
             }
         }
     }
@@ -71,54 +74,36 @@ public class ControlsController {
 
     /**
      * Changes a control to a pressed key by calling handleChangeKey if proper conditions are met.
-     * @param ae ActionEvent triggered on key press, mouse click, or scroll wheel
+     * @param button ActionEvent triggered on key press, mouse click, or scroll wheel
      */
-    public void changeKey(ActionEvent ae) {
-        if (buttonActive) {
+    public void changeKey(MouseEvent me, Button button) {
+        if (buttonActive || me.getButton() != MouseButton.PRIMARY) {
             return;
         }
         buttonActive = true;
-        if (!(ae.getSource() instanceof Button)) {
-            Console.error("Invalid button type.");
-            return;
-        }
-        Button button = (Button) ae.getSource();
 
         // Setting up values for functionality of cancel method and cancel button
         cancelButton.setVisible(true);
         activeButton = button;
-        currentKey = activeButton.getText();
 
         button.setText("Press a key");
 
         Scene scene = Controller.getState().getScene();
 
-
-        scene.setOnKeyPressed(e -> {
+        scene.setOnKeyReleased(e -> {
             if (e.getCode() == KeyCode.ESCAPE) {
                 handleChangeKey(button, "cancel");
             } else {
                 handleChangeKey(button, e.getCode().toString());
             }
         });
-        scene.setOnMouseClicked(e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                clicks = (clicks + 1) % 2;
-            }
-            handleChangeKey(button, Controls.mbStringify(e.getButton()));
+        scene.setOnMousePressed(e -> handleChangeKey(button, Controls.mbStringify(e.getButton())));
+        grid.setOnScroll(e -> {
+            handleChangeKey(button, Controls.scrollStringify(e.getDeltaY()));
+            e.consume();
         });
-        scene.setOnScroll(e -> handleChangeKey(button, Controls.scrollStringify(e.getDeltaY())));
         // Allows mouse controls to be set by clicking on the button
-        button.setOnMouseClicked(e -> {
-            if (e.getButton() == MouseButton.SECONDARY) {
-                handleChangeKey(button, Controls.mbStringify(e.getButton()));
-            } else if (button.getText().equals("Press a key")) {
-                clicks = (clicks + 1) % 2;
-                if (clicks == 0) {
-                    handleChangeKey(button, Controls.mbStringify(e.getButton()));
-                }
-            }
-        });
+        button.setOnMouseReleased(e -> handleChangeKey(button, Controls.mbStringify(e.getButton())));
     }
 
     /**
@@ -154,9 +139,9 @@ public class ControlsController {
         }
         resetHandlers();
         buttonActive = false;
-        clicks = 0;
-
         cancelButton.setVisible(false);
+        button.setOnMouseReleased(e -> changeKey(e, button));
+        grid.setOnScroll(this::scroll);
     }
 
     /**
@@ -168,7 +153,6 @@ public class ControlsController {
         scene.setOnMouseClicked(e -> {});
         scene.setOnScroll(e -> {});
     }
-
 
     /**
      * Calls resetHandlers and reloads page.
@@ -183,6 +167,6 @@ public class ControlsController {
      * Resets the most recently changed control button or the control button that is currently being changed.
      */
     public void cancel() {
-        handleChangeKey(activeButton, currentKey);
+        handleChangeKey(activeButton, Controls.getInstance().getKey(activeButton.getId()));
     }
 }
