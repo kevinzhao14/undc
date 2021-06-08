@@ -3,12 +3,16 @@ package undc.controllers;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import undc.gamestates.GameScreen;
 import undc.handlers.Controls;
+import undc.handlers.DraggableNode;
+import undc.handlers.ResizableNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,10 +30,10 @@ public class Console {
     private static final String PREFIX = "> "; // Prefix for printing the user's command
     private static final int WIDTH = 600; // Default width of the console
     private static final int HEIGHT = 600; // Default height of the console
-    private static final LinkedList<Label> history = new LinkedList<>(); // List of all messages, max size of MAX_SIZE
-    static final ArrayList<Command> commands = Command.load(); // List of all available commands
+    private static final LinkedList<Label> HISTORY = new LinkedList<>(); // List of all messages, max size of MAX_SIZE
+    static final ArrayList<Command> COMMANDS = Command.load(); // List of all available commands
     // List of all issued commands by the user
-    private static final ArrayList<String> commandHistory = new ArrayList<>();
+    private static final ArrayList<String> COMMAND_HISTORY = new ArrayList<>();
 
     /*
      * Modified Variables
@@ -51,16 +55,15 @@ public class Console {
             return;
         }
         System.out.println(str);
-        if (history.size() >= MAX_SIZE) {
-            history.remove();
+        if (HISTORY.size() >= MAX_SIZE) {
+            HISTORY.remove();
         }
         // create temporary Label and add it to the history
         Label temp = new Label(str);
-        temp.setMaxWidth(WIDTH);
         temp.setWrapText(true);
         temp.setTextFill(Color.web(color));
         temp.setStyle("-fx-padding: 2px");
-        history.add(temp);
+        HISTORY.add(temp);
         refresh();
     }
 
@@ -91,7 +94,7 @@ public class Console {
         String[] cmd = command.split(" ");
         String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
 
-        for (Command c : commands) {
+        for (Command c : COMMANDS) {
             if (c.getName().equalsIgnoreCase(cmd[0])) {
                 c.run(args);
                 Console.silent = false;
@@ -119,7 +122,7 @@ public class Console {
             create();
         }
         historyBox.getChildren().clear();
-        historyBox.getChildren().addAll(history);
+        historyBox.getChildren().addAll(HISTORY);
 
         //applyCss & layout need to be called for the ScrollPane to recalculate its size so that
         //setting the vvalue works properly
@@ -128,8 +131,11 @@ public class Console {
         historyScroll.setVvalue(1);
     }
 
+    /**
+     * Clears the console of all messages.
+     */
     public static void clear() {
-        history.clear();
+        HISTORY.clear();
         refresh();
         historyScroll.setVvalue(0);
     }
@@ -154,66 +160,80 @@ public class Console {
         if (scene != null) {
             return;
         }
-        // overall containers
+        // overall container
         scene = new Pane();
-        VBox box = new VBox();
-        box.setId("box");
 
-        // set size & positioning for the console box
-        box.setPrefHeight(HEIGHT);
-        box.setPrefWidth(WIDTH);
+        // Box of the console - ie the actual console itself
+        BorderPane box = new BorderPane();
+        box.setId("box");
+        box.setPrefSize(WIDTH, HEIGHT);
+        box.setMinSize(WIDTH / 2.0, HEIGHT / 2.0);
+        box.setMaxSize(WIDTH * 3, HEIGHT * 3);
         box.setLayoutX(50);
         box.setLayoutY(50);
         // makes the console draggable, via Draggable library
-        new Draggable.Nature(box);
+        DraggableNode.add(box);
 
         // stuff for the close button that is actually a label
-        HBox closeBtnBox = new HBox();
         Label closeBtn = new Label("×");
-        closeBtnBox.getChildren().add(closeBtn);
-        closeBtnBox.setPrefWidth(WIDTH);
-        closeBtnBox.setId("close-button-box");
         closeBtn.setId("close-button");
-
         closeBtn.setOnMouseClicked(e -> {
             GameScreen.getInstance().toggleConsole();
             GameController.getInstance().pause();
         });
 
+        // container for the close button
+        HBox closeBtnBox = new HBox();
+        closeBtnBox.getChildren().add(closeBtn);
+        closeBtnBox.setId("close-button-box");
+
         // stuff for the scrollpane & messages box
         historyScroll = new ScrollPane();
-        historyScroll.setFitToWidth(true);
         historyScroll.setId("history-scroll");
 
+        // box that holds the messages
         historyBox = new VBox();
-        historyBox.setPrefWidth(WIDTH);
-        historyBox.setPrefHeight(HEIGHT - 30);
         historyBox.setId("history-box");
-        refresh();
-        historyScroll.setVvalue(0);
         // controls the scroll speed of the scrollpane
         historyBox.setOnScroll(e -> historyScroll.setVvalue(historyScroll.getVvalue() - e.getDeltaY() * 0.0025));
 
-        VBox spacer = new VBox();
-        spacer.getStyleClass().add("spacer");
-
         // stuff for the input field
         input = new TextField();
-        input.setPrefHeight(30);
-        input.setMaxWidth(WIDTH);
         input.setId("input");
 
         input.setOnAction((e) -> {
             commandPos = -1;
-            commandHistory.add(0, input.getText());
+            COMMAND_HISTORY.add(0, input.getText());
             run(input.getText());
             input.clear();
         });
 
         input.setOnKeyPressed(e -> handleKey(e.getCode().toString()));
 
+        // image/area used to resize the console
+        ImageView resizeArea = new ImageView("icons/resizable.png");
+        resizeArea.setId("resize");
+        resizeArea.setPickOnBounds(true); // required for transparent pixels to fire mouse events
+        // size needs to be set here because there's no option in css :(
+        resizeArea.setFitWidth(8);
+        resizeArea.setFitHeight(8);
+
+        // container for the resize area
+        HBox resizeContainer = new HBox();
+        resizeContainer.getChildren().add(resizeArea);
+        resizeContainer.setId("resize-container");
+        ResizableNode.add(resizeArea, ResizableNode.ResizeDirection.ALL, box);
+
+        // box that holds the stuff on the bottom (input & resize area)
+        VBox bottomBox = new VBox();
+        bottomBox.setId("bottombox");
+        bottomBox.getChildren().addAll(input, resizeContainer);
+
+        // add everything
         historyScroll.setContent(historyBox);
-        box.getChildren().addAll(closeBtnBox, historyScroll, spacer, input);
+        box.setTop(closeBtnBox);
+        box.setCenter(historyScroll);
+        box.setBottom(bottomBox);
         scene.getChildren().add(box);
         scene.getStylesheets().add("styles/console.css");
     }
@@ -222,11 +242,11 @@ public class Console {
      * Loads a previous command into the input box, based on commandPos and commandHistory.
      */
     private static void loadCommand() {
-        if (commandPos < -1 || commandPos >= commandHistory.size()) {
+        if (commandPos < -1 || commandPos >= COMMAND_HISTORY.size()) {
             error("Could not load command. Position out of bounds.");
             return;
         }
-        String command = commandPos == -1 ? "" : commandHistory.get(commandPos);
+        String command = commandPos == -1 ? "" : COMMAND_HISTORY.get(commandPos);
         input.setText(command);
         input.positionCaret(command.length());
     }
@@ -243,8 +263,8 @@ public class Console {
             GameController.getInstance().pause();
         } else if (key.equals("UP")) { // go to previous command
             commandPos++;
-            if (commandPos >= commandHistory.size()) {
-                commandPos = commandHistory.size() - 1;
+            if (commandPos >= COMMAND_HISTORY.size()) {
+                commandPos = COMMAND_HISTORY.size() - 1;
             }
             loadCommand();
         } else if (key.equals("DOWN")) { // go to next command

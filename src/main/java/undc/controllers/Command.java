@@ -6,23 +6,28 @@ import undc.handlers.Vars;
 import undc.objects.CVar;
 import undc.objects.Item;
 import undc.objects.Monster;
-import undc.objects.Obstacle;
-import undc.objects.Projectile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 class Command {
     String name;
     String desc;
     String format;
-    private CommandObj obj;
 
-    public Command(String name, String format, String desc, CommandObj obj) {
+    private final CommandObj obj;
+
+    /**
+     * Constructor for a Command.
+     * @param name Name of the command, used to run the command
+     * @param format - Format of the command after the name. &lt;foo&gt; for required, [foo] for optional param
+     * @param desc - Description of the command & what it does
+     * @param runner Code to run when the command is called
+     */
+    public Command(String name, String format, String desc, CommandObj runner) {
         this.name = name;
         this.format = format;
         this.desc = desc;
-        this.obj = obj;
+        this.obj = runner;
     }
 
     public void run(String[] args) {
@@ -45,6 +50,10 @@ class Command {
         void run(String[] args);
     }
 
+    /**
+     * Returns a list of all of the commands.
+     * @return Returns a list of all of the commands available
+     */
     public static ArrayList<Command> load() {
         ArrayList<Command> commands = new ArrayList<>();
         commands.add(new Command("test", "", "TEST", Command::test));
@@ -55,36 +64,33 @@ class Command {
         commands.add(new Command("clear", "", "Clears the console.", Command::clear));
         commands.add(new Command("quit", "", "Quits the game.", Command::quit));
         commands.add(new Command("give", "<id> [quantity]", "Gives the player an item(s)", Command::give));
-        commands.add(new Command("spawn", "<id> [x] [y]", "Spawns an entity. Defaults to the player's coordinates.", Command::spawn));
+        commands.add(new Command("spawn", "<id> [x] [y]", "Spawns an entity. "
+                + "Defaults to the player's coordinates.", Command::spawn));
 
         //add cvars
         for (CVar v : Vars.all()) {
             if (!v.isModifiable()) {
                 continue;
             }
-            String desc = "Returns or sets the value of " + v.getName() + "." + (v.requiresCheats() ? " Requires cheats." : "");
-            Command c = new Command(v.getName(), "[value]", desc, e -> cvar(strArrAdd(e, 0, v.getName())));
+            String desc = "Returns or sets the value of " + v.getName() + "."
+                    + (v.requiresCheats() ? " Requires cheats." : "");
+            Command c = new Command(v.getName(), "[value]", desc, e -> cvar(arrAddToFront(e, v.getName())));
             commands.add(c);
         }
 
         return commands;
     }
 
-    private static String[] strArrAdd(String[] arr, int index, String elem) {
+    /**
+     * Adds a String to the front of an array.
+     * @param arr Array to add to
+     * @param elem String to add
+     * @return Returns a new array with the string at index 0
+     */
+    private static String[] arrAddToFront(String[] arr, String elem) {
         String[] newArr = new String[arr.length + 1];
-        if (arr.length == 0) {
-            newArr[0] = elem;
-        }
-        for (int i = 0; i < arr.length; i++) {
-            if (i == index) {
-                newArr[i] = elem;
-            }
-            if (i >= index) {
-                newArr[i + 1] = arr[i];
-            } else {
-                newArr[i] = arr[i];
-            }
-        }
+        newArr[0] = elem;
+        System.arraycopy(arr, 0, newArr, 1, arr.length);
         return newArr;
     }
 
@@ -105,13 +111,10 @@ class Command {
 
     }
 
-    private static void echo(String[] args) {
-        if (args.length != 1) {
-            Console.error("Invalid arguments for echo.");
-        }
-        Console.print(args[0]);
-    }
-
+    /**
+     * Binds a command to a key or gets what command is bound to a key.
+     * @param args Arguments
+     */
     private static void bind(String[] args) {
         if (args.length == 2) { // New bind. Format: bind <key> <command>
             String key = clean(args[0]);
@@ -131,6 +134,10 @@ class Command {
         }
     }
 
+    /**
+     * Unbinds a key.
+     * @param args Arguments
+     */
     private static void unbind(String[] args) {
         if (args.length != 1) {
             Console.error("Invalid arguments for unbind.");
@@ -140,6 +147,10 @@ class Command {
         Controls.getInstance().removeKey(key);
     }
 
+    /**
+     * Gets or sets the value of a CVar.
+     * @param args Arguments
+     */
     private static void cvar(String[] args) {
         if (!(args.length == 1 || args.length == 2)) {
             Console.error("Invalid arguments for the cvar.");
@@ -164,6 +175,10 @@ class Command {
         }
     }
 
+    /**
+     * Resets the value of a CVar to its default.
+     * @param args Arguments
+     */
     private static void reset(String[] args) {
         if (args.length != 1) {
             Console.error("Invalid arguments for reset.");
@@ -179,6 +194,10 @@ class Command {
         Console.print(var + " was reset.");
     }
 
+    /**
+     * Finds all commands that have a given string.
+     * @param args Arguments
+     */
     private static void find(String[] args) {
         if (args.length != 1) {
             Console.run("find \"\"", false);
@@ -186,7 +205,7 @@ class Command {
         }
         String search = clean(args[0]);
         StringBuilder res = new StringBuilder();
-        for (Command c : Console.commands) {
+        for (Command c : Console.COMMANDS) {
             if (c.getName().contains(search)) {
                 res.append(c.getName());
                 res.append(c.getFormat().length() > 0 ? " " + c.getFormat() : "");
@@ -209,6 +228,10 @@ class Command {
         Controller.quit();
     }
 
+    /**
+     * Gives the player an item with a specified quantity or 1.
+     * @param args Arguments
+     */
     private static void give(String[] args) {
         if (!Vars.CHEATS) {
             Console.error("Cheats are disabled.");
@@ -221,7 +244,6 @@ class Command {
         // Give 1 quantity
         if (args.length == 1) {
             Console.run("give " + args[0] + " 1", false);
-            return;
         } else {
             try {
                 int id = Integer.parseInt(args[0]);
@@ -238,11 +260,14 @@ class Command {
                 GameController.getInstance().give(item, quantity);
             } catch (NumberFormatException e) {
                 Console.error("Invalid argument values for give.");
-                return;
             }
         }
     }
 
+    /**
+     * Spawns an entity at the specified location.
+     * @param args Arguments
+     */
     private static void spawn(String[] args) {
         if (!Vars.CHEATS) {
             Console.error("Cheats are disabled.");
@@ -255,7 +280,6 @@ class Command {
         //spawn at 0,0
         if (args.length == 1) {
             Console.run("spawn " + args[0] + " 0 0", false);
-            return;
         } else {
             try {
                 int id = Integer.parseInt(args[0]);
@@ -273,7 +297,6 @@ class Command {
                 GameController.getInstance().spawn(m, x, y);
             } catch (NumberFormatException e) {
                 Console.error("Invalid argument values for spawn.");
-                return;
             }
         }
     }

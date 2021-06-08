@@ -3,15 +3,15 @@
     -fx-faint-focus-color: transparent;
     -fx-font-family: monospace;
 }
-.spacer {
-    -fx-padding: 5px;
+#bottombox {
+    -fx-padding: 5px 0 0 0;
 }
 #box {
     -fx-font-size: 12px;
     -fx-border-width: 1px;
     -fx-border-color: #aaa;
     -fx-background-color: #eee;
-    -fx-padding: 2px 7px 7px 7px;
+    -fx-padding: 2px 7px 2px 7px;
     -fx-background-radius: 3px;
     -fx-border-radius: 3px;
 }
@@ -22,6 +22,8 @@
 #history-scroll {
     -fx-border-color: #aaa;
     -fx-border-width: 1px;
+    -fx-fit-to-width: true;
+    -fx-fit-to-height: true;
 }
 #input {
     -fx-font-size: 12px;
@@ -30,6 +32,7 @@
     -fx-border-color: #aaa;
     -fx-border-width: 1px;
     -fx-padding: 5px;
+    -fx-pref-height: 30px;
 }
 #close-button {
     -fx-text-fill: #777;
@@ -46,4 +49,13 @@
 #close-button-box {
     -fx-alignment: center-right;
     -fx-padding: 0 0 2px 0;
+}
+#resize-container {
+    -fx-alignment: center-right;
+    -fx-padding: 5px 0 2px 0;
+}
+#resize {
+    -fx-translate-x: 4px;
+    -fx-translate-y: 1px;
+    -fx-cursor: se-resize;
 }
