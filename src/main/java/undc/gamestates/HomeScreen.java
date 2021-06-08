@@ -1,14 +1,14 @@
 package undc.gamestates;
 
-import javafx.application.Platform;
-import undc.controllers.Controller;
-import javafx.geometry.Pos;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import undc.controllers.Console;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import undc.handlers.Vars;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 /**
  * HomeScreen Page for the Dungeon Crawler.
@@ -24,30 +24,17 @@ public class HomeScreen extends GameState {
      */
     private HomeScreen(int width, int height) {
         super(width, height);
-        Button startBtn = new Button("Start");
-        startBtn.setId("start-button");
-
-        Button settingsBtn = new Button("Settings");
-        settingsBtn.setId("settings-button");
-
-        Button exitBtn = new Button("Exit Game");
-        exitBtn.setId("exit-button");
-
-        // Event handling for start, settings, and exit button
-        startBtn.setOnAction(event -> Controller.setState(PlayScreen.getInstance()));
-        settingsBtn.setOnAction(event -> Controller.setState(SettingsScreen.getInstance()));
-        exitBtn.setOnAction(event -> Platform.exit());
-
-        Label label = new Label("Title Here");
-        label.getStyleClass().add("title");
-
-        VBox layout = new VBox(label, startBtn, settingsBtn, exitBtn);
-        layout.setAlignment(Pos.CENTER);
-        layout.setSpacing(10);
-
-        StackPane root = new StackPane(layout);
-        scene = new Scene(root, width, height);
-        scene.getStylesheets().addAll("styles/menu.css", "styles/global.css");
+        Parent root;
+        try {
+            URL url = new File("src/main/java/undc/fxml/HomeScreen.fxml").toURI().toURL();
+            root = FXMLLoader.load(url);
+        } catch (IOException e) {
+            Console.error("Failed to load home screen.");
+            return;
+        }
+        scene = new Scene(root, this.width, this.height);
+        scene.getStylesheets().add("styles/global.css");
+        scene.getStylesheets().add("styles/home.css");
     }
 
     /**
