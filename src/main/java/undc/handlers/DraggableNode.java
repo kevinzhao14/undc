@@ -21,6 +21,10 @@ public class DraggableNode {
         LIST.add(new DraggableObject(node));
     }
 
+    public static void add(Node eventNode, Node... dragNodes) {
+        LIST.add(new DraggableObject(eventNode, dragNodes));
+    }
+
     /**
      * Class that actually makes a Node draggable and handles dragging.
      */

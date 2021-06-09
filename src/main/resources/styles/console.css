@@ -4,19 +4,23 @@
     -fx-font-family: monospace;
 }
 #bottombox {
-    -fx-padding: 5px 0 0 0;
+    -fx-padding: 7px 0 0 0;
 }
 #box {
     -fx-font-size: 12px;
     -fx-border-width: 1px;
     -fx-border-color: #aaa;
     -fx-background-color: #eee;
-    -fx-padding: 2px 7px 2px 7px;
+    -fx-padding: 2px 8px 2px 8px;
     -fx-background-radius: 3px;
     -fx-border-radius: 3px;
 }
 #history-box {
     -fx-background-color: #ddd;
+    -fx-padding: 2px;
+}
+#history-box Label {
+    -fx-wrap-text: true;
     -fx-padding: 2px;
 }
 #history-scroll {
@@ -42,6 +46,8 @@
     -fx-background-color: transparent;
     -fx-border-width: 0px;
     -fx-border-color: blue;
+    -fx-translate-x: 2px;
+    -fx-cursor: hand;
 }
 #close-button:hover {
     -fx-text-fill: #222;
@@ -52,10 +58,17 @@
 }
 #resize-container {
     -fx-alignment: center-right;
-    -fx-padding: 5px 0 2px 0;
+    -fx-padding: 2px 0 2px 0;
 }
 #resize {
-    -fx-translate-x: 4px;
+    -fx-translate-x: 5px;
     -fx-translate-y: 1px;
     -fx-cursor: se-resize;
+}
+#suggestions {
+    -fx-background-color: #ddd;
+    -fx-padding: 2px;
+}
+.suggestion-selected {
+    -fx-background-color: #bbb;
 }

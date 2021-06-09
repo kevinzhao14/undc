@@ -1,5 +1,6 @@
 package undc.controllers;
 
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -26,24 +27,31 @@ public class Console {
     /*
      * Static variables representing configurable values.
      */
-    private static final int MAX_SIZE = 200; // Maximum number of messages the console stores
-    private static final String PREFIX = "> "; // Prefix for printing the user's command
     private static final int WIDTH = 600; // Default width of the console
     private static final int HEIGHT = 600; // Default height of the console
+    private static final int OFF_X = 50; // Horizontal offset of the console
+    private static final int OFF_Y = 50; // Vertical offset of the console
+
+    private static final int MAX_SIZE = 200; // Maximum number of messages the console stores
+    private static final int SUGG_MAX_SIZE = 10;
+    private static final String PREFIX = "> "; // Prefix for printing the user's command
     private static final LinkedList<Label> HISTORY = new LinkedList<>(); // List of all messages, max size of MAX_SIZE
-    static final ArrayList<Command> COMMANDS = Command.load(); // List of all available commands
     // List of all issued commands by the user
     private static final ArrayList<String> COMMAND_HISTORY = new ArrayList<>();
+    private static final ArrayList<Label> SUGGESTIONS = new ArrayList<>(); // List of suggested/autocomplete commands
+    static final ArrayList<Command> COMMANDS = Command.load(); // List of all available commands
 
     /*
      * Modified Variables
      */
     private static Pane scene; // Main Parent of the console
-    private static int commandPos = -1; // Position of the command retrieved when using up/down arrows
     private static VBox historyBox; // Box that contains all the messages
     private static ScrollPane historyScroll; // Pane that does the scrolling
     private static TextField input; // Input field
-    private static boolean silent;
+    private static VBox suggestBox; // VBox that holds the suggestions
+    private static int commandPos = -1; // Position of the command retrieved when using up/down arrows
+    private static boolean muted; // Whether or not messages should be printed
+    private static String tempCommand = ""; // storage for the new command
 
     /**
      * Prints a message to the console in a specified color.
@@ -51,20 +59,17 @@ public class Console {
      * @param color Color of the message
      */
     private static void print(String str, String color) {
-        if (silent) {
-            return;
+        if (!muted) {
+            System.out.println(str);
+            if (HISTORY.size() >= MAX_SIZE) {
+                HISTORY.remove();
+            }
+            // create temporary Label and add it to the history
+            Label temp = new Label(str);
+            temp.setTextFill(Color.web(color));
+            HISTORY.add(temp);
+            refresh();
         }
-        System.out.println(str);
-        if (HISTORY.size() >= MAX_SIZE) {
-            HISTORY.remove();
-        }
-        // create temporary Label and add it to the history
-        Label temp = new Label(str);
-        temp.setWrapText(true);
-        temp.setTextFill(Color.web(color));
-        temp.setStyle("-fx-padding: 2px");
-        HISTORY.add(temp);
-        refresh();
     }
 
     public static void print(String str) {
@@ -83,27 +88,29 @@ public class Console {
      * Runs a command.
      * @param command Command to run
      * @param echo Whether to print the command to the console
-     * @param silent Whether to suppress all console outputs
+     * @param muted Whether to suppress all console outputs
      */
-    public static void run(String command, boolean echo, boolean silent) {
+    public static void run(String command, boolean echo, boolean muted) {
         if (echo) {
             print(PREFIX + command);
         }
+        Console.muted = muted;
 
-        Console.silent = silent;
+        // get the arguments of the command
         String[] cmd = command.split(" ");
         String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
 
+        // search for the command
         for (Command c : COMMANDS) {
             if (c.getName().equalsIgnoreCase(cmd[0])) {
                 c.run(args);
-                Console.silent = false;
+                Console.muted = false;
                 return;
             }
         }
-
+        // no command found
         error("Invalid command.");
-        Console.silent = false;
+        Console.muted = false;
     }
 
     public static void run(String command, boolean echo) {
@@ -169,10 +176,9 @@ public class Console {
         box.setPrefSize(WIDTH, HEIGHT);
         box.setMinSize(WIDTH / 2.0, HEIGHT / 2.0);
         box.setMaxSize(WIDTH * 3, HEIGHT * 3);
-        box.setLayoutX(50);
-        box.setLayoutY(50);
+        box.setLayoutX(OFF_X);
+        box.setLayoutY(OFF_Y);
         // makes the console draggable, via Draggable library
-        DraggableNode.add(box);
 
         // stuff for the close button that is actually a label
         Label closeBtn = new Label("×");
@@ -202,13 +208,17 @@ public class Console {
         input.setId("input");
 
         input.setOnAction((e) -> {
-            commandPos = -1;
-            COMMAND_HISTORY.add(0, input.getText());
+            commandPos = 0;
+            // add the command to the history if it's not the same as the previous command, to prevent clogging
+            if (COMMAND_HISTORY.size() == 0 || !input.getText().equalsIgnoreCase(COMMAND_HISTORY.get(0))) {
+                COMMAND_HISTORY.add(0, input.getText());
+            }
             run(input.getText());
             input.clear();
         });
 
         input.setOnKeyPressed(e -> handleKey(e.getCode().toString()));
+        input.setOnKeyReleased(e -> genSuggestions());
 
         // image/area used to resize the console
         ImageView resizeArea = new ImageView("icons/resizable.png");
@@ -222,7 +232,6 @@ public class Console {
         HBox resizeContainer = new HBox();
         resizeContainer.getChildren().add(resizeArea);
         resizeContainer.setId("resize-container");
-        ResizableNode.add(resizeArea, ResizableNode.ResizeDirection.ALL, box);
 
         // box that holds the stuff on the bottom (input & resize area)
         VBox bottomBox = new VBox();
@@ -234,7 +243,21 @@ public class Console {
         box.setTop(closeBtnBox);
         box.setCenter(historyScroll);
         box.setBottom(bottomBox);
-        scene.getChildren().add(box);
+
+        // autofill box
+        suggestBox = new VBox();
+        suggestBox.setId("suggestions");
+        suggestBox.setPrefWidth(WIDTH - 25);
+        suggestBox.setTranslateX(OFF_X + 10);
+        suggestBox.setTranslateY(HEIGHT + OFF_Y - 17);
+        suggestBox.setVisible(false);
+
+        DraggableNode.add(box, box, suggestBox);
+        ResizableNode.add(resizeArea, ResizableNode.ResizeDirection.ALL, box);
+        // create a new resize handler to resize suggestions horizontally but move vertically
+        ResizableNode.add(resizeArea, ResizableNode.ResizeDirection.H_DRAGV, suggestBox);
+
+        scene.getChildren().addAll(box, suggestBox);
         scene.getStylesheets().add("styles/console.css");
     }
 
@@ -242,11 +265,25 @@ public class Console {
      * Loads a previous command into the input box, based on commandPos and commandHistory.
      */
     private static void loadCommand() {
-        if (commandPos < -1 || commandPos >= COMMAND_HISTORY.size()) {
+        if (commandPos < -SUGGESTIONS.size() || commandPos > COMMAND_HISTORY.size()) {
             error("Could not load command. Position out of bounds.");
             return;
         }
-        String command = commandPos == -1 ? "" : COMMAND_HISTORY.get(commandPos);
+
+        // command to be shown in the input
+        String command = tempCommand;
+        if (commandPos > 0) { // show from command history
+            command = COMMAND_HISTORY.get(commandPos - 1);
+        } else if (commandPos < 0) { // show from suggestions
+            command = SUGGESTIONS.get(-commandPos - 1).getText();
+
+            // add/remove styles to highlight the selected suggestion
+            Node prev = suggestBox.lookup(".suggestion-selected");
+            if (prev != null) {
+                prev.getStyleClass().remove("suggestion-selected");
+            }
+            SUGGESTIONS.get(-commandPos - 1).getStyleClass().add("suggestion-selected");
+        }
         input.setText(command);
         input.positionCaret(command.length());
     }
@@ -262,17 +299,62 @@ public class Console {
             GameScreen.getInstance().toggleConsole();
             GameController.getInstance().pause();
         } else if (key.equals("UP")) { // go to previous command
+            if (commandPos == 0) { // if we're navigating away from the new command, save it
+                tempCommand = input.getText();
+            }
             commandPos++;
-            if (commandPos >= COMMAND_HISTORY.size()) {
-                commandPos = COMMAND_HISTORY.size() - 1;
+            if (commandPos > COMMAND_HISTORY.size()) {
+                commandPos = COMMAND_HISTORY.size();
             }
             loadCommand();
         } else if (key.equals("DOWN")) { // go to next command
+            if (commandPos == 0) {
+                tempCommand = input.getText();
+            }
             commandPos--;
-            if (commandPos < -1) {
-                commandPos = -1;
+            if (commandPos < -SUGGESTIONS.size()) {
+                commandPos = -SUGGESTIONS.size();
             }
             loadCommand();
+        } else {
+            // reset command pos on key press so if the user changes a loaded command, it becomes the new command
+            commandPos = 0;
+        }
+    }
+
+    /**
+     * Generates suggestions/autocomplete commands based on the currently inputed text.
+     */
+    private static void genSuggestions() {
+        // currently inputed text
+        String val = input.getText();
+        if (val.length() > 0 && commandPos == 0) {
+            SUGGESTIONS.clear();
+            // search for commands starting with the text
+            for (Command c : COMMANDS) {
+                if (c.getName().startsWith(val.toLowerCase())) {
+                    // create a new label and add it to the suggestions list
+                    Label temp = new Label(c.getName());
+                    SUGGESTIONS.add(temp);
+                    if (SUGGESTIONS.size() == SUGG_MAX_SIZE) {
+                        break;
+                    }
+                }
+            }
+            // show suggestions if more than 1
+            if (SUGGESTIONS.size() > 0) {
+                suggestBox.getChildren().clear();
+                suggestBox.getChildren().addAll(SUGGESTIONS);
+                suggestBox.setVisible(true);
+            } else if (suggestBox.isVisible()) {
+                suggestBox.setVisible(false);
+            }
+        } else if (commandPos >= 0) { // if loading a previous command, don't suggest things
+            SUGGESTIONS.clear();
+            suggestBox.getChildren().clear();
+            if (suggestBox.isVisible()) {
+                suggestBox.setVisible(false);
+            }
         }
     }
 }

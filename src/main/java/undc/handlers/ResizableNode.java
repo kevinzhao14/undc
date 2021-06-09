@@ -29,7 +29,7 @@ public class ResizableNode {
      * Enum representing the direction(s) a resizable object can be resized in.
      */
     public enum ResizeDirection {
-        HORIZONTAL, VERTICAL, ALL
+        HORIZONTAL, VERTICAL, ALL, H_DRAGV, V_DRAGH
     }
 
     /**
@@ -80,11 +80,19 @@ public class ResizableNode {
                     for (final Region dragNode : this.resizeNodes) {
                         final double initialWidth = dragNode.getPrefWidth();
                         final double initialHeight = dragNode.getPrefHeight();
-                        if (direction == ResizeDirection.HORIZONTAL || direction == ResizeDirection.ALL) {
+                        if (direction == ResizeDirection.HORIZONTAL || direction == ResizeDirection.ALL
+                                || direction == ResizeDirection.H_DRAGV) {
                             dragNode.setPrefWidth(initialWidth + deltaX);
                         }
-                        if (direction == ResizeDirection.VERTICAL || direction == ResizeDirection.ALL) {
+                        if (direction == ResizeDirection.VERTICAL || direction == ResizeDirection.ALL
+                                || direction == ResizeDirection.V_DRAGH) {
                             dragNode.setPrefHeight(initialHeight + deltaY);
+                        }
+                        if (direction == ResizeDirection.H_DRAGV) {
+                            dragNode.setTranslateY(dragNode.getTranslateY() + deltaY);
+                        }
+                        if (direction == ResizeDirection.V_DRAGH) {
+                            dragNode.setTranslateX(dragNode.getTranslateX() + deltaX);
                         }
                     }
 
