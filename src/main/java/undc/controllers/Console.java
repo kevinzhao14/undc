@@ -77,7 +77,7 @@ public class Console {
     }
 
     public static void warn(String str) {
-        print(str, "#ffc107");
+        print(str, "#dd9900");
     }
 
     public static void error(String str) {
@@ -307,7 +307,7 @@ public class Console {
                 commandPos = COMMAND_HISTORY.size();
             }
             loadCommand();
-        } else if (key.equals("DOWN")) { // go to next command
+        } else if (key.equals("DOWN") || key.equals("TAB")) { // go to next command
             if (commandPos == 0) {
                 tempCommand = input.getText();
             }

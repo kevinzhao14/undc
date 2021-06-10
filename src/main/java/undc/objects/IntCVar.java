@@ -51,8 +51,8 @@ public class IntCVar extends CVar {
     }
 
     @Override
-    public boolean setVal(String val) {
-        if (!checkSet()) {
+    public boolean setVal(String val, boolean override) {
+        if (!override && !checkSet()) {
             return false;
         }
         try {

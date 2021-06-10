@@ -15,20 +15,27 @@ public class BooleanCVar extends CVar {
      * @param nick Nickname of the CVar
      * @param def Default value of the CVar
      * @param rc Whether the CVar requires cheats to modify. Defaults to true
+     * @param modifiable Whether the CVar is modifiable. Defaults to true
      */
-    public BooleanCVar(String name, String nick, boolean def, boolean rc) {
+    public BooleanCVar(String name, String nick, boolean def, boolean rc, boolean modifiable) {
         super(name, nick, rc);
         this.def = def;
         this.value = def;
+        this.modifiable = modifiable;
     }
+
+    public BooleanCVar(String name, String nick, boolean def, boolean rc) {
+        this(name, nick, def, rc, true);
+    }
+
 
     public boolean getVal() {
         return value;
     }
 
     @Override
-    public boolean setVal(String val) {
-        if (!checkSet()) {
+    public boolean setVal(String val, boolean override) {
+        if (!override && !checkSet()) {
             return false;
         }
         if (val == null) {

@@ -31,6 +31,9 @@ public class Vars {
          * ai - AI: things related to ai, such as monsters
          */
 
+        // Boolean CVars
+        BOOLEAN_VARS.add(new BooleanCVar("gm_god", "god", false, true, false));
+
         // Integer CVars
         INT_VARS.add(new IntCVar("gc_screen_width", "screenWidth", 400, 7680, 1920, false));
         INT_VARS.add(new IntCVar("gc_screen_height", "screenHeight", 200, 4320, 1080, false));
@@ -154,6 +157,10 @@ public class Vars {
         return 0;
     }
 
+    /**
+     * Returns a list of all the CVars.
+     * @return List of all CVars
+     */
     public static ArrayList<CVar> all() {
         ArrayList<CVar> list = new ArrayList<>();
         list.addAll(STRING_VARS);

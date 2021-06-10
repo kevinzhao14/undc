@@ -1,11 +1,14 @@
 package undc.controllers;
 
 import undc.gamestates.GameScreen;
+import undc.gamestates.HomeScreen;
 import undc.handlers.Controls;
 import undc.handlers.Vars;
 import undc.objects.CVar;
 import undc.objects.Item;
 import undc.objects.Monster;
+import undc.objects.Obstacle;
+import undc.objects.Player;
 
 import java.util.ArrayList;
 
@@ -66,8 +69,16 @@ class Command {
         commands.add(new Command("give", "<id> [quantity]", "Gives the player an item(s)", Command::give));
         commands.add(new Command("spawn", "<id> [x] [y]", "Spawns an entity. "
                 + "Defaults to the player's coordinates.", Command::spawn));
+        commands.add(new Command("help", "<command>", "Provides information about the command.", Command::help));
+        commands.add(new Command("disconnect", "", "Disconnects from an active game.", Command::disconnect));
+        commands.add(new Command("god", "", "Toggles god mode. Requires cheats.", Command::god));
+        commands.add(new Command("place", "<id> <x> <y>", "Places an obstacle", Command::place));
 
-        //add cvars
+        // player commands
+        commands.add(new Command("gm_player_health", "[value]", "Returns or sets the value of the "
+                + "player's health.", Command::playerHealth));
+
+        // add cvars
         for (CVar v : Vars.all()) {
             if (!v.isModifiable()) {
                 continue;
@@ -301,4 +312,147 @@ class Command {
         }
     }
 
+    /**
+     * Prints details about a specified command.
+     * @param args Arguments
+     */
+    private static void help(String[] args) {
+        if (args.length != 1) {
+            Console.error("Invalid arguments for help.");
+            return;
+        }
+        String cmd = clean(args[0]);
+
+        // find the command
+        for (Command c : Console.COMMANDS) {
+            if (c.getName().equalsIgnoreCase(cmd)) {
+                String res = c.getName();
+                res += (c.getFormat().length() > 0 ? " " + c.getFormat() : "");
+                res += " - " + c.getDesc();
+                Console.print(res);
+                return;
+            }
+        }
+        Console.warn("Could not find the command '" + cmd + "'.");
+    }
+
+    /**
+     * Disconnects the player from a game.
+     * @param args Arguments
+     */
+    private static void disconnect(String[] args) {
+        if (args.length != 0) {
+            Console.error("Invalid arguments for disconnect.");
+            return;
+        }
+        // verify current screen/state
+        if (!(Controller.getState() instanceof GameScreen)) {
+            Console.warn("Could not disconnect, no active game.");
+            return;
+        }
+        GameController.getInstance().stop();
+        Controller.setState(HomeScreen.getInstance());
+    }
+
+    /**
+     * Sets or gets the player's health.
+     * @param args Arguments
+     */
+    private static void playerHealth(String[] args) {
+        if (!(args.length == 0 || args.length == 1)) {
+            Console.error("Invalid arguments for player health.");
+            return;
+        }
+        if (!(Controller.getState() instanceof GameScreen)) {
+            Console.error("Cannot get player health, no active game.");
+            return;
+        }
+        Player player = GameScreen.getInstance().getPlayer();
+        if (player == null) {
+            Console.error("Player does not exist.");
+            return;
+        }
+        if (args.length == 0) {
+            Console.print(player.getHealth() + " HP");
+        } else {
+            try {
+                int health = Integer.parseInt(args[0]);
+                if (health <= 0 || health > player.getMaxHealth()) {
+                    Console.error("Invalid value for player health.");
+                    return;
+                }
+                player.setHealth(health);
+                GameScreen.getInstance().updateHud();
+                Console.print("Player health set to " + health);
+            } catch (NumberFormatException e) {
+                Console.error("Invalid format for player health.");
+            }
+        }
+    }
+
+    /**
+     * Toggles god mode/invulnerability.
+     * @param args Arguments
+     */
+    private static void god(String[] args) {
+        if (args.length != 0) {
+            Console.error("Invalid arguments for god.");
+            return;
+        }
+        if (!(Controller.getState() instanceof GameScreen)) {
+            Console.error("Cannot get player health, no active game.");
+            return;
+        }
+        Player player = GameScreen.getInstance().getPlayer();
+        if (player == null) {
+            Console.error("Player does not exist.");
+            return;
+        }
+        if (!Vars.CHEATS) {
+            Console.error("Cheats are disabled.");
+            return;
+        }
+        CVar v = Vars.find("gm_god");
+        if (v == null) {
+            Console.error("Something went wrong.");
+            return;
+        }
+        if (v.setVal("" + !Vars.b("gm_god"), true)) {
+            Console.print("God mode " + (Vars.b("gm_god") ? "on." : "off."));
+        } else {
+            Console.error("Failed to change god mode.");
+        }
+    }
+
+    /**
+     * Places an obstacle.
+     * @param args Arguments
+     */
+    private static void place(String[] args) {
+        if (!Vars.CHEATS) {
+            Console.error("Cheats are disabled.");
+            return;
+        }
+        if (args.length != 3) {
+            Console.error("Invalid arguments for place.");
+            return;
+        }
+        try {
+            int id = Integer.parseInt(args[0]);
+            int x = Integer.parseInt(args[1]);
+            int y = Integer.parseInt(args[2]);
+            if (!(Controller.getState() instanceof GameScreen)) {
+                Console.error("Cannot spawn because there is no game.");
+                return;
+            }
+            Obstacle o = DataManager.OBSTACLES.get(id);
+            if (o == null) {
+                Console.error("Invalid entity id.");
+                return;
+            }
+            GameController.getInstance().spawn(o, x, y);
+        } catch (NumberFormatException e) {
+            Console.error("Invalid argument values for spawn.");
+        }
+    }
 }

@@ -32,18 +32,9 @@ public class Player extends Entity {
         this.gold = 0;
         this.inventory = new Inventory(Vars.i("sv_inventory_rows"), Vars.i("sv_inventory_cols"));
         inventory.add(weapon);
-        //RangedWeapon w = (RangedWeapon) DataManager.ITEMS[6].copy();
-        //Ammo ammo = new Ammo(50, 500, DataManager.PROJECTILES[0].copy());
-        //ammo.setRemaining(50);
-        //ammo.setBackupRemaining(50);
-        //w.setAmmo(ammo);
-        //inventory.add(w);
-        //inventory.add(DataManager.ITEMS[5], 10);
-
         monstersKilled = 0;
         totalDamageDealt = 0.0;
         totalItemsConsumed = 0;
-
         selected = 0;
         direction = 0;
         effects = new ArrayList<>();
@@ -110,5 +101,12 @@ public class Player extends Entity {
 
     public ArrayList<Effect> getEffects() {
         return effects;
+    }
+
+    public void setHealth(double newHealth) {
+        if (newHealth < health && Vars.b("gm_god")) {
+            return;
+        }
+        super.setHealth(newHealth);
     }
 }

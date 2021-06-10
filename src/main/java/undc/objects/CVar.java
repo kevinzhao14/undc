@@ -29,7 +29,11 @@ public abstract class CVar {
         modifiable = true;
     }
 
-    public abstract boolean setVal(String val);
+    public boolean setVal(String val) {
+        return setVal(val, false);
+    }
+
+    public abstract boolean setVal(String val, boolean override);
 
     public abstract void reset();
 

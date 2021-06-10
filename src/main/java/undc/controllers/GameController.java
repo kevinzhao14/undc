@@ -188,7 +188,7 @@ public class GameController {
         refresh();
     }
 
-    public void spawn(Entity ent, int x, int y) {
+    public void spawn(Movable ent, int x, int y) {
         if (ent == null) {
             Console.error("Invalid entity to spawn.");
             return;
@@ -206,6 +206,11 @@ public class GameController {
             m.setX(x);
             m.setY(y);
             room.getMonsters().add(m);
+        } else if (ent instanceof Obstacle) {
+            Obstacle o = ((Obstacle) ent).copy();
+            o.setX(x);
+            o.setY(y);
+            room.getObstacles().add(o);
         }
         refresh();
     }
@@ -364,6 +369,10 @@ public class GameController {
 
     private double tickTime() {
         return 1000.0 / Vars.i("sv_tickrate");
+    }
+
+    public boolean isRunning() {
+        return isRunning;
     }
 
     /**

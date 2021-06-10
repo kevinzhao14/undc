@@ -17,6 +17,9 @@ public class Inventory implements Iterable<InventoryItem> {
     }
 
     public void add(Item item, int quantity) {
+        if (item == null) {
+            return;
+        }
         if (full()) {
             return;
         }
