@@ -1,6 +1,6 @@
 package undc.objects;
 
-import java.util.*;
+import java.util.Iterator;
 
 public class Inventory implements Iterable<InventoryItem> {
 
@@ -34,6 +34,7 @@ public class Inventory implements Iterable<InventoryItem> {
             }
         }
     }
+
     public void add(Item item) {
         add(item, 1);
     }
@@ -92,7 +93,7 @@ public class Inventory implements Iterable<InventoryItem> {
         InventoryItem[] list = new InventoryItem[size];
         int c = 0;
         for (InventoryItem[] row : items) {
-            for (InventoryItem i: row) {
+            for (InventoryItem i : row) {
                 if (i != null) {
                     list[c++] = i;
                 }

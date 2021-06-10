@@ -12,6 +12,7 @@ public class DungeonLayout {
     private Room startingRoom;
     private Room exitRoom;
     private Room[][] grid;
+
     /**
      * Constructor for initializing starting and ending Rooms in Dungeon map.
      * @param startingRoom Starting Room of current game instance
@@ -23,6 +24,7 @@ public class DungeonLayout {
         this.exitRoom = exitRoom;
         this.grid = grid;
     }
+
     /**
      * Getter method for accessing starting Room of Dungeon map.
      * @return the starting Room of the Dungeon map
@@ -30,6 +32,7 @@ public class DungeonLayout {
     public Room getStartingRoom() {
         return this.startingRoom;
     }
+
     /**
      * Getter method of accessing final/exit Room of Dungeon map.
      * @return the final/exit Room of the Dungeon map
@@ -37,6 +40,7 @@ public class DungeonLayout {
     public Room getExitRoom() {
         return this.exitRoom;
     }
+
     /**
      * Getter method of accessing the grid of rooms of the Dungeon map.
      * @return the grid of rooms of the Dungeon map

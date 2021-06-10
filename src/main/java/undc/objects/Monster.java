@@ -6,17 +6,15 @@ import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.controllers.DataManager;
 import undc.gamestates.GameScreen;
-import undc.handlers.*;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
+import undc.handlers.Vars;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
- * Implementation of the Monster class
- *
- * @author Manas Harbola
- * @version 1.0
+ * Implementation of the Monster class.
  */
 public class Monster extends Entity {
     private int id;
@@ -42,21 +40,21 @@ public class Monster extends Entity {
         moveQueue = new ArrayList<>();
         opacity = 1;
         switch (type) {
-        case FAST:
-            setSprite("monsters/monster-fast.png");
-            break;
-        case NORMAL:
-            setSprite("monsters/monster-normal.png");
-            break;
-        case TANK:
-            setSprite("monsters/monster-tank.png");
-            break;
-        case FINALBOSS:
-            setSprite("monsters/final-boss.gif");
-            break;
-        default:
-            setSprite("monsters/monster-normal.png");
-            break;
+            case FAST:
+                setSprite("monsters/monster-fast.png");
+                break;
+            case NORMAL:
+                setSprite("monsters/monster-normal.png");
+                break;
+            case TANK:
+                setSprite("monsters/monster-tank.png");
+                break;
+            case FINALBOSS:
+                setSprite("monsters/final-boss.gif");
+                break;
+            default:
+                setSprite("monsters/monster-normal.png");
+                break;
         }
     }
 
@@ -86,15 +84,15 @@ public class Monster extends Entity {
             if (giveGold) {
                 double modifier;
                 switch (Controller.getDataManager().getDifficulty()) {
-                case MEDIUM:
-                    modifier = Vars.d("sv_modifier_medium");
-                    break;
-                case HARD:
-                    modifier = Vars.d("sv_modifier_hard");
-                    break;
-                default:
-                    modifier = 1.0;
-                    break;
+                    case MEDIUM:
+                        modifier = Vars.d("sv_modifier_medium");
+                        break;
+                    case HARD:
+                        modifier = Vars.d("sv_modifier_hard");
+                        break;
+                    default:
+                        modifier = 1.0;
+                        break;
                 }
                 screen.getPlayer().setGold(screen.getPlayer().getGold()
                         + (int) (Vars.d("sv_monster_gold") / modifier));

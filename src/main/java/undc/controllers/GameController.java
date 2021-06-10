@@ -1,14 +1,45 @@
 package undc.controllers;
 
-import javafx.scene.*;
-import undc.handlers.*;
-import undc.objects.*;
-
+import javafx.scene.Scene;
 import undc.gamestates.GameScreen;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
+import undc.handlers.Controls;
+import undc.handlers.LayoutGenerator;
+import undc.handlers.RoomRenderer;
+import undc.handlers.Vars;
+import undc.objects.Ammunition;
+import undc.objects.Bomb;
+import undc.objects.ChallengeRoom;
+import undc.objects.Collision;
+import undc.objects.Coords;
+import undc.objects.Door;
+import undc.objects.DroppedItem;
+import undc.objects.Dummy;
+import undc.objects.Effect;
+import undc.objects.EffectType;
+import undc.objects.Equation;
+import undc.objects.ExitDoor;
+import undc.objects.InventoryItem;
+import undc.objects.Item;
+import undc.objects.Monster;
+import undc.objects.MonsterType;
+import undc.objects.Movable;
+import undc.objects.Move;
+import undc.objects.Obstacle;
+import undc.objects.ObstacleItem;
+import undc.objects.ObstacleType;
+import undc.objects.Player;
+import undc.objects.RangedWeapon;
+import undc.objects.Room;
+import undc.objects.RoomType;
+import undc.objects.ShotProjectile;
+import undc.objects.Weapon;
+import undc.objects.WeaponAmmo;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Class for running the game. Does all the calculations and stuff.
@@ -37,7 +68,7 @@ public class GameController {
     private HashMap<String, Boolean> states;
 
     /**
-     * Constructor for GameController
+     * Constructor for GameController.
      */
     private GameController() {
     }
@@ -74,7 +105,7 @@ public class GameController {
     }
 
     /**
-     * Sets the player of the game
+     * Sets the player of the game.
      * @param player Player object to set to
      */
     public void setPlayer(Player player) {
@@ -147,7 +178,9 @@ public class GameController {
             }
             timer.cancel();
         } else {
-            if (Vars.DEBUG) Console.print("Game has been resumed");
+            if (Vars.DEBUG) {
+                Console.print("Game has been resumed");
+            }
             startTimer();
         }
         if (!isRunning && isStopped) {
@@ -163,7 +196,9 @@ public class GameController {
         isRunning = true;
         pause();
         isStopped = true;
-        if (Vars.DEBUG) Console.print("Game has been stopped.");
+        if (Vars.DEBUG) {
+            Console.print("Game has been stopped.");
+        }
     }
 
     public void give(Item item, int quantity) {
@@ -277,7 +312,7 @@ public class GameController {
             return;
         }
 
-        switch(control) {
+        switch (control) {
             case "attack":
                 states.put("attacking", isPress);
                 break;
@@ -315,6 +350,8 @@ public class GameController {
                 if (item instanceof RangedWeapon) {
                     ((RangedWeapon) item).reload();
                 }
+                break;
+            default:
                 break;
         }
     }
@@ -497,7 +534,8 @@ public class GameController {
                             if (item != null && item.getItem() instanceof RangedWeapon) {
                                 WeaponAmmo weaponAmmo = ((RangedWeapon) item.getItem()).getAmmo();
                                 //if the weapon's ammo exists & is the same as the dropped item
-                                if (weaponAmmo != null && weaponAmmo.getProjectile() != null && weaponAmmo.getProjectile().equals(a.getProjectile())) {
+                                if (weaponAmmo != null && weaponAmmo.getProjectile() != null
+                                        && weaponAmmo.getProjectile().equals(a.getProjectile())) {
                                     int maxChange = weaponAmmo.getBackupSize() - weaponAmmo.getBackupRemaining();
                                     if (a.getAmount() <= maxChange) {
                                         weaponAmmo.setBackupRemaining(weaponAmmo.getBackupRemaining() + a.getAmount());
@@ -520,7 +558,8 @@ public class GameController {
                     for (InventoryItem item : player.getInventory()) {
                         if (item != null) {
                             //if item exists and is not max stack
-                            if (item.getItem().equals(d.getItem()) && item.getQuantity() < item.getItem().getMaxStackSize()) {
+                            if (item.getItem().equals(d.getItem()) && item.getQuantity()
+                                    < item.getItem().getMaxStackSize()) {
                                 item.setQuantity(item.getQuantity() + 1);
                                 room.getDroppedItems().remove(i);
                                 i--;
@@ -576,7 +615,8 @@ public class GameController {
             x = check.getX();
             y = check.getY();
 
-            DroppedItem di = new DroppedItem(currentItem.getItem(), x, y, itemSprite.getWidth(), itemSprite.getHeight());
+            DroppedItem di = new DroppedItem(currentItem.getItem(), x, y, itemSprite.getWidth(),
+                    itemSprite.getHeight());
             room.getDroppedItems().add(di);
             Platform.runLater(() -> getScreen().updateHud());
         }
@@ -623,7 +663,8 @@ public class GameController {
                     //check for entity collisions
                     newX = check.getX();
                     newY = check.getY();
-                    Collision<Monster> c = checkCollisions(room.getMonsters().toArray(new Monster[0]), p, new Coords(newX, newY));
+                    Collision<Monster> c = checkCollisions(room.getMonsters().toArray(new Monster[0]), p,
+                            new Coords(newX, newY));
                     Monster m = c.getCollider();
                     //hit a monster
                     if (m != null) {
@@ -634,7 +675,8 @@ public class GameController {
                         p.setY(newY);
 
                         //calculate distance
-                        double d = Math.sqrt(Math.pow(p.getVelX() / Vars.i("sv_tickrate"), 2) + Math.pow(p.getVelY() / Vars.i("sv_tickrate"), 2));
+                        double d = Math.sqrt(Math.pow(p.getVelX() / Vars.i("sv_tickrate"), 2)
+                                + Math.pow(p.getVelY() / Vars.i("sv_tickrate"), 2));
                         p.setDistance(round(p.getDistance() + d));
                         if (p.getDistance() >= p.getProjectile().getRange()) {
                             p.hit();
@@ -748,7 +790,7 @@ public class GameController {
         }
 
         /**
-         * Manages monsters
+         * Manages monsters.
          */
         private void manageMonsters() {
             for (Monster m : room.getMonsters()) {
@@ -788,7 +830,8 @@ public class GameController {
                         ShotProjectile.addExplosion(room, o, b.getRadius() * 2);
 
                         if (dist <= b.getRadius()) {
-                            player.setHealth(Math.max(0, player.getHealth() - b.getDamage() * Vars.d("sv_self_damage_modifier")));
+                            player.setHealth(Math.max(0, player.getHealth() - b.getDamage()
+                                    * Vars.d("sv_self_damage_modifier")));
                             Platform.runLater(() -> getScreen().updateHud());
                             if (player.getHealth() == 0) {
                                 gameOver();
@@ -817,8 +860,8 @@ public class GameController {
          * Updates the player's velocity and acceleration.
          */
         private void updatePlayerVelocity() {
-            double originalVelX = velX;
-            double originalVelY = velY;
+            final double originalVelX = velX;
+            final double originalVelY = velY;
             velX += accelX;
             velX = round(velX);
             velY += accelY;
@@ -940,8 +983,10 @@ public class GameController {
             double y = m.getY();
             double newX = newPos.getX();
             double newY = newPos.getY();
-            for (T t: list) {
-                if (t == null || t == m) continue;
+            for (T t : list) {
+                if (t == null || t == m) {
+                    continue;
+                }
 
                 //Check if monster is out of movement vector rectangle
                 if (!inRange(t, m, new Coords(newX, newY))) {
@@ -1042,7 +1087,7 @@ public class GameController {
         }
 
         /**
-         * Gets the intersection point of Movable mo's movement equation with an object o
+         * Gets the intersection point of Movable mo's movement equation with an object o.
          * @param o Object to check collision with
          * @param mo Object that is moving
          * @param eq Equation of object mo's movement
@@ -1071,10 +1116,10 @@ public class GameController {
              * We then substitute the y in "y = mx + b", along with the m and b values obtained
              * earlier, and solve for x, resulting in an equation "x = (y - b) / m"
              */
-            double m = eq.getSlope();
-            double b = eq.getIntercept();
-            double w = mo.getWidth();
-            double h = mo.getHeight();
+            final double m = eq.getSlope();
+            final double b = eq.getIntercept();
+            final double w = mo.getWidth();
+            final double h = mo.getHeight();
 
             //x value of the y/vertical intersection point
             double yIntXVal = (o.getY() + o.getHeight() - b) / m;
@@ -1118,7 +1163,7 @@ public class GameController {
         }
 
         /**
-         * Returns an equation for a specified vector
+         * Returns an equation for a specified vector.
          * @param x0 first x position
          * @param y0 first y position
          * @param x1 second x position
@@ -1187,7 +1232,9 @@ public class GameController {
             }
 
             //calculate distance between player and monster
-            Move mq = (m.getMoveQueue().size() > 0) ? m.getMoveQueue().get(m.getMoveQueue().size() - 1) : new Move(new Coords(m.getX(), m.getY()), 0);
+            Move mq = (m.getMoveQueue().size() > 0)
+                    ? m.getMoveQueue().get(m.getMoveQueue().size() - 1)
+                    : new Move(new Coords(m.getX(), m.getY()), 0);
             double mPosX = mq.getPos().getX();
             double mPosY = mq.getPos().getY();
             Dummy md = new Dummy(mPosX, mPosY, m.getWidth(), m.getHeight());

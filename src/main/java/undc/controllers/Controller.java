@@ -5,7 +5,7 @@ import undc.gamestates.GameState;
 import undc.gamestates.HomeScreen;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import undc.handlers.*;
+import undc.handlers.Vars;
 
 public class Controller extends Application {
     private static Controller instance;
@@ -15,7 +15,7 @@ public class Controller extends Application {
     private DataManager dataManager;
 
     /**
-     * Entrypoint for the game
+     * Entrypoint for the game.
      *
      * @param stage Stage to use, passed in by JavaFX
      */
@@ -55,7 +55,7 @@ public class Controller extends Application {
     }
 
     /**
-     * Returns the DataManager for the game
+     * Returns the DataManager for the game.
      *
      * @return the DataManager
      */

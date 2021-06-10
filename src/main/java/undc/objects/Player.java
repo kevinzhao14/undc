@@ -1,7 +1,7 @@
 package undc.objects;
 
-import undc.handlers.*;
 import javafx.scene.image.Image;
+import undc.handlers.Vars;
 
 import java.util.ArrayList;
 
@@ -43,12 +43,15 @@ public class Player extends Entity {
     public int getGold() {
         return this.gold;
     }
+
     public int getMonstersKilled() {
         return monstersKilled;
     }
+
     public double getTotalDamageDealt() {
         return totalDamageDealt;
     }
+
     public int getTotalItemsConsumed() {
         return totalItemsConsumed;
     }
@@ -56,12 +59,15 @@ public class Player extends Entity {
     public void setGold(int gold) {
         this.gold = gold;
     }
+
     public void addMonsterKilled() {
         monstersKilled++;
     }
+
     public void addDamageDealt(double amt) {
         totalDamageDealt += amt;
     }
+
     public void addItemConsumed() {
         totalItemsConsumed++;
     }

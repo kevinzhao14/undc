@@ -1,6 +1,8 @@
 package undc.handlers;
 
-import undc.controllers.*;
+import undc.controllers.Console;
+import undc.controllers.Controller;
+import undc.controllers.DataManager;
 import undc.objects.WeaponAmmo;
 import undc.objects.Ammunition;
 import undc.objects.ChallengeRoom;
@@ -21,9 +23,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 /**
- * Class that generates Layout of the Rooms
- * @author Ishaan Guha, Trenton Wong
- * @version 1.0
+ * Class that generates Layout of the Rooms.
  */
 public class LayoutGenerator {
 
@@ -131,7 +131,7 @@ public class LayoutGenerator {
     }
 
     /**
-     * generate the layout of the rooms
+     * generate the layout of the rooms.
      * @return the layout
      */
     public DungeonLayout generateLayout() {
@@ -239,7 +239,7 @@ public class LayoutGenerator {
 
 
     /**
-     * Populate room grid with the room and adjacent rooms at the coordinate
+     * Populate room grid with the room and adjacent rooms at the coordinate.
      * @param grid the grid to populate
      * @param x the x coordinate in the grid
      * @param y the y coordinate in the grid
@@ -279,20 +279,20 @@ public class LayoutGenerator {
             int nx = x;
             int ny = y;
             switch (newDirection) {
-            case 0:
-                nx--;
-                break;
-            case 1:
-                ny--;
-                break;
-            case 2:
-                nx++;
-                break;
-            case 3:
-                ny++;
-                break;
-            default:
-                break;
+                case 0:
+                    nx--;
+                    break;
+                case 1:
+                    ny--;
+                    break;
+                case 2:
+                    nx++;
+                    break;
+                case 3:
+                    ny++;
+                    break;
+                default:
+                    break;
             }
             Room r = new Room(ROOM_HEIGHT, ROOM_WIDTH,
                     100, 100, RoomType.EMPTYROOM);
@@ -307,7 +307,7 @@ public class LayoutGenerator {
     }
 
     /**
-     * Adds monsters to a room
+     * Adds monsters to a room.
      * @param room the room to add the monsters to
      */
     private void setMonsters(Room room) {
@@ -373,7 +373,7 @@ public class LayoutGenerator {
     }
 
     /**
-     * Prints out a representation of the Layout
+     * Prints out a representation of the Layout.
      * @param grid the grid to print out.
      */
     private void printGrid(Room[][] grid) {

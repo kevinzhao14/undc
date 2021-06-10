@@ -3,9 +3,9 @@ package undc.objects;
 import undc.controllers.Controller;
 import undc.controllers.DataManager;
 import undc.gamestates.GameScreen;
-import undc.handlers.*;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
+import undc.handlers.Vars;
 
 import java.util.Timer;
 import java.util.TimerTask;

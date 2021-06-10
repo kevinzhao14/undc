@@ -33,6 +33,7 @@ public class DroppedItem implements Movable {
     public void setWidth(double w) {
         this.width = w;
     }
+
     public void setHeight(double h) {
         this.height = h;
     }

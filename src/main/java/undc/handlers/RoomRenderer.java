@@ -1,4 +1,5 @@
 package undc.handlers;
+
 import undc.objects.ChallengeRoom;
 import undc.objects.DroppedItem;
 import undc.objects.ExitDoor;
@@ -230,7 +231,7 @@ public class RoomRenderer {
     }
 
     /**
-     * Converting coordinates from game units to pixels
+     * Converting coordinates from game units to pixels.
      * @param coord the coordinate to convert
      * @return the converted coordinate
      */

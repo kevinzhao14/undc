@@ -1,21 +1,48 @@
 package undc.gamestates;
 
-import javafx.animation.*;
-import javafx.application.*;
-import javafx.geometry.*;
-import javafx.scene.*;
-import javafx.scene.canvas.*;
-import javafx.scene.control.*;
-import javafx.scene.image.*;
-import javafx.scene.layout.*;
-import javafx.scene.paint.*;
-import javafx.scene.shape.*;
-import javafx.scene.text.*;
-import javafx.util.*;
-import undc.controllers.*;
-import undc.handlers.*;
-import undc.objects.*;
-
+import javafx.animation.FadeTransition;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
+import undc.controllers.Console;
+import undc.controllers.Controller;
+import undc.controllers.DataManager;
+import undc.controllers.GameController;
+import undc.handlers.Difficulty;
+import undc.handlers.LayoutGenerator;
+import undc.handlers.RoomRenderer;
+import undc.handlers.Vars;
+import undc.objects.Bomb;
+import undc.objects.ChallengeRoom;
+import undc.objects.DungeonLayout;
+import undc.objects.Effect;
+import undc.objects.EffectType;
+import undc.objects.InventoryItem;
+import undc.objects.Item;
+import undc.objects.Monster;
+import undc.objects.Player;
+import undc.objects.Potion;
+import undc.objects.PotionType;
+import undc.objects.RangedWeapon;
+import undc.objects.Room;
+import undc.objects.RoomType;
+import undc.objects.Weapon;
 
 import java.util.ArrayList;
 
@@ -53,7 +80,8 @@ public class GameScreen extends GameState {
         if (mode == GameMode.SANDBOX) {
             Controller.getDataManager().newGame("example", Difficulty.EASY, DataManager.getStartingWeapons()[0]);
 
-            Room start = new Room(SANDBOX_HEIGHT,SANDBOX_WIDTH, (int) ((SANDBOX_WIDTH - Vars.i("sv_player_width")) / 2.0),
+            Room start = new Room(SANDBOX_HEIGHT, SANDBOX_WIDTH,
+                    (int) ((SANDBOX_WIDTH - Vars.i("sv_player_width")) / 2.0),
                     (int) (SANDBOX_HEIGHT / 2.0 - Vars.i("sv_player_height")), RoomType.STARTROOM);
             start.setMonsters(new ArrayList<>());
 
@@ -62,6 +90,10 @@ public class GameScreen extends GameState {
 
             Room[][] arr = new Room[][]{new Room[]{start, exit}};
             dungeonLayout = new DungeonLayout(start, exit, arr);
+
+            // cvars
+            Vars.CHEATS = true;
+            Vars.find("gm_god").setVal("true", true);
         } else if (mode == GameMode.STORY) {
             dungeonLayout = new LayoutGenerator().generateLayout();
         }
@@ -323,8 +355,8 @@ public class GameScreen extends GameState {
     public void gameOver() {
         getGame().stop();
 
-        StackPane root = new StackPane();
-        VBox box = new VBox(40);
+        final StackPane root = new StackPane();
+        final VBox box = new VBox(40);
 
         Rectangle backdrop = new Rectangle(scene.getWidth(), scene.getHeight());
         backdrop.setFill(Color.BLACK);
@@ -379,7 +411,7 @@ public class GameScreen extends GameState {
 
     public void createPauseMenu() {
         pause = new StackPane();
-        VBox box = new VBox(40);
+        final VBox box = new VBox(40);
 
         Rectangle backdrop = new Rectangle(scene.getWidth(), scene.getHeight());
         backdrop.setFill(Color.BLACK);
@@ -450,7 +482,7 @@ public class GameScreen extends GameState {
 
     public void updateInventory() {
         inventory = new StackPane();
-        VBox box = new VBox(50);
+        final VBox box = new VBox(50);
         VBox itemRows = new VBox(30);
         HBox[] itemSlots = new HBox[player.getInventory().getCols()];
         StackPane allItemLabels = new StackPane();
@@ -563,7 +595,7 @@ public class GameScreen extends GameState {
 
     public void createChallengeOverlay() {
         challenge = new StackPane();
-        VBox box = new VBox(40);
+        final VBox box = new VBox(40);
 
         Rectangle backdrop = new Rectangle(scene.getWidth(), scene.getHeight());
         backdrop.setFill(Color.BLACK);
@@ -629,12 +661,15 @@ public class GameScreen extends GameState {
     public Canvas getCanvas() {
         return canvas;
     }
+
     private GameController getGame() {
         return GameController.getInstance();
     }
+
     public Room getRoom() {
         return room;
     }
+
     public boolean isConsoleOpen() {
         return consoleOpen;
     }

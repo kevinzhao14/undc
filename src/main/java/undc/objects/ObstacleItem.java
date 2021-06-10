@@ -1,6 +1,6 @@
 package undc.objects;
 
-import javafx.scene.image.*;
+import javafx.scene.image.Image;
 
 public class ObstacleItem extends Obstacle {
     private Item item;
