@@ -81,6 +81,10 @@ public class Player extends Entity {
         return inventory;
     }
 
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
     public int getSelected() {
         return this.selected;
     }

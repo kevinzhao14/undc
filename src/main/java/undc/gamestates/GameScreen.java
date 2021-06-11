@@ -32,7 +32,9 @@ import undc.handlers.Vars;
 import undc.objects.Bomb;
 import undc.objects.ChallengeRoom;
 import undc.objects.DungeonLayout;
+import undc.objects.Inventory;
 import undc.objects.InventoryItem;
+import undc.objects.Item;
 import undc.objects.Monster;
 import undc.objects.Player;
 import undc.objects.Potion;
@@ -43,6 +45,8 @@ import undc.objects.RoomType;
 import undc.objects.Weapon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameScreen extends GameState {
     private static GameScreen instance;
@@ -183,6 +187,33 @@ public class GameScreen extends GameState {
         player = new Player(Vars.i("sv_player_health"), 1, Controller.getDataManager().getWeapon());
         player.setDirection(3);
         getGame().setPlayer(player);
+
+        // sandbox inventory
+        if (mode == GameMode.SANDBOX) {
+            int count = 0;
+            for (Map.Entry<Integer, Item> i : DataManager.ITEMS.entrySet()) {
+                if (i.getValue().isSpawnable()) {
+                    count++;
+                }
+            }
+            Inventory inv = new Inventory((int) Math.ceil(count / 5.0) + 1, 5);
+            int row = 1;
+            int col = 0;
+            for (Map.Entry<Integer, Item> i : DataManager.ITEMS.entrySet()) {
+                if (!i.getValue().isSpawnable()) {
+                    continue;
+                }
+                InventoryItem item = new InventoryItem(i.getValue(), 1);
+                item.setInfinite(true);
+                inv.getItems()[row][col] = item;
+                col++;
+                if (col == 5) {
+                    row++;
+                    col = 0;
+                }
+            }
+            player.setInventory(inv);
+        }
     }
 
     private void createHud() {
@@ -360,17 +391,23 @@ public class GameScreen extends GameState {
                     room.getObstacles().clear();
                     room.getDroppedItems().clear();
                     room.getProjectiles().clear();
-                    for (Monster m : room.getMonsters()) {
-                        if (m != null) {
-                            int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
-                            int monsterY = (int) (Math.random() * (room.getHeight() - 39)) + 20;
-                            m.revive(monsterX, monsterY);
+                    if (mode == GameMode.SANDBOX) {
+                        room.getMonsters().clear();
+                    } else {
+                        for (Monster m : room.getMonsters()) {
+                            if (m != null) {
+                                int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
+                                int monsterY = (int) (Math.random() * (room.getHeight() - 39)) + 20;
+                                m.revive(monsterX, monsterY);
+                            }
                         }
                     }
                 }
             }
         }
+        Inventory inv = player.getInventory();
         createPlayer();
+        player.setInventory(inv);
 
         //go to starting room
         getGame().start(dungeonLayout.getStartingRoom());

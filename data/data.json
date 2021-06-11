@@ -198,14 +198,16 @@
       "sprite": "weapons/rocket-right.png",
       "amount": 5,
       "projectile": 0,
-      "droppable": true
+      "droppable": true,
+      "spawnable": false
     },
     {
       "id": 11,
       "type": "key",
       "name": "Special Key",
       "sprite": "items/key.png",
-      "droppable": true
+      "droppable": true,
+      "spawnable": false
     }
   ]
 }

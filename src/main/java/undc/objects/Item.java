@@ -14,6 +14,7 @@ public abstract class Item {
     protected String name;
     protected int maxStackSize;
     protected boolean droppable;
+    protected boolean spawnable;
 
     protected Item() {
         maxStackSize = 1;
@@ -70,6 +71,10 @@ public abstract class Item {
         return id;
     }
 
+    public boolean isSpawnable() {
+        return spawnable;
+    }
+
     /**
      * Method used to parse JSON data into an Item.
      * @param o JSON object to parse
@@ -83,6 +88,7 @@ public abstract class Item {
         String sprite;
         int stackSize;
         boolean droppable;
+        boolean spawnable;
 
         try {
             id = o.getInt("id");
@@ -118,6 +124,11 @@ public abstract class Item {
         } catch (JSONException e) {
             droppable = false;
         }
+        try {
+            spawnable = o.getBoolean("spawnable");
+        } catch (JSONException e) {
+            spawnable = true;
+        }
 
         switch (type.toLowerCase()) {
             case "weapon":
@@ -152,6 +163,7 @@ public abstract class Item {
         item.sprite = new Image(sprite);
         item.maxStackSize = stackSize;
         item.droppable = droppable;
+        item.spawnable = spawnable;
 
         return item;
     }

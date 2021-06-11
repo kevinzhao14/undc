@@ -92,8 +92,6 @@ public class Hud {
 
         hud.setStyle("-fx-border-color: blue; -fx-border-width: 2px");
         grid.setStyle("-fx-border-color: red; -fx-border-width: 2px");
-        System.out.println(grid.getRowCount());
-        System.out.println(grid.getColumnCount());
     }
 
     public StackPane getHud() {
