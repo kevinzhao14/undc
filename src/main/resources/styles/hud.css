@@ -1,0 +1,5 @@
+#player-info {
+    -fx-fill-height: false;
+    -fx-alignment: bottom-left;
+    -fx-border-color: green;
+}

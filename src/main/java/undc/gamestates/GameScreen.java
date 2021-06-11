@@ -2,18 +2,19 @@ package undc.gamestates;
 
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -31,10 +32,7 @@ import undc.handlers.Vars;
 import undc.objects.Bomb;
 import undc.objects.ChallengeRoom;
 import undc.objects.DungeonLayout;
-import undc.objects.Effect;
-import undc.objects.EffectType;
 import undc.objects.InventoryItem;
-import undc.objects.Item;
 import undc.objects.Monster;
 import undc.objects.Player;
 import undc.objects.Potion;
@@ -55,7 +53,7 @@ public class GameScreen extends GameState {
     private DungeonLayout dungeonLayout;
     private Room previous;
     private Room room;
-    private StackPane hud;
+    private Hud hud;
     private Canvas canvas;
     private StackPane inventory;
     private StackPane pause;
@@ -141,7 +139,7 @@ public class GameScreen extends GameState {
     public void updateRoom() {
         StackPane root = new StackPane();
         Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
-        root.getChildren().addAll(roomPane, hud);
+        root.getChildren().addAll(roomPane, hud.getHud());
         root.setStyle("-fx-background-color: #34311b");
         scene.setRoot(root);
     }
@@ -157,7 +155,7 @@ public class GameScreen extends GameState {
         }
 
         Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
-        root.getChildren().addAll(roomPane, hud);
+        root.getChildren().addAll(roomPane, hud.getHud());
         root.setStyle("-fx-background-color: #34311b");
         scene.setRoot(root);
         if (scene.getRoot().getChildrenUnmodifiable().size() > 0) {
@@ -178,7 +176,7 @@ public class GameScreen extends GameState {
         createHud();
         updateInventory();
         Pane root = (Pane) scene.getRoot();
-        root.getChildren().set(1, hud);
+        root.getChildren().set(1, hud.getHud());
     }
 
     private void createPlayer() {
@@ -188,8 +186,7 @@ public class GameScreen extends GameState {
     }
 
     private void createHud() {
-
-
+        hud = new Hud(player);
     }
 
     public DungeonLayout getLayout() {
@@ -304,7 +301,7 @@ public class GameScreen extends GameState {
                 totalItemsConsumed, newGameButton, restartButton, endButton);
         box.setAlignment(Pos.CENTER);
         root.getChildren().addAll(backdrop, box);
-        hud.getChildren().add(root);
+        hud.getHud().getChildren().add(root);
         partialFadeIn(backdrop);
     }
 
@@ -338,7 +335,7 @@ public class GameScreen extends GameState {
         box.getChildren().addAll(pauseLabel, resumeButton, endButton);
         box.setAlignment(Pos.CENTER);
         pause.getChildren().addAll(backdrop, box);
-        hud.getChildren().add(pause);
+        hud.getHud().getChildren().add(pause);
         partialFadeIn(backdrop);
         pause.setVisible(false);
     }
@@ -480,7 +477,7 @@ public class GameScreen extends GameState {
         box.getChildren().addAll(invLabel, itemRows, allItemLabels);
 
         inventory.getChildren().addAll(backdrop, box);
-        hud.getChildren().add(inventory);
+        hud.getHud().getChildren().add(inventory);
         partialFadeIn(backdrop);
     }
 
@@ -543,7 +540,7 @@ public class GameScreen extends GameState {
         box.getChildren().addAll(pauseLabel, yesButton, noButton);
         box.setAlignment(Pos.CENTER);
         challenge.getChildren().addAll(backdrop, box);
-        hud.getChildren().add(challenge);
+        hud.getHud().getChildren().add(challenge);
         partialFadeIn(backdrop);
         challenge.setVisible(false);
     }
