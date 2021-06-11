@@ -3,6 +3,7 @@ package undc.gamestates;
 import java.util.ArrayList;
 
 import undc.handlers.Difficulty;
+import undc.handlers.Vars;
 import undc.objects.Weapon;
 import undc.controllers.Controller;
 import undc.controllers.DataManager;
@@ -23,6 +24,8 @@ import javafx.scene.layout.VBox;
  * for the Team Luckless Dungeon Crawler game.
  */
 public class ConfigScreen extends GameState {
+    private static ConfigScreen instance;
+
     //Application Window dimensions
     private Button nextButton;
     private TextField playerNameEntry;
@@ -157,5 +160,12 @@ public class ConfigScreen extends GameState {
             r.getStyleClass().add("radioButton");
         }
         nextButton.getStyleClass().add("nextButton");
+    }
+
+    public static ConfigScreen getInstance() {
+        if (instance == null) {
+            instance = new ConfigScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
+        }
+        return instance;
     }
 }

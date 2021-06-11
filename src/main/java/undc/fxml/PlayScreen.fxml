@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane id="main" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="undc.fxml.controllers.PlayScreenController">
+<BorderPane id="main" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="undc.fxml.controllers.PlayScreenController">
    <top>
       <Label id="title" text="Select Save" BorderPane.alignment="CENTER" />
    </top>
