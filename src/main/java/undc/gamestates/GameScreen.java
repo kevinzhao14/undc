@@ -8,18 +8,11 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import undc.controllers.Console;
 import undc.controllers.Controller;
@@ -29,23 +22,18 @@ import undc.handlers.Difficulty;
 import undc.handlers.LayoutGenerator;
 import undc.handlers.RoomRenderer;
 import undc.handlers.Vars;
-import undc.objects.Bomb;
 import undc.objects.ChallengeRoom;
 import undc.objects.DungeonLayout;
+import undc.objects.GraphicalInventory;
 import undc.objects.Inventory;
 import undc.objects.InventoryItem;
 import undc.objects.Item;
 import undc.objects.Monster;
 import undc.objects.Player;
-import undc.objects.Potion;
-import undc.objects.PotionType;
-import undc.objects.RangedWeapon;
 import undc.objects.Room;
 import undc.objects.RoomType;
-import undc.objects.Weapon;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class GameScreen extends GameState {
@@ -59,13 +47,11 @@ public class GameScreen extends GameState {
     private Room room;
     private Hud hud;
     private Canvas canvas;
-    private StackPane inventory;
+    private GraphicalInventory inventory;
     private StackPane pause;
     private StackPane challenge;
     private boolean consoleOpen;
     private GameMode mode;
-
-    private boolean inventoryVisible;
 
     private GameScreen(int width, int height) {
         super(width, height);
@@ -101,7 +87,6 @@ public class GameScreen extends GameState {
         }
         scene = new Scene(new Pane(), this.width, this.height);
         canvas = new Canvas();
-        inventoryVisible = false;
         consoleOpen = false;
         this.mode = mode;
     }
@@ -178,7 +163,6 @@ public class GameScreen extends GameState {
 
     public void updateHud() {
         hud.update();
-        updateInventory();
     }
 
     private void createPlayer() {
@@ -216,6 +200,7 @@ public class GameScreen extends GameState {
 
     private void createHud() {
         hud = Hud.getInstance(player);
+        createInventory();
     }
 
     public DungeonLayout getLayout() {
@@ -224,7 +209,7 @@ public class GameScreen extends GameState {
     }
 
     public boolean isInventoryVisible() {
-        return inventoryVisible;
+        return inventory.isVisible();
     }
 
     private void fadeOut(Pane pane) {
@@ -411,117 +396,14 @@ public class GameScreen extends GameState {
         getGame().start(dungeonLayout.getStartingRoom());
     }
 
-    public void updateInventory() {
-        inventory = new StackPane();
-        final VBox box = new VBox(50);
-        VBox itemRows = new VBox(30);
-        HBox[] itemSlots = new HBox[player.getInventory().getCols()];
-        StackPane allItemLabels = new StackPane();
-
-        ArrayList<Label> itemNameList = new ArrayList<>();
-
-        for (int i = 0; i < itemSlots.length; i++) {
-            itemSlots[i] = new HBox(30);
-            itemSlots[i].setAlignment(Pos.CENTER);
-        }
-        for (int i = 0; i < player.getInventory().getItems().length; i++) {
-            itemRows.getChildren().add(itemSlots[i]);
-            for (int j = 0; j < player.getInventory().getItems()[i].length; j++) {
-                StackPane newSlot = new StackPane();
-                Rectangle rect = new Rectangle(75, 75, Color.GRAY);
-                rect.setStyle("-fx-stroke: white; -fx-stroke-width: 3");
-                itemSlots[i].getChildren().add(newSlot);
-                newSlot.getChildren().add(rect);
-                InventoryItem item = player.getInventory().getItems()[i][j];
-                if (item != null) {
-                    ImageView itemImg = new ImageView(item.getItem().getSprite());
-                    itemImg.setFitWidth(60);
-                    itemImg.setPreserveRatio(true);
-                    Label nameLabel = new Label(item.getItem().getName());
-
-                    if (item.getItem() instanceof RangedWeapon) {
-                        RangedWeapon w = (RangedWeapon) item.getItem();
-                        nameLabel.setText(w.getName() + "\n"
-                                + w.getAmmo().getProjectile().getName() + " ("
-                                + w.getAmmo().getRemaining() + " / "
-                                + w.getAmmo().getBackupRemaining() + ")");
-                    } else if (item.getItem() instanceof Weapon) {
-                        Weapon w = (Weapon) item.getItem();
-                        nameLabel.setText(w.getName() + "\nDamage: "
-                                + (int) w.getDamage() + "\nSpeed: "
-                                + (int) w.getAttackSpeed());
-                    } else if (item.getItem() instanceof Potion) {
-                        Potion p = (Potion) item.getItem();
-                        if (p.getType().equals(PotionType.HEALTH)) {
-                            nameLabel.setText(p.getName() + "\n("
-                                    + (int) p.getModifier() + " HP)");
-                        }
-                    } else if (item.getItem() instanceof Bomb) {
-                        Bomb b = (Bomb) item.getItem();
-                        nameLabel.setText(b.getName() + "\nDamage: "
-                                + (int) b.getDamage() + "\nRadius: "
-                                + (int) b.getRadius() + "\nFuse Time: "
-                                + (int) b.getFuse() / 1000 + "s");
-                    }
-                    nameLabel.setStyle("-fx-text-fill:WHITE; -fx-font-size: 24; "
-                            + "-fx-font-family:VT323; -fx-background-color: black; "
-                            + "-fx-border-color: white; -fx-padding: 5px");
-                    nameLabel.setTextAlignment(TextAlignment.CENTER);
-                    nameLabel.setAlignment(Pos.TOP_CENTER);
-                    nameLabel.setVisible(false);
-
-                    newSlot.setOnMouseEntered(event -> nameLabel.setVisible(true));
-                    newSlot.setOnMouseExited(event -> nameLabel.setVisible(false));
-
-                    itemNameList.add(nameLabel);
-
-                    if (player.getInventory().getItems()[i][j].getQuantity() > 1) {
-                        Label quantity = new Label("" + item.getQuantity());
-                        StackPane quantityPane = new StackPane();
-                        quantityPane.setAlignment(Pos.BOTTOM_RIGHT);
-                        quantity.setStyle(
-                                "-fx-text-fill:WHITE; -fx-font-size: 24; -fx-font-family:VT323");
-                        quantity.setTranslateX(-4);
-                        quantity.setTranslateY(-2);
-                        quantityPane.getChildren().add(quantity);
-                        newSlot.getChildren().addAll(itemImg, quantityPane);
-                    } else {
-                        newSlot.getChildren().add(itemImg);
-                    }
-                }
-            }
-        }
-
-        Label invLabel = new Label("INVENTORY");
-        invLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
-
-        Rectangle backdrop = new Rectangle(scene.getWidth(), scene.getHeight());
-        backdrop.setFill(Color.BLACK);
-
-        inventory.setAlignment(Pos.CENTER);
-        itemRows.setAlignment(Pos.CENTER);
-        box.setAlignment(Pos.CENTER);
-
-        inventoryVisible = false;
-        inventory.setVisible(false);
-
-        for (Label label : itemNameList) {
-            allItemLabels.getChildren().add(label);
-        }
-
-        box.getChildren().addAll(invLabel, itemRows, allItemLabels);
-
-        inventory.getChildren().addAll(backdrop, box);
-        hud.getHud().getChildren().add(inventory);
-        partialFadeIn(backdrop);
+    public void createInventory() {
+        inventory = player.getInventory().getGraphicalInventory();
+        hud.getHud().getChildren().add(inventory.getRoot());
     }
 
     public void toggleInventory() {
-        if (!inventoryVisible) {
-            updateInventory();
-        }
-        inventoryVisible = !inventoryVisible;
-        inventory.setVisible(inventoryVisible);
+        inventory.update();
+        inventory.toggle();
     }
 
     public void createChallengeOverlay() {

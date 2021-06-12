@@ -23,6 +23,10 @@ public abstract class Overlay {
         root.setVisible(!root.isVisible());
     }
 
+    public boolean isVisible() {
+        return root.isVisible();
+    }
+
     public StackPane getRoot() {
         return root;
     }

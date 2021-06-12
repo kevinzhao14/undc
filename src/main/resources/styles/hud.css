@@ -46,8 +46,8 @@
     -fx-spacing: 10px;
 }
 #hotbar VBox {
-    -fx-pref-width: 75px;
-    -fx-pref-height: 75px;
+    -fx-pref-width: 60px;
+    -fx-pref-height: 60px;
     -fx-background-color: #aaa;
     -fx-border-color: #555;
     -fx-border-width: 2px;

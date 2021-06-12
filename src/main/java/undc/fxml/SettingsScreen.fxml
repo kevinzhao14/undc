@@ -10,52 +10,46 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
-
 
 <AnchorPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="undc.fxml.controllers.SettingsController">
-   <children>
-      <StackPane fx:id="stackPane" prefHeight="439.3333333333333" prefWidth="646.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <GridPane fx:id="grid">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints vgrow="NEVER" />
-                <RowConstraints vgrow="NEVER" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <HBox id="title-hBox">
-                     <children>
-                        <Button id="back-button" mnemonicParsing="false" onAction="#back">
-                           <graphic>
-                              <ImageView fitHeight="21.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../resources/icons/left-arrow.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Label id="title" text="Game Settings" />
-                     </children>
-                     <GridPane.margin>
-                        <Insets />
-                     </GridPane.margin>
-                  </HBox>
-                  <HBox id="buttons-container" GridPane.rowIndex="1">
-                     <children>
-                        <Button fx:id="videoButton" mnemonicParsing="false" onAction="#showVideo" text="Video" />
-                        <Button mnemonicParsing="false" onAction="#showAudio" text="Audio" />
-                        <Button mnemonicParsing="false" onAction="#showGame" text="Game" />
-                        <Button mnemonicParsing="false" onAction="#showControls" text="Controls" />
-                     </children>
-                  </HBox>
-                  <AnchorPane id="master" fx:id="master" GridPane.rowIndex="2" />
-               </children>
-            </GridPane>
-         </children>
-      </StackPane>
-   </children>
+    <children>
+        <GridPane fx:id="grid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+          <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints vgrow="NEVER" />
+            <RowConstraints vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          </rowConstraints>
+           <children>
+              <HBox id="title-hBox">
+                 <children>
+                    <Button id="back-button" mnemonicParsing="false" onAction="#back">
+                       <graphic>
+                          <ImageView fitHeight="21.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
+                             <image>
+                                <Image url="@../../../resources/icons/left-arrow.png" />
+                             </image>
+                          </ImageView>
+                       </graphic>
+                    </Button>
+                    <Label id="title" text="Game Settings" />
+                 </children>
+                 <GridPane.margin>
+                    <Insets />
+                 </GridPane.margin>
+              </HBox>
+              <HBox id="buttons-container" GridPane.rowIndex="1">
+                 <children>
+                    <Button fx:id="videoButton" mnemonicParsing="false" onAction="#showVideo" text="Video" />
+                    <Button mnemonicParsing="false" onAction="#showAudio" text="Audio" />
+                    <Button mnemonicParsing="false" onAction="#showGame" text="Game" />
+                    <Button mnemonicParsing="false" onAction="#showControls" text="Controls" />
+                 </children>
+              </HBox>
+              <AnchorPane id="master" fx:id="master" GridPane.rowIndex="2" />
+           </children>
+        </GridPane>
+    </children>
 </AnchorPane>

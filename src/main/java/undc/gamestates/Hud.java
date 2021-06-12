@@ -139,26 +139,28 @@ public class Hud {
         // update hotbar
         InventoryItem[] inv = player.getInventory().getItems()[0];
         for (int i = 0; i < inv.length; i++) {
-            if (inv[i] != null) {
-                Item item = inv[i].getItem();
-                ImageView image = new ImageView(item.getSprite());
-                image.setFitHeight(60);
-                image.setFitWidth(60);
-                Node node = hotbar.getChildren().get(i);
-                if (!(node instanceof VBox)) {
-                    Console.error("Failed to update hotbar.");
-                    return;
-                }
-                VBox box = (VBox) node;
-                if (box.getChildren().size() == 0 || !box.getChildren().get(0).equals(image)) {
-                    box.getChildren().clear();
-                    box.getChildren().add(image);
-                }
-                if (player.getSelected() == i) {
-                    box.getStyleClass().add("hotbar-selected");
-                } else if (box.getStyleClass().contains("hotbar-selected")) {
-                    box.getStyleClass().clear();
-                }
+            Node node = hotbar.getChildren().get(i);
+            if (!(node instanceof VBox)) {
+                Console.error("Failed to update hotbar.");
+                return;
+            }
+            VBox box = (VBox) node;
+            if (inv[i] == null) {
+                box.getChildren().clear();
+                continue;
+            }
+            Item item = inv[i].getItem();
+            ImageView image = new ImageView(item.getSprite());
+            image.setFitHeight(50);
+            image.setFitWidth(50);
+            if (box.getChildren().size() == 0 || !box.getChildren().get(0).equals(image)) {
+                box.getChildren().clear();
+                box.getChildren().add(image);
+            }
+            if (player.getSelected() == i) {
+                box.getStyleClass().add("hotbar-selected");
+            } else if (box.getStyleClass().contains("hotbar-selected")) {
+                box.getStyleClass().clear();
             }
         }
 

@@ -1,0 +1,24 @@
+#parent {
+    -fx-fill-height: false;
+    -fx-alignment: center;
+}
+#container {
+    -fx-alignment: top-center;
+    -fx-spacing: 15px;
+}
+#title {
+    -fx-font-size: 5em;
+    -fx-text-fill: #fafafa;
+    -fx-padding: 0 0 15px 0;
+}
+.row {
+    -fx-spacing: 15px;
+}
+.row VBox {
+    -fx-pref-width: 75px;
+    -fx-pref-height: 75px;
+    -fx-background-color: #aaa;
+    -fx-border-color: #fafafa;
+    -fx-border-width: 2px;
+    -fx-alignment: center;
+}

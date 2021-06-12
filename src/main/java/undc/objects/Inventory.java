@@ -3,11 +3,11 @@ package undc.objects;
 import java.util.Iterator;
 
 public class Inventory implements Iterable<InventoryItem> {
-
     private int rows;
     private int columns;
     private InventoryItem[][] items;
     private int size;
+    private GraphicalInventory graphicalInventory;
 
     public Inventory(int r, int c) {
         this.rows = r;
@@ -136,6 +136,13 @@ public class Inventory implements Iterable<InventoryItem> {
     @Override
     public Iterator<InventoryItem> iterator() {
         return new InventoryIterator(items);
+    }
+
+    public GraphicalInventory getGraphicalInventory() {
+        if (graphicalInventory == null) {
+            graphicalInventory = new GraphicalInventory(this);
+        }
+        return graphicalInventory;
     }
 
     public class InventoryIterator implements Iterator<InventoryItem> {

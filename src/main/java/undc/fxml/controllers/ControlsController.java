@@ -15,8 +15,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import undc.controllers.Console;
 import undc.controllers.Controller;
+import undc.gamestates.SettingsScreen;
 import undc.handlers.Controls;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -159,10 +161,7 @@ public class ControlsController extends SettingsPageController {
      * Calls resetHandlers and reloads page.
      */
     public void reset() {
-        //SettingsScreen.getInstance().showPopup(this);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("src/main/java/undc/fxml/SettingsScreen.fxml"));
-        SettingsController settingsController = loader.getController();
-        settingsController.showPopup(this);
+        SettingsScreen.getInstance().showPopup(this);
     }
 
     /**
