@@ -5,11 +5,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.*;
 import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.gamestates.HomeScreen;
+import undc.objects.Overlay;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -21,17 +24,29 @@ public class SettingsController {
     private static ScrollPane audio;
     private static ScrollPane game;
     private static ScrollPane controls;
+    private static VBox resetPopup;
 
     @FXML
     private AnchorPane master;
     @FXML
+    private StackPane stackPane;
+    @FXML
+    private GridPane grid;
+    @FXML
     private Button videoButton;
 
+    private ResetPopup popup;
     private Button lastButton;
 
     public SettingsController() {
         load();
-        Platform.runLater(() -> show(video, videoButton));
+        Platform.runLater(() -> {
+            show(video, videoButton);
+            popup = new ResetPopup();
+            System.out.println("test");
+            stackPane.getChildren().add(popup.getRoot());
+            popup.toggle();
+        });
     }
 
     /**
@@ -129,5 +144,54 @@ public class SettingsController {
 
     public void back() {
         Controller.setState(HomeScreen.getInstance());
+    }
+
+    public void showPopup(SettingsPageController page) {
+        popup.setPage(page);
+        popup.toggle();
+    }
+
+    private class ResetPopup extends Overlay {
+
+        private SettingsPageController page;
+
+        private ResetPopup() {
+
+            VBox popup = new VBox();
+            popup.setId("popup");
+
+            Label title = new Label("Reset Settings");
+            title.setId("popup-label");
+
+            Label warning = new Label("Are you sure you want to reset your game settings?");
+            warning.setId("popup-warning");
+
+            Button reset = new Button("Reset");
+            reset.setOnAction(e -> page.resetSettings());
+
+            Button cancel = new Button("Cancel");
+            cancel.setOnAction(e -> toggle());
+
+            HBox buttonsContainer = new HBox();
+            buttonsContainer.setId("buttons-container");
+            buttonsContainer.getChildren().addAll(reset, cancel);
+
+            popup.getChildren().addAll(title, warning, buttonsContainer);
+
+            root.getChildren().add(popup);
+
+            /*try {
+                resetPopup = FXMLLoader.load(new File("src/main/java/undc/fxml/ResetPopup.fxml").toURI().toURL());
+                root.getChildren().add(resetPopup);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
+
+
+        }
+
+        public void setPage(SettingsPageController page) {
+            this.page = page;
+        }
     }
 }

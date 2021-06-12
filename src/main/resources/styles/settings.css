@@ -18,7 +18,7 @@
 }
 #title-hBox {
     -fx-padding: 10px 10px 10px 20px;
-    -fx-spacing: 15px;
+    -fx-spacing: 10px;
     -fx-border-width: 1px 0 1px 0;
     -fx-alignment: center-left;
 
@@ -28,8 +28,11 @@
     -fx-padding: 20px;
 }
 #back-button {
-    -fx-background-color: #009370;
+    -fx-background-color: transparent;
     -fx-padding:20px;
+}
+#back-button:hover {
+    -fx-background-color: #dadada;
 }
 #reset-hBox {
     -fx-spacing: 20px;
@@ -38,7 +41,10 @@
     -fx-background-color: #DADADA;
 }
 #reset-button {
-    -fx-background-color: #E7BE64;
+    -fx-background-color: transparent;
+}
+#reset-button:hover {
+    -fx-background-color: #dadada;
 }
 #buttons-container {
     -fx-padding: 10px 10px 10px 145px;

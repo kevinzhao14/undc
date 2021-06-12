@@ -2,6 +2,7 @@ package undc.fxml.controllers;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,7 +23,7 @@ import java.util.Set;
 /**
  * Controller class for controls FXML page.
  */
-public class ControlsController {
+public class ControlsController extends SettingsPageController {
     @FXML
     private ScrollPane scroller;
     @FXML
@@ -158,9 +159,10 @@ public class ControlsController {
      * Calls resetHandlers and reloads page.
      */
     public void reset() {
-        resetHandlers();
-        Controls.getInstance().resetKeys();
-        load();
+        //SettingsScreen.getInstance().showPopup(this);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("src/main/java/undc/fxml/SettingsScreen.fxml"));
+        SettingsController settingsController = loader.getController();
+        settingsController.showPopup(this);
     }
 
     /**
@@ -168,5 +170,11 @@ public class ControlsController {
      */
     public void cancel() {
         handleChangeKey(activeButton, Controls.getInstance().getKey(activeButton.getId()));
+    }
+
+    public void resetSettings() {
+        resetHandlers();
+        Controls.getInstance().resetKeys();
+        load();
     }
 }
