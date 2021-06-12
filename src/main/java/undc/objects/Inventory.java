@@ -1,5 +1,7 @@
 package undc.objects;
 
+import undc.controllers.Console;
+
 import java.util.Iterator;
 
 public class Inventory implements Iterable<InventoryItem> {
@@ -17,26 +19,41 @@ public class Inventory implements Iterable<InventoryItem> {
     }
 
     public void add(Item item, int quantity) {
+        add(new InventoryItem(item, quantity));
+    }
+
+    public void add(Item item) {
+        add(item, 1);
+    }
+
+    public void add(InventoryItem item) {
         if (item == null) {
             return;
         }
         if (full()) {
             return;
         }
-        InventoryItem invItem = new InventoryItem(item, quantity);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 if (items[i][j] == null) {
-                    items[i][j] = invItem;
-                    size++;
+                    add(item, i, j);
                     return;
                 }
             }
         }
     }
 
-    public void add(Item item) {
-        add(item, 1);
+    public void add(InventoryItem item, int row, int col) {
+        if (item == null) {
+            Console.error("Cannot add null to inventory.");
+            return;
+        }
+        if (items[row][col] != null) {
+            Console.error("Could not add, slot taken.");
+            return;
+        }
+        items[row][col] = item;
+        size++;
     }
 
     public boolean remove(Item item) {

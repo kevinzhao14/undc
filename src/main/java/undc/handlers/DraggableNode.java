@@ -17,20 +17,43 @@ public class DraggableNode {
      * Makes a node draggable.
      * @param node Node that is to be made draggable
      */
-    public static void add(Node node) {
-        LIST.add(new DraggableObject(node));
+    public static DraggableObject add(Node node) {
+        DraggableObject obj = new DraggableObject(node);
+        LIST.add(obj);
+        return obj;
     }
 
-    public static void add(Node eventNode, Node... dragNodes) {
-        LIST.add(new DraggableObject(eventNode, dragNodes));
+    public static DraggableObject add(Node eventNode, Node... dragNodes) {
+        DraggableObject obj = new DraggableObject(eventNode, dragNodes);
+        LIST.add(obj);
+        return obj;
+    }
+
+    public static void remove(Node eventNode) {
+        for (int i = 0; i < LIST.size(); i++) {
+            if (LIST.get(i).eventNode.equals(eventNode)) {
+                LIST.get(i).remove();
+                LIST.remove(i);
+                break;
+            }
+        }
+    }
+
+    public enum Event {
+        None, DragStart, Drag, DragEnd
+    }
+
+    public interface Listener {
+        void accept(DraggableObject draggableNature, Event dragEvent);
     }
 
     /**
      * Class that actually makes a Node draggable and handles dragging.
      */
-    private static final class DraggableObject implements EventHandler<MouseEvent> {
+    public static final class DraggableObject implements EventHandler<MouseEvent> {
         private final Node eventNode;
         private final ArrayList<Node> dragNodes = new ArrayList<>();
+        private final ArrayList<Listener> dragListeners = new ArrayList<>();
 
         private double lastMouseX = 0;
         private double lastMouseY = 0;
@@ -51,6 +74,14 @@ public class DraggableNode {
             this(node, node);
         }
 
+        public final boolean addListener(Listener listener) {
+            return this.dragListeners.add(listener);
+        }
+
+        public void remove() {
+            eventNode.removeEventHandler(MouseEvent.ANY, this);
+        }
+
         @Override
         public final void handle(MouseEvent event) {
             // press event to start dragging
@@ -60,9 +91,14 @@ public class DraggableNode {
                     this.lastMouseX = event.getSceneX();
                     this.lastMouseY = event.getSceneY();
                     event.consume();
-                    this.dragging = true;
                 }
             } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+                if (!this.dragging) {
+                    this.dragging = true;
+                    for (Listener listener : this.dragListeners) {
+                        listener.accept(this, Event.DragStart);
+                    }
+                }
                 // drag the node
                 if (this.dragging) {
                     // get the change in mouse position
@@ -81,6 +117,10 @@ public class DraggableNode {
                     this.lastMouseX = event.getSceneX();
                     this.lastMouseY = event.getSceneY();
 
+                    for (Listener listener : this.dragListeners) {
+                        listener.accept(this, Event.Drag);
+                    }
+
                     event.consume();
                 }
             } else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
@@ -88,6 +128,9 @@ public class DraggableNode {
                 if (this.dragging) {
                     event.consume();
                     this.dragging = false;
+                    for (Listener listener : this.dragListeners) {
+                        listener.accept(this, Event.DragEnd);
+                    }
                 }
             }
         }

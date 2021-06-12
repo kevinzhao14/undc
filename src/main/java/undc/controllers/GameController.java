@@ -59,6 +59,7 @@ public class GameController {
     private double accelY;
     private boolean isRunning;
     private boolean isStopped;
+    private GameRunner runner;
 
     //debug variables
     private long ticks;
@@ -250,13 +251,18 @@ public class GameController {
         refresh();
     }
 
+    public void drop(Item item) {
+        runner.drop(item);
+    }
+
     /**
      * Starts the game timer/clock.
      */
     private void startTimer() {
         refresh();
         timer = new Timer();
-        timer.schedule(new GameRunner(), 0, 1000 / Vars.i("fps"));
+        runner = new GameRunner();
+        timer.schedule(runner, 0, 1000 / Vars.i("fps"));
     }
 
     /**
@@ -596,14 +602,19 @@ public class GameController {
                 currentItem.setQuantity(currentItem.getQuantity() - 1);
             } else {
                 if (!player.getInventory().remove(currentItem)) {
+                    Console.error("Failed to drop item");
                     return;
                 }
             }
+            drop(currentItem.getItem());
+        }
+
+        private void drop(Item item) {
             double d = Vars.d("sv_dropitem_distance");
             //get player center
             double x = player.getX() + player.getWidth() / 2;
             double y = player.getY() + player.getHeight() / 2;
-            Image itemSprite = currentItem.getItem().getSprite();
+            Image itemSprite = item.getSprite();
             int dir = player.getDirection() % 4;
             x += dir == 0 ? -d : (dir == 2 ? d : 0);
             y += dir == 3 ? -d : (dir == 1 ? d : 0);
@@ -615,7 +626,7 @@ public class GameController {
             x = check.getX();
             y = check.getY();
 
-            DroppedItem di = new DroppedItem(currentItem.getItem(), x, y, itemSprite.getWidth(),
+            DroppedItem di = new DroppedItem(item, x, y, itemSprite.getWidth(),
                     itemSprite.getHeight());
             room.getDroppedItems().add(di);
             Platform.runLater(() -> getScreen().updateHud());

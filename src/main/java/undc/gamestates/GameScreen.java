@@ -187,7 +187,7 @@ public class GameScreen extends GameState {
                 }
                 InventoryItem item = new InventoryItem(i.getValue(), 1);
                 item.setInfinite(true);
-                inv.getItems()[row][col] = item;
+                inv.add(item, row, col);
                 col++;
                 if (col == 5) {
                     row++;
@@ -402,7 +402,6 @@ public class GameScreen extends GameState {
     }
 
     public void toggleInventory() {
-        inventory.update();
         inventory.toggle();
     }
 
