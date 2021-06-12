@@ -177,10 +177,8 @@ public class GameScreen extends GameState {
     }
 
     public void updateHud() {
-        createHud();
+        hud.update();
         updateInventory();
-        Pane root = (Pane) scene.getRoot();
-        root.getChildren().set(1, hud.getHud());
     }
 
     private void createPlayer() {
@@ -217,7 +215,7 @@ public class GameScreen extends GameState {
     }
 
     private void createHud() {
-        hud = new Hud(player);
+        hud = Hud.getInstance(player);
     }
 
     public DungeonLayout getLayout() {

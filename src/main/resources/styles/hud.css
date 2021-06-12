@@ -1,5 +1,69 @@
+#grid {
+    -fx-padding: 15px;
+}
 #player-info {
     -fx-fill-height: false;
     -fx-alignment: bottom-left;
-    -fx-border-color: green;
+}
+#player-image {
+    -fx-border-color: #212121;
+    -fx-border-width: 3px;
+    -fx-background-color: #eee;
+}
+#player-stats {
+    -fx-padding: 0 0 0 10px;
+}
+#player-gold {
+    -fx-padding: 0 0 5px 0;
+}
+#player-gold Label {
+    -fx-text-fill: white;
+    -fx-font-size: 2em;
+}
+#healthbar {
+    -fx-alignment: center-left;
+}
+#healthbar-outer {
+    -fx-fill: #ccc;
+    -fx-stroke: #212121;
+    -fx-stroke-width: 2px;
+    -fx-stroke-type: outside;
+}
+#healthbar-inner {
+    -fx-fill: #e02121;
+    -fx-stroke: transparent;
+    -fx-stroke-width: 2px;
+    -fx-stroke-type: outside;
+}
+#healthbar Label {
+    -fx-font-size: 1.8em;
+    -fx-text-fill: #212121;
+    -fx-padding: 0 0 0 10px;
+}
+#hotbar {
+    -fx-fill-height: false;
+    -fx-alignment: bottom-center;
+    -fx-spacing: 10px;
+}
+#hotbar VBox {
+    -fx-pref-width: 75px;
+    -fx-pref-height: 75px;
+    -fx-background-color: #aaa;
+    -fx-border-color: #555;
+    -fx-border-width: 2px;
+    -fx-alignment: center;
+}
+#hotbar VBox.hotbar-selected {
+    -fx-border-color: #fafafa;
+}
+#ammo {
+    -fx-alignment: bottom-right;
+}
+#ammo Label {
+    -fx-font-size: 2.5em;
+    -fx-text-fill: #fafafa;
+}
+#effects {
+    -fx-alignment: top-right;
+    -fx-spacing: 10px;
 }
