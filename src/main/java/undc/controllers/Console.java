@@ -1,5 +1,6 @@
 package undc.controllers;
 
+import javafx.concurrent.Worker;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -9,7 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
+import javafx.scene.web.WebView;
 import undc.gamestates.GameScreen;
 import undc.handlers.Controls;
 import undc.handlers.DraggableNode;
@@ -35,7 +36,7 @@ public class Console {
     private static final int MAX_SIZE = 200; // Maximum number of messages the console stores
     private static final int SUGG_MAX_SIZE = 10;
     private static final String PREFIX = "> "; // Prefix for printing the user's command
-    private static final LinkedList<Label> HISTORY = new LinkedList<>(); // List of all messages, max size of MAX_SIZE
+    private static final LinkedList<String> HISTORY = new LinkedList<>(); // List of all messages, max size of MAX_SIZE
     // List of all issued commands by the user
     private static final ArrayList<String> COMMAND_HISTORY = new ArrayList<>();
     private static final ArrayList<Label> SUGGESTIONS = new ArrayList<>(); // List of suggested/autocomplete commands
@@ -45,7 +46,7 @@ public class Console {
      * Modified Variables
      */
     private static Pane scene; // Main Parent of the console
-    private static VBox historyBox; // Box that contains all the messages
+    private static WebView historyBox; // Box that contains all the messages
     private static ScrollPane historyScroll; // Pane that does the scrolling
     private static TextField input; // Input field
     private static VBox suggestBox; // VBox that holds the suggestions
@@ -64,9 +65,8 @@ public class Console {
             if (HISTORY.size() >= MAX_SIZE) {
                 HISTORY.remove();
             }
-            // create temporary Label and add it to the history
-            Label temp = new Label(str);
-            temp.setTextFill(Color.web(color));
+            // create temporary Label and add it to the history; add newline if it's not the first message
+            String temp = "<p style='color: " + color + ";'>" + str + "</p>";
             HISTORY.add(temp);
             refresh();
         }
@@ -128,14 +128,19 @@ public class Console {
         if (historyBox == null) {
             create();
         }
-        historyBox.getChildren().clear();
-        historyBox.getChildren().addAll(HISTORY);
-
-        //applyCss & layout need to be called for the ScrollPane to recalculate its size so that
-        //setting the vvalue works properly
-        historyScroll.applyCss();
-        historyScroll.layout();
-        historyScroll.setVvalue(1);
+        StringBuilder str = new StringBuilder();
+        for (String s : HISTORY) {
+            str.append(s);
+        }
+        historyBox.getEngine().loadContent(str.toString(), "text/html");
+        // set the css file to style the text and stuff
+        historyBox.getEngine().setUserStyleSheetLocation("file:src/main/resources/styles/console.css");
+        // scroll to bottom after the page has loaded/succeeded
+        historyBox.getEngine().getLoadWorker().stateProperty().addListener((o, old, n) -> {
+            if (n == Worker.State.SUCCEEDED) {
+                historyBox.getEngine().executeScript("window.scrollTo(0, document.body.scrollHeight);");
+            }
+        });
     }
 
     /**
@@ -198,10 +203,13 @@ public class Console {
         historyScroll.setId("history-scroll");
 
         // box that holds the messages
-        historyBox = new VBox();
+        historyBox = new WebView();
         historyBox.setId("history-box");
+        // disable the right-click menu
+        historyBox.setContextMenuEnabled(false);
         // controls the scroll speed of the scrollpane
         historyBox.setOnScroll(e -> historyScroll.setVvalue(historyScroll.getVvalue() - e.getDeltaY() * 0.0025));
+        refresh();
 
         // stuff for the input field
         input = new TextField();

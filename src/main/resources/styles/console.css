@@ -72,3 +72,12 @@
 .suggestion-selected {
     -fx-background-color: #bbb;
 }
+html {
+    background-color: #ddd;
+}
+p {
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    line-height: 125%;
+    margin: 5px 0px 5px 0px;
+}
