@@ -86,6 +86,7 @@ public class GameScreen extends GameState {
             // cvars
             Vars.CHEATS = true;
             Vars.find("gm_god").setVal("true", true);
+            Vars.set("sv_infinite_ammo", "true");
         } else if (mode == GameMode.STORY) {
             dungeonLayout = new LayoutGenerator().generateLayout();
         }

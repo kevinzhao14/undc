@@ -33,6 +33,7 @@ public class Vars {
 
         // Boolean CVars
         BOOLEAN_VARS.add(new BooleanCVar("gm_god", "god", false, true, false));
+        BOOLEAN_VARS.add(new BooleanCVar("sv_infinite_ammo", "infiniteAmmo", false, true, true));
 
         // Integer CVars
         INT_VARS.add(new IntCVar("gc_screen_width", "screenWidth", 400, 7680, 1920, false));

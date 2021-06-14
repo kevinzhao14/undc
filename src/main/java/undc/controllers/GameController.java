@@ -751,7 +751,9 @@ public class GameController {
                 weapon.setDelay(weapon.getFireRate() * 1000);
 
                 //reduce ammo
-                weaponAmmo.setRemaining(weaponAmmo.getRemaining() - 1);
+                if (!Vars.b("sv_infinite_ammo")) {
+                    weaponAmmo.setRemaining(weaponAmmo.getRemaining() - 1);
+                }
 
                 //update ammo on HUD
                 Platform.runLater(() -> getScreen().updateHud());
