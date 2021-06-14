@@ -2,7 +2,6 @@ package undc.fxml.controllers;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,7 +17,6 @@ import undc.controllers.Controller;
 import undc.gamestates.SettingsScreen;
 import undc.handlers.Controls;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -107,6 +105,8 @@ public class ControlsController extends SettingsPageController {
         });
         // Allows mouse controls to be set by clicking on the button
         button.setOnMouseReleased(e -> handleChangeKey(button, Controls.mbStringify(e.getButton())));
+
+        button.getParent().getChildrenUnmodifiable().get(1).setVisible(true);
     }
 
     /**
@@ -145,6 +145,8 @@ public class ControlsController extends SettingsPageController {
         cancelButton.setVisible(false);
         button.setOnMouseReleased(e -> changeKey(e, button));
         grid.setOnScroll(this::scroll);
+
+        button.getParent().getChildrenUnmodifiable().get(1).setVisible(false);
     }
 
     /**
