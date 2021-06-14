@@ -13,12 +13,18 @@ import undc.controllers.GameController;
 import undc.gamestates.GameScreen;
 import undc.handlers.DraggableNode;
 
+/**
+ * Class that handles the graphics for the player's inventory.
+ */
 public class GraphicalInventory extends Overlay {
     private final Inventory inventory;
     private final HBox[] rows;
     private final VBox container;
 
-
+    /**
+     * Constructor that creates javafx graphics for the GraphicalInventory.
+     * @param inventory Player's inventory that is used to update the graphics with the proper items
+     */
     public GraphicalInventory(Inventory inventory) {
         this.inventory = inventory;
 
@@ -52,11 +58,15 @@ public class GraphicalInventory extends Overlay {
         toggle();
     }
 
+    /**
+     * Looks through the player's inventory and updates the sprites in the graphical inventory.
+     */
     public void update() {
         if (!(Controller.getState() instanceof GameScreen)) {
             Console.error("Invalid game state.");
             return;
         }
+        // access inventory item and put its sprite in the graphical inventory
         for (int i = 0; i < inventory.getRows(); i++) {
             InventoryItem[] row = inventory.getItems()[i];
             HBox box = rows[i];
@@ -82,67 +92,65 @@ public class GraphicalInventory extends Overlay {
                 image.setFitWidth(60);
                 image.setFitHeight(60);
 
+                // making inventory draggable
                 DraggableNode.remove(square);
                 DraggableNode.DraggableObject obj = DraggableNode.add(square, image);
 
                 obj.addListener((n, e) -> {
-                   if (e == DraggableNode.Event.DragStart) {
-                       Bounds bounds = image.localToScene(image.getBoundsInLocal());
-                       double x = bounds.getMinX();
-                       double y = bounds.getMinY();
-                       Pane pane = new Pane();
-                       pane.getChildren().add(image);
-                       image.setX(x);
-                       image.setY(y);
-                       root.getChildren().add(pane);
-                   } else if (e == DraggableNode.Event.DragEnd) {
-                       for (int i1 = 0; i1 < rows.length; i1++) {
-                           HBox hbox = rows[i1];
-                           for (int j1 = 0; j1 < hbox.getChildren().size(); j1++) {
-                               Node node1 = hbox.getChildren().get(j1);
-                               VBox vbox = (VBox) node1;
-                               Bounds ib = vbox.sceneToLocal(image.localToScene(image.getBoundsInLocal()));
-                               double x = ib.getMinX() + image.getFitWidth() / 2;
-                               double y = ib.getMinY() + image.getFitHeight() / 2;
-                               if (vbox.contains(x, y) && vbox.getChildren().size() == 0) {
-                                   // move graphically
-                                   vbox.getChildren().add(image);
-                                   image.setTranslateX(0);
-                                   image.setTranslateY(0);
-                                   root.getChildren().remove(root.getChildren().size() - 1);
+                    if (e == DraggableNode.Event.DragStart) {
+                        Bounds bounds = image.localToScene(image.getBoundsInLocal());
+                        double x = bounds.getMinX();
+                        double y = bounds.getMinY();
+                        Pane pane = new Pane();
+                        pane.getChildren().add(image);
+                        image.setX(x);
+                        image.setY(y);
+                        root.getChildren().add(pane);
+                    } else if (e == DraggableNode.Event.DragEnd) {
+                        for (int i1 = 0; i1 < rows.length; i1++) {
+                            HBox hbox = rows[i1];
+                            for (int j1 = 0; j1 < hbox.getChildren().size(); j1++) {
+                                Node node1 = hbox.getChildren().get(j1);
+                                VBox vbox = (VBox) node1;
+                                Bounds ib = vbox.sceneToLocal(image.localToScene(image.getBoundsInLocal()));
+                                double x = ib.getMinX() + image.getFitWidth() / 2;
+                                double y = ib.getMinY() + image.getFitHeight() / 2;
+                                if (vbox.contains(x, y) && vbox.getChildren().size() == 0) {
+                                    // move graphically
+                                    vbox.getChildren().add(image);
+                                    image.setTranslateX(0);
+                                    image.setTranslateY(0);
+                                    root.getChildren().remove(root.getChildren().size() - 1);
 
-                                   inventory.remove(item);
-                                   inventory.add(item, i1, j1);
+                                    inventory.remove(item);
+                                    inventory.add(item, i1, j1);
 
-                                   update();
-                                   GameScreen.getInstance().updateHud();
-                                   return;
-                               }
-                           }
-                       }
-                       // not put in a spot, check if it's outside of the container to drop
-                       Bounds ib = container.sceneToLocal(image.localToScene(image.getBoundsInLocal()));
-                       double x = ib.getMinX() + image.getFitWidth() / 2;
-                       double y = ib.getMinY() + image.getFitHeight() / 2;
-                       if (!container.contains(x, y)) {
-                           if (!inventory.remove(item)) {
-                               Console.error("Failed to remove item to drop.");
-                               return;
-                           }
-                           GameController.getInstance().drop(item.getItem());
-                           root.getChildren().remove(root.getChildren().size() - 1);
-                       } else {
-                           // put it back to original spot
-                           square.getChildren().add(image);
-                           image.setTranslateX(0);
-                           image.setTranslateY(0);
-                           root.getChildren().remove(root.getChildren().size() - 1);
-                       }
-                       update();
-                       GameScreen.getInstance().updateHud();
-                   }
+                                    update();
+                                    return;
+                                }
+                            }
+                        }
+                        // not put in a spot, check if it's outside of the container to drop
+                        Bounds ib = container.sceneToLocal(image.localToScene(image.getBoundsInLocal()));
+                        double x = ib.getMinX() + image.getFitWidth() / 2;
+                        double y = ib.getMinY() + image.getFitHeight() / 2;
+                        if (!container.contains(x, y)) {
+                            if (!inventory.remove(item)) {
+                                Console.error("Failed to remove item to drop.");
+                                return;
+                            }
+                            GameController.getInstance().drop(item.getItem());
+                            root.getChildren().remove(root.getChildren().size() - 1);
+                        } else {
+                            // put it back to original spot
+                            square.getChildren().add(image);
+                            image.setTranslateX(0);
+                            image.setTranslateY(0);
+                            root.getChildren().remove(root.getChildren().size() - 1);
+                        }
+                        update();
+                    }
                 });
-
                 if (square.getChildren().size() == 0 || !square.getChildren().get(0).equals(image)) {
                     square.getChildren().clear();
                     square.getChildren().add(image);

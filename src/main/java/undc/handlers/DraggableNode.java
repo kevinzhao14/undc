@@ -23,12 +23,22 @@ public class DraggableNode {
         return obj;
     }
 
+    /**
+     * Makes the passed node draggable.
+     * @param eventNode Node where the drag events occurs
+     * @param dragNodes Node that you wish to drag
+     * @return the new DraggableObject
+     */
     public static DraggableObject add(Node eventNode, Node... dragNodes) {
         DraggableObject obj = new DraggableObject(eventNode, dragNodes);
         LIST.add(obj);
         return obj;
     }
 
+    /**
+     * Makes a previously draggable node not draggable.
+     * @param eventNode The node you want to remove the draggable event from.
+     */
     public static void remove(Node eventNode) {
         for (int i = 0; i < LIST.size(); i++) {
             if (LIST.get(i).eventNode.equals(eventNode)) {
@@ -39,10 +49,16 @@ public class DraggableNode {
         }
     }
 
+    /**
+     * Enum with the different type of DragEvents to be handled.
+     */
     public enum Event {
         None, DragStart, Drag, DragEnd
     }
 
+    /**
+     * Listens for drag events.
+     */
     public interface Listener {
         void accept(DraggableObject draggableNature, Event dragEvent);
     }

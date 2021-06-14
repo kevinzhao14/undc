@@ -4,6 +4,10 @@ import undc.controllers.Console;
 
 import java.util.Iterator;
 
+/**
+ * Class that handles the games inventory/item storing system.
+ * Is used by other classes to access items that the player possesses.
+ */
 public class Inventory implements Iterable<InventoryItem> {
     private int rows;
     private int columns;
@@ -11,6 +15,11 @@ public class Inventory implements Iterable<InventoryItem> {
     private int size;
     private GraphicalInventory graphicalInventory;
 
+    /**
+     * Makes a 2D array with specific rows and columns that represents an inventor.
+     * @param r number of rows in the 2D array
+     * @param c number of columns in the 2D array
+     */
     public Inventory(int r, int c) {
         this.rows = r;
         this.columns = c;
@@ -26,6 +35,10 @@ public class Inventory implements Iterable<InventoryItem> {
         add(item, 1);
     }
 
+    /**
+     * Adds an inventory item to the first available spot in the array.
+     * @param item InventoryItem to be added to the inventory
+     */
     public void add(InventoryItem item) {
         if (item == null) {
             return;
@@ -43,6 +56,12 @@ public class Inventory implements Iterable<InventoryItem> {
         }
     }
 
+    /**
+     * Adds an InventoryItem to a specific location in the array.
+     * @param item InventoryItem being added
+     * @param row int representing the row to add to
+     * @param col int representing the column to add to
+     */
     public void add(InventoryItem item, int row, int col) {
         if (item == null) {
             Console.error("Cannot add null to inventory.");
@@ -56,6 +75,11 @@ public class Inventory implements Iterable<InventoryItem> {
         size++;
     }
 
+    /**
+     * Removes an Item from the inventory array.
+     * @param item Item to be removed
+     * @return the removed Item item
+     */
     public boolean remove(Item item) {
         if (size == 0) {
             return false;
@@ -79,6 +103,11 @@ public class Inventory implements Iterable<InventoryItem> {
         return false;
     }
 
+    /**
+     * Removes an InventoryItem from the inventory array.
+     * @param item InventoryItem to be removed
+     * @return the removed InventoryItem
+     */
     public boolean remove(InventoryItem item) {
         if (size == 0) {
             return false;
@@ -98,6 +127,9 @@ public class Inventory implements Iterable<InventoryItem> {
         return false;
     }
 
+    /**
+     * Shifts each row of items up by 1.
+     */
     public void rotate() {
         InventoryItem[] firstrow = items[0];
         for (int i = 0; i < items.length - 1; i++) {
@@ -106,6 +138,10 @@ public class Inventory implements Iterable<InventoryItem> {
         items[items.length - 1] = firstrow;
     }
 
+    /**
+     * Creates a list of all the InventoryItems in the inventory array.
+     * @return InventoryItem[] that is the list of items in the array
+     */
     public InventoryItem[] getItemsList() {
         InventoryItem[] list = new InventoryItem[size];
         int c = 0;
@@ -119,6 +155,11 @@ public class Inventory implements Iterable<InventoryItem> {
         return list;
     }
 
+    /**
+     * Determines if a specific Item is in the inventory array.
+     * @param item Item to look for
+     * @return boolean of whether or not the passed in item is in the inventory array
+     */
     public boolean contains(Item item) {
         for (InventoryItem[] row : items) {
             for (InventoryItem i : row) {
@@ -155,6 +196,10 @@ public class Inventory implements Iterable<InventoryItem> {
         return new InventoryIterator(items);
     }
 
+    /**
+     * Accessor method for the GraphicalInventory. Ensures only one is created.
+     * @return GraphicalInventory representing the player's inventory
+     */
     public GraphicalInventory getGraphicalInventory() {
         if (graphicalInventory == null) {
             graphicalInventory = new GraphicalInventory(this);
@@ -162,11 +207,18 @@ public class Inventory implements Iterable<InventoryItem> {
         return graphicalInventory;
     }
 
+    /**
+     * Inner class that handles iterating through the 2D array items.
+     */
     public class InventoryIterator implements Iterator<InventoryItem> {
         private int row;
         private int col;
         InventoryItem[][] items;
 
+        /**
+         * Constructor that sets up the iterator to begin iterating from row and column 0 through the 2D array items.
+         * @param items InventoryItem[][] to iterate through
+         */
         public InventoryIterator(InventoryItem[][] items) {
             row = 0;
             col = 0;

@@ -176,6 +176,9 @@ public class ControlsController extends SettingsPageController {
         handleChangeKey(activeButton, Controls.getInstance().getKey(activeButton.getId()));
     }
 
+    /**
+     * Method definition for SettingsPageController's abstract method. Resets the settings page.
+     */
     public void resetSettings() {
         resetHandlers();
         Controls.getInstance().resetKeys();

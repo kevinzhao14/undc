@@ -5,13 +5,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
 import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.gamestates.HomeScreen;
-import undc.objects.Overlay;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,11 +30,12 @@ public class SettingsController {
 
     private Button lastButton;
 
+    /**
+     * Default constructor that is called to load the settings page.
+     */
     public SettingsController() {
         load();
-        Platform.runLater(() -> {
-            show(video, videoButton);
-        });
+        Platform.runLater(() -> show(video, videoButton));
     }
 
     /**
