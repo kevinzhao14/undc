@@ -29,8 +29,6 @@ public class ControlsController extends SettingsPageController {
     @FXML
     private VBox master;
     @FXML
-    private Button cancelButton;
-    @FXML
     private GridPane grid;
 
     private boolean buttonActive = false; // whether or not a button is clicked
@@ -79,12 +77,14 @@ public class ControlsController extends SettingsPageController {
      */
     public void changeKey(MouseEvent me, Button button) {
         if (buttonActive || me.getButton() != MouseButton.PRIMARY) {
+            if (activeButton != button) {
+                handleChangeKey(activeButton, Controls.mbStringify(me.getButton()));
+            }
             return;
         }
         buttonActive = true;
 
         // Setting up values for functionality of cancel method and cancel button
-        cancelButton.setVisible(true);
         activeButton = button;
 
         button.setText("Press a key");
@@ -106,7 +106,9 @@ public class ControlsController extends SettingsPageController {
         // Allows mouse controls to be set by clicking on the button
         button.setOnMouseReleased(e -> handleChangeKey(button, Controls.mbStringify(e.getButton())));
 
-        button.getParent().getChildrenUnmodifiable().get(1).setVisible(true);
+        Node cancelBox = button.getParent().getChildrenUnmodifiable().get(1);
+        cancelBox.setOnMouseReleased(e -> handleChangeKey(button, Controls.mbStringify(e.getButton())));
+        cancelBox.setVisible(true);
     }
 
     /**
@@ -142,11 +144,12 @@ public class ControlsController extends SettingsPageController {
         }
         resetHandlers();
         buttonActive = false;
-        cancelButton.setVisible(false);
         button.setOnMouseReleased(e -> changeKey(e, button));
         grid.setOnScroll(this::scroll);
 
-        button.getParent().getChildrenUnmodifiable().get(1).setVisible(false);
+        Node cancelBox = button.getParent().getChildrenUnmodifiable().get(1);
+        cancelBox.setOnMouseReleased(e -> {});
+        cancelBox.setVisible(false);
     }
 
     /**
@@ -180,5 +183,6 @@ public class ControlsController extends SettingsPageController {
         resetHandlers();
         Controls.getInstance().resetKeys();
         load();
+        SettingsScreen.getInstance().showPopup(this);
     }
 }

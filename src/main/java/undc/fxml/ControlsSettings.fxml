@@ -567,7 +567,6 @@
                 </VBox>
                 <HBox id="reset-hBox" alignment="TOP_RIGHT" GridPane.columnIndex="2" GridPane.rowIndex="1">
                     <children>
-                        <Button id="cancel-button" fx:id="cancelButton" mnemonicParsing="false" onAction="#cancel" text="Cancel" visible="false" />
                         <Button id="reset-button" alignment="CENTER" mnemonicParsing="false" onAction="#reset" text="Reset">
                             <graphic>
                                 <ImageView fitHeight="20.0" pickOnBounds="true" preserveRatio="true">
