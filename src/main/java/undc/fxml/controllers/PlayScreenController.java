@@ -7,6 +7,7 @@ import undc.gamestates.NewGameScreen;
 
 public class PlayScreenController {
     public void newGame() {
+        NewGameScreen.resetInstance();
         Controller.setState(NewGameScreen.getInstance());
     }
 
@@ -17,6 +18,7 @@ public class PlayScreenController {
     }
 
     public void back() {
+        HomeScreen.resetInstance();
         Controller.setState(HomeScreen.getInstance());
     }
 }

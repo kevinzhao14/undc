@@ -26,12 +26,12 @@ public class PlayScreen extends GameState {
 
     public static PlayScreen getInstance() {
         if (instance == null) {
-            instance = new PlayScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
+            resetInstance();
         }
         return instance;
     }
 
-    public static void resetInstance(int width, int height) {
-        instance = new PlayScreen(width, height);
+    public static void resetInstance() {
+        instance = new PlayScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
     }
 }

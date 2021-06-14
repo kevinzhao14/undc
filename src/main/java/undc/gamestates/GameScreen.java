@@ -59,9 +59,13 @@ public class GameScreen extends GameState {
 
     public static GameScreen getInstance() {
         if (instance == null) {
-            instance = new GameScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
+            resetInstance();
         }
         return instance;
+    }
+
+    public static void resetInstance() {
+        instance = new GameScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
     }
 
     public void newGame(GameMode mode) {

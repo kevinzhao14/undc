@@ -20,4 +20,4 @@ buildNumber.properties
 config/*
 
 #mac things
-javafx-mac/*
+*/javafx-mac/*

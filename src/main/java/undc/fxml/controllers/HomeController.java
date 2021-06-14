@@ -7,10 +7,12 @@ import undc.gamestates.SettingsScreen;
 public class HomeController {
 
     public void play() {
+        PlayScreen.resetInstance();
         Controller.setState(PlayScreen.getInstance());
     }
 
     public void settings() {
+        SettingsScreen.resetInstance();
         Controller.setState(SettingsScreen.getInstance());
     }
 

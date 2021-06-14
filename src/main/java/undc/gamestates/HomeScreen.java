@@ -43,8 +43,12 @@ public class HomeScreen extends GameState {
      */
     public static HomeScreen getInstance() {
         if (instance == null) {
-            instance = new HomeScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
+            resetInstance();
         }
         return instance;
+    }
+
+    public static void resetInstance() {
+        instance = new HomeScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
     }
 }

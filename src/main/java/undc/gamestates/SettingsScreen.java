@@ -56,9 +56,13 @@ public class SettingsScreen extends GameState {
      */
     public static SettingsScreen getInstance() {
         if (instance == null) {
-            instance = new SettingsScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
+            resetInstance();
         }
         return instance;
+    }
+
+    public static void resetInstance() {
+        instance = new SettingsScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
     }
 
     public void showPopup(SettingsPageController page) {

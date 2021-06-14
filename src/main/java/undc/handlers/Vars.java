@@ -22,7 +22,7 @@ public class Vars {
     public static boolean CHEATS = false;
 
     /**
-     * Loads all of the CVars and their default values. These will be overwritten by the Config for anyu custom values.
+     * Loads all of the CVars and their default values. These will be overwritten by the Config for any custom values.
      */
     public static void load() {
         /* CVar Prefixes:
