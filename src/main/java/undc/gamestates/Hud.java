@@ -145,6 +145,11 @@ public class Hud {
                 return;
             }
             VBox box = (VBox) node;
+            if (player.getSelected() == i) {
+                box.getStyleClass().add("hotbar-selected");
+            } else if (box.getStyleClass().contains("hotbar-selected")) {
+                box.getStyleClass().clear();
+            }
             if (inv[i] == null) {
                 box.getChildren().clear();
                 continue;
@@ -156,11 +161,6 @@ public class Hud {
             if (box.getChildren().size() == 0 || !box.getChildren().get(0).equals(image)) {
                 box.getChildren().clear();
                 box.getChildren().add(image);
-            }
-            if (player.getSelected() == i) {
-                box.getStyleClass().add("hotbar-selected");
-            } else if (box.getStyleClass().contains("hotbar-selected")) {
-                box.getStyleClass().clear();
             }
         }
 

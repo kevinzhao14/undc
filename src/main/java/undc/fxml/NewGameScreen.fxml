@@ -5,8 +5,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-
-<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="undc.fxml.controllers.NewGameController">
+<AnchorPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="undc.fxml.controllers.NewGameController">
    <children>
       <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -17,6 +16,7 @@
                   <Button mnemonicParsing="false" onAction="#newSandbox" text="Sandbox" />
                </children>
             </VBox>
+            <Button id="cancel-button" onAction="#cancel" mnemonicParsing="false" text="Cancel" />
          </children>
       </VBox>
    </children>

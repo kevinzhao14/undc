@@ -1,5 +1,6 @@
 package undc.controllers;
 
+import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -132,14 +133,16 @@ public class Console {
         for (String s : HISTORY) {
             str.append(s);
         }
-        historyBox.getEngine().loadContent(str.toString(), "text/html");
-        // set the css file to style the text and stuff
-        historyBox.getEngine().setUserStyleSheetLocation("file:src/main/resources/styles/console.css");
-        // scroll to bottom after the page has loaded/succeeded
-        historyBox.getEngine().getLoadWorker().stateProperty().addListener((o, old, n) -> {
-            if (n == Worker.State.SUCCEEDED) {
-                historyBox.getEngine().executeScript("window.scrollTo(0, document.body.scrollHeight);");
-            }
+        Platform.runLater(() -> {
+            historyBox.getEngine().loadContent(str.toString(), "text/html");
+            // set the css file to style the text and stuff
+            historyBox.getEngine().setUserStyleSheetLocation("file:src/main/resources/styles/console.css");
+            // scroll to bottom after the page has loaded/succeeded
+            historyBox.getEngine().getLoadWorker().stateProperty().addListener((o, old, n) -> {
+                if (n == Worker.State.SUCCEEDED) {
+                    historyBox.getEngine().executeScript("window.scrollTo(0, document.body.scrollHeight);");
+                }
+            });
         });
     }
 
@@ -225,7 +228,7 @@ public class Console {
             input.clear();
         });
 
-        input.setOnKeyPressed(e -> handleKey(e.getCode().toString()));
+        input.setOnKeyPressed(e -> handleKey(Controls.keyStringify(e.getCode())));
         input.setOnKeyReleased(e -> genSuggestions());
 
         // image/area used to resize the console

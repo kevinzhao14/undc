@@ -95,7 +95,7 @@ public class ControlsController extends SettingsPageController {
             if (e.getCode() == KeyCode.ESCAPE) {
                 handleChangeKey(button, "cancel");
             } else {
-                handleChangeKey(button, e.getCode().toString());
+                handleChangeKey(button, Controls.keyStringify(e.getCode()));
             }
         });
         scene.setOnMousePressed(e -> handleChangeKey(button, Controls.mbStringify(e.getButton())));

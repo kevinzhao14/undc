@@ -3,6 +3,7 @@ package undc.fxml.controllers;
 import undc.controllers.Controller;
 import undc.gamestates.ConfigScreen;
 import undc.gamestates.GameScreen;
+import undc.gamestates.PlayScreen;
 
 public class NewGameController {
 
@@ -16,5 +17,10 @@ public class NewGameController {
         GameScreen.getInstance().newGame(GameScreen.GameMode.SANDBOX);
         Controller.setState(GameScreen.getInstance());
         GameScreen.getInstance().start();
+    }
+
+    public void cancel() {
+        PlayScreen.resetInstance();
+        Controller.setState(PlayScreen.getInstance());
     }
 }

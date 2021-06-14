@@ -17,3 +17,10 @@ Button {
     -fx-padding: 50px 25px 100px 25px;
     -fx-spacing: 20px;
 }
+#container Button {
+    -fx-pref-width: 200px;
+}
+#cancel-button {
+    -fx-font-size: 2em;
+    -fx-padding: 10px 20px 10px 20px;
+}

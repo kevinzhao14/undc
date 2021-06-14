@@ -205,6 +205,7 @@ public class GameScreen extends GameState {
 
     private void createHud() {
         hud = Hud.getInstance(player);
+        updateHud();
         createInventory();
     }
 

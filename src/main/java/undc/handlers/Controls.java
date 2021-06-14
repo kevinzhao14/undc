@@ -1,5 +1,6 @@
 package undc.handlers;
 
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import undc.controllers.Console;
 
@@ -270,6 +271,24 @@ public class Controls {
             return "MOUSEWHEELUP";
         } else {
             return "";
+        }
+    }
+
+    public static String keyStringify(KeyCode code) {
+        switch (code) {
+            case DIGIT0:
+            case DIGIT1:
+            case DIGIT2:
+            case DIGIT3:
+            case DIGIT4:
+            case DIGIT5:
+            case DIGIT6:
+            case DIGIT7:
+            case DIGIT8:
+            case DIGIT9:
+                return code.toString().replace("DIGIT", "");
+            default:
+                return code.toString();
         }
     }
 }

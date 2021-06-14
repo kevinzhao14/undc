@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane id="controls-container" fx:id="scroller" fitToWidth="true" hbarPolicy="NEVER" hmax="0.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="undc.fxml.controllers.ControlsController">
+<ScrollPane id="controls-container" fx:id="scroller" fitToWidth="true" hbarPolicy="NEVER" hmax="0.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="undc.fxml.controllers.ControlsController">
     <content>
         <GridPane fx:id="grid" onScroll="#scroll" HBox.hgrow="ALWAYS">
             <columnConstraints>

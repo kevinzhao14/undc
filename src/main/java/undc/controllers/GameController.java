@@ -98,8 +98,8 @@ public class GameController {
         Scene scene = getScreen().getScene();
 
         //Handle key events
-        scene.setOnKeyPressed(e -> handleKey(e.getCode().toString(), true));
-        scene.setOnKeyReleased(e -> handleKey(e.getCode().toString(), false));
+        scene.setOnKeyPressed(e -> handleKey(Controls.keyStringify(e.getCode()), true));
+        scene.setOnKeyReleased(e -> handleKey(Controls.keyStringify(e.getCode()), false));
         scene.setOnMousePressed(e -> handleKey(Controls.mbStringify(e.getButton()), true));
         scene.setOnMouseReleased(e -> handleKey(Controls.mbStringify(e.getButton()), false));
         scene.setOnScroll(e -> handleKey(Controls.scrollStringify(e.getDeltaY()), false));
@@ -357,8 +357,22 @@ public class GameController {
                     ((RangedWeapon) item).reload();
                 }
                 break;
+            case "slot1": case "slot2": case "slot3": case "slot4": case "slot5":
+                slotSelector(control);
+                break;
             default:
                 break;
+        }
+    }
+
+    private void slotSelector(String slot) {
+        slot = slot.replace("slot", "");
+        try {
+            int n = Integer.parseInt(slot) - 1;
+            player.select(n);
+            GameScreen.getInstance().updateHud();
+        } catch (NumberFormatException e) {
+            Console.error("Invalid slot selected.");
         }
     }
 

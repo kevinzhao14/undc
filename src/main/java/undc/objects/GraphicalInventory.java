@@ -115,6 +115,7 @@ public class GraphicalInventory extends Overlay {
                                    inventory.add(item, i1, j1);
 
                                    update();
+                                   GameScreen.getInstance().updateHud();
                                    return;
                                }
                            }
@@ -138,6 +139,7 @@ public class GraphicalInventory extends Overlay {
                            root.getChildren().remove(root.getChildren().size() - 1);
                        }
                        update();
+                       GameScreen.getInstance().updateHud();
                    }
                 });
 

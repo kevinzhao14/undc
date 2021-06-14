@@ -74,6 +74,7 @@
 }
 html {
     background-color: #ddd;
+    overflow-x: hidden;
 }
 p {
     font-family: Consolas, monospace;
