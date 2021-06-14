@@ -66,6 +66,7 @@ public class GraphicalInventory extends Overlay {
             Console.error("Invalid game state.");
             return;
         }
+        // access inventory item and put its sprite in the graphical inventory
         for (int i = 0; i < inventory.getRows(); i++) {
             InventoryItem[] row = inventory.getItems()[i];
             HBox box = rows[i];
@@ -91,6 +92,7 @@ public class GraphicalInventory extends Overlay {
                 image.setFitWidth(60);
                 image.setFitHeight(60);
 
+                // making inventory draggable
                 DraggableNode.remove(square);
                 DraggableNode.DraggableObject obj = DraggableNode.add(square, image);
 

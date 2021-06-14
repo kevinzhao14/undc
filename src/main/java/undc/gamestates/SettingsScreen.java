@@ -70,7 +70,7 @@ public class SettingsScreen extends GameState {
         popup.toggle();
     }
 
-    private class ResetPopup extends Overlay {
+    private static class ResetPopup extends Overlay {
 
         private SettingsPageController page;
 
