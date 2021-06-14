@@ -45,7 +45,16 @@ public class Obstacle implements Movable {
     }
 
     public Obstacle copy() {
-        return new Obstacle(sprite, x, y, width, height, type);
+        Obstacle o = new Obstacle();
+        o.id = -this.id;
+        o.name = this.name;
+        o.x = 0;
+        o.y = 0;
+        o.height = this.height;
+        o.width = this.width;
+        o.type = this.type;
+        o.sprite = this.sprite;
+        return o;
     }
 
     @Override

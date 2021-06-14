@@ -327,7 +327,7 @@ public class LayoutGenerator {
             } else if (diff == Difficulty.HARD) {
                 modifier = Vars.d("sv_modifier_hard");
             }
-            Monster m = new Monster(DataManager.MONSTERS.get(n), modifier);
+            Monster m = DataManager.MONSTERS.get(n).copy(modifier);
             int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
             int monsterY = (int) (Math.random() * (room.getHeight() - 39)) + 20;
             m.setX(monsterX);

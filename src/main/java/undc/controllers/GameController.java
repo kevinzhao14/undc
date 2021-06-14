@@ -238,7 +238,7 @@ public class GameController {
             return;
         }
         if (ent instanceof Monster) {
-            Monster m = new Monster((Monster) ent, 1);
+            Monster m = ((Monster) ent).copy(1);
             m.setX(x);
             m.setY(y);
             room.getMonsters().add(m);

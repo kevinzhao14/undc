@@ -58,13 +58,23 @@ public class Monster extends Entity {
         }
     }
 
-    public Monster(Monster m, double modifier) {
-        this((int) (m.getMaxHealth() * modifier), m.getAttack() * modifier, m.speed,
-                m.attackSpeed, m.type, m.getHeight(), m.getWidth());
+    private Monster() {
+        reaction = -1;
+        moveQueue = new ArrayList<>();
+        opacity = 1;
     }
 
-    private Monster() {
-
+    public Monster copy(double modifier) {
+        Monster m = new Monster();
+        copy(m);
+        m.maxHealth = (int) (maxHealth * modifier);
+        m.attack = attack * modifier;
+        m.id = -this.id;
+        m.name = this.name;
+        m.type = this.type;
+        m.speed = this.speed;
+        m.attackSpeed = this.attackSpeed;
+        return m;
     }
 
     public boolean attackMonster(double damageAmount, boolean giveGold) {
