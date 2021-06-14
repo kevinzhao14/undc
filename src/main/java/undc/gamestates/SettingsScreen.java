@@ -74,6 +74,9 @@ public class SettingsScreen extends GameState {
 
         private SettingsPageController page;
 
+        /**
+         * Constructor that designs the graphics for the popup displayed when reset is clicked.
+         */
         private ResetPopup() {
             HBox popupContainer = new HBox();
             popupContainer.setFillHeight(false);
