@@ -164,8 +164,12 @@ public class ConfigScreen extends GameState {
 
     public static ConfigScreen getInstance() {
         if (instance == null) {
-            instance = new ConfigScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
+            resetInstance();
         }
         return instance;
+    }
+
+    public static void resetInstance() {
+        instance = new ConfigScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
     }
 }

@@ -59,9 +59,13 @@ public class GameScreen extends GameState {
 
     public static GameScreen getInstance() {
         if (instance == null) {
-            instance = new GameScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
+            resetInstance();
         }
         return instance;
+    }
+
+    public static void resetInstance() {
+        instance = new GameScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
     }
 
     public void newGame(GameMode mode) {
@@ -82,6 +86,7 @@ public class GameScreen extends GameState {
             // cvars
             Vars.CHEATS = true;
             Vars.find("gm_god").setVal("true", true);
+            Vars.set("sv_infinite_ammo", "true");
         } else if (mode == GameMode.STORY) {
             dungeonLayout = new LayoutGenerator().generateLayout();
         }

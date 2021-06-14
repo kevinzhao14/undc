@@ -22,7 +22,7 @@ public class Vars {
     public static boolean CHEATS = false;
 
     /**
-     * Loads all of the CVars and their default values. These will be overwritten by the Config for anyu custom values.
+     * Loads all of the CVars and their default values. These will be overwritten by the Config for any custom values.
      */
     public static void load() {
         /* CVar Prefixes:
@@ -33,6 +33,7 @@ public class Vars {
 
         // Boolean CVars
         BOOLEAN_VARS.add(new BooleanCVar("gm_god", "god", false, true, false));
+        BOOLEAN_VARS.add(new BooleanCVar("sv_infinite_ammo", "infiniteAmmo", false, true, true));
 
         // Integer CVars
         INT_VARS.add(new IntCVar("gc_screen_width", "screenWidth", 400, 7680, 1920, false));

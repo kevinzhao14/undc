@@ -351,6 +351,7 @@ class Command {
             return;
         }
         GameController.getInstance().stop();
+        HomeScreen.resetInstance();
         Controller.setState(HomeScreen.getInstance());
     }
 

@@ -133,6 +133,7 @@ public class SettingsController {
     }
 
     public void back() {
+        HomeScreen.resetInstance();
         Controller.setState(HomeScreen.getInstance());
     }
 }
