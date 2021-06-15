@@ -28,7 +28,7 @@
 }
 #back-button {
     -fx-background-color: transparent;
-    -fx-padding:20px;
+    -fx-padding:23px 19px 21px 19px;
     -fx-border-radius: 1px;
     -fx-background-radius: 1px;
 }
@@ -41,7 +41,7 @@
 }
 #reset-button {
     -fx-background-color: transparent;
-    -fx-padding: 10px 15px 10px 15px;
+    -fx-padding: 13px 18px 11px 17px;
     -fx-font-size: 2em;
     -fx-border-radius: 1px;
     -fx-background-radius: 1px;
@@ -74,7 +74,7 @@
 }
 .controls-grid Button {
     -fx-background-color: #dadada;
-    -fx-padding: 15px;
+    -fx-padding: 18px 15px 16px 15px;
     -fx-pref-width: 300px;
     -fx-border-radius: 0;
     -fx-background-radius: 0;
@@ -113,7 +113,7 @@
 }
 #popup-buttons-container Button {
     -fx-font-size: 2em;
-    -fx-padding: 10px 15px 10px 15px;
+    -fx-padding: 10px 15px 8px 15px;
     -fx-border-radius: 1px;
     -fx-background-radius: 1px;
 }
