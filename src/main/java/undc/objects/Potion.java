@@ -1,5 +1,6 @@
 package undc.objects;
 
+import javafx.scene.control.Label;
 import org.json.JSONException;
 import org.json.JSONObject;
 import undc.controllers.Console;
@@ -26,8 +27,30 @@ public class Potion extends Item {
         return type;
     }
 
+    public String getTypeString() {
+        switch (type) {
+            case HEALTH:
+                return "Health Potion";
+            case ATTACK:
+                return "Attack Potion";
+            default:
+                return "";
+        }
+    }
+
     public double getModifier() {
         return modifier;
+    }
+
+    public String getModifierString() {
+        switch (type) {
+            case HEALTH:
+                return "+" + (int) modifier + " Health";
+            case ATTACK:
+                return "+" + (int) (modifier * 100) + "% Damage";
+            default:
+                return "";
+        }
     }
 
     /**

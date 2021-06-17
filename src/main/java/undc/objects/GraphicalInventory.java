@@ -7,11 +7,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import org.w3c.dom.ranges.RangeException;
 import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.controllers.GameController;
 import undc.gamestates.GameScreen;
 import undc.handlers.DraggableNode;
+import undc.handlers.PopupNode;
 
 /**
  * Class that handles the graphics for the player's inventory.
@@ -20,6 +22,10 @@ public class GraphicalInventory extends Overlay {
     private final Inventory inventory;
     private final HBox[] rows;
     private final VBox container;
+
+    private final VBox itemInfo;
+    private final Label itemName;
+    private final VBox description;
 
     /**
      * Constructor that creates javafx graphics for the GraphicalInventory.
@@ -44,6 +50,7 @@ public class GraphicalInventory extends Overlay {
             HBox row = new HBox();
             row.getStyleClass().add("row");
             for (int j = 0; j < inventory.getCols(); j++) {
+                // VBoxes act as the columns
                 VBox temp = new VBox();
                 row.getChildren().add(temp);
             }
@@ -51,11 +58,27 @@ public class GraphicalInventory extends Overlay {
             container.getChildren().add(row);
         }
 
-        parent.getChildren().add(container);
+        parent.getChildren().addAll(container);
         root.getChildren().add(parent);
         root.getStylesheets().add("styles/inventory.css");
 
         toggle();
+
+        // Making graphics for item information hover
+        itemInfo = new VBox();
+        itemInfo.setVisible(false);
+        itemInfo.setId("item-info");
+
+        itemName = new Label("Item Name");
+        itemName.setId("item-name");
+
+        description = new VBox();
+        description.setId("description");
+
+        itemInfo.getChildren().addAll(itemName, description);
+        root.getChildren().add(itemInfo);
+
+        itemInfo.setMaxSize(200, 100);
     }
 
     /**
@@ -151,6 +174,58 @@ public class GraphicalInventory extends Overlay {
                         update();
                     }
                 });
+
+                PopupNode.remove(square);
+                PopupNode.PopupObject popup = PopupNode.add(square, itemInfo);
+                popup.addListener((n, e) -> {
+                    if (e == PopupNode.Event.SHOW) {
+                        itemInfo.setTranslateX(10);
+                        itemInfo.setTranslateY(10);
+
+                        Item itm = item.getItem();
+
+                        itemName.setText(itm.getName());
+
+                        if (itm instanceof Weapon) {
+                            Weapon weapon = (Weapon) itm;
+                            Label damage = new Label(weapon.getDamage() + " Damage");
+                            Label attackSpeed = new Label(weapon.getAttackSpeed() + " Speed");
+
+                            description.getChildren().addAll(damage, attackSpeed);
+                        } else if (itm instanceof Potion) {
+                            Potion potion = (Potion) itm;
+                            Label type = new Label(potion.getTypeString());
+                            Label modifier = new Label(potion.getModifierString());
+
+                            description.getChildren().addAll(type, modifier);
+                        } else if (itm instanceof RangedWeapon) {
+                            RangedWeapon weapon = (RangedWeapon) itm;
+                            Label projectile = new Label (weapon.getAmmo().getProjectile().getName());
+                            Label spacer = new Label();
+                            Label ammo = new Label(weapon.getAmmo().getRemaining() + " / " + weapon.getAmmo().getBackupRemaining() + " Ammo");
+                            Label damage = new Label (weapon.getAmmo().getProjectile().getDamage() + " Damage");
+                            Label fireRate = new Label (weapon.getFireRate() + " Fire Rate");
+
+                            description.getChildren().addAll(projectile, spacer, ammo, damage, fireRate);
+                        } else if (itm instanceof Bomb) {
+                            Bomb bomb = (Bomb) itm;
+                            Label damage = new Label(bomb.getDamage() + " Damage");
+                            Label radius = new Label(bomb.getRadius() + " Radius");
+                            Label fuse = new Label (((int)(bomb.getFuse() / 100) / 10) + "s Fuse");
+
+                            description.getChildren().addAll(damage, radius, fuse);
+                        }
+
+                        if (item.isInfinite()) {
+                            Label infinite = new Label("Infinite");
+                            description.getChildren().add(infinite);
+                        }
+                    } else if (e == PopupNode.Event.HIDE) {
+                        itemName.setText("");
+                        description.getChildren().clear();
+                    }
+                });
+
                 if (square.getChildren().size() == 0 || !square.getChildren().get(0).equals(image)) {
                     square.getChildren().clear();
                     square.getChildren().add(image);

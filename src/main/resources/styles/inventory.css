@@ -22,3 +22,19 @@
     -fx-border-width: 2px;
     -fx-alignment: center;
 }
+#item-info {
+    -fx-background-color:  #140413;
+    -fx-border-color:  #200248;
+    -fx-border-width: 10px;
+    -fx-opacity: 0.8;
+}
+#item-name {
+    -fx-text-fill: #fafafa;
+    -fx-font-size: 16px;
+    -fx-padding: 3px 0 10px 3px;
+}
+#description Label {
+    -fx-text-fill: #5654f1;
+    -fx-font-size: 14px;
+    -fx-padding: 3px;
+}
