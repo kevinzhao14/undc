@@ -1,3 +1,6 @@
+#root {
+    -fx-alignment: top-left;
+}
 #parent {
     -fx-fill-height: false;
     -fx-alignment: center;

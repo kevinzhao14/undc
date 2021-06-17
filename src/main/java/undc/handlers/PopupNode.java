@@ -10,8 +10,8 @@ import java.util.Arrays;
 public class PopupNode {
     private static final ArrayList<PopupObject> LIST = new ArrayList<>();
 
-    public static PopupObject add(Node eventNode, Node... popupNodes) {
-        PopupObject obj = new PopupObject(eventNode, popupNodes);
+    public static PopupObject add(int offsetX, int offsetY, Node eventNode, Node... popupNodes) {
+        PopupObject obj = new PopupObject(offsetX, offsetY, eventNode, popupNodes);
         LIST.add(obj);
         return obj;
     }
@@ -41,9 +41,13 @@ public class PopupNode {
 
         private double lastMouseX = 0;
         private double lastMouseY = 0;
+        private int offsetX;
+        private int offsetY;
         private boolean showing = false;
 
-        PopupObject(Node eventNode, Node... popupNodes) {
+        PopupObject(int offsetX, int offsetY, Node eventNode, Node... popupNodes) {
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
             this.eventNode = eventNode;
             this.popupNodes.addAll(Arrays.asList(popupNodes));
             this.eventNode.addEventHandler(MouseEvent.ANY, this);
@@ -63,16 +67,20 @@ public class PopupNode {
                 if (!this.showing && this.eventNode.contains(event.getX(), event.getY())) {
                     this.lastMouseX = event.getSceneX();
                     this.lastMouseY = event.getSceneY();
+                    event.consume();
+                }
+            } else if (event.getEventType() == MouseEvent.MOUSE_MOVED) {
+                if (!this.showing) {
                     this.showing = true;
                     for (Listener listener : this.popupListeners) {
                         listener.accept(this, Event.SHOW);
                     }
                     for (Node popupNode : this.popupNodes) {
                         popupNode.setVisible(true);
+                        popupNode.setTranslateX(this.lastMouseX + this.offsetX);
+                        popupNode.setTranslateY(this.lastMouseY + this.offsetY);
                     }
-                    event.consume();
                 }
-            } else if (event.getEventType() == MouseEvent.MOUSE_MOVED) {
                 if (this.showing) {
                     final double deltaX = event.getSceneX() - this.lastMouseX;
                     final double deltaY = event.getSceneY() - this.lastMouseY;
@@ -93,7 +101,7 @@ public class PopupNode {
 
                     event.consume();
                 }
-            } else if (event.getEventType() == MouseEvent.MOUSE_EXITED) {
+            } else if (event.getEventType() == MouseEvent.MOUSE_EXITED || event.getEventType() == MouseEvent.MOUSE_PRESSED) {
                 if (this.showing) {
                     event.consume();
                     this.showing = false;

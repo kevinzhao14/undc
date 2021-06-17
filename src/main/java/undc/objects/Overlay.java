@@ -14,6 +14,7 @@ public abstract class Overlay {
      */
     protected Overlay() {
         root = new StackPane();
+        root.setId("root");
         Pane background = new Pane();
         background.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6)");
         root.getChildren().add(background);

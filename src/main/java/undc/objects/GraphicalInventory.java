@@ -1,13 +1,15 @@
 package undc.objects;
 
+import javafx.event.Event;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import org.w3c.dom.ranges.RangeException;
 import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.controllers.GameController;
@@ -149,6 +151,8 @@ public class GraphicalInventory extends Overlay {
                                     inventory.add(item, i1, j1);
 
                                     update();
+
+                                    GameScreen.getInstance().updateHud();
                                     return;
                                 }
                             }
@@ -163,6 +167,7 @@ public class GraphicalInventory extends Overlay {
                                 return;
                             }
                             GameController.getInstance().drop(item.getItem());
+                            GameScreen.getInstance().updateHud();
                             root.getChildren().remove(root.getChildren().size() - 1);
                         } else {
                             // put it back to original spot
@@ -176,17 +181,23 @@ public class GraphicalInventory extends Overlay {
                 });
 
                 PopupNode.remove(square);
-                PopupNode.PopupObject popup = PopupNode.add(square, itemInfo);
+                PopupNode.PopupObject popup = PopupNode.add(25, 25, square, itemInfo);
                 popup.addListener((n, e) -> {
                     if (e == PopupNode.Event.SHOW) {
-                        itemInfo.setTranslateX(10);
-                        itemInfo.setTranslateY(10);
-
                         Item itm = item.getItem();
 
                         itemName.setText(itm.getName());
 
-                        if (itm instanceof Weapon) {
+                        if (itm instanceof RangedWeapon) {
+                            RangedWeapon weapon = (RangedWeapon) itm;
+                            Label projectile = new Label (weapon.getAmmo().getProjectile().getName());
+                            Label spacer = new Label();
+                            Label ammo = new Label(weapon.getAmmo().getRemaining() + " / " + weapon.getAmmo().getBackupRemaining() + " Ammo");
+                            Label damage = new Label (weapon.getAmmo().getProjectile().getDamage() + " Damage");
+                            Label fireRate = new Label (weapon.getFireRate() + " Fire Rate");
+
+                            description.getChildren().addAll(projectile, spacer, ammo, damage, fireRate);
+                        } else if (itm instanceof Weapon) {
                             Weapon weapon = (Weapon) itm;
                             Label damage = new Label(weapon.getDamage() + " Damage");
                             Label attackSpeed = new Label(weapon.getAttackSpeed() + " Speed");
@@ -198,15 +209,6 @@ public class GraphicalInventory extends Overlay {
                             Label modifier = new Label(potion.getModifierString());
 
                             description.getChildren().addAll(type, modifier);
-                        } else if (itm instanceof RangedWeapon) {
-                            RangedWeapon weapon = (RangedWeapon) itm;
-                            Label projectile = new Label (weapon.getAmmo().getProjectile().getName());
-                            Label spacer = new Label();
-                            Label ammo = new Label(weapon.getAmmo().getRemaining() + " / " + weapon.getAmmo().getBackupRemaining() + " Ammo");
-                            Label damage = new Label (weapon.getAmmo().getProjectile().getDamage() + " Damage");
-                            Label fireRate = new Label (weapon.getFireRate() + " Fire Rate");
-
-                            description.getChildren().addAll(projectile, spacer, ammo, damage, fireRate);
                         } else if (itm instanceof Bomb) {
                             Bomb bomb = (Bomb) itm;
                             Label damage = new Label(bomb.getDamage() + " Damage");
