@@ -7,6 +7,8 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import undc.handlers.Vars;
 
+import java.util.Arrays;
+
 public class Controller extends Application {
     private static Controller instance;
 
@@ -36,6 +38,19 @@ public class Controller extends Application {
 
         stage.heightProperty().addListener((obs, oldVal, newVal) -> Vars.set("gc_screen_height", newVal.intValue() + ""));
         stage.show();
+
+        // catch & print all exceptions to console to manage errors
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            Console.error(e.toString());
+            StackTraceElement[] s = e.getStackTrace();
+            for (int i = 0; i < 5; i++) {
+                if (i >= s.length) {
+                    return;
+                }
+                Console.print(s[i].getClassName() + "." + s[i].getMethodName() + "():" + s[i].getLineNumber());
+            }
+            Console.print("...and " + (s.length - 5) + " more");
+        });
     }
 
     /**
