@@ -103,7 +103,7 @@ public class GameScreen extends GameState {
         }
         GameController.resetInstance();
         createPlayer();
-        getGame().start(dungeonLayout.getStartingRoom());
+        getGame().start(dungeonLayout.getStartingRoom(), player);
         scene.getStylesheets().add("styles/global.css");
         createHud();
         createPauseMenu();
@@ -173,7 +173,6 @@ public class GameScreen extends GameState {
     private void createPlayer() {
         player = new Player(Vars.i("sv_player_health"), 1, Controller.getDataManager().getWeapon());
         player.setDirection(3);
-        getGame().setPlayer(player);
 
         // sandbox inventory
         if (mode == GameMode.SANDBOX) {
@@ -399,7 +398,7 @@ public class GameScreen extends GameState {
         player.setInventory(inv);
 
         //go to starting room
-        getGame().start(dungeonLayout.getStartingRoom());
+        getGame().start(dungeonLayout.getStartingRoom(), player);
     }
 
     public void createInventory() {

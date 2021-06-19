@@ -89,7 +89,9 @@ public class GameController {
      * Starts the game in the provided room.
      * @param room Room to start in
      */
-    public void start(Room room) {
+    public void start(Room room, Player player) {
+        this.player = player;
+
         //reset the game on start
         reset();
 
@@ -103,14 +105,6 @@ public class GameController {
         scene.setOnMousePressed(e -> handleKey(Controls.mbStringify(e.getButton()), true));
         scene.setOnMouseReleased(e -> handleKey(Controls.mbStringify(e.getButton()), false));
         scene.setOnScroll(e -> handleKey(Controls.scrollStringify(e.getDeltaY()), false));
-    }
-
-    /**
-     * Sets the player of the game.
-     * @param player Player object to set to
-     */
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
     /**
@@ -1286,7 +1280,7 @@ public class GameController {
                 Coords newPos = checkPos(new Coords(newPosX, newPosY), m.getWidth(), m.getHeight());
 
                 //add to queue
-                Move moveItem = new Move(newPos, 0);
+                Move moveItem = new Move(newPos, reactTime);
                 m.getMoveQueue().add(moveItem);
             }
             d = distance(m, player);
