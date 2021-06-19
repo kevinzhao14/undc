@@ -34,8 +34,8 @@ public class ShotProjectile implements Movable {
     }
 
     public static void addExplosion(Room room, Movable m, double width) {
-        if (width > Vars.d("gc_explosion_maxwidth")) {
-            width = Vars.d("gc_explosion_maxwidth");
+        if (width > Vars.i("gc_explosion_maxwidth")) {
+            width = Vars.i("gc_explosion_maxwidth");
         }
 
         //draw explosion animation

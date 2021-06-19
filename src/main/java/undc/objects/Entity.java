@@ -25,12 +25,12 @@ public abstract class Entity implements Movable {
      * @param width Width of the entity
      * @param sprite The sprite of the entity (URL)
      */
-    public Entity(int maxHealth, double attack, double height, double width, String sprite) {
+    public Entity(int maxHealth, double attack, double width, double height, String sprite) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.attack = attack;
-        this.height = height;
         this.width = width;
+        this.height = height;
         this.sprite = (sprite == null) ? null : new Image(sprite);
     }
 

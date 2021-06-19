@@ -384,7 +384,7 @@ public class GameController {
             sign *= -1;
         }
         states.put(dir, isPress);
-        double accel = Vars.d("accel") / Vars.i("sv_tickrate") / Vars.i("sv_tickrate");
+        double accel = (double) Vars.i("sv_acceleration") / Vars.i("sv_tickrate") / Vars.i("sv_tickrate");
         if (dir.equals("left") || dir.equals("right")) {
             accelX += sign * accel;
             accelX = round(accelX);
@@ -400,7 +400,7 @@ public class GameController {
      * @return Returns the rounded number.
      */
     private double round(double number) {
-        return Math.round(number * Vars.d("precision")) / Vars.d("precision");
+        return Math.floor(number * Vars.i("sv_precision")) / (double) Vars.i("sv_precision");
     }
 
     /**
@@ -618,7 +618,7 @@ public class GameController {
         }
 
         private void drop(Item item) {
-            double d = Vars.d("sv_dropitem_distance");
+            int d = Vars.i("sv_dropitem_distance");
             //get player center
             double x = player.getX() + player.getWidth() / 2;
             double y = player.getY() + player.getHeight() / 2;
@@ -889,8 +889,8 @@ public class GameController {
             velY = round(velY);
 
             //don't allow speed to exceed max
-            double maxVel = Vars.d("sv_max_velocity") / Vars.i("sv_tickrate");
-            double friction = Vars.d("friction") / Vars.i("sv_tickrate") / Vars.i("sv_tickrate");
+            double maxVel = (double) Vars.i("sv_max_velocity") / Vars.i("sv_tickrate");
+            double friction = (double) Vars.i("sv_friction") / Vars.i("sv_tickrate") / Vars.i("sv_tickrate");
             if (Math.abs(velX) > maxVel) {
                 velX = (velX > 0 ? 1 : -1) * maxVel;
                 //was moving before and decelerated to 0

@@ -222,7 +222,7 @@ class Command {
                 res.append(c.getFormat().length() > 0 ? " " + c.getFormat() : "");
                 res.append(" - ");
                 res.append(c.getDesc());
-                res.append("\n");
+                res.append("<br>");
             }
         }
         if (res.toString().equals("")) {

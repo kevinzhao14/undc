@@ -26,16 +26,6 @@ import java.util.Random;
  * Class that generates Layout of the Rooms.
  */
 public class LayoutGenerator {
-
-
-    /*
-    public Room (int height, int width, int startX, int startY,
-     Obstacle[] roomObstacles, RoomType roomType) {
-        this(height, width, startX, startY,
-         roomObstacles, null, null, null, null, roomType);
-    }
-     */
-
     private static final int GRID_WIDTH = 15;
     private static final int GRID_HEIGHT = 15;
 
@@ -97,7 +87,7 @@ public class LayoutGenerator {
     }
 
     private void reset() {
-        startRoom = new Room(ROOM_HEIGHT, ROOM_WIDTH, (int) ((ROOM_WIDTH
+        startRoom = new Room(ROOM_WIDTH, ROOM_HEIGHT, (int) ((ROOM_WIDTH
                 - Vars.i("sv_player_width")) / 2.0), (int) (ROOM_HEIGHT / 2.0
                 - Vars.i("sv_player_height")), RoomType.STARTROOM);
         startRoom.setMonsters(new ArrayList<>());
@@ -106,7 +96,7 @@ public class LayoutGenerator {
         int exitWidth = 832;
         int exitHeight = 444;
 
-        exitRoom = new Room(exitHeight, exitWidth, 100, 100, RoomType.EXITROOM);
+        exitRoom = new Room(exitWidth, exitHeight, 100, 100, RoomType.EXITROOM);
         generateObstacles(exitRoom, 4);
 
         Monster boss = DataManager.getFinalBoss();
@@ -118,8 +108,8 @@ public class LayoutGenerator {
                 exitHeight - 1, DOORTOP_WIDTH, DOORTOP_HEIGHT);
         exitRoom.setTopDoor(ed);
 
-        cr1 = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, cr1Rewards);
-        cr2 = new ChallengeRoom(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, cr2Rewards);
+        cr1 = new ChallengeRoom(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, cr1Rewards);
+        cr2 = new ChallengeRoom(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, cr2Rewards);
 
         setMonsters(cr1);
         setMonsters(cr2);
@@ -206,7 +196,7 @@ public class LayoutGenerator {
             y--;
         }
         //create origin room
-        Room r = new Room(ROOM_HEIGHT, ROOM_WIDTH, 100, 100, RoomType.EMPTYROOM);
+        Room r = new Room(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, RoomType.EMPTYROOM);
         setMonsters(r);
         generateObstacles(r);
         roomGrid[x][y] = r;
@@ -294,8 +284,7 @@ public class LayoutGenerator {
                 default:
                     break;
             }
-            Room r = new Room(ROOM_HEIGHT, ROOM_WIDTH,
-                    100, 100, RoomType.EMPTYROOM);
+            Room r = new Room(ROOM_WIDTH, ROOM_HEIGHT,100, 100, RoomType.EMPTYROOM);
             setMonsters(r);
             generateObstacles(r);
             grid[nx][ny] = r;
@@ -357,7 +346,7 @@ public class LayoutGenerator {
                     double distX = Math.pow(posX - oc.getX(), 2);
                     double distY = Math.pow(posY - oc.getY(), 2);
                     double dist = Math.sqrt(distX + distY);
-                    if (dist < Vars.d("sv_obstacle_gendist")) {
+                    if (dist < Vars.i("sv_obstacle_gendist")) {
                         validPos = false;
                     }
                 }

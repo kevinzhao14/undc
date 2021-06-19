@@ -35,11 +35,11 @@ public class Room {
      * @param startY Initial y-position of player in room, in game units
      * @param roomType Style of the Room object
      */
-    public Room(int height, int width, int startX, int startY, RoomType roomType) {
+    public Room(int width, int height, int startX, int startY, RoomType roomType) {
         this.startX = startX;
         this.startY = startY;
-        this.height = height;
         this.width = width;
+        this.height = height;
         this.obstacles = new ArrayList<>();
         this.topDoor = null;
         this.bottomDoor = null;

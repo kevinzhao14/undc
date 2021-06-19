@@ -14,8 +14,8 @@ public class ChallengeRoom extends Room {
      * @param startY Initial y-position of player in room, in game units
      * @param rewards Rewards for beating the room
      */
-    public ChallengeRoom(int height, int width, int startX, int startY, Inventory rewards) {
-        super(height, width, startX, startY, RoomType.CHALLENGEROOM);
+    public ChallengeRoom(int width, int height, int startX, int startY, Inventory rewards) {
+        super(width, height, startX, startY, RoomType.CHALLENGEROOM);
         this.rewards = rewards;
         this.completed = false;
     }
@@ -23,7 +23,6 @@ public class ChallengeRoom extends Room {
     public Inventory getRewards() {
         return rewards;
     }
-
 
     public boolean isCompleted() {
         return completed;

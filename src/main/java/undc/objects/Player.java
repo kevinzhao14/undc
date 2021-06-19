@@ -28,7 +28,7 @@ public class Player extends Entity {
     private ArrayList<Effect> effects;
 
     public Player(int maxHealth, double attack, Weapon weapon) {
-        super(maxHealth, attack, Vars.i("sv_player_height"), Vars.i("sv_player_width"), null);
+        super(maxHealth, attack, Vars.i("sv_player_width"), Vars.i("sv_player_height"), null);
         this.gold = 0;
         this.inventory = new Inventory(Vars.i("sv_inventory_rows"), Vars.i("sv_inventory_cols"));
         inventory.add(weapon);

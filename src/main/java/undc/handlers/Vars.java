@@ -58,26 +58,26 @@ public class Vars {
         INT_VARS.add(new IntCVar("gc_monster_fade_dur", "monsterFade", 0, 10000, 400, true, false));
         INT_VARS.add(new IntCVar("gc_healthbar_height", "healthbarHeight", 0, 1000, 5, true, false));
         INT_VARS.add(new IntCVar("gc_canvas_padding", "canvasPadding", 0, 1000, 150, true, false));
-        INT_VARS.add(new IntCVar("sv_player_width", "playerWidth", 0, 100, 16));
-        INT_VARS.add(new IntCVar("sv_player_height", "playerHeight", 0, 100, 16));
+        INT_VARS.add(new IntCVar("sv_player_width", "playerWidth", 0, 100, 16, true, false));
+        INT_VARS.add(new IntCVar("sv_player_height", "playerHeight", 0, 100, 16, true, false));
         INT_VARS.add(new IntCVar("sv_player_pickup_range", "playerPickup", 0, 1000, 10));
+        INT_VARS.add(new IntCVar("sv_precision", "precision", 0, 1000000, 10000, true, false));
+        INT_VARS.add(new IntCVar("sv_obstacle_gendist", "obsDist", 0, 1000, 64));
+        INT_VARS.add(new IntCVar("sv_acceleration", "accel", 0, 10000, 1000));
+        INT_VARS.add(new IntCVar("sv_max_velocity", "maxVel", 0, 1000, 100));
+        INT_VARS.add(new IntCVar("sv_friction", "friction", 0, 10000, 2000));
+        INT_VARS.add(new IntCVar("sv_dropitem_distance", "dropDist", 0, 1000, 25));
+        INT_VARS.add(new IntCVar("gc_explosion_maxwidth", "explosionWidth", 0, 1000, 75));
 
         // Double CVars
-        DOUBLE_VARS.add(new DoubleCVar("sv_acceleration", "accel", 0, 10000, 1000));
-        DOUBLE_VARS.add(new DoubleCVar("sv_max_velocity", "maxVel", 0, 1000, 100));
-        DOUBLE_VARS.add(new DoubleCVar("sv_friction", "friction", 0, 10000, 2000));
         DOUBLE_VARS.add(new DoubleCVar("gc_ppu", "ppu", 0, 100, 1, true, false));
-        DOUBLE_VARS.add(new DoubleCVar("sv_precision", "precision", 0, 1000000, 10000, true, false));
         DOUBLE_VARS.add(new DoubleCVar("sv_self_damage_modifier", "selfDamageMod", 0, 10, 0.75));
         DOUBLE_VARS.add(new DoubleCVar("sv_fist_damage", "fistDamage", 0, 100, 1));
-        DOUBLE_VARS.add(new DoubleCVar("sv_fist_cooldown", "fistCooldown", 0, 10000, 500));
-        DOUBLE_VARS.add(new DoubleCVar("sv_obstacle_gendist", "obsDist", 0, 1000, 64));
+        DOUBLE_VARS.add(new DoubleCVar("sv_fist_cooldown", "fistCooldown", 0, 10, 0.5));
         DOUBLE_VARS.add(new DoubleCVar("sv_monster_gold", "monsterGold", 0, 1000, 20));
         DOUBLE_VARS.add(new DoubleCVar("gc_dropitem_scale", "dropScale", 0, 10, 0.75, true, false));
-        DOUBLE_VARS.add(new DoubleCVar("sv_dropitem_distance", "dropDist", 0, 1000, 25));
         DOUBLE_VARS.add(new DoubleCVar("sv_modifier_medium", "modMed", 0, 10, 1.5, true, false));
         DOUBLE_VARS.add(new DoubleCVar("sv_modifier_hard", "modHard", 0, 10, 2, true, false));
-        DOUBLE_VARS.add(new DoubleCVar("gc_explosion_maxwidth", "explosionWidth", 0, 1000, 75));
         DOUBLE_VARS.add(new DoubleCVar("gc_effect_scale", "effectScale", 0, 10, 1.5));
     }
 

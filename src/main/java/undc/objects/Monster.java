@@ -28,36 +28,6 @@ public class Monster extends Entity {
     private ArrayList<Move> moveQueue;
     private double opacity;
 
-    public Monster(int maxHealth, double attack, double speed, double attackSpeed, MonsterType type,
-                   double height, double width) {
-
-        //healthBar should be instantiated and assigned in this Monster constructor
-        super(maxHealth, attack, height, width, null);
-        this.type = type;
-        this.speed = speed;
-        this.attackSpeed = attackSpeed;
-        this.reaction = -1;
-        moveQueue = new ArrayList<>();
-        opacity = 1;
-        switch (type) {
-            case FAST:
-                setSprite("monsters/monster-fast.png");
-                break;
-            case NORMAL:
-                setSprite("monsters/monster-normal.png");
-                break;
-            case TANK:
-                setSprite("monsters/monster-tank.png");
-                break;
-            case FINALBOSS:
-                setSprite("monsters/final-boss.gif");
-                break;
-            default:
-                setSprite("monsters/monster-normal.png");
-                break;
-        }
-    }
-
     private Monster() {
         reaction = -1;
         moveQueue = new ArrayList<>();
