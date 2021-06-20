@@ -7,8 +7,9 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import undc.handlers.Vars;
 
-import java.util.Arrays;
-
+/**
+ * Class that handles the launching of the game.
+ */
 public class Controller extends Application {
     private static Controller instance;
 
@@ -36,7 +37,8 @@ public class Controller extends Application {
         stage.setScene(state.getScene());
         stage.widthProperty().addListener((obs, oldVal, newVal) -> Vars.set("gc_screen_width", newVal.intValue() + ""));
 
-        stage.heightProperty().addListener((obs, oldVal, newVal) -> Vars.set("gc_screen_height", newVal.intValue() + ""));
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> Vars.set("gc_screen_height", newVal.intValue()
+                + ""));
         stage.show();
 
         // catch & print all exceptions to console to manage errors

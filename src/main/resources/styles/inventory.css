@@ -22,22 +22,24 @@
     -fx-pref-height: 75px;
     -fx-background-color: #aaa;
     -fx-border-color: #fafafa;
-    -fx-border-width: 2px;
+    -fx-border-width: 3px;
     -fx-alignment: center;
 }
 #item-info {
     -fx-background-color:  #140413;
     -fx-border-color:  #200248;
-    -fx-border-width: 10px;
-    -fx-opacity: 0.8;
+    -fx-border-width: 2px;
+    -fx-opacity: 0.95;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
 }
 #item-name {
     -fx-text-fill: #fafafa;
-    -fx-font-size: 16px;
+    -fx-font-size: 25px;
     -fx-padding: 3px 0 10px 3px;
 }
 #description Label {
     -fx-text-fill: #5654f1;
-    -fx-font-size: 14px;
+    -fx-font-size: 18px;
     -fx-padding: 3px;
 }

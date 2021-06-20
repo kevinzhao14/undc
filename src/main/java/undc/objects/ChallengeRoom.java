@@ -1,8 +1,11 @@
 package undc.objects;
 
+/**
+ * Class that handles the construction of a room of heightened difficulty called a ChallengeRoom.
+ */
 public class ChallengeRoom extends Room {
     private boolean completed;
-    private Inventory rewards;
+    private final Inventory rewards;
 
     /**
      * Constructor for defining all Room features except Door layouts.

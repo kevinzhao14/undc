@@ -274,6 +274,11 @@ public class Controls {
         }
     }
 
+    /**
+     * Handles changing a key input visual representation format from Digit# to just the #.
+     * @param code KeyCode that is Digit#
+     * @return String that is the key's String representation
+     */
     public static String keyStringify(KeyCode code) {
         switch (code) {
             case DIGIT0:

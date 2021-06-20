@@ -27,18 +27,18 @@ public class ConfigScreen extends GameState {
     private static ConfigScreen instance;
 
     //Application Window dimensions
-    private Button nextButton;
-    private TextField playerNameEntry;
+    private final Button nextButton;
+    private final TextField playerNameEntry;
 
     /**
      * Constructor for creating instance of InitPlayerConfigScreen.
      *
-     * Constructor generates a JavaFX Scene object of specified window size
+     * <p>Constructor generates a JavaFX Scene object of specified window size
      * for the initial configuration screen, where the player selects their name,
      * game difficulty, and starter weapon. This Scene is then set by the Controller
      * object onto the Stage.
      *
-     * Player specified name, difficulty, weapon, are all checked for validity
+     * <p>Player specified name, difficulty, weapon, are all checked for validity
      * when they are sent to the DataManager object for storing player configuration.
      * If any of the three fields are invalid, a JavaFX ERROR Alert window is displayed
      * to the player, prompting them on which field is invalid and must be fixed before
@@ -162,6 +162,10 @@ public class ConfigScreen extends GameState {
         nextButton.getStyleClass().add("nextButton");
     }
 
+    /**
+     * Method returning the current instance of the game, acts as a singleton.
+     * @return ConfigScreen that is the current game state.
+     */
     public static ConfigScreen getInstance() {
         if (instance == null) {
             resetInstance();

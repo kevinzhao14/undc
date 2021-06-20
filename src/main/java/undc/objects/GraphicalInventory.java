@@ -1,12 +1,9 @@
 package undc.objects;
 
-import javafx.event.Event;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -80,7 +77,7 @@ public class GraphicalInventory extends Overlay {
         itemInfo.getChildren().addAll(itemName, description);
         root.getChildren().add(itemInfo);
 
-        itemInfo.setMaxSize(200, 100);
+        itemInfo.setMaxSize(225, 100);
     }
 
     /**
@@ -190,11 +187,12 @@ public class GraphicalInventory extends Overlay {
 
                         if (itm instanceof RangedWeapon) {
                             RangedWeapon weapon = (RangedWeapon) itm;
-                            Label projectile = new Label (weapon.getAmmo().getProjectile().getName());
+                            Label projectile = new Label(weapon.getAmmo().getProjectile().getName());
                             Label spacer = new Label();
-                            Label ammo = new Label(weapon.getAmmo().getRemaining() + " / " + weapon.getAmmo().getBackupRemaining() + " Ammo");
-                            Label damage = new Label (weapon.getAmmo().getProjectile().getDamage() + " Damage");
-                            Label fireRate = new Label (weapon.getFireRate() + " Fire Rate");
+                            Label ammo = new Label(weapon.getAmmo().getRemaining()
+                                    + " / " + weapon.getAmmo().getBackupRemaining() + " Ammo");
+                            Label damage = new Label(weapon.getAmmo().getProjectile().getDamage() + " Damage");
+                            Label fireRate = new Label(weapon.getFireRate() + " Fire Rate");
 
                             description.getChildren().addAll(projectile, spacer, ammo, damage, fireRate);
                         } else if (itm instanceof Weapon) {
@@ -213,7 +211,7 @@ public class GraphicalInventory extends Overlay {
                             Bomb bomb = (Bomb) itm;
                             Label damage = new Label(bomb.getDamage() + " Damage");
                             Label radius = new Label(bomb.getRadius() + " Radius");
-                            Label fuse = new Label (((int)(bomb.getFuse() / 100) / 10) + "s Fuse");
+                            Label fuse = new Label(((int) (bomb.getFuse() / 100) / 10) + "s Fuse");
 
                             description.getChildren().addAll(damage, radius, fuse);
                         }

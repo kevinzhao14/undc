@@ -1,5 +1,8 @@
 package undc.objects;
 
+/**
+ * Class that handles coordinates in game, saving x and y positions.
+ */
 public class Coords {
     private double x;
     private double y;

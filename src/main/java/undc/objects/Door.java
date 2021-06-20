@@ -1,5 +1,8 @@
 package undc.objects;
 
+/**
+ * Class that handles doors in game. These objects grant access to rooms.
+ */
 public class Door extends Obstacle {
 
     private Room goesTo;

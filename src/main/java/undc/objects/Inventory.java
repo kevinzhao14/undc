@@ -9,8 +9,8 @@ import java.util.Iterator;
  * Is used by other classes to access items that the player possesses.
  */
 public class Inventory implements Iterable<InventoryItem> {
-    private int rows;
-    private int columns;
+    private final int rows;
+    private final int columns;
     private InventoryItem[][] items;
     private int size;
     private GraphicalInventory graphicalInventory;
@@ -210,7 +210,7 @@ public class Inventory implements Iterable<InventoryItem> {
     /**
      * Inner class that handles iterating through the 2D array items.
      */
-    public class InventoryIterator implements Iterator<InventoryItem> {
+    public static class InventoryIterator implements Iterator<InventoryItem> {
         private int row;
         private int col;
         InventoryItem[][] items;

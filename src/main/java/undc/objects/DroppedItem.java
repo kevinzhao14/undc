@@ -1,5 +1,8 @@
 package undc.objects;
 
+/**
+ * Class that handles items dropped from a player's inventory.
+ */
 public class DroppedItem implements Movable {
     private Item item;
     private double x;
@@ -7,6 +10,14 @@ public class DroppedItem implements Movable {
     private double width;
     private double height;
 
+    /**
+     * Constructor for an item that is dropped, taking in its location, height, and width.
+     * @param item Item that is dropped
+     * @param x int x-position
+     * @param y int y-position
+     * @param w int width of the item
+     * @param h int height fo the item
+     */
     public DroppedItem(Item item, double x, double y,
                        double w, double h) {
         this.item = item;

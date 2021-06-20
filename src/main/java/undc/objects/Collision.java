@@ -1,8 +1,11 @@
 package undc.objects;
 
+/**
+ * Class that handles the collision of objects in game, storing their position and the objects that collided.
+ */
 public class Collision<T> {
-    private Coords collisionPoint;
-    private T collider;
+    private final Coords collisionPoint;
+    private final T collider;
 
     public Collision(Coords collisionPoint, T collider) {
         this.collisionPoint = collisionPoint;

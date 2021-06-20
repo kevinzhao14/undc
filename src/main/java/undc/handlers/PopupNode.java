@@ -41,8 +41,8 @@ public class PopupNode {
 
         private double lastMouseX = 0;
         private double lastMouseY = 0;
-        private int offsetX;
-        private int offsetY;
+        private final int offsetX;
+        private final int offsetY;
         private boolean showing = false;
 
         PopupObject(int offsetX, int offsetY, Node eventNode, Node... popupNodes) {
@@ -53,8 +53,8 @@ public class PopupNode {
             this.eventNode.addEventHandler(MouseEvent.ANY, this);
         }
 
-        public final boolean addListener(Listener listener) {
-            return this.popupListeners.add(listener);
+        public final void addListener(Listener listener) {
+            this.popupListeners.add(listener);
         }
 
         public void remove() {
