@@ -90,7 +90,9 @@ public class Inventory implements Iterable<InventoryItem> {
                     continue;
                 }
                 if (items[i][j].getItem() == item) {
-                    if (items[i][j].getQuantity() == 1) {
+                    if (items[i][j].isInfinite()) {
+                        return true;
+                    } else if (items[i][j].getQuantity() == 1) {
                         items[i][j] = null;
                         size--;
                     } else {

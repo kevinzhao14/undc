@@ -158,7 +158,7 @@ public class GraphicalInventory extends Overlay {
                         Bounds ib = container.sceneToLocal(image.localToScene(image.getBoundsInLocal()));
                         double x = ib.getMinX() + image.getFitWidth() / 2;
                         double y = ib.getMinY() + image.getFitHeight() / 2;
-                        if (!container.contains(x, y)) {
+                        if (!container.contains(x, y) && !item.isInfinite()) {
                             if (!inventory.remove(item)) {
                                 Console.error("Failed to remove item to drop.");
                                 return;
