@@ -86,7 +86,7 @@ public class WeaponAmmo {
     static WeaponAmmo parseJSON(JSONObject o) {
         WeaponAmmo ammo = new WeaponAmmo();
         try {
-            ammo.projectile = DataManager.PROJECTILES.get(o.getInt("projectile"));
+            ammo.projectile = DataManager.PROJECTILES.get(o.getString("projectile"));
         } catch (JSONException e) {
             Console.error("Invalid value for weapon ammo projectile.");
             return null;

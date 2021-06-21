@@ -21,13 +21,13 @@ import java.util.HashMap;
  *
  */
 public class DataManager {
-    public static final HashMap<Integer, Projectile> PROJECTILES = new HashMap<>();
+    public static final HashMap<String, Projectile> PROJECTILES = new HashMap<>();
 
-    public static final HashMap<Integer, Item> ITEMS = new HashMap<>();
+    public static final HashMap<String, Item> ITEMS = new HashMap<>();
 
-    public static final HashMap<Integer, Obstacle> OBSTACLES = new HashMap<>();
+    public static final HashMap<String, Obstacle> OBSTACLES = new HashMap<>();
 
-    public static final HashMap<Integer, Monster> MONSTERS = new HashMap<>();
+    public static final HashMap<String, Monster> MONSTERS = new HashMap<>();
 
     public static final String EXPLOSION = "textures/boom.gif";
 
@@ -193,7 +193,7 @@ public class DataManager {
 
         // load the final boss
         try {
-            int finalbossid = obj.getInt("finalboss");
+            String finalbossid = obj.getString("finalboss");
             if (MONSTERS.get(finalbossid) == null) {
                 Console.error("Invalid final boss id.");
                 return false;
@@ -251,7 +251,7 @@ public class DataManager {
 
         // load the exit key
         try {
-            int exitkeyid = obj.getInt("exitkey");
+            String exitkeyid = obj.getString("exitkey");
             if (!(ITEMS.get(exitkeyid) instanceof Key)) {
                 Console.error("Invalid type for exit key.");
                 return false;
@@ -273,7 +273,7 @@ public class DataManager {
         Weapon[] weapons = new Weapon[sw.length()];
         for (int i = 0; i < sw.length(); i++) {
             try {
-                int wid = sw.getInt(i);
+                String wid = sw.getString(i);
                 if (!(ITEMS.get(wid) instanceof Weapon)) {
                     Console.error("Invalid type for starting weapon " + i + ".");
                     return false;

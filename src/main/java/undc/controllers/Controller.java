@@ -52,6 +52,7 @@ public class Controller extends Application {
                 Console.print(s[i].getClassName() + "." + s[i].getMethodName() + "():" + s[i].getLineNumber());
             }
             Console.print("...and " + (s.length - 5) + " more");
+            e.printStackTrace();
         });
     }
 

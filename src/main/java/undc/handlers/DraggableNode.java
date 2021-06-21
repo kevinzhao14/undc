@@ -60,7 +60,7 @@ public class DraggableNode {
      * Listens for drag events.
      */
     public interface Listener {
-        void accept(DraggableObject draggableNature, Event dragEvent);
+        void accept(MouseEvent mouseEvent, Event dragEvent);
     }
 
     /**
@@ -112,7 +112,7 @@ public class DraggableNode {
                 if (!this.dragging) {
                     this.dragging = true;
                     for (Listener listener : this.dragListeners) {
-                        listener.accept(this, Event.DragStart);
+                        listener.accept(event, Event.DragStart);
                     }
                 }
                 // drag the node
@@ -134,7 +134,7 @@ public class DraggableNode {
                     this.lastMouseY = event.getSceneY();
 
                     for (Listener listener : this.dragListeners) {
-                        listener.accept(this, Event.Drag);
+                        listener.accept(event, Event.Drag);
                     }
 
                     event.consume();
@@ -145,7 +145,7 @@ public class DraggableNode {
                     event.consume();
                     this.dragging = false;
                     for (Listener listener : this.dragListeners) {
-                        listener.accept(this, Event.DragEnd);
+                        listener.accept(event, Event.DragEnd);
                     }
                 }
             }

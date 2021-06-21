@@ -3,10 +3,10 @@ package undc.objects;
 public class Dummy implements Movable {
     private double x;
     private double y;
-    private double width;
-    private double height;
+    private int width;
+    private int height;
 
-    public Dummy(double x, double y, double w, double h) {
+    public Dummy(double x, double y, int w, int h) {
         this.x = x;
         this.y = y;
         this.width = w;
@@ -34,12 +34,12 @@ public class Dummy implements Movable {
     }
 
     @Override
-    public double getHeight() {
+    public int getHeight() {
         return height;
     }
 
     @Override
-    public double getWidth() {
+    public int getWidth() {
         return width;
     }
 }

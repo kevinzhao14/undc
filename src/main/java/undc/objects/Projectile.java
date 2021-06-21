@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import undc.controllers.Console;
 
 public class Projectile {
-    private int id;
+    private String id;
     private String name;
     private Image spriteLeft;
     private Image spriteUp;
@@ -29,7 +29,7 @@ public class Projectile {
 
     public Projectile copy() {
         Projectile proj = new Projectile();
-        proj.id = -this.id;
+        proj.id = this.id;
         proj.name = this.name;
         proj.spriteLeft = this.spriteLeft;
         proj.spriteUp = this.spriteUp;
@@ -91,7 +91,7 @@ public class Projectile {
     public static Projectile parse(JSONObject o) {
         Projectile proj = new Projectile();
         try {
-            proj.id = o.getInt("id");
+            proj.id = o.getString("id");
         } catch (JSONException e) {
             Console.error("Invalid value for projectile id.");
             return null;
@@ -155,7 +155,7 @@ public class Projectile {
         return proj;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

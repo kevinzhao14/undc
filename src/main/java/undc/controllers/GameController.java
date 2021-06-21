@@ -221,7 +221,7 @@ public class GameController {
             x -= sprite.getWidth() / 2;
             y -= sprite.getHeight() / 2;
 
-            DroppedItem di = new DroppedItem(item, x, y, sprite.getWidth(), sprite.getHeight());
+            DroppedItem di = new DroppedItem(item, x, y, (int) sprite.getWidth(), (int) sprite.getHeight());
             room.getDroppedItems().add(di);
         }
         refresh();
@@ -404,7 +404,7 @@ public class GameController {
         states.put(dir, isPress);
         double accel = (double) Vars.i("sv_acceleration") / Vars.i("sv_tickrate") / Vars.i("sv_tickrate");
         if (dir.equals("left") || dir.equals("right")) {
-            accelX += sign * accel;
+            accelX += round(sign * accel);
             accelX = round(accelX);
         } else {
             accelY += sign * accel;
@@ -418,7 +418,7 @@ public class GameController {
      * @return Returns the rounded number.
      */
     private double round(double number) {
-        return Math.floor(number * Vars.i("sv_precision")) / (double) Vars.i("sv_precision");
+        return Math.round(number * Vars.i("sv_precision")) / (double) Vars.i("sv_precision");
     }
 
     /**
@@ -656,8 +656,7 @@ public class GameController {
             x = check.getX();
             y = check.getY();
 
-            DroppedItem di = new DroppedItem(item, x, y, itemSprite.getWidth(),
-                    itemSprite.getHeight());
+            DroppedItem di = new DroppedItem(item, x, y, (int) itemSprite.getWidth(), (int) itemSprite.getHeight());
             room.getDroppedItems().add(di);
             Platform.runLater(() -> getScreen().updateHud());
         }
@@ -800,8 +799,8 @@ public class GameController {
                 } else if (dir == 3) {
                     sprite = weaponAmmo.getProjectile().getSpriteDown();
                 }
-                double height = sprite.getHeight();
-                double width = sprite.getWidth();
+                int height = (int) sprite.getHeight();
+                int width = (int) sprite.getWidth();
                 if (dir == 0) {
                     x -= 5;
                 } else if (dir == 2) {
@@ -870,7 +869,7 @@ public class GameController {
                         double dist = distance(player, o);
 
                         //draw explosion
-                        ShotProjectile.addExplosion(room, o, b.getRadius() * 2);
+                        ShotProjectile.addExplosion(room, o, (int) b.getRadius() * 2);
 
                         if (dist <= b.getRadius()) {
                             player.setHealth(Math.max(0, player.getHealth() - b.getDamage()

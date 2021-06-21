@@ -165,7 +165,7 @@ public class Inventory implements Iterable<InventoryItem> {
     public boolean contains(Item item) {
         for (InventoryItem[] row : items) {
             for (InventoryItem i : row) {
-                if (i.getItem().equals(item)) {
+                if (i != null && i.getItem().equals(item)) {
                     return true;
                 }
             }

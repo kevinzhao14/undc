@@ -20,8 +20,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 /**
- * Class implementation of the initial player configuration screen
- * for the Team Luckless Dungeon Crawler game.
+ * Class implementation of the initial player configuration screen.
  */
 public class ConfigScreen extends GameState {
     private static ConfigScreen instance;
@@ -32,17 +31,6 @@ public class ConfigScreen extends GameState {
 
     /**
      * Constructor for creating instance of InitPlayerConfigScreen.
-     *
-     * <p>Constructor generates a JavaFX Scene object of specified window size
-     * for the initial configuration screen, where the player selects their name,
-     * game difficulty, and starter weapon. This Scene is then set by the Controller
-     * object onto the Stage.
-     *
-     * <p>Player specified name, difficulty, weapon, are all checked for validity
-     * when they are sent to the DataManager object for storing player configuration.
-     * If any of the three fields are invalid, a JavaFX ERROR Alert window is displayed
-     * to the player, prompting them on which field is invalid and must be fixed before
-     * proceeding into the game.
      *
      * @param width width of scene window, in pixels
      * @param height height of the scene window, in pixels
@@ -142,6 +130,7 @@ public class ConfigScreen extends GameState {
                     gameScreen.start();
                 }
             } catch (IllegalArgumentException iae) {
+                iae.printStackTrace();
                 Alert alert = new Alert(AlertType.ERROR, iae.getMessage());
                 alert.showAndWait();
             }

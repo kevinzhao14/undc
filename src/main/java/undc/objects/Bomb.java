@@ -45,10 +45,10 @@ public class Bomb extends Item {
         screen.updateHud();
 
         //place object as an obstacle
-        double width = 20;
-        double height = 20;
-        double x = player.getX() + player.getWidth() / 2 - width / 2;
-        double y = player.getY() + player.getHeight() / 2 - height / 2;
+        int width = 20;
+        int height = 20;
+        double x = player.getX() + player.getWidth() / 2 - width / 2.0;
+        double y = player.getY() + player.getHeight() / 2 - height / 2.0;
         ObstacleItem o = new ObstacleItem(getSprite(), x, y, width, height, ObstacleType.NONSOLID);
         Bomb timer = copy();
         o.setItem(timer);

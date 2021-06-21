@@ -9,12 +9,12 @@ import undc.controllers.Console;
  * Represents an Obstacle object. Obstacles are physical, static objects in the game that entities can interact with.
  */
 public class Obstacle implements Movable {
-    private int id;
+    private String id;
     private String name;
     private double x;
     private double y;
-    private double height;
-    private double width;
+    private int height;
+    private int width;
     private ObstacleType type;
     private Image sprite;
 
@@ -27,7 +27,7 @@ public class Obstacle implements Movable {
      * @param h Height of the obstacle
      * @param type Type of the obstacle
      */
-    public Obstacle(Image sprite, double x, double y, double w, double h, ObstacleType type) {
+    public Obstacle(Image sprite, double x, double y, int w, int h, ObstacleType type) {
         this.x = x;
         this.y = y;
         this.height = h;
@@ -36,17 +36,13 @@ public class Obstacle implements Movable {
         this.sprite = sprite;
     }
 
-    public Obstacle(String sprite, double x, double y, double w, double h, ObstacleType type) {
-        this(sprite.equals("") ? null : new Image(sprite), x, y, w, h, type);
-    }
-
     private Obstacle() {
 
     }
 
     public Obstacle copy() {
         Obstacle o = new Obstacle();
-        o.id = -this.id;
+        o.id = this.id;
         o.name = this.name;
         o.x = 0;
         o.y = 0;
@@ -68,12 +64,12 @@ public class Obstacle implements Movable {
     }
 
     @Override
-    public double getHeight() {
+    public int getHeight() {
         return this.height;
     }
 
     @Override
-    public double getWidth() {
+    public int getWidth() {
         return this.width;
     }
 
@@ -107,7 +103,7 @@ public class Obstacle implements Movable {
     public static Obstacle parse(JSONObject o) {
         Obstacle obs = new Obstacle();
         try {
-            obs.id = o.getInt("id");
+            obs.id = o.getString("id");
         } catch (JSONException e) {
             Console.error("Invalid value for obstacle id.");
             return null;
@@ -137,13 +133,13 @@ public class Obstacle implements Movable {
             return null;
         }
         try {
-            obs.width = o.getDouble("width");
+            obs.width = o.getInt("width");
         } catch (JSONException e) {
             Console.error("Invalid value for obstacle width.");
             return null;
         }
         try {
-            obs.height = o.getDouble("height");
+            obs.height = o.getInt("height");
         } catch (JSONException e) {
             Console.error("Invalid value for obstacle height.");
             return null;
@@ -151,7 +147,7 @@ public class Obstacle implements Movable {
         return obs;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

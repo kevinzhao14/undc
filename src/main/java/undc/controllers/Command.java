@@ -257,7 +257,7 @@ class Command {
             Console.run("give " + args[0] + " 1", false);
         } else {
             try {
-                int id = Integer.parseInt(args[0]);
+                String id = args[0];
                 int quantity = Integer.parseInt(args[1]);
                 if (!(Controller.getState() instanceof GameScreen)) {
                     Console.error("Cannot give because there is no game.");
@@ -293,7 +293,7 @@ class Command {
             Console.run("spawn " + args[0] + " 0 0", false);
         } else {
             try {
-                int id = Integer.parseInt(args[0]);
+                String id = args[0];
                 int x = Integer.parseInt(args[1]);
                 int y = Integer.parseInt(args[2]);
                 if (!(Controller.getState() instanceof GameScreen)) {
@@ -439,7 +439,7 @@ class Command {
             return;
         }
         try {
-            int id = Integer.parseInt(args[0]);
+            String id = args[0];
             int x = Integer.parseInt(args[1]);
             int y = Integer.parseInt(args[2]);
             if (!(Controller.getState() instanceof GameScreen)) {

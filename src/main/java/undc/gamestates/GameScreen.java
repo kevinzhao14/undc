@@ -213,7 +213,7 @@ public class GameScreen extends GameState {
         // sandbox inventory
         if (mode == GameMode.SANDBOX) {
             int count = 0;
-            for (Map.Entry<Integer, Item> i : DataManager.ITEMS.entrySet()) {
+            for (Map.Entry<String, Item> i : DataManager.ITEMS.entrySet()) {
                 if (i.getValue().isSpawnable()) {
                     count++;
                 }
@@ -221,7 +221,7 @@ public class GameScreen extends GameState {
             Inventory inv = new Inventory((int) Math.ceil(count / 5.0) + 1, 5);
             int row = 1;
             int col = 0;
-            for (Map.Entry<Integer, Item> i : DataManager.ITEMS.entrySet()) {
+            for (Map.Entry<String, Item> i : DataManager.ITEMS.entrySet()) {
                 if (!i.getValue().isSpawnable()) {
                     continue;
                 }

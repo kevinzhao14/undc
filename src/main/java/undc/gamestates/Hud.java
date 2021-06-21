@@ -144,7 +144,7 @@ public class Hud {
 
         // update health
         healthBarInner.setWidth(HEALTHBAR_WIDTH * (player.getHealth() / player.getMaxHealth()));
-        healthBarText.setText("" + Math.ceil(player.getHealth()));
+        healthBarText.setText("" + (int) Math.ceil(player.getHealth()));
 
         // update hotbar
         InventoryItem[] inv = player.getInventory().getItems()[0];

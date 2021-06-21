@@ -11,8 +11,8 @@ public abstract class Entity implements Movable {
     protected double health;
     protected double attack;
     protected Image sprite;
-    protected double height;
-    protected double width;
+    protected int height;
+    protected int width;
     private double posX;
     private double posY;
     private double attackCooldown;
@@ -25,7 +25,7 @@ public abstract class Entity implements Movable {
      * @param width Width of the entity
      * @param sprite The sprite of the entity (URL)
      */
-    public Entity(int maxHealth, double attack, double width, double height, String sprite) {
+    public Entity(int maxHealth, double attack, int width, int height, String sprite) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.attack = attack;
@@ -72,12 +72,12 @@ public abstract class Entity implements Movable {
     }
 
     @Override
-    public double getHeight() {
+    public int getHeight() {
         return this.height;
     }
 
     @Override
-    public double getWidth() {
+    public int getWidth() {
         return this.width;
     }
 
@@ -118,10 +118,6 @@ public abstract class Entity implements Movable {
 
     public void setAttackCooldown(double attackCooldown) {
         this.attackCooldown = attackCooldown;
-    }
-
-    public void setSprite(String spriteUrl) {
-        this.sprite = new Image(spriteUrl);
     }
 
     public void setSprite(Image sprite) {
