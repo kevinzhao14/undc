@@ -415,7 +415,9 @@ public class GameScreen extends GameState {
             togglePause();
         });
         endButton.setOnAction((e) -> {
-            Platform.exit();
+            togglePause();
+            HomeScreen.resetInstance();
+            Controller.setState(HomeScreen.getInstance());
         });
 
         box.getChildren().addAll(pauseLabel, resumeButton, endButton);

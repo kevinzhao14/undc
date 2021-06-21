@@ -281,7 +281,6 @@ public class GameController {
      */
     private void handleKey(String key, boolean isPress) {
         String control = Controls.getInstance().getControl(key);
-        Console.print(key + " " + isPress);
         //movement keys
         if (control.equals("up") || control.equals("down") || control.equals("right") || control.equals("left")) {
             handleMovementKey(control, isPress);
