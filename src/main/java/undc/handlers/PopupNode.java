@@ -61,6 +61,8 @@ public class PopupNode {
             eventNode.removeEventHandler(MouseEvent.ANY, this);
         }
 
+        boolean mouseMoved = false;
+
         @Override
         public final void handle(MouseEvent event) {
             if (event.getEventType() == MouseEvent.MOUSE_ENTERED) {
@@ -80,6 +82,7 @@ public class PopupNode {
                         popupNode.setTranslateX(this.lastMouseX + this.offsetX);
                         popupNode.setTranslateY(this.lastMouseY + this.offsetY);
                     }
+                    mouseMoved = true;
                 }
                 if (this.showing) {
                     final double deltaX = event.getSceneX() - this.lastMouseX;
@@ -101,7 +104,8 @@ public class PopupNode {
 
                     event.consume();
                 }
-            } else if (event.getEventType() == MouseEvent.MOUSE_EXITED || event.getEventType() == MouseEvent.MOUSE_PRESSED) {
+            } else if (event.getEventType() == MouseEvent.MOUSE_EXITED
+                    || event.getEventType() == MouseEvent.MOUSE_PRESSED) {
                 if (this.showing) {
                     event.consume();
                     this.showing = false;

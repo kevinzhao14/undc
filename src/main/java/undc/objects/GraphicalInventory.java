@@ -14,6 +14,7 @@ import undc.gamestates.GameScreen;
 import undc.handlers.DraggableNode;
 import undc.handlers.PopupNode;
 
+
 /**
  * Class that handles the graphics for the player's inventory.
  */

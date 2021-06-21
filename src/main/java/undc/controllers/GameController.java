@@ -74,6 +74,10 @@ public class GameController {
     private GameController() {
     }
 
+    /**
+     * Acts as a singleton for the GameController. If it does not exist, make one.
+     * @return current instance of GameController
+     */
     public static GameController getInstance() {
         if (instance == null) {
             resetInstance();
@@ -196,6 +200,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Puts a dropped item into the room relative to the player's position.
+     * @param item Item to drop
+     * @param quantity int amount of item to drop
+     */
     public void give(Item item, int quantity) {
         if (item == null) {
             Console.error("Item cannot be null.");
@@ -218,6 +227,12 @@ public class GameController {
         refresh();
     }
 
+    /**
+     * Adds a monster or obstacle into a room.
+     * @param ent Moveable entity that is being added
+     * @param x int x-cord to spawn it to
+     * @param y int y-cord to spawn it to
+     */
     public void spawn(Movable ent, int x, int y) {
         if (ent == null) {
             Console.error("Invalid entity to spawn.");
@@ -359,6 +374,10 @@ public class GameController {
         }
     }
 
+    /**
+     * Selects a position in the player's inventory.
+     * @param slot String representing the inventory position to select
+     */
     private void slotSelector(String slot) {
         slot = slot.replace("slot", "");
         try {
@@ -617,6 +636,10 @@ public class GameController {
             drop(currentItem.getItem());
         }
 
+        /**
+         * Places an item removed from the player's inventory into the room.
+         * @param item Item to remove and drop into room
+         */
         private void drop(Item item) {
             int d = Vars.i("sv_dropitem_distance");
             //get player center

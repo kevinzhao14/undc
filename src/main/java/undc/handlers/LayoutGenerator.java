@@ -59,6 +59,9 @@ public class LayoutGenerator {
     private int[] exitCoords;
     private Room[][] roomGrid;
 
+    /**
+     * Creates the rewards for the challenge rooms.
+     */
     public LayoutGenerator() {
         //set challenge rooms
         HashMap<Integer, Item> items = DataManager.ITEMS;
@@ -86,6 +89,9 @@ public class LayoutGenerator {
         cr2Rewards.add(rockets);
     }
 
+    /**
+     * Makes the star, exit, and challenge rooms, and populates them with monsters, items, etc..
+     */
     private void reset() {
         startRoom = new Room(ROOM_WIDTH, ROOM_HEIGHT, (int) ((ROOM_WIDTH
                 - Vars.i("sv_player_width")) / 2.0), (int) (ROOM_HEIGHT / 2.0
@@ -284,7 +290,7 @@ public class LayoutGenerator {
                 default:
                     break;
             }
-            Room r = new Room(ROOM_WIDTH, ROOM_HEIGHT,100, 100, RoomType.EMPTYROOM);
+            Room r = new Room(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, RoomType.EMPTYROOM);
             setMonsters(r);
             generateObstacles(r);
             grid[nx][ny] = r;
@@ -326,6 +332,11 @@ public class LayoutGenerator {
         room.setMonsters(monsters);
     }
 
+    /**
+     * Creates obstacles for a room.
+     * @param room Room to create obstacles in
+     * @param modifier int used to determine how many obstacles to add to a room
+     */
     private void generateObstacles(Room room, int modifier) {
         Random rand = new Random();
         int min = Vars.i("sv_obstacles_min");

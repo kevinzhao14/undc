@@ -1,7 +1,6 @@
 package undc.fxml.controllers;
 
 import undc.controllers.Controller;
-import undc.gamestates.GameScreen;
 import undc.gamestates.HomeScreen;
 import undc.gamestates.NewGameScreen;
 

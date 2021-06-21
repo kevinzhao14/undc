@@ -1,5 +1,8 @@
 package undc.objects;
 
+/**
+ * Class that handles Items that have quantities.
+ */
 public class InventoryItem {
     private Item item;
     private int quantity;

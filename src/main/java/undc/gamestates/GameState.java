@@ -2,6 +2,9 @@ package undc.gamestates;
 
 import javafx.scene.Scene;
 
+/**
+ * Abstract class that provides a frame work for different game states.
+ */
 public abstract class GameState {
     protected Scene scene;
     protected int width;

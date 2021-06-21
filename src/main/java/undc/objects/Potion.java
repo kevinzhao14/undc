@@ -1,6 +1,5 @@
 package undc.objects;
 
-import javafx.scene.control.Label;
 import org.json.JSONException;
 import org.json.JSONObject;
 import undc.controllers.Console;

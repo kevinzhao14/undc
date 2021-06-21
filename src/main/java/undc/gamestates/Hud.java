@@ -22,6 +22,9 @@ import undc.objects.Player;
 import undc.objects.RangedWeapon;
 import undc.objects.WeaponAmmo;
 
+/**
+ * Class that handles the graphics and functionality of the hud.
+ */
 public class Hud {
     private static final int HEALTHBAR_HEIGHT = 30;
     private static final int HEALTHBAR_WIDTH = 200;
@@ -36,6 +39,10 @@ public class Hud {
     private final Label ammoCounter;
     private final VBox effectsBox;
 
+    /**
+     * Creates a hude for the player.
+     * @param player Player to display hud for
+     */
     public Hud(Player player) {
         hud = new StackPane();
         hud.setId("hud");
@@ -122,6 +129,9 @@ public class Hud {
         hud.getStylesheets().add("styles/hud.css");
     }
 
+    /**
+     * Loads in new information for the hud and changes data and graphics accordingly.
+     */
     public void update() {
         if (!(Controller.getState() instanceof GameScreen)) {
             Console.error("Invalid state.");
@@ -194,6 +204,11 @@ public class Hud {
         return hud;
     }
 
+    /**
+     * Acts as a singleton for the Hud. Creates a new hud if one doesn't already exist.
+     * @param player Player that the hud reflects information for
+     * @return Hud for the player
+     */
     public static Hud getInstance(Player player) {
         if (instance == null) {
             instance = new Hud(player);

@@ -36,6 +36,9 @@ import undc.objects.RoomType;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * Class that handles the different screens the player will see throughout the game.
+ */
 public class GameScreen extends GameState {
     private static GameScreen instance;
     private static final int SANDBOX_WIDTH = 1000;
@@ -53,10 +56,19 @@ public class GameScreen extends GameState {
     private boolean consoleOpen;
     private GameMode mode;
 
+    /**
+     * Constructor for a screen.
+     * @param width int width of the screen
+     * @param height int height of the screen
+     */
     private GameScreen(int width, int height) {
         super(width, height);
     }
 
+    /**
+     * Acts as a singleton for GameScreen, returning its instance or making one if it doesn't currently exist.
+     * @return current instance of GameScreen
+     */
     public static GameScreen getInstance() {
         if (instance == null) {
             resetInstance();
@@ -68,6 +80,10 @@ public class GameScreen extends GameState {
         instance = new GameScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
     }
 
+    /**
+     * Creates the game mode the player chooses to play.
+     * @param mode GameMode the player selected
+     */
     public void newGame(GameMode mode) {
         if (mode == GameMode.SANDBOX) {
             Controller.getDataManager().newGame("example", Difficulty.EASY, DataManager.getStartingWeapons()[0]);
@@ -96,6 +112,9 @@ public class GameScreen extends GameState {
         this.mode = mode;
     }
 
+    /**
+     * Starts the game by creating it and making it visible to the player.
+     */
     public void start() {
         if (mode == null) {
             Console.error("Game Mode not set!");
@@ -109,6 +128,11 @@ public class GameScreen extends GameState {
         createPauseMenu();
     }
 
+    /**
+     * Handles transition to a new room and updates the previous room's visited value.
+     * @param newRoom Room that the player entered
+     * @return boolean for whether or not the room is the dungeon's exit room
+     */
     public boolean setRoom(Room newRoom) {
         //store old room
         previous = room;
@@ -130,6 +154,9 @@ public class GameScreen extends GameState {
         return newRoom.equals(dungeonLayout.getExitRoom());
     }
 
+    /**
+     * Loads in changes to the room.
+     */
     public void updateRoom() {
         StackPane root = new StackPane();
         Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
@@ -138,6 +165,9 @@ public class GameScreen extends GameState {
         scene.setRoot(root);
     }
 
+    /**
+     * Makes a new room.
+     */
     private void createRoom() {
         //set new room
         StackPane root = new StackPane();
@@ -166,10 +196,16 @@ public class GameScreen extends GameState {
         }
     }
 
+    /**
+     * Loads in changes to the hud.
+     */
     public void updateHud() {
         hud.update();
     }
 
+    /**
+     * Makes the player.
+     */
     private void createPlayer() {
         player = new Player(Vars.i("sv_player_health"), 1, Controller.getDataManager().getWeapon());
         player.setDirection(3);
@@ -202,6 +238,9 @@ public class GameScreen extends GameState {
         }
     }
 
+    /**
+     * Makes the hud.
+     */
     private void createHud() {
         hud = Hud.getInstance(player);
         updateHud();
@@ -217,12 +256,21 @@ public class GameScreen extends GameState {
         return inventory.isVisible();
     }
 
+    /**
+     * Handles the transition between room changes.
+     * @param pane Pane that will fade out of view
+     */
     private void fadeOut(Pane pane) {
         FadeTransition transition = new FadeTransition();
         setFade(transition, pane, false);
         transition.setOnFinished((e) -> createRoom());
     }
 
+    /**
+     * Handles the transition between room changes and on unpausing the game.
+     * @param pane Pane that will fade into view
+     * @param unpause boolean for whether or not the game is unpaused
+     */
     private void fadeIn(Pane pane, boolean unpause) {
         FadeTransition transition = new FadeTransition();
         setFade(transition, pane, true);
@@ -235,6 +283,12 @@ public class GameScreen extends GameState {
         fadeIn(pane, true);
     }
 
+    /**
+     * Creates the fade effect for transitions.
+     * @param t FadeTransition that will occur
+     * @param n Node to fade
+     * @param fadeIn boolean for whether or not the node is faded
+     */
     private void setFade(FadeTransition t, Node n, boolean fadeIn) {
         t.setDuration(Duration.millis(500));
         t.setNode(n);
@@ -248,6 +302,10 @@ public class GameScreen extends GameState {
         t.play();
     }
 
+    /**
+     * Handles a miniature version of the fade transition.
+     * @param n Node to fade
+     */
     private void partialFadeIn(Node n) {
         FadeTransition transition = new FadeTransition();
         transition.setNode(n);
@@ -256,6 +314,9 @@ public class GameScreen extends GameState {
         transition.play();
     }
 
+    /**
+     * Toggles the visibiility of the console.
+     */
     public void toggleConsole() {
         StackPane root = (StackPane) scene.getRoot();
         if (!consoleOpen) {
@@ -267,6 +328,9 @@ public class GameScreen extends GameState {
         consoleOpen = !consoleOpen;
     }
 
+    /**
+     * Handles the game over screen if the player dies.
+     */
     public void gameOver() {
         getGame().stop();
 
@@ -324,6 +388,9 @@ public class GameScreen extends GameState {
         partialFadeIn(backdrop);
     }
 
+    /**
+     * Makes the pause menu graphics for when the game is paused.
+     */
     public void createPauseMenu() {
         pause = new StackPane();
         final VBox box = new VBox(40);
@@ -410,6 +477,9 @@ public class GameScreen extends GameState {
         inventory.toggle();
     }
 
+    /**
+     * Prompts the player with the option of entering or not entering the challenge room.
+     */
     public void createChallengeOverlay() {
         challenge = new StackPane();
         final VBox box = new VBox(40);
@@ -495,6 +565,9 @@ public class GameScreen extends GameState {
         return mode;
     }
 
+    /**
+     * Enumerations for the different type of game modes.
+     */
     public enum GameMode {
         SANDBOX, STORY;
     }
