@@ -9,7 +9,7 @@ public interface Movable {
 
     void setY(double y);
 
-    double getHeight();
+    int getHeight();
 
-    double getWidth();
+    int getWidth();
 }

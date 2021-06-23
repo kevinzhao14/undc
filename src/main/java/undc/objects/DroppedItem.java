@@ -7,8 +7,8 @@ public class DroppedItem implements Movable {
     private Item item;
     private double x;
     private double y;
-    private double width;
-    private double height;
+    private int width;
+    private int height;
 
     /**
      * Constructor for an item that is dropped, taking in its location, height, and width.
@@ -18,8 +18,7 @@ public class DroppedItem implements Movable {
      * @param w int width of the item
      * @param h int height fo the item
      */
-    public DroppedItem(Item item, double x, double y,
-                       double w, double h) {
+    public DroppedItem(Item item, double x, double y, int w, int h) {
         this.item = item;
         this.x = x;
         this.y = y;
@@ -28,7 +27,7 @@ public class DroppedItem implements Movable {
     }
 
     public DroppedItem(Item item) {
-        this(item, 0.0, 0.0, 0.0, 0.0);
+        this(item, 0.0, 0.0, 0, 0);
     }
 
     @Override
@@ -41,11 +40,11 @@ public class DroppedItem implements Movable {
         this.y = y;
     }
 
-    public void setWidth(double w) {
+    public void setWidth(int w) {
         this.width = w;
     }
 
-    public void setHeight(double h) {
+    public void setHeight(int h) {
         this.height = h;
     }
 
@@ -64,12 +63,12 @@ public class DroppedItem implements Movable {
     }
 
     @Override
-    public double getWidth() {
+    public int getWidth() {
         return width;
     }
 
     @Override
-    public double getHeight() {
+    public int getHeight() {
         return height;
     }
 }

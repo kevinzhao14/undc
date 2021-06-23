@@ -9,12 +9,12 @@ import undc.controllers.Console;
  * Represents an Item object. Items that can be stored in inventories, dropped, or used.
  */
 public abstract class Item {
-    protected int id;
+    protected String id;
     protected Image sprite;
     protected String name;
     protected int maxStackSize;
-    protected boolean droppable;
-    protected boolean spawnable;
+    protected boolean droppable; // whether the item can be dropped through gameplay
+    protected boolean spawnable; // whether the item can be spawned using the spawn command
 
     protected Item() {
         maxStackSize = 1;
@@ -28,7 +28,7 @@ public abstract class Item {
      * @param copy Item object to clone to
      */
     protected void copy(Item copy) {
-        copy.id = -this.id;
+        copy.id = this.id;
         copy.sprite = this.sprite;
         copy.name = this.name;
         copy.maxStackSize = this.maxStackSize;
@@ -67,7 +67,7 @@ public abstract class Item {
                 + " | Stack: " + maxStackSize;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -83,7 +83,7 @@ public abstract class Item {
     public static Item parse(JSONObject o) {
         Item item;
         String type;
-        int id;
+        String id;
         String name;
         String sprite;
         int stackSize;
@@ -91,7 +91,7 @@ public abstract class Item {
         boolean spawnable;
 
         try {
-            id = o.getInt("id");
+            id = o.getString("id");
         } catch (JSONException e) {
             Console.error("Invalid value for item id.");
             return null;

@@ -226,6 +226,12 @@ public class Vars {
                 Console.error("Invalid Value.");
                 return false;
             }
+            // reset all changed values
+            for (CVar v : all()) {
+                if (v.requiresCheats()) {
+                    v.reset();
+                }
+            }
             return true;
         }
         CVar v = find(var);

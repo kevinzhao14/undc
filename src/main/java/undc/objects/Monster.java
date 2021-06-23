@@ -17,7 +17,7 @@ import java.util.Random;
  * Implementation of the Monster class.
  */
 public class Monster extends Entity {
-    private int id;
+    private String id;
     private String name;
     private MonsterType type;
     private double speed;
@@ -47,7 +47,7 @@ public class Monster extends Entity {
         copy(m);
         m.maxHealth = (int) (maxHealth * modifier);
         m.attack = attack * modifier;
-        m.id = -this.id;
+        m.id = this.id;
         m.name = this.name;
         m.type = this.type;
         m.speed = this.speed;
@@ -123,13 +123,13 @@ public class Monster extends Entity {
                         if (itemRow != null) {
                             for (InventoryItem item : itemRow) {
                                 if (item != null) {
-                                    if (item.getItem().equals(DataManager.ITEMS.get(9))) {
+                                    if (item.getItem().equals(DataManager.ITEMS.get("rocket_launcher"))) {
                                         DataManager.setUnlockedAmmo(true);
                                     }
                                     for (int i = 0; i < item.getQuantity(); i++) {
                                         DroppedItem newItem = new DroppedItem(item.getItem());
-                                        double width = item.getItem().getSprite().getWidth();
-                                        double height = item.getItem().getSprite().getHeight();
+                                        int width = (int) item.getItem().getSprite().getWidth();
+                                        int height = (int) item.getItem().getSprite().getHeight();
                                         newItem.setWidth(width);
                                         newItem.setHeight(height);
 
@@ -149,9 +149,9 @@ public class Monster extends Entity {
 
                                             //calculate x and y
                                             x = player.getX() + player.getWidth() / 2 + (randDist
-                                                    * Math.cos(randAngle)) - width / 2;
+                                                    * Math.cos(randAngle)) - width / 2.0;
                                             y = player.getY() + player.getHeight()  + (randDist
-                                                    * Math.sin(randAngle)) - height / 2;
+                                                    * Math.sin(randAngle)) - height / 2.0;
 
                                             isValidLocation = x >= 0.0 && x < screen.getRoom()
                                                     .getWidth() && y > 0.0 && y < screen.getRoom()
@@ -191,10 +191,10 @@ public class Monster extends Entity {
         if (type == MonsterType.FINALBOSS) {
             Item key = DataManager.getExitKey().copy();
             Image sprite = key.getSprite();
-            double x = getX() + getWidth() / 2 - sprite.getWidth() / 2;
-            double y = getY() + getHeight() / 2 - sprite.getHeight() / 2;
+            double x = getX() + getWidth() / 2.0 - sprite.getWidth() / 2;
+            double y = getY() + getHeight() / 2.0 - sprite.getHeight() / 2;
             return new DroppedItem[]{
-                new DroppedItem(key, x, y, sprite.getWidth(), sprite.getHeight())
+                new DroppedItem(key, x, y, (int) sprite.getWidth(), (int) sprite.getHeight())
             };
         }
         Random generator = new Random();
@@ -211,7 +211,6 @@ public class Monster extends Entity {
         double y = getY();   //y-pos of item spawn
         boolean isValidLocation = false; //flag for whether item spawn location is valid
 
-        int randIdx;    //index of random item to drop
         double randDist;   //random distance between item and monster
         double randAngle;  //random angle at which item is created
 
@@ -221,19 +220,19 @@ public class Monster extends Entity {
         for (int i = 0; i < numItems; i++) {
             isValidLocation = false; //reset flag
 
-            randIdx = generator.nextInt(DataManager.ITEMS.size());
 
             //keep generating a new index until a droppable item is found
-            Item item = DataManager.ITEMS.get(randIdx);
-            while (!item.isDroppable() || (item instanceof Ammunition && !DataManager.isUnlockedAmmo())) {
-                randIdx = generator.nextInt(DataManager.ITEMS.size());
-            }
+            Item item;
+            ArrayList<Item> items = new ArrayList<>(DataManager.ITEMS.values());
+            do {
+                item = items.get(generator.nextInt(items.size()));
+            } while (!item.isDroppable() || (item instanceof Ammunition && !DataManager.isUnlockedAmmo()));
 
             droppedItems[i] = new DroppedItem(item.copy());
 
             //Set width and height
-            droppedItems[i].setWidth(droppedItems[i].getItem().getSprite().getWidth());
-            droppedItems[i].setHeight(droppedItems[i].getItem().getSprite().getHeight());
+            droppedItems[i].setWidth((int) droppedItems[i].getItem().getSprite().getWidth());
+            droppedItems[i].setHeight((int) droppedItems[i].getItem().getSprite().getHeight());
 
             //Keep generating x and y position of item until an acceptable one is found
             while (!isValidLocation) {
@@ -296,7 +295,7 @@ public class Monster extends Entity {
     public static Monster parse(JSONObject o) {
         Monster monster = new Monster();
         try {
-            monster.id = o.getInt("id");
+            monster.id = o.getString("id");
         } catch (JSONException e) {
             Console.error("Invalid value for monster id.");
             return null;
@@ -333,13 +332,13 @@ public class Monster extends Entity {
             return null;
         }
         try {
-            monster.width = o.getDouble("width");
+            monster.width = o.getInt("width");
         } catch (JSONException e) {
             Console.error("Invalid value for monster width.");
             return null;
         }
         try {
-            monster.height = o.getDouble("height");
+            monster.height = o.getInt("height");
         } catch (JSONException e) {
             Console.error("Invalid value for monster height.");
             return null;
@@ -353,10 +352,16 @@ public class Monster extends Entity {
             Console.error("Invalid type for monster type.");
             return null;
         }
+        try {
+            monster.sprite = new Image(o.getString("sprite"));
+        } catch (IllegalArgumentException e) {
+            Console.error("Invalid value for monster sprite.");
+            return null;
+        }
         return monster;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 }

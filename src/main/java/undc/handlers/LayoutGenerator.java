@@ -20,6 +20,7 @@ import undc.objects.RoomType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -64,27 +65,27 @@ public class LayoutGenerator {
      */
     public LayoutGenerator() {
         //set challenge rooms
-        HashMap<Integer, Item> items = DataManager.ITEMS;
+        HashMap<String, Item> items = DataManager.ITEMS;
         cr1Rewards = new Inventory(2, 5);
-        RangedWeapon rl = ((RangedWeapon) items.get(9)).copy();
-        WeaponAmmo weaponAmmo = new WeaponAmmo(2, 50, DataManager.PROJECTILES.get(0));
+        RangedWeapon rl = ((RangedWeapon) items.get("rocket_launcher")).copy();
+        WeaponAmmo weaponAmmo = new WeaponAmmo(2, 50, DataManager.PROJECTILES.get("rocket"));
         weaponAmmo.setRemaining(2);
         weaponAmmo.setBackupRemaining(20);
         rl.setAmmo(weaponAmmo);
 
-        cr1Rewards.add(items.get(5), 1); // large health potion
-        cr1Rewards.add(items.get(6), 1); // attack potion
-        cr1Rewards.add(items.get(8), 2); // bomb
+        cr1Rewards.add(items.get("large_health_potion"), 1); // large health potion
+        cr1Rewards.add(items.get("attack_potion"), 1); // attack potion
+        cr1Rewards.add(items.get("bomb"), 2); // bomb
         cr1Rewards.add(rl, 1); //rocket launcher
 
         cr2Rewards = new Inventory(2, 5);
-        cr2Rewards.add(items.get(3), 3); // small health potion
-        cr2Rewards.add(items.get(4), 2); // medium health potion
-        cr2Rewards.add(items.get(5), 1); // large health potion
-        cr2Rewards.add(items.get(6), 2); // attack potion
-        cr2Rewards.add(items.get(7), 1); // dagger
-        cr2Rewards.add(items.get(8), 3); // bomb
-        Ammunition rockets = (Ammunition) items.get(10).copy(); // ammunition
+        cr2Rewards.add(items.get("small_health_potion"), 3); // small health potion
+        cr2Rewards.add(items.get("medium_health_potion"), 2); // medium health potion
+        cr2Rewards.add(items.get("large_health_potion"), 1); // large health potion
+        cr2Rewards.add(items.get("attack_potion"), 2); // attack potion
+        cr2Rewards.add(items.get("dagger"), 1); // dagger
+        cr2Rewards.add(items.get("bomb"), 3); // bomb
+        Ammunition rockets = (Ammunition) items.get("rockets").copy(); // ammunition
         rockets.setAmount(20);
         cr2Rewards.add(rockets);
     }
@@ -106,7 +107,7 @@ public class LayoutGenerator {
         generateObstacles(exitRoom, 4);
 
         Monster boss = DataManager.getFinalBoss();
-        boss.setX(exitWidth / 2.0 - boss.getWidth() / 2);
+        boss.setX(exitWidth / 2.0 - boss.getWidth() / 2.0);
         boss.setY(exitHeight - boss.getHeight() - 5);
         exitRoom.setMonsters(new ArrayList<>());
         exitRoom.getMonsters().add(DataManager.getFinalBoss());
@@ -158,26 +159,26 @@ public class LayoutGenerator {
                 if (roomGrid[i][j] != null && roomGrid[i][j].getType() != RoomType.EXITROOM) {
                     if (roomGrid[i + 1][j] != null) {
                         roomGrid[i][j].setRightDoor(
-                                new Door(ROOM_WIDTH - 1, (ROOM_HEIGHT - DOOR_HEIGHT) / 2,
+                                new Door(ROOM_WIDTH - 1, (ROOM_HEIGHT - DOOR_HEIGHT) / 2.0,
                                         DOOR_WIDTH, DOOR_HEIGHT / 2,
                                 roomGrid[i + 1][j], DoorOrientation.RIGHT));
                     }
                     if (roomGrid[i - 1][j] != null) {
                         roomGrid[i][j].setLeftDoor(
-                                new Door(-DOOR_WIDTH + 1, (ROOM_HEIGHT - DOOR_HEIGHT) / 2,
+                                new Door(-DOOR_WIDTH + 1, (ROOM_HEIGHT - DOOR_HEIGHT) / 2.0,
                                         DOOR_WIDTH, DOOR_HEIGHT / 2,
                                         roomGrid[i - 1][j], DoorOrientation.LEFT));
                     }
                     if (roomGrid[i][j + 1] != null) {
                         roomGrid[i][j].setBottomDoor(
-                                new Door((ROOM_WIDTH - DOORBOTTOM_WIDTH) / 2,
+                                new Door((ROOM_WIDTH - DOORBOTTOM_WIDTH) / 2.0,
                                         -DOORBOTTOM_HEIGHT + 1,
                                         DOORBOTTOM_WIDTH, DOORBOTTOM_HEIGHT,
                                         roomGrid[i][j + 1], DoorOrientation.BOTTOM));
                     }
                     if (roomGrid[i][j - 1] != null) {
                         roomGrid[i][j].setTopDoor(
-                                new Door((ROOM_WIDTH - DOORTOP_WIDTH) / 2, ROOM_HEIGHT - 1,
+                                new Door((ROOM_WIDTH - DOORTOP_WIDTH) / 2.0, ROOM_HEIGHT - 1,
                                         DOORTOP_WIDTH, DOORTOP_HEIGHT,
                                         roomGrid[i][j - 1], DoorOrientation.TOP));
                     }
@@ -313,8 +314,14 @@ public class LayoutGenerator {
             numMonsters = 5;
         }
         ArrayList<Monster> monsters = new ArrayList<>();
+        ArrayList<Monster> monsterslist = new ArrayList<>();
+        for (Map.Entry<String, Monster> e : DataManager.MONSTERS.entrySet()) {
+            if (!e.getValue().getId().equalsIgnoreCase("final")) {
+                monsterslist.add(e.getValue());
+            }
+        }
         for (int i = 0; i < numMonsters; i++) {
-            int n = (int) (Math.random() * 3);
+            int n = (int) (Math.random() * monsterslist.size());
             Difficulty diff = Controller.getDataManager().getDifficulty();
             double modifier = 1;
             if (diff == Difficulty.MEDIUM) {
@@ -322,7 +329,7 @@ public class LayoutGenerator {
             } else if (diff == Difficulty.HARD) {
                 modifier = Vars.d("sv_modifier_hard");
             }
-            Monster m = DataManager.MONSTERS.get(n).copy(modifier);
+            Monster m = monsterslist.get(n).copy(modifier);
             int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
             int monsterY = (int) (Math.random() * (room.getHeight() - 39)) + 20;
             m.setX(monsterX);
@@ -345,13 +352,14 @@ public class LayoutGenerator {
         for (int i = 0; i < numObstacles; i++) {
             //random num for obstacle
             int index = rand.nextInt(DataManager.OBSTACLES.size());
-            Obstacle o = DataManager.OBSTACLES.get(index).copy();
+            ArrayList<Obstacle> obstacles = new ArrayList<>(DataManager.OBSTACLES.values());
+            Obstacle o = obstacles.get(index).copy();
             int posX;
             int posY;
             boolean validPos;
             do {
-                posX = rand.nextInt((int) (room.getWidth() - o.getWidth()) - 99) + 50;
-                posY = rand.nextInt((int) (room.getHeight() - o.getHeight()) - 99) + 50;
+                posX = rand.nextInt((room.getWidth() - o.getWidth()) - 99) + 50;
+                posY = rand.nextInt((room.getHeight() - o.getHeight()) - 99) + 50;
                 validPos = true;
                 for (Obstacle oc : room.getObstacles()) {
                     double distX = Math.pow(posX - oc.getX(), 2);
@@ -378,23 +386,23 @@ public class LayoutGenerator {
      */
     private void printGrid(Room[][] grid) {
         for (int i = 0; i < GRID_WIDTH; i++) {
-            String col = "";
+            StringBuilder col = new StringBuilder();
             for (int j = 0; j < GRID_HEIGHT; j++) {
                 if (i == GRID_WIDTH / 2 && j == GRID_HEIGHT / 2) {
-                    col += "o ";
+                    col.append("o ");
                 } else if (grid[j][i] != null) {
                     if (grid[j][i].getType().equals(RoomType.EXITROOM)) {
-                        col += "e ";
+                        col.append("e ");
                     } else if (grid[j][i].getType().equals(RoomType.CHALLENGEROOM)) {
-                        col += grid[j][i].equals(cr1) ? "1 " : "2 ";
+                        col.append(grid[j][i].equals(cr1) ? "1 " : "2 ");
                     } else {
-                        col += "* ";
+                        col.append("* ");
                     }
                 } else {
-                    col += "- ";
+                    col.append("- ");
                 }
             }
-            Console.print(col);
+            Console.print(col.toString());
         }
         Console.print("");
     }

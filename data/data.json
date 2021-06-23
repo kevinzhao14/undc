@@ -1,10 +1,10 @@
 {
-  "exitkey": 11,
-  "startingWeapons": [0,1,2],
-  "finalboss": 3,
+  "exitkey": "special_key",
+  "startingWeapons": ["axe", "mace", "sword"],
+  "finalboss": "final",
   "projectiles": [
     {
-      "id": 0,
+      "id": "rocket",
       "name": "Rocket",
       "sprites": [
         "weapons/rocket-left.png",
@@ -21,8 +21,9 @@
   ],
   "monsters": [
     {
-      "id": 0,
+      "id": "fast",
       "name": "Fast Monster",
+      "sprite": "monsters/monster-fast.png",
       "health": 20,
       "attack": 4,
       "speed": 150,
@@ -32,8 +33,9 @@
       "width": 9
     },
     {
-      "id": 1,
+      "id": "normal",
       "name": "Normal Monster",
+      "sprite": "monsters/monster-normal.png",
       "health": 40,
       "attack": 5,
       "speed": 100,
@@ -43,8 +45,9 @@
       "width": 12
     },
     {
-      "id": 2,
+      "id": "tank",
       "name": "Tank Monster",
+      "sprite": "monsters/monster-tank.png",
       "health": 80,
       "attack": 10,
       "speed": 50,
@@ -54,8 +57,9 @@
       "width": 31
     },
     {
-      "id": 3,
+      "id": "final",
       "name": "Final Boss",
+      "sprite": "monsters/final-boss.gif",
       "health": 200,
       "attack": 15,
       "speed": 100,
@@ -67,7 +71,7 @@
   ],
   "obstacles": [
     {
-      "id": 0,
+      "id": "boulders",
       "name": "Boulders",
       "type": "solid",
       "sprite": "obstacles/boulders.png",
@@ -75,7 +79,7 @@
       "height": 17
     },
     {
-      "id": 1,
+      "id": "small_ruins",
       "name": "Small Ruins",
       "type": "solid",
       "sprite": "obstacles/ruin1.png",
@@ -83,7 +87,7 @@
       "height": 11
     },
     {
-      "id": 2,
+      "id": "large_ruins",
       "name": "Large Ruins",
       "type": "solid",
       "sprite": "obstacles/ruin2.png",
@@ -93,7 +97,7 @@
   ],
   "items": [
     {
-      "id": 0,
+      "id": "axe",
       "type": "weapon",
       "name": "Axe",
       "sprite": "weapons/axe.png",
@@ -101,7 +105,7 @@
       "attackSpeed": 1
     },
     {
-      "id": 1,
+      "id": "mace",
       "type": "weapon",
       "name": "Mace",
       "sprite": "weapons/mace.png",
@@ -109,7 +113,7 @@
       "attackSpeed": 0.75
     },
     {
-      "id": 2,
+      "id": "sword",
       "type": "weapon",
       "name": "Sword",
       "sprite": "weapons/sword.png",
@@ -117,7 +121,7 @@
       "attackSpeed": 0.5
     },
     {
-      "id": 3,
+      "id": "small_health_potion",
       "type": "potion",
       "name": "Small Health Potion",
       "sprite": "items/health-potion-small.png",
@@ -127,7 +131,7 @@
       "droppable": true
     },
     {
-      "id": 4,
+      "id": "medium_health_potion",
       "type": "potion",
       "name": "Medium Health Potion",
       "sprite": "items/health-potion-med.png",
@@ -137,7 +141,7 @@
       "droppable": true
     },
     {
-      "id": 5,
+      "id": "large_health_potion",
       "type": "potion",
       "name": "Large Health Potion",
       "sprite": "items/health-potion-large.png",
@@ -147,7 +151,7 @@
       "droppable": true
     },
     {
-      "id": 6,
+      "id": "attack_potion",
       "type": "potion",
       "name": "Attack Potion",
       "sprite": "items/attack-potion.png",
@@ -157,7 +161,7 @@
       "droppable": true
     },
     {
-      "id": 7,
+      "id": "dagger",
       "type": "weapon",
       "name": "Dagger",
       "sprite": "weapons/dagger.png",
@@ -166,7 +170,7 @@
       "droppable": true
     },
     {
-      "id": 8,
+      "id": "bomb",
       "type": "bomb",
       "name": "Bomb",
       "sprite": "items/bomb.png",
@@ -177,36 +181,34 @@
       "droppable": true
     },
     {
-      "id": 9,
+      "id": "rocket_launcher",
       "type": "rangedweapon",
       "name": "Rocket Launcher",
       "sprite": "weapons/rocketlauncher.png",
       "damage": 4,
       "reloadTime": 1,
       "fireRate": 1,
-      "droppable": true,
       "ammo": {
-        "projectile": 0,
+        "projectile": "rocket",
         "size": 2,
         "backupSize": 40
       }
     },
     {
-      "id": 10,
+      "id": "rockets",
       "type": "ammunition",
       "name": "Rockets",
       "sprite": "weapons/rocket-right.png",
       "amount": 5,
-      "projectile": 0,
+      "projectile": "rocket",
       "droppable": true,
       "spawnable": false
     },
     {
-      "id": 11,
+      "id": "special_key",
       "type": "key",
       "name": "Special Key",
       "sprite": "items/key.png",
-      "droppable": true,
       "spawnable": false
     }
   ]

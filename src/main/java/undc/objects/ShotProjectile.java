@@ -18,12 +18,12 @@ public class ShotProjectile implements Movable {
     private double posY;
     private double velX;
     private double velY;
-    private double height;
-    private double width;
+    private int height;
+    private int width;
     private double distance;
 
-    public ShotProjectile(Projectile projectile, double posX, double posY, double velX, double velY,
-                          double width, double height) {
+    public ShotProjectile(Projectile projectile, double posX, double posY, double velX, double velY, int width,
+                          int height) {
         this.projectile = projectile;
         this.posX = posX;
         this.posY = posY;
@@ -33,16 +33,16 @@ public class ShotProjectile implements Movable {
         this.width = width;
     }
 
-    public static void addExplosion(Room room, Movable m, double width) {
+    public static void addExplosion(Room room, Movable m, int width) {
         if (width > Vars.i("gc_explosion_maxwidth")) {
             width = Vars.i("gc_explosion_maxwidth");
         }
 
         //draw explosion animation
         Image explosion = new Image(DataManager.EXPLOSION);
-        double height = width;
-        double x = m.getX() + (m.getWidth() / 2) - (width / 2);
-        double y = m.getY() + (m.getHeight() / 2) - (height / 2);
+        int height = width;
+        double x = m.getX() + (m.getWidth() / 2.0) - (width / 2.0);
+        double y = m.getY() + (m.getHeight() / 2.0) - (height / 2.0);
         Obstacle o = new Obstacle(explosion, x, y, width, height, ObstacleType.NONSOLID);
         o.setSprite(explosion);
         room.getObstacles().add(o);
@@ -77,8 +77,8 @@ public class ShotProjectile implements Movable {
                     continue;
                 }
                 //calculate distance
-                double distX = (m.getX() + m.getWidth() / 2) - (posX + width / 2);
-                double distY = (m.getY() + m.getHeight() / 2) - (posY + height / 2);
+                double distX = (m.getX() + m.getWidth() / 2) - (posX + width / 2.0);
+                double distY = (m.getY() + m.getHeight() / 2) - (posY + height / 2.0);
                 double dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
                 //if in range of the blast
                 if (dist <= projectile.getSplashRange()) {
@@ -92,13 +92,13 @@ public class ShotProjectile implements Movable {
             if (dist <= projectile.getSplashRange()) {
                 player.setHealth(Math.max(0, player.getHealth() - projectile.getDamage()
                         * Vars.d("sv_self_damage_modifier")));
-                Platform.runLater(() -> screen.updateHud());
+                Platform.runLater(screen::updateHud);
                 if (player.getHealth() == 0) {
-                    Platform.runLater(() -> screen.gameOver());
+                    Platform.runLater(screen::gameOver);
                 }
             }
             //draw explosion animation
-            addExplosion(room, this, projectile.getSplashRange() * 2);
+            addExplosion(room, this, (int) (projectile.getSplashRange() * 2));
         }
 
         //remove projectile
@@ -130,12 +130,12 @@ public class ShotProjectile implements Movable {
     }
 
     @Override
-    public double getHeight() {
+    public int getHeight() {
         return this.height;
     }
 
     @Override
-    public double getWidth() {
+    public int getWidth() {
         return this.width;
     }
 

@@ -62,8 +62,6 @@ public class GraphicalInventory extends Overlay {
         root.getChildren().add(parent);
         root.getStylesheets().add("styles/inventory.css");
 
-        toggle();
-
         // Making graphics for item information hover
         itemInfo = new VBox();
         itemInfo.setVisible(false);
@@ -79,6 +77,8 @@ public class GraphicalInventory extends Overlay {
         root.getChildren().add(itemInfo);
 
         itemInfo.setMaxSize(225, 100);
+
+        toggle();
     }
 
     /**
@@ -119,7 +119,7 @@ public class GraphicalInventory extends Overlay {
                 DraggableNode.remove(square);
                 DraggableNode.DraggableObject obj = DraggableNode.add(square, image);
 
-                obj.addListener((n, e) -> {
+                obj.addListener((m, e) -> {
                     if (e == DraggableNode.Event.DragStart) {
                         Bounds bounds = image.localToScene(image.getBoundsInLocal());
                         double x = bounds.getMinX();
@@ -149,6 +149,11 @@ public class GraphicalInventory extends Overlay {
                                     inventory.add(item, i1, j1);
 
                                     update();
+
+                                    populateInfoBox(item);
+                                    itemInfo.setVisible(true);
+                                    itemInfo.setTranslateX(m.getSceneX() + 25);
+                                    itemInfo.setTranslateY(m.getSceneY() + 25);
 
                                     GameScreen.getInstance().updateHud();
                                     return;
@@ -182,48 +187,7 @@ public class GraphicalInventory extends Overlay {
                 PopupNode.PopupObject popup = PopupNode.add(25, 25, square, itemInfo);
                 popup.addListener((n, e) -> {
                     if (e == PopupNode.Event.SHOW) {
-                        Item itm = item.getItem();
-
-                        itemName.setText(itm.getName());
-
-                        if (itm instanceof RangedWeapon) {
-                            RangedWeapon weapon = (RangedWeapon) itm;
-                            Label projectile = new Label(weapon.getAmmo().getProjectile().getName());
-                            Label spacer = new Label();
-                            Label ammo = new Label(weapon.getAmmo().getRemaining()
-                                    + " / " + weapon.getAmmo().getBackupRemaining() + " Ammo");
-                            Label damage = new Label(weapon.getAmmo().getProjectile().getDamage() + " Damage");
-                            Label fireRate = new Label(weapon.getFireRate() + " Fire Rate");
-
-                            description.getChildren().addAll(projectile, spacer, ammo, damage, fireRate);
-                        } else if (itm instanceof Weapon) {
-                            Weapon weapon = (Weapon) itm;
-                            Label damage = new Label(weapon.getDamage() + " Damage");
-                            Label attackSpeed = new Label(weapon.getAttackSpeed() + " Speed");
-
-                            description.getChildren().addAll(damage, attackSpeed);
-                        } else if (itm instanceof Potion) {
-                            Potion potion = (Potion) itm;
-                            Label type = new Label(potion.getTypeString());
-                            Label modifier = new Label(potion.getModifierString());
-
-                            description.getChildren().addAll(type, modifier);
-                        } else if (itm instanceof Bomb) {
-                            Bomb bomb = (Bomb) itm;
-                            Label damage = new Label(bomb.getDamage() + " Damage");
-                            Label radius = new Label(bomb.getRadius() + " Radius");
-                            Label fuse = new Label(((int) (bomb.getFuse() / 100) / 10) + "s Fuse");
-
-                            description.getChildren().addAll(damage, radius, fuse);
-                        }
-
-                        if (item.isInfinite()) {
-                            Label infinite = new Label("Infinite");
-                            description.getChildren().add(infinite);
-                        }
-                    } else if (e == PopupNode.Event.HIDE) {
-                        itemName.setText("");
-                        description.getChildren().clear();
+                        populateInfoBox(item);
                     }
                 });
 
@@ -238,5 +202,53 @@ public class GraphicalInventory extends Overlay {
     public void toggle() {
         update();
         super.toggle();
+        if (!root.isVisible()) {
+            itemInfo.setVisible(false);
+        }
+    }
+
+    private void populateInfoBox(InventoryItem invItem) {
+        itemName.setText("");
+        description.getChildren().clear();
+
+        Item item = invItem.getItem();
+
+        itemName.setText(item.getName());
+
+        if (item instanceof RangedWeapon) {
+            RangedWeapon weapon = (RangedWeapon) item;
+            Label projectile = new Label(weapon.getAmmo().getProjectile().getName());
+            Label spacer = new Label();
+            Label ammo = new Label(weapon.getAmmo().getRemaining()
+                    + " / " + weapon.getAmmo().getBackupRemaining() + " Ammo");
+            Label damage = new Label(weapon.getAmmo().getProjectile().getDamage() + " Damage");
+            Label fireRate = new Label(weapon.getFireRate() + " Fire Rate");
+
+            description.getChildren().addAll(projectile, spacer, ammo, damage, fireRate);
+        } else if (item instanceof Weapon) {
+            Weapon weapon = (Weapon) item;
+            Label damage = new Label(weapon.getDamage() + " Damage");
+            Label attackSpeed = new Label(weapon.getAttackSpeed() + " Speed");
+
+            description.getChildren().addAll(damage, attackSpeed);
+        } else if (item instanceof Potion) {
+            Potion potion = (Potion) item;
+            Label type = new Label(potion.getTypeString());
+            Label modifier = new Label(potion.getModifierString());
+
+            description.getChildren().addAll(type, modifier);
+        } else if (item instanceof Bomb) {
+            Bomb bomb = (Bomb) item;
+            Label damage = new Label(bomb.getDamage() + " Damage");
+            Label radius = new Label(bomb.getRadius() + " Radius");
+            Label fuse = new Label(((int) (bomb.getFuse() / 100) / 10) + "s Fuse");
+
+            description.getChildren().addAll(damage, radius, fuse);
+        }
+
+        if (invItem.isInfinite()) {
+            Label infinite = new Label("Infinite");
+            description.getChildren().add(infinite);
+        }
     }
 }

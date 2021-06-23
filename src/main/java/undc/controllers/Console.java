@@ -212,6 +212,7 @@ public class Console {
         historyBox.setContextMenuEnabled(false);
         // controls the scroll speed of the scrollpane
         historyBox.setOnScroll(e -> historyScroll.setVvalue(historyScroll.getVvalue() - e.getDeltaY() * 0.0025));
+        historyBox.setFocusTraversable(false);
         refresh();
 
         // stuff for the input field
@@ -228,7 +229,10 @@ public class Console {
             input.clear();
         });
 
-        input.setOnKeyPressed(e -> handleKey(Controls.keyStringify(e.getCode())));
+        input.setOnKeyPressed(e -> {
+            handleKey(Controls.keyStringify(e.getCode()));
+            e.consume();
+        });
         input.setOnKeyReleased(e -> genSuggestions());
 
         // image/area used to resize the console

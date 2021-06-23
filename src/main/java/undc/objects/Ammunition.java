@@ -56,7 +56,7 @@ public class Ammunition extends Item {
             return null;
         }
         try {
-            ammo.projectile = DataManager.PROJECTILES.get(o.getInt("projectile"));
+            ammo.projectile = DataManager.PROJECTILES.get(o.getString("projectile"));
         } catch (JSONException e) {
             Console.error("Invalid value for ammunition projectile.");
             return null;
