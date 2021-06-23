@@ -28,12 +28,20 @@ public class Monster extends Entity {
     private ArrayList<Move> moveQueue;
     private double opacity;
 
+    /**
+     * Creates a Monster object.
+     */
     private Monster() {
         reaction = -1;
         moveQueue = new ArrayList<>();
         opacity = 1;
     }
 
+    /**
+     * Creates a copy of a Monster with modified health and attack stats.
+     * @param modifier double to be applied to health and attack stats
+     * @return Monster that is modified
+     */
     public Monster copy(double modifier) {
         Monster m = new Monster();
         copy(m);
@@ -47,6 +55,12 @@ public class Monster extends Entity {
         return m;
     }
 
+    /**
+     * Updates health of monster after it recieves damage and gives player gold for killing it.
+     * @param damageAmount double amount of damage taken.
+     * @param giveGold boolean for whether or not to give gold after killing the monster.
+     * @return
+     */
     public boolean attackMonster(double damageAmount, boolean giveGold) {
         if (this.getHealth() <= 0) {
             return false;
