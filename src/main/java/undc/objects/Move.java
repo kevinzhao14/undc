@@ -1,5 +1,8 @@
 package undc.objects;
 
+/**
+ * Class that handles monster movement and gives them a delay.
+ */
 public class Move {
     private Coords pos;
     private double delay;

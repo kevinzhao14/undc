@@ -1,5 +1,8 @@
 package undc.objects;
 
+/**
+ * Interface containing getters and setters for movement in game.
+ */
 public interface Movable {
     double getX();
 

@@ -199,6 +199,9 @@ public class GraphicalInventory extends Overlay {
         }
     }
 
+    /**
+     * Makes inventory visible or not visible.
+     */
     public void toggle() {
         update();
         super.toggle();
@@ -207,6 +210,10 @@ public class GraphicalInventory extends Overlay {
         }
     }
 
+    /**
+     * Provides item info box with descriptors of passed in item.
+     * @param invItem InventoryItem that will be described
+     */
     private void populateInfoBox(InventoryItem invItem) {
         itemName.setText("");
         description.getChildren().clear();

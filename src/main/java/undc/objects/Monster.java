@@ -59,7 +59,7 @@ public class Monster extends Entity {
      * Updates health of monster after it recieves damage and gives player gold for killing it.
      * @param damageAmount double amount of damage taken.
      * @param giveGold boolean for whether or not to give gold after killing the monster.
-     * @return
+     * @return boolean on whether or not gold was given to the player
      */
     public boolean attackMonster(double damageAmount, boolean giveGold) {
         if (this.getHealth() <= 0) {
@@ -177,6 +177,11 @@ public class Monster extends Entity {
         return false;
     }
 
+    /**
+     * Restores the player's health points to full and resets their position.
+     * @param posX int x-chord to reset player to
+     * @param posY int y-chord to reset player to
+     */
     public void revive(int posX, int posY) {
         setX(posX);
         setY(posY);
@@ -184,6 +189,10 @@ public class Monster extends Entity {
         setOpacity(1.0);
     }
 
+    /**
+     * Handles dropping items fo the player to receive upon killing a monster.
+     * @return DropItems[] array containing the dropped items
+     */
     public DroppedItem[] dropItems() {
         if (DataManager.ITEMS.size() == 0 && type != MonsterType.FINALBOSS) {
             return new DroppedItem[0];
@@ -292,6 +301,11 @@ public class Monster extends Entity {
         this.opacity = opacity;
     }
 
+    /**
+     * Assigns a monster's instance variables from JSON files.
+     * @param o JSONObject that info on the monster is pulled from
+     * @return Monster object that is updated
+     */
     public static Monster parse(JSONObject o) {
         Monster monster = new Monster();
         try {

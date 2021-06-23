@@ -5,6 +5,9 @@ import undc.gamestates.ConfigScreen;
 import undc.gamestates.GameScreen;
 import undc.gamestates.PlayScreen;
 
+/**
+ * Class that handles the creation of a new game; either story or sandbox mode.
+ */
 public class NewGameController {
 
     public void newStory() {
