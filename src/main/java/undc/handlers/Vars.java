@@ -70,7 +70,7 @@ public class Vars {
         INT_VARS.add(new IntCVar("gc_explosion_maxwidth", "explosionWidth", 0, 1000, 75));
 
         // Double CVars
-        DOUBLE_VARS.add(new DoubleCVar("gc_ppu", "ppu", 0, 100, 1, true, false));
+        DOUBLE_VARS.add(new DoubleCVar("gc_ppu", "ppu", 0, 100, 1.5, true, false));
         DOUBLE_VARS.add(new DoubleCVar("sv_self_damage_modifier", "selfDamageMod", 0, 10, 0.75));
         DOUBLE_VARS.add(new DoubleCVar("sv_fist_damage", "fistDamage", 0, 100, 1));
         DOUBLE_VARS.add(new DoubleCVar("sv_fist_cooldown", "fistCooldown", 0, 10, 0.5));
@@ -79,6 +79,7 @@ public class Vars {
         DOUBLE_VARS.add(new DoubleCVar("sv_modifier_medium", "modMed", 0, 10, 1.5, true, false));
         DOUBLE_VARS.add(new DoubleCVar("sv_modifier_hard", "modHard", 0, 10, 2, true, false));
         DOUBLE_VARS.add(new DoubleCVar("gc_effect_scale", "effectScale", 0, 10, 1.5));
+        DOUBLE_VARS.add(new DoubleCVar("volume", "volume", 0, 1, 0.1));
     }
 
     /**

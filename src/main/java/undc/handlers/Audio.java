@@ -24,7 +24,9 @@ public class Audio {
      * @param id String used to locate desired AudioClip in SOUNDS HashMap
      */
     public static void playAudio(String id) {
-        DataManager.SOUNDS.get(id).play();
+        AudioClip clip = DataManager.SOUNDS.get(id);
+        clip.setVolume(Vars.d("volume"));
+        clip.play();
     }
 
     /**
@@ -46,6 +48,7 @@ public class Audio {
             Console.error("Invalid value for audio clip");
             return null;
         }
+        audio.clip.setVolume(Vars.d("volume"));
         return audio;
     }
 
