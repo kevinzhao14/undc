@@ -2,6 +2,7 @@ package undc.gamestates;
 
 import java.util.ArrayList;
 
+import undc.handlers.Audio;
 import undc.handlers.Difficulty;
 import undc.handlers.Vars;
 import undc.objects.Weapon;
@@ -104,6 +105,7 @@ public class ConfigScreen extends GameState {
         root.add(row3, 1, 2);
 
         nextButton.setOnAction(e -> {
+            Audio.playAudio("button");
             String playerName = playerNameEntry.getText();
             RadioButton selectedDifficulty = (RadioButton) difficultyGroup.getSelectedToggle();
             RadioButton selectedWeapon = (RadioButton) weaponGroup.getSelectedToggle();

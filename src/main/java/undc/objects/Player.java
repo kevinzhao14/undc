@@ -1,6 +1,7 @@
 package undc.objects;
 
 import javafx.scene.image.Image;
+import undc.handlers.Audio;
 import undc.handlers.Vars;
 
 import java.util.ArrayList;
@@ -129,6 +130,9 @@ public class Player extends Entity {
     public void setHealth(double newHealth) {
         if (newHealth < health && Vars.b("gm_god")) {
             return;
+        }
+        if (newHealth < health) {
+            Audio.playAudio("take_damage");
         }
         super.setHealth(newHealth);
     }

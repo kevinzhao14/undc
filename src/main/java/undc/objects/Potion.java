@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.gamestates.GameScreen;
+import undc.handlers.Audio;
 
 public class Potion extends Item {
     private PotionType type;
@@ -61,6 +62,8 @@ public class Potion extends Item {
         if (!(Controller.getState() instanceof GameScreen)) {
             return;
         }
+        Audio.playAudio("potion");
+
         GameScreen gameScreen = (GameScreen) Controller.getState();
         Player player = gameScreen.getPlayer();
 

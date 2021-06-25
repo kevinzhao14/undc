@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.gamestates.GameScreen;
+import undc.handlers.Audio;
 
 /**
  * Class that represents a Bomb item. Can be placed to deal damage to all entities within a specific range.
@@ -55,6 +56,7 @@ public class Bomb extends Item {
         screen.getRoom().getObstacles().add(o);
 
         //start fuse
+        Audio.playAudio("fuse");
         timer.livefuse = fuse;
     }
 

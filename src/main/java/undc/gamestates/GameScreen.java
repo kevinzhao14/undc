@@ -18,10 +18,7 @@ import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.controllers.DataManager;
 import undc.controllers.GameController;
-import undc.handlers.Difficulty;
-import undc.handlers.LayoutGenerator;
-import undc.handlers.RoomRenderer;
-import undc.handlers.Vars;
+import undc.handlers.*;
 import undc.objects.ChallengeRoom;
 import undc.objects.DungeonLayout;
 import undc.objects.GraphicalInventory;
@@ -134,6 +131,11 @@ public class GameScreen extends GameState {
      * @return boolean for whether or not the room is the dungeon's exit room
      */
     public boolean setRoom(Room newRoom) {
+        if (newRoom.equals(dungeonLayout.getExitRoom())) {
+            Audio.playAudio("final_boss_music");
+        } else {
+            Audio.playAudio("door");
+        }
         //store old room
         previous = room;
 
@@ -503,6 +505,7 @@ public class GameScreen extends GameState {
         noButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
 
         yesButton.setOnAction((e) -> {
+            Audio.playAudio("challenge_room");
             challenge.setVisible(false);
             getGame().pause();
         });
