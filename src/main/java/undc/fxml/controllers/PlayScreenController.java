@@ -4,6 +4,9 @@ import undc.controllers.Controller;
 import undc.gamestates.HomeScreen;
 import undc.gamestates.NewGameScreen;
 
+/**
+ * Class that handles the play screen presented to the player when they select play from the home screen.
+ */
 public class PlayScreenController {
     public void newGame() {
         NewGameScreen.resetInstance();

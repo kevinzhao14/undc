@@ -1,8 +1,10 @@
 package undc.controllers;
 
+import javafx.scene.media.AudioClip;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import undc.handlers.Audio;
 import undc.handlers.Difficulty;
 import undc.objects.Item;
 import undc.objects.Monster;
@@ -28,6 +30,8 @@ public class DataManager {
     public static final HashMap<String, Obstacle> OBSTACLES = new HashMap<>();
 
     public static final HashMap<String, Monster> MONSTERS = new HashMap<>();
+
+    public static final HashMap<String, AudioClip> SOUNDS = new HashMap<>();
 
     public static final String EXPLOSION = "textures/boom.gif";
 
@@ -143,7 +147,7 @@ public class DataManager {
             return;
         }
         JSONObject obj = new JSONObject(file);
-        if (!loadProjectiles(obj) || !loadMonsters(obj) || !loadObstacles(obj) || !loadItems(obj)) {
+        if (!loadProjectiles(obj) || !loadMonsters(obj) || !loadObstacles(obj) || !loadItems(obj) || loadSounds(obj)) {
             //TODO: stop game
         }
     }
@@ -233,7 +237,6 @@ public class DataManager {
      * @param obj JSON object to load from
      * @return Returns true if successful, false otherwise
      */
-
     private static boolean loadItems(JSONObject obj) {
         JSONArray items = obj.getJSONArray("items");
         for (int i = 0; i < items.length(); i++) {
@@ -286,6 +289,31 @@ public class DataManager {
             }
         }
         startingWeapons = weapons;
+
+        return true;
+    }
+
+    /**
+     * Loads all sounds and their mp3s.
+     * @param obj JSON object to load from
+     * @return Returns true if successful, false otherwise
+     */
+    private static boolean loadSounds(JSONObject obj) {
+        JSONArray sounds = obj.getJSONArray("sounds");
+        for (int i = 0; i < sounds.length(); i++) {
+            // get JSONObjects out of JSONArray
+            JSONObject o = sounds.getJSONObject(i);
+            Audio audio = Audio.parse(o);
+            if (audio == null) {
+                return false;
+            }
+            // put key and clip into SOUNDS HashMap
+            if (SOUNDS.containsKey(audio.getId())) {
+                Console.error("Duplicate audio id " + audio.getId());
+                return false;
+            }
+            SOUNDS.put(audio.getId(), audio.getClip());
+        }
 
         return true;
     }

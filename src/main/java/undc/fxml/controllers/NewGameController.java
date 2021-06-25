@@ -15,6 +15,9 @@ public class NewGameController {
         Controller.setState(ConfigScreen.getInstance());
     }
 
+    /**
+     * Creates a new Sandbox mode.
+     */
     public void newSandbox() {
         GameScreen.resetInstance();
         GameScreen.getInstance().newGame(GameScreen.GameMode.SANDBOX);
