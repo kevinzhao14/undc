@@ -211,5 +211,71 @@
       "sprite": "items/key.png",
       "spawnable": false
     }
+  ],
+  "sounds": [
+    {
+    "id": "button",
+    "path": "src/main/resources/audio/click.mp3"
+    },
+    {
+      "id":"menu",
+      "path": "src/main/resources/audio/thanos_rap.mp3"
+    },
+    {
+      "id":"footsteps",
+      "path": "src/main/resources/audio/stone2.mp3"
+    },
+    {
+      "id":"attack",
+      "path": "src/main/resources/audio/hit2.mp3"
+    },
+    {
+      "id":"take_damage",
+      "path": "src/main/resources/audio/classic_hurt.mp3"
+    },
+    {
+      "id":"potion",
+      "path": "src/main/resources/audio/drink.mp3"
+    },
+    {
+      "id":"fuse",
+      "path": "src/main/resources/audio/fuse.mp3"
+    },
+    {
+      "id":"bomb_explosion",
+      "path": "src/main/resources/audio/explode1.mp3"
+    },
+    {
+      "id":"rocket_launch",
+      "path": "src/main/resources/audio/largeBlast1.mp3"
+    },
+    {
+      "id":"rocket_explosion",
+      "path": "src/main/resources/audio/explode2.mp3"
+    },
+    {
+      "id":"monster",
+      "path": "src/main/resources/audio/say1.mp3"
+    },
+    {
+      "id":"door",
+      "path": "src/main/resources/audio/trigger.mp3"
+    },
+    {
+      "id":"challenge_room",
+      "path": "src/main/resources/audio/05 Peach's Castle Stolen.mp3"
+    },
+    {
+      "id":"final_boss_music",
+      "path": "src/main/resources/audio/22 Final Battle with Bowser.mp3"
+    },
+    {
+      "id":"game_win",
+      "path": "src/main/resources/audio/smb_stage_clear.mp3"
+    },
+    {
+      "id":"game_over",
+      "path": "src/main/resources/audio/smb_gameover.mp3"
+    }
   ]
 }

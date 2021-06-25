@@ -1,10 +1,14 @@
 package undc.objects;
 
 import javafx.scene.image.Image;
+import undc.handlers.Audio;
 import undc.handlers.Vars;
 
 import java.util.ArrayList;
 
+/**
+ * Class that handles the main character of the game controlled by the person playing the game.
+ */
 public class Player extends Entity {
     private static Image[] sprites = new Image[]{
         new Image("player/player-left.png"),
@@ -27,6 +31,12 @@ public class Player extends Entity {
     private int direction;
     private ArrayList<Effect> effects;
 
+    /**
+     * Creates a Player object.
+     * @param maxHealth int maximum value for the player's health stat
+     * @param attack double value for player's attack stat
+     * @param weapon Weapon that the player stars with
+     */
     public Player(int maxHealth, double attack, Weapon weapon) {
         super(maxHealth, attack, Vars.i("sv_player_width"), Vars.i("sv_player_height"), null);
         this.gold = 0;
@@ -113,9 +123,16 @@ public class Player extends Entity {
         return effects;
     }
 
+    /**
+     * Sets the entities health to the passed in value unless it is in god mode.
+     * @param newHealth New health of the Entity
+     */
     public void setHealth(double newHealth) {
         if (newHealth < health && Vars.b("gm_god")) {
             return;
+        }
+        if (newHealth < health) {
+            Audio.playAudio("take_damage");
         }
         super.setHealth(newHealth);
     }

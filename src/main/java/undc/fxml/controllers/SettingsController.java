@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.gamestates.HomeScreen;
+import undc.handlers.Audio;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,6 +107,7 @@ public class SettingsController {
         if (audio == null) {
             load();
         }
+        Audio.playAudio("menu");
         show(audio, e.getSource());
     }
 

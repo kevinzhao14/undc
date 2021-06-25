@@ -9,9 +9,18 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * Class that handles the creation of the play screen.
+ */
 public class PlayScreen extends GameState {
     private static PlayScreen instance;
 
+    /**
+     * Constructor handling the creation of the play screen that is
+     * presented when the play wants to load a game or create a new one.
+     * @param width int width of the scene
+     * @param height int height of the scene
+     */
     private PlayScreen(int width, int height) {
         super(width, height);
         try {
@@ -24,6 +33,10 @@ public class PlayScreen extends GameState {
         }
     }
 
+    /**
+     * Retns the current instance of PlayScreen or makes a new one.
+     * @return PlayScreen
+     */
     public static PlayScreen getInstance() {
         if (instance == null) {
             resetInstance();

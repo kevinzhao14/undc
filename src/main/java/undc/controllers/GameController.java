@@ -4,10 +4,7 @@ import javafx.scene.Scene;
 import undc.gamestates.GameScreen;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
-import undc.handlers.Controls;
-import undc.handlers.LayoutGenerator;
-import undc.handlers.RoomRenderer;
-import undc.handlers.Vars;
+import undc.handlers.*;
 import undc.objects.Ammunition;
 import undc.objects.Bomb;
 import undc.objects.ChallengeRoom;
@@ -515,6 +512,8 @@ public class GameController {
             //check if position is valid. If it is, move.
             Coords movePos = checkPos(new Coords(newPosX, newPosY), player.getWidth(), player.getHeight());
             if (movePos.getX() != posX || movePos.getY() != posY) {
+                // give a cooldown to playing the audio
+                // Audio.playAudio("footsteps");
                 newPosX = movePos.getX();
                 newPosY = movePos.getY();
 
@@ -869,6 +868,7 @@ public class GameController {
                         double dist = distance(player, o);
 
                         //draw explosion
+                        Audio.playAudio("bomb_explosion");
                         ShotProjectile.addExplosion(room, o, (int) b.getRadius() * 2);
 
                         if (dist <= b.getRadius()) {
@@ -1312,6 +1312,7 @@ public class GameController {
                     //set attack cooldown
                     m.setAttackCooldown(m.getAttackSpeed() * 1000);
                     //attack player
+                    Audio.playAudio("monster");
                     double newHealth = player.getHealth() - m.getAttack();
                     player.setHealth(Math.max(0, newHealth));
 
@@ -1358,6 +1359,7 @@ public class GameController {
          * Shortcut for handling game-over.
          */
         private void gameOver() {
+            Audio.playAudio("game_over");
             Console.print("Game Over");
             GameScreen screen = getScreen();
             Platform.runLater(() -> {

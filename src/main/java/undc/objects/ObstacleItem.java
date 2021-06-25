@@ -2,6 +2,9 @@ package undc.objects;
 
 import javafx.scene.image.Image;
 
+/**
+ * CLass that handles items that can act as physical obstacles within the game (ex: a bomb).
+ */
 public class ObstacleItem extends Obstacle {
     private Item item;
 

@@ -40,6 +40,10 @@ public class Obstacle implements Movable {
 
     }
 
+    /**
+     * Makes a copy of the static obstacle.
+     * @return Obstacle that is the copy
+     */
     public Obstacle copy() {
         Obstacle o = new Obstacle();
         o.id = this.id;

@@ -8,6 +8,7 @@ import undc.controllers.DataManager;
 import undc.gamestates.GameScreen;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
+import undc.handlers.Audio;
 import undc.handlers.Vars;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class Monster extends Entity {
     }
 
     /**
-     * Updates health of monster after it recieves damage and gives player gold for killing it.
+     * Updates health of monster after it receives damage and gives player gold for killing it.
      * @param damageAmount double amount of damage taken.
      * @param giveGold boolean for whether or not to give gold after killing the monster.
      * @return boolean on whether or not gold was given to the player
@@ -69,6 +70,7 @@ public class Monster extends Entity {
         ((GameScreen) Controller.getState()).getPlayer().addDamageDealt(
                 Math.min(this.getHealth(), damageAmount));
         //change monster health
+        Audio.playAudio("attack");
         this.setHealth(Math.max(0, this.getHealth() - damageAmount));
 
         //Give gold to player after slaying a monster
@@ -178,7 +180,7 @@ public class Monster extends Entity {
     }
 
     /**
-     * Restores the player's health points to full and resets their position.
+     * Restores the monster's health points to full and resets their position.
      * @param posX int x-chord to reset player to
      * @param posY int y-chord to reset player to
      */

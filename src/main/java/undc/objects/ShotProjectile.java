@@ -5,6 +5,7 @@ import undc.controllers.DataManager;
 import undc.gamestates.GameScreen;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
+import undc.handlers.Audio;
 import undc.handlers.Vars;
 
 import java.util.Timer;
@@ -98,6 +99,7 @@ public class ShotProjectile implements Movable {
                 }
             }
             //draw explosion animation
+            Audio.playAudio("rocket_explosion");
             addExplosion(room, this, (int) (projectile.getSplashRange() * 2));
         }
 
