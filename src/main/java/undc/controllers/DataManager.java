@@ -223,11 +223,18 @@ public class DataManager {
             if (obs == null) {
                 return false;
             }
-            if (OBSTACLES.containsKey(obs.getId())) {
-                Console.error("Duplicate item id " + obs.getId());
+            try {
+                String id = o.getString("id");
+                if (OBSTACLES.containsKey(id)) {
+                    Console.error("Duplicate item id " + id);
+                    return false;
+                }
+                OBSTACLES.put(id, obs);
+            } catch (JSONException e) {
+                Console.error("Invalid value for obstacle id.");
                 return false;
             }
-            OBSTACLES.put(obs.getId(), obs);
+
         }
         return true;
     }

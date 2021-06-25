@@ -9,8 +9,6 @@ import undc.controllers.Console;
  * Represents an Obstacle object. Obstacles are physical, static objects in the game that entities can interact with.
  */
 public class Obstacle implements Movable {
-    private String id;
-    private String name;
     private double x;
     private double y;
     private int height;
@@ -36,8 +34,8 @@ public class Obstacle implements Movable {
         this.sprite = sprite;
     }
 
-    private Obstacle() {
-
+    protected Obstacle() {
+        this.type = ObstacleType.SOLID;
     }
 
     /**
@@ -46,8 +44,6 @@ public class Obstacle implements Movable {
      */
     public Obstacle copy() {
         Obstacle o = new Obstacle();
-        o.id = this.id;
-        o.name = this.name;
         o.x = 0;
         o.y = 0;
         o.height = this.height;
@@ -107,18 +103,6 @@ public class Obstacle implements Movable {
     public static Obstacle parse(JSONObject o) {
         Obstacle obs = new Obstacle();
         try {
-            obs.id = o.getString("id");
-        } catch (JSONException e) {
-            Console.error("Invalid value for obstacle id.");
-            return null;
-        }
-        try {
-            obs.name = o.getString("name");
-        } catch (JSONException e) {
-            Console.error("Invalid value for obstacle name.");
-            return null;
-        }
-        try {
             obs.type = ObstacleType.valueOf(o.getString("type").toUpperCase());
         } catch (JSONException e) {
             Console.error("Invalid value for obstacle type.");
@@ -151,15 +135,7 @@ public class Obstacle implements Movable {
         return obs;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public String toString() {
-        return "ID: " + id + " | Name: " + name + " | Type: " + type + " | Dim: " + width + ", " + height;
+        return "Type: " + type + " | Dim: " + width + ", " + height;
     }
 }

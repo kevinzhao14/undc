@@ -68,6 +68,7 @@ public class Vars {
         INT_VARS.add(new IntCVar("sv_friction", "friction", 0, 10000, 2000));
         INT_VARS.add(new IntCVar("sv_dropitem_distance", "dropDist", 0, 1000, 25));
         INT_VARS.add(new IntCVar("gc_explosion_maxwidth", "explosionWidth", 0, 1000, 75));
+        INT_VARS.add(new IntCVar("sv_interact_distance", "interactDist", 0, 1000, 30, true, false));
 
         // Double CVars
         DOUBLE_VARS.add(new DoubleCVar("gc_ppu", "ppu", 0, 100, 1.5, true, false));

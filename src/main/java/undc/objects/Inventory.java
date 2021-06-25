@@ -25,6 +25,7 @@ public class Inventory implements Iterable<InventoryItem> {
         this.columns = c;
         items = new InventoryItem[rows][columns];
         size = 0;
+        graphicalInventory = new GraphicalInventory(this);
     }
 
     public void add(Item item, int quantity) {
@@ -203,9 +204,6 @@ public class Inventory implements Iterable<InventoryItem> {
      * @return GraphicalInventory representing the player's inventory
      */
     public GraphicalInventory getGraphicalInventory() {
-        if (graphicalInventory == null) {
-            graphicalInventory = new GraphicalInventory(this);
-        }
         return graphicalInventory;
     }
 

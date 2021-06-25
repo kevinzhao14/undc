@@ -19,6 +19,8 @@ import undc.handlers.PopupNode;
  * Class that handles the graphics for the player's inventory.
  */
 public class GraphicalInventory extends Overlay {
+    private static GraphicalInventory active;
+
     private final Inventory inventory;
     private final HBox[] rows;
     private final VBox container;
@@ -81,8 +83,19 @@ public class GraphicalInventory extends Overlay {
         toggle();
     }
 
+    public static void hide() {
+        if (active != null) {
+            active.toggle();
+            active = null;
+        }
+    }
+
+    public static boolean isActive() {
+        return active != null;
+    }
+
     /**
-     * Looks through the player's inventory and updates the sprites in the graphical inventory.
+     * Looks through the inventory and updates the sprites in the graphical inventory.
      */
     public void update() {
         if (!(Controller.getState() instanceof GameScreen)) {
@@ -207,6 +220,8 @@ public class GraphicalInventory extends Overlay {
         super.toggle();
         if (!root.isVisible()) {
             itemInfo.setVisible(false);
+        } else {
+            active = this;
         }
     }
 

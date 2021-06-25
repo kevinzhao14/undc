@@ -5,6 +5,7 @@ import undc.gamestates.GameState;
 import undc.gamestates.HomeScreen;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import undc.handlers.Controls;
 import undc.handlers.Vars;
 
 /**
@@ -26,9 +27,10 @@ public class Controller extends Application {
         instance = this;
 
         //load things
-        this.dataManager = new DataManager();
         Vars.load();
+        this.dataManager = new DataManager();
         Console.create();
+        Controls.getInstance();
 
         this.stage = stage;
         state = HomeScreen.getInstance();

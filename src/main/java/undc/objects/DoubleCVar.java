@@ -6,7 +6,7 @@ import undc.controllers.Console;
  * Class representing CVars with double values.
  */
 public class DoubleCVar extends CVar {
-    //inclusive min and max
+    // inclusive min and max
     private double min;
     private double max;
     private double def;
@@ -45,7 +45,6 @@ public class DoubleCVar extends CVar {
         this(name, nick, min, max, def, rc);
         this.modifiable = modifiable;
     }
-
 
     public double getVal() {
         return value;

@@ -22,15 +22,15 @@ import java.util.Objects;
 public class Controls {
     public static Controls instance;
 
-    private File saveFile;
-    private HashMap<String, String> keyMap = new HashMap<>();
+    private final File SAVE_FILE;
+    private final HashMap<String, String> KEY_MAP = new HashMap<>();
 
     /**
      * Constructor for a Controls config object.
      * @param file File for the save file.
      */
     private Controls(File file) {
-        saveFile = file;
+        SAVE_FILE = file;
     }
 
     /**
@@ -41,8 +41,8 @@ public class Controls {
         if (instance == null) {
             instance = new Controls();
             //If save file exists, then load data from file
-            if (instance.saveFile.exists() && !instance.saveFile.isDirectory()) {
-                instance.loadConfig(instance.saveFile.getPath());
+            if (instance.SAVE_FILE.exists() && !instance.SAVE_FILE.isDirectory()) {
+                instance.loadConfig(instance.SAVE_FILE.getPath());
             } else { //file doesn't exist, create new file and save
                 instance.resetKeys();
                 instance.save();
@@ -85,38 +85,38 @@ public class Controls {
      * Resets controls. Also where all default controls/keymappings are stored.
      */
     public void resetKeys() {
-        keyMap.clear();
+        KEY_MAP.clear();
 
         //Movement Controls
-        keyMap.put("w", "up");
-        keyMap.put("s", "down");
-        keyMap.put("a", "left");
-        keyMap.put("d", "right");
-        keyMap.put("shift", "sprint");
+        KEY_MAP.put("w", "up");
+        KEY_MAP.put("s", "down");
+        KEY_MAP.put("a", "left");
+        KEY_MAP.put("d", "right");
+        KEY_MAP.put("shift", "sprint");
 
         //Interaction Controls
-        keyMap.put("e", "interact");
-        keyMap.put("space", "use");
-        keyMap.put("tab", "map");
-        keyMap.put("escape", "pause");
-        keyMap.put("i", "inventory");
-        keyMap.put("g", "drop");
-        keyMap.put("back_quote", "console");
+        KEY_MAP.put("e", "interact");
+        KEY_MAP.put("space", "use");
+        KEY_MAP.put("tab", "map");
+        KEY_MAP.put("escape", "pause");
+        KEY_MAP.put("i", "inventory");
+        KEY_MAP.put("g", "drop");
+        KEY_MAP.put("back_quote", "console");
 
         //Inventory Controls
-        keyMap.put("mousewheeldown", "nextinv");
-        keyMap.put("mousewheelup", "previnv");
-        keyMap.put("1", "slot1");
-        keyMap.put("2", "slot2");
-        keyMap.put("3", "slot3");
-        keyMap.put("4", "slot4");
-        keyMap.put("5", "slot5");
+        KEY_MAP.put("mousewheeldown", "nextinv");
+        KEY_MAP.put("mousewheelup", "previnv");
+        KEY_MAP.put("1", "slot1");
+        KEY_MAP.put("2", "slot2");
+        KEY_MAP.put("3", "slot3");
+        KEY_MAP.put("4", "slot4");
+        KEY_MAP.put("5", "slot5");
 
         //Weapon Controls
-        keyMap.put("mouse1", "attack");
-        keyMap.put("mouse2", "attack2");
-        keyMap.put("f", "rotateinv");
-        keyMap.put("r", "reload");
+        KEY_MAP.put("mouse1", "attack");
+        KEY_MAP.put("mouse2", "attack2");
+        KEY_MAP.put("f", "rotateinv");
+        KEY_MAP.put("r", "reload");
 
         save();
     }
@@ -127,13 +127,13 @@ public class Controls {
     public void save() {
         //if file doesn't exist, create it
         try {
-            if (!saveFile.exists()) {
+            if (!SAVE_FILE.exists()) {
                 //make directory(s) if they don't exist
-                if (!saveFile.getParentFile().mkdirs()) {
+                if (!SAVE_FILE.getParentFile().mkdirs()) {
                     Console.error("Failed to create config directory.");
                     return;
                 }
-                if (!saveFile.createNewFile()) {
+                if (!SAVE_FILE.createNewFile()) {
                     Console.error("Failed to create config file.");
                     return;
                 }
@@ -141,13 +141,13 @@ public class Controls {
 
             //generate a string with all the key binds
             StringBuilder saveString = new StringBuilder();
-            for (Map.Entry<String, String> e : keyMap.entrySet()) {
+            for (Map.Entry<String, String> e : KEY_MAP.entrySet()) {
                 saveString.append("bind ").append(e.getKey().toLowerCase())
                         .append(" ").append(e.getValue().toLowerCase()).append("\n");
             }
 
             //write to file
-            BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile.getPath()));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(SAVE_FILE.getPath()));
             writer.write(saveString.toString());
             writer.close();
         } catch (IOException e) {
@@ -166,7 +166,7 @@ public class Controls {
             return "";
         }
         //get the KeyCode associated with the control name. If null, then the bind doesn't exist.
-        String foundControl = keyMap.get(key.toLowerCase());
+        String foundControl = KEY_MAP.get(key.toLowerCase());
         //Console.error("Key is not bound.");
         return Objects.requireNonNullElse(foundControl, "");
     }
@@ -177,7 +177,7 @@ public class Controls {
      * @return String that is the key associated with control
      */
     public String getKey(String control) {
-        for (Map.Entry<String, String> e : keyMap.entrySet()) {
+        for (Map.Entry<String, String> e : KEY_MAP.entrySet()) {
             if (e.getValue().equalsIgnoreCase(control)) {
                 return e.getKey().toUpperCase();
             }
@@ -190,8 +190,8 @@ public class Controls {
      * Prints the key mapping.
      */
     public void printMapping() {
-        Console.print("Printing size " + keyMap.size());
-        keyMap.forEach((k, v) -> Console.print(k + ", " + v));
+        Console.print("Printing size " + KEY_MAP.size());
+        KEY_MAP.forEach((k, v) -> Console.print(k + ", " + v));
     }
 
     /**
@@ -210,7 +210,7 @@ public class Controls {
         }
 
         //if the control is already mapped, overwrite it
-        keyMap.put(key.toLowerCase(), control.toLowerCase());
+        KEY_MAP.put(key.toLowerCase(), control.toLowerCase());
 
         save();
     }
@@ -225,11 +225,11 @@ public class Controls {
             return;
         }
         key = key.toLowerCase();
-        if (keyMap.get(key) == null) {
+        if (KEY_MAP.get(key) == null) {
             Console.error("Key is not bound.");
             return;
         }
-        keyMap.remove(key);
+        KEY_MAP.remove(key);
         save();
     }
 
@@ -239,7 +239,7 @@ public class Controls {
      */
     public HashMap<String, String> getMapUnmodifiable() {
         HashMap<String, String> temp = new HashMap<>();
-        keyMap.forEach((k, v) -> {
+        KEY_MAP.forEach((k, v) -> {
             temp.put(k, v);
         });
         return temp;

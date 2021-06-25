@@ -20,12 +20,14 @@ import undc.controllers.DataManager;
 import undc.controllers.GameController;
 import undc.handlers.*;
 import undc.objects.ChallengeRoom;
+import undc.objects.Chest;
 import undc.objects.DungeonLayout;
 import undc.objects.GraphicalInventory;
 import undc.objects.Inventory;
 import undc.objects.InventoryItem;
 import undc.objects.Item;
 import undc.objects.Monster;
+import undc.objects.Overlay;
 import undc.objects.Player;
 import undc.objects.Room;
 import undc.objects.RoomType;
@@ -47,7 +49,7 @@ public class GameScreen extends GameState {
     private Room room;
     private Hud hud;
     private Canvas canvas;
-    private GraphicalInventory inventory;
+    private GraphicalInventory playerInv;
     private StackPane pause;
     private StackPane challenge;
     private boolean consoleOpen;
@@ -100,6 +102,17 @@ public class GameScreen extends GameState {
             Vars.CHEATS = true;
             Vars.find("gm_god").setVal("true", true);
             Vars.set("sv_infinite_ammo", "true");
+
+
+            // chest
+            Inventory inv = new Inventory(4, 4);
+            inv.add(DataManager.ITEMS.get("sword"));
+            inv.add(DataManager.ITEMS.get("small_health_potion"), 4);
+            inv.add(DataManager.ITEMS.get("attack_potion"), 2);
+            inv.add(DataManager.ITEMS.get("bomb"));
+
+            Chest chest = new Chest(400, 400, inv);
+            start.getObstacles().add(chest);
         } else if (mode == GameMode.STORY) {
             dungeonLayout = new LayoutGenerator().generateLayout();
         }
@@ -254,8 +267,8 @@ public class GameScreen extends GameState {
         return this.dungeonLayout;
     }
 
-    public boolean isInventoryVisible() {
-        return inventory.isVisible();
+    public boolean isInventoryOpen() {
+        return playerInv.isVisible();
     }
 
     /**
@@ -473,12 +486,33 @@ public class GameScreen extends GameState {
     }
 
     public void createInventory() {
-        inventory = player.getInventory().getGraphicalInventory();
-        hud.getHud().getChildren().add(inventory.getRoot());
+        playerInv = player.getInventory().getGraphicalInventory();
+        hud.getHud().getChildren().add(playerInv.getRoot());
     }
 
     public void toggleInventory() {
-        inventory.toggle();
+        playerInv.toggle();
+    }
+
+    public void addOverlay(Overlay overlay) {
+        // check if it already exists
+        for (Node n : hud.getHud().getChildren()) {
+            if (n.equals(overlay.getRoot())) {
+                return;
+            }
+        }
+
+        Platform.runLater(() -> hud.getHud().getChildren().add(overlay.getRoot()));
+    }
+
+    public void removeOverlay(Overlay overlay) {
+        for (int i = 0; i < hud.getHud().getChildren().size(); i++) {
+            Node n = hud.getHud().getChildren().get(i);
+            if (n.equals(overlay.getRoot())) {
+                hud.getHud().getChildren().remove(i);
+                return;
+            }
+        }
     }
 
     /**

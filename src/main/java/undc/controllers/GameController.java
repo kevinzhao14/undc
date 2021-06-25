@@ -17,6 +17,8 @@ import undc.objects.Effect;
 import undc.objects.EffectType;
 import undc.objects.Equation;
 import undc.objects.ExitDoor;
+import undc.objects.GraphicalInventory;
+import undc.objects.Interactable;
 import undc.objects.InventoryItem;
 import undc.objects.Item;
 import undc.objects.Monster;
@@ -34,6 +36,7 @@ import undc.objects.ShotProjectile;
 import undc.objects.Weapon;
 import undc.objects.WeaponAmmo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -159,6 +162,7 @@ public class GameController {
         states.put("inventory", false);
         states.put("usePress", false);
         states.put("drop", false);
+        states.put("interact", false);
         ticks = 0;
         totalTime = 0;
     }
@@ -295,15 +299,17 @@ public class GameController {
             return;
         }
 
-        //Global key binds, regardless of game play/pause state
+        // Global key binds, regardless of game play/pause state
         if (control.equals("pause")) {
             if (!states.get("pausePress") && isPress) {
                 pause();
                 GameScreen screen = getScreen();
-                //esc is used to leave inventory if it's currently open
-                //otherwise, use it to pause/unpause game
-                if (screen.isInventoryVisible()) {
+                // esc is used to leave inventory if it's currently open
+                // otherwise, use it to pause/unpause game
+                if (screen.isInventoryOpen()) {
                     screen.toggleInventory();
+                } else if (GraphicalInventory.isActive()) {
+                    GraphicalInventory.hide();
                 } else {
                     screen.togglePause();
                 }
@@ -311,9 +317,12 @@ public class GameController {
             states.put("pausePress", isPress);
         } else if (control.equals("inventory")) {
             if (!states.get("inventory") && isPress) {
-                if (isRunning || getScreen().isInventoryVisible()) {
+                if (isRunning || getScreen().isInventoryOpen()) {
                     pause();
                     getScreen().toggleInventory();
+                } else if (GraphicalInventory.isActive()) {
+                    pause();
+                    GraphicalInventory.hide();
                 }
             }
             states.put("inventory", isPress);
@@ -363,8 +372,12 @@ public class GameController {
                 }
                 break;
             case "slot1": case "slot2": case "slot3": case "slot4": case "slot5":
-                slotSelector(control);
+                if (isPress) {
+                    slotSelector(control);
+                }
                 break;
+            case "interact":
+                states.put("interact", isPress);
             default:
                 break;
         }
@@ -461,20 +474,19 @@ public class GameController {
             //move the player
             managePlayerMovement();
 
-            //check item pickup
-            manageItemPickup();
+            //update velocity
+            updatePlayerVelocity();
+
+            //check for player attacking
+            managePlayerAttack();
+
+            manageInteraction();
 
             //drop the items
             manageItemDropping();
 
-            //lower cooldowns
-            manageCooldowns();
-
-            //check for projectiles
-            manageProjectiles();
-
-            //check for player attacking
-            managePlayerAttack();
+            //check item pickup
+            manageItemPickup();
 
             //Manage Monsters
             manageMonsters();
@@ -484,14 +496,17 @@ public class GameController {
                 return;
             }
 
+            //lower cooldowns
+            manageCooldowns();
+
+            //check for projectiles
+            manageProjectiles();
+
             //manage player status effects
             managePlayerEffects();
 
             //draw the frame
             refresh();
-
-            //update velocity
-            updatePlayerVelocity();
 
             if (Vars.DEBUG) {
                 long endTime = System.nanoTime();
@@ -634,6 +649,22 @@ public class GameController {
             drop(currentItem.getItem());
         }
 
+        private void manageInteraction() {
+            if (states.get("interact")) {
+                // check what player is facing & close enough to
+                for (Obstacle o : room.getObstacles()) {
+                    // player is facing the obstacle & it is interactable & it is in range
+                    if (directionOf(player, o).contains(player.getDirection() % 4) // mod by 4 to include moving
+                            && o instanceof Interactable
+                            && distance(player, o) < Vars.i("sv_interact_distance")) {
+                        ((Interactable) o).interact();
+                        states.put("interact", false);
+                        return;
+                    }
+                }
+            }
+        }
+
         /**
          * Places an item removed from the player's inventory into the room.
          * @param item Item to remove and drop into room
@@ -641,8 +672,8 @@ public class GameController {
         private void drop(Item item) {
             int d = Vars.i("sv_dropitem_distance");
             //get player center
-            double x = player.getX() + player.getWidth() / 2;
-            double y = player.getY() + player.getHeight() / 2;
+            double x = player.getX() + player.getWidth() / 2.0;
+            double y = player.getY() + player.getHeight() / 2.0;
             Image itemSprite = item.getSprite();
             int dir = player.getDirection() % 4;
             x += dir == 0 ? -d : (dir == 2 ? d : 0);
@@ -1010,6 +1041,29 @@ public class GameController {
                 return false;
             }
             return true;
+        }
+
+        /**
+         * Checks which direction obj is in relation to the origin. Includes overlapping.
+         * @param origin Origin of the relationship
+         * @param obj Object to check
+         * @return Returns the direction obj is to origin
+         */
+        private ArrayList<Integer> directionOf(Movable origin, Movable obj) {
+            ArrayList<Integer> dirs = new ArrayList<>();
+            if (obj.getX() <= origin.getX()) {
+                dirs.add(0);
+            }
+            if (obj.getX() > origin.getX()) {
+                dirs.add(2);
+            }
+            if (obj.getY() <= origin.getY()) {
+                dirs.add(3);
+            }
+            if (obj.getY() > origin.getY()) {
+                dirs.add(1);
+            }
+            return dirs;
         }
 
         /**
