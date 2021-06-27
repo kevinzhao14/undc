@@ -207,6 +207,10 @@ public class Inventory implements Iterable<InventoryItem> {
         return graphicalInventory;
     }
 
+    public void setGraphicalInventory(GraphicalInventory graphicalInventory) {
+        this.graphicalInventory = graphicalInventory;
+    }
+
     /**
      * Inner class that handles iterating through the 2D array items.
      */

@@ -14,6 +14,8 @@ import undc.gamestates.GameScreen;
 import undc.handlers.DraggableNode;
 import undc.handlers.PopupNode;
 
+import java.util.Arrays;
+
 
 /**
  * Class that handles the graphics for the player's inventory.
@@ -21,7 +23,7 @@ import undc.handlers.PopupNode;
 public class GraphicalInventory extends Overlay {
     private static GraphicalInventory active;
 
-    private final Inventory inventory;
+    private final Inventory[] inventories;
     private final HBox[] rows;
     private final VBox container;
 
@@ -31,10 +33,10 @@ public class GraphicalInventory extends Overlay {
 
     /**
      * Constructor that creates javafx graphics for the GraphicalInventory.
-     * @param inventory Player's inventory that is used to update the graphics with the proper items
+     * @param inventories Player's inventory that is used to update the graphics with the proper items
      */
-    public GraphicalInventory(Inventory inventory) {
-        this.inventory = inventory;
+    public GraphicalInventory(Inventory... inventories) {
+        this.inventories = inventories;
 
         HBox parent = new HBox();
         parent.setId("parent");
@@ -46,18 +48,30 @@ public class GraphicalInventory extends Overlay {
         title.setId("title");
         container.getChildren().add(title);
 
-        rows = new HBox[inventory.getRows()];
+        int rownum = 0;
+        for (Inventory i : inventories) {
+            rownum += i.getRows();
+        }
 
-        for (int i = 0; i < inventory.getRows(); i++) {
-            HBox row = new HBox();
-            row.getStyleClass().add("row");
-            for (int j = 0; j < inventory.getCols(); j++) {
-                // VBoxes act as the columns
-                VBox temp = new VBox();
-                row.getChildren().add(temp);
+        rows = new HBox[rownum];
+
+        int offset = 0;
+        for (Inventory inv : inventories) {
+            for (int i = 0; i < inv.getRows(); i++) {
+                HBox row = new HBox();
+                row.getStyleClass().add("row");
+                for (int j = 0; j < inv.getCols(); j++) {
+                    // VBoxes act as the columns
+                    VBox temp = new VBox();
+                    row.getChildren().add(temp);
+                }
+                rows[i + offset] = row;
+                container.getChildren().add(row);
             }
-            rows[i] = row;
-            container.getChildren().add(row);
+            HBox spacer = new HBox();
+            spacer.getStyleClass().add("inv-spacer");
+            container.getChildren().add(spacer);
+            offset += inv.getRows();
         }
 
         parent.getChildren().addAll(container);
@@ -102,113 +116,144 @@ public class GraphicalInventory extends Overlay {
             Console.error("Invalid game state.");
             return;
         }
-        // access inventory item and put its sprite in the graphical inventory
-        for (int i = 0; i < inventory.getRows(); i++) {
-            InventoryItem[] row = inventory.getItems()[i];
-            HBox box = rows[i];
-            if (box.getChildren().size() != row.length) {
-                Console.error("Invalid inventory.");
-                return;
-            }
-            for (int j = 0; j < row.length; j++) {
-                InventoryItem item = row[j];
-                Node node = box.getChildren().get(j);
-                if (!(node instanceof VBox)) {
-                    Console.error("Invalid inventory row.");
+        int offset = 0;
+        for (Inventory inv : inventories) {
+            // access inventory item and put its sprite in the graphical inventory
+            for (int i = 0; i < inv.getRows(); i++) {
+                InventoryItem[] row = inv.getItems()[i];
+                HBox box = rows[i + offset];
+                if (box.getChildren().size() != row.length) {
+                    Console.error("Invalid inventory.");
                     return;
                 }
-                VBox square = (VBox) node;
-                if (item == null) {
-                    square.getChildren().clear();
-                    continue;
-                }
-                ImageView image = new ImageView(item.getItem().getSprite());
-                image.setPickOnBounds(true);
-                image.setSmooth(false);
-                image.setFitWidth(60);
-                image.setFitHeight(60);
+                for (int j = 0; j < row.length; j++) {
+                    InventoryItem item = row[j];
+                    Node node = box.getChildren().get(j);
+                    if (!(node instanceof VBox)) {
+                        Console.error("Invalid inventory row.");
+                        return;
+                    }
+                    VBox square = (VBox) node;
+                    if (item == null) {
+                        square.getChildren().clear();
+                        continue;
+                    }
+                    ImageView image = new ImageView(item.getItem().getSprite());
+                    image.setPickOnBounds(true);
+                    image.setSmooth(false);
+                    image.setFitWidth(60);
+                    image.setFitHeight(60);
 
-                // making inventory draggable
-                DraggableNode.remove(square);
-                DraggableNode.DraggableObject obj = DraggableNode.add(square, image);
+                    // making inventory draggable
+                    DraggableNode.remove(square);
+                    DraggableNode.DraggableObject obj = DraggableNode.add(square, image);
 
-                obj.addListener((m, e) -> {
-                    if (e == DraggableNode.Event.DragStart) {
-                        Bounds bounds = image.localToScene(image.getBoundsInLocal());
-                        double x = bounds.getMinX();
-                        double y = bounds.getMinY();
-                        Pane pane = new Pane();
-                        pane.getChildren().add(image);
-                        image.setX(x);
-                        image.setY(y);
-                        root.getChildren().add(pane);
-                    } else if (e == DraggableNode.Event.DragEnd) {
-                        for (int i1 = 0; i1 < rows.length; i1++) {
-                            HBox hbox = rows[i1];
-                            for (int j1 = 0; j1 < hbox.getChildren().size(); j1++) {
-                                Node node1 = hbox.getChildren().get(j1);
-                                VBox vbox = (VBox) node1;
-                                Bounds ib = vbox.sceneToLocal(image.localToScene(image.getBoundsInLocal()));
-                                double x = ib.getMinX() + image.getFitWidth() / 2;
-                                double y = ib.getMinY() + image.getFitHeight() / 2;
-                                if (vbox.contains(x, y) && vbox.getChildren().size() == 0) {
-                                    // move graphically
-                                    vbox.getChildren().add(image);
-                                    image.setTranslateX(0);
-                                    image.setTranslateY(0);
-                                    root.getChildren().remove(root.getChildren().size() - 1);
+                    // drop event handler
+                    obj.addListener((m, e) -> {
+                        // on the start of the drag, move the sprite of the item into a pane so that it is not behind
+                        // any of the inventory cells.
+                        if (e == DraggableNode.Event.DragStart) {
+                            Bounds bounds = image.localToScene(image.getBoundsInLocal());
+                            double x = bounds.getMinX();
+                            double y = bounds.getMinY();
+                            Pane pane = new Pane();
+                            pane.getChildren().add(image);
+                            image.setX(x);
+                            image.setY(y);
+                            root.getChildren().add(pane);
 
-                                    inventory.remove(item);
-                                    inventory.add(item, i1, j1);
+                            // at the end of the drag, ie the drop, check where the item was dropped. If its center is
+                            // within the bounds of a cell, move it to that cell as long as its empty. If its center is
+                            // outside of the entire inventory GUI, drop it in-game. Otherwise, put it back to where it
+                            // started.
+                        } else if (e == DraggableNode.Event.DragEnd) {
+                            // loop through all of the cells to see where it is over.
+                            for (int i1 = 0; i1 < rows.length; i1++) {
+                                HBox hbox = rows[i1];
+                                for (int j1 = 0; j1 < hbox.getChildren().size(); j1++) {
+                                    Node node1 = hbox.getChildren().get(j1);
+                                    VBox vbox = (VBox) node1;
+                                    Bounds ib = vbox.sceneToLocal(image.localToScene(image.getBoundsInLocal()));
+                                    double x = ib.getMinX() + image.getFitWidth() / 2;
+                                    double y = ib.getMinY() + image.getFitHeight() / 2;
 
-                                    update();
+                                    // if the cell VBox contains the mouse's coordinates & the cell is empty, then move
+                                    // the item to that cell.
+                                    if (vbox.contains(x, y) && vbox.getChildren().size() == 0) {
+                                        // move graphically
+                                        vbox.getChildren().add(image);
+                                        image.setTranslateX(0);
+                                        image.setTranslateY(0);
+                                        root.getChildren().remove(root.getChildren().size() - 1);
 
-                                    populateInfoBox(item);
-                                    itemInfo.setVisible(true);
-                                    itemInfo.setTranslateX(m.getSceneX() + 25);
-                                    itemInfo.setTranslateY(m.getSceneY() + 25);
+                                        inv.remove(item);
 
-                                    GameScreen.getInstance().updateHud();
-                                    return;
+                                        // move in the Inventory. make sure to find which inventory the item goes to.
+                                        int rowcount = i1;
+                                        for (Inventory inv1 : inventories) {
+                                            rowcount -= inv1.getRows();
+                                            if (rowcount < 0) {
+                                                System.out.println("it " + i1 + " " + rowcount + " " + inv1.getRows());
+                                                inv1.add(item, rowcount + inv1.getRows(), j1);
+                                                break;
+                                            }
+                                        }
+
+                                        // update the gui and relationships.
+                                        update();
+
+                                        // show the item info popup
+                                        populateInfoBox(item);
+                                        itemInfo.setVisible(true);
+                                        itemInfo.setTranslateX(m.getSceneX() + 25);
+                                        itemInfo.setTranslateY(m.getSceneY() + 25);
+
+                                        // update hotbar
+                                        GameScreen.getInstance().updateHud();
+                                        return;
+                                    }
                                 }
                             }
-                        }
-                        // not put in a spot, check if it's outside of the container to drop
-                        Bounds ib = container.sceneToLocal(image.localToScene(image.getBoundsInLocal()));
-                        double x = ib.getMinX() + image.getFitWidth() / 2;
-                        double y = ib.getMinY() + image.getFitHeight() / 2;
-                        if (!container.contains(x, y) && !item.isInfinite()) {
-                            if (!inventory.remove(item)) {
-                                Console.error("Failed to remove item to drop.");
-                                return;
+                            // not put in a spot, check if it's outside of the container to drop
+                            Bounds ib = container.sceneToLocal(image.localToScene(image.getBoundsInLocal()));
+                            double x = ib.getMinX() + image.getFitWidth() / 2;
+                            double y = ib.getMinY() + image.getFitHeight() / 2;
+                            if (!container.contains(x, y) && !item.isInfinite()) {
+                                System.out.println("drop item");
+                                if (!inv.remove(item)) {
+                                    Console.error("Failed to remove item to drop.");
+                                    return;
+                                }
+                                GameController.getInstance().drop(item.getItem());
+                                GameScreen.getInstance().updateHud();
+                                root.getChildren().remove(root.getChildren().size() - 1);
+                            } else {
+                                System.out.println("put back");
+                                // put it back to original spot
+                                square.getChildren().add(image);
+                                image.setTranslateX(0);
+                                image.setTranslateY(0);
+                                root.getChildren().remove(root.getChildren().size() - 1);
                             }
-                            GameController.getInstance().drop(item.getItem());
-                            GameScreen.getInstance().updateHud();
-                            root.getChildren().remove(root.getChildren().size() - 1);
-                        } else {
-                            // put it back to original spot
-                            square.getChildren().add(image);
-                            image.setTranslateX(0);
-                            image.setTranslateY(0);
-                            root.getChildren().remove(root.getChildren().size() - 1);
+                            update();
                         }
-                        update();
-                    }
-                });
+                    });
 
-                PopupNode.remove(square);
-                PopupNode.PopupObject popup = PopupNode.add(25, 25, square, itemInfo);
-                popup.addListener((n, e) -> {
-                    if (e == PopupNode.Event.SHOW) {
-                        populateInfoBox(item);
-                    }
-                });
+                    PopupNode.remove(square);
+                    PopupNode.PopupObject popup = PopupNode.add(25, 25, square, itemInfo);
+                    popup.addListener((n, e) -> {
+                        if (e == PopupNode.Event.SHOW) {
+                            populateInfoBox(item);
+                        }
+                    });
 
-                if (square.getChildren().size() == 0 || !square.getChildren().get(0).equals(image)) {
-                    square.getChildren().clear();
-                    square.getChildren().add(image);
+                    if (square.getChildren().size() == 0 || !square.getChildren().get(0).equals(image)) {
+                        square.getChildren().clear();
+                        square.getChildren().add(image);
+                    }
                 }
             }
+            offset += inv.getRows();
         }
     }
 

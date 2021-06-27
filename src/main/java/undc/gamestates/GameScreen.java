@@ -84,6 +84,16 @@ public class GameScreen extends GameState {
      * @param mode GameMode the player selected
      */
     public void newGame(GameMode mode) {
+        scene = new Scene(new Pane(), this.width, this.height);
+        canvas = new Canvas();
+        consoleOpen = false;
+        this.mode = mode;
+
+        createPlayer();
+        createHud();
+        createPauseMenu();
+        scene.getStylesheets().add("styles/global.css");
+
         if (mode == GameMode.SANDBOX) {
             Controller.getDataManager().newGame("example", Difficulty.EASY, DataManager.getStartingWeapons()[0]);
 
@@ -111,15 +121,13 @@ public class GameScreen extends GameState {
             inv.add(DataManager.ITEMS.get("attack_potion"), 2);
             inv.add(DataManager.ITEMS.get("bomb"));
 
+            inv.setGraphicalInventory(new GraphicalInventory(inv, player.getInventory()));
+
             Chest chest = new Chest(400, 400, inv);
             start.getObstacles().add(chest);
         } else if (mode == GameMode.STORY) {
             dungeonLayout = new LayoutGenerator().generateLayout();
         }
-        scene = new Scene(new Pane(), this.width, this.height);
-        canvas = new Canvas();
-        consoleOpen = false;
-        this.mode = mode;
     }
 
     /**
@@ -131,11 +139,7 @@ public class GameScreen extends GameState {
             return;
         }
         GameController.resetInstance();
-        createPlayer();
         getGame().start(dungeonLayout.getStartingRoom(), player);
-        scene.getStylesheets().add("styles/global.css");
-        createHud();
-        createPauseMenu();
     }
 
     /**

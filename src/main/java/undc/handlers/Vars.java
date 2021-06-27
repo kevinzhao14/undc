@@ -60,7 +60,7 @@ public class Vars {
         INT_VARS.add(new IntCVar("gc_canvas_padding", "canvasPadding", 0, 1000, 150, true, false));
         INT_VARS.add(new IntCVar("sv_player_width", "playerWidth", 0, 100, 16, true, false));
         INT_VARS.add(new IntCVar("sv_player_height", "playerHeight", 0, 100, 16, true, false));
-        INT_VARS.add(new IntCVar("sv_player_pickup_range", "playerPickup", 0, 1000, 10));
+        INT_VARS.add(new IntCVar("sv_player_pickup_range", "playerPickup", 0, 1000, 25));
         INT_VARS.add(new IntCVar("sv_precision", "precision", 0, 1000000, 10000, true, false));
         INT_VARS.add(new IntCVar("sv_obstacle_gendist", "obsDist", 0, 1000, 64));
         INT_VARS.add(new IntCVar("sv_acceleration", "accel", 0, 10000, 1000));

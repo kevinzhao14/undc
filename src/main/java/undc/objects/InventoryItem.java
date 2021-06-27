@@ -36,4 +36,8 @@ public class InventoryItem {
     public void setInfinite(boolean infinite) {
         this.infinite = infinite;
     }
+
+    public String toString() {
+        return "Item: " + item + " | Q: " + quantity;
+    }
 }

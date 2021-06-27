@@ -63,8 +63,7 @@ public abstract class Item {
     }
 
     public String toString() {
-        return "ID: " + id + " | Name: " + name + " | D: " + (droppable ? "droppable" : "not droppable")
-                + " | Stack: " + maxStackSize;
+        return "ID: " + id + " | Name: " + name;
     }
 
     public String getId() {
