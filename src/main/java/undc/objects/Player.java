@@ -1,6 +1,8 @@
 package undc.objects;
 
+import javafx.application.Platform;
 import javafx.scene.image.Image;
+import undc.gamestates.GameScreen;
 import undc.handlers.Audio;
 import undc.handlers.Vars;
 
@@ -10,7 +12,7 @@ import java.util.ArrayList;
  * Class that handles the main character of the game controlled by the person playing the game.
  */
 public class Player extends Entity {
-    private static Image[] sprites = new Image[]{
+    private static final Image[] SPRITES = new Image[]{
         new Image("player/player-left.png"),
         new Image("player/player-up.png"),
         new Image("player/player-right.png"),
@@ -25,11 +27,13 @@ public class Player extends Entity {
     private int monstersKilled;
     private double totalDamageDealt;
     private int totalItemsConsumed;
+    private final ArrayList<Effect> effects;
 
     private Inventory inventory;
     private int selected;
     private int direction;
-    private ArrayList<Effect> effects;
+    private int level;
+    private int xp;
 
     /**
      * Creates a Player object.
@@ -83,7 +87,7 @@ public class Player extends Entity {
     }
 
     public void setDirection(int dir) {
-        this.setSprite(sprites[dir]);
+        this.setSprite(SPRITES[dir]);
         direction = dir;
     }
 
@@ -135,5 +139,35 @@ public class Player extends Entity {
             Audio.playAudio("take_damage");
         }
         super.setHealth(newHealth);
+    }
+
+    /**
+     * Adds XP to the player.
+     * @param amt The amount of xp to add
+     */
+    public void addXp(int amt) {
+        xp += amt;
+        while (xp >= xpNeeded(level)) {
+            xp -= xpNeeded(level);
+            level++;
+        }
+        Platform.runLater(() -> GameScreen.getInstance().updateHud());
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getXp() {
+        return xp;
+    }
+
+    /**
+     * Calculates how much xp is needed to level up from a specific level.
+     * @param level Level to check
+     * @return Returns the amount of xp needed to level up to level + 1
+     */
+    public static int xpNeeded(int level) {
+        return (int) Math.pow(level, 1.8) + 100;
     }
 }

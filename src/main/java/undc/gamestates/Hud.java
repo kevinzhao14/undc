@@ -28,6 +28,8 @@ import undc.objects.WeaponAmmo;
 public class Hud {
     private static final int HEALTHBAR_HEIGHT = 30;
     private static final int HEALTHBAR_WIDTH = 200;
+    private static final int XPBAR_HEIGHT = 20;
+    private static final int XPBAR_WIDTH = 200;
 
     private static Hud instance;
 
@@ -35,6 +37,8 @@ public class Hud {
     private final Label playerGold;
     private final Rectangle healthBarInner;
     private final Label healthBarText;
+    private final Rectangle xpBarInner;
+    private final Label xpBarText;
     private final HBox hotbar;
     private final Label ammoCounter;
     private final VBox effectsBox;
@@ -89,16 +93,26 @@ public class Hud {
         playerGoldBox.getChildren().add(playerGold);
 
         // player healthbar
-        StackPane playerHealthBarPane = new StackPane();
-        playerHealthBarPane.setId("healthbar");
+        StackPane healthBarPane = new StackPane();
+        healthBarPane.setId("healthbar");
         Rectangle healthBarOuter = new Rectangle(HEALTHBAR_WIDTH, HEALTHBAR_HEIGHT);
         healthBarOuter.setId("healthbar-outer");
         healthBarInner = new Rectangle(HEALTHBAR_WIDTH, HEALTHBAR_HEIGHT);
         healthBarInner.setId("healthbar-inner");
-        healthBarText = new Label("100");
-        playerHealthBarPane.getChildren().addAll(healthBarOuter, healthBarInner, healthBarText);
+        healthBarText = new Label("100 HP");
+        healthBarPane.getChildren().addAll(healthBarOuter, healthBarInner, healthBarText);
 
-        playerStats.getChildren().addAll(playerGoldBox, playerHealthBarPane);
+        // player xp bar
+        StackPane xpBarPane = new StackPane();
+        xpBarPane.setId("xpbar");
+        Rectangle xpBarOuter = new Rectangle(XPBAR_WIDTH, XPBAR_HEIGHT);
+        xpBarOuter.setId("xpbar-outer");
+        xpBarInner = new Rectangle(XPBAR_WIDTH / 2.0, XPBAR_HEIGHT);
+        xpBarInner.setId("xpbar-inner");
+        xpBarText = new Label("Level 0");
+        xpBarPane.getChildren().addAll(xpBarOuter, xpBarInner, xpBarText);
+
+        playerStats.getChildren().addAll(playerGoldBox, healthBarPane, xpBarPane);
         playerInfo.getChildren().addAll(playerImageBox, playerStats);
         GridPane.setConstraints(playerInfo, 0, 1);
 
@@ -144,7 +158,11 @@ public class Hud {
 
         // update health
         healthBarInner.setWidth(HEALTHBAR_WIDTH * (player.getHealth() / player.getMaxHealth()));
-        healthBarText.setText("" + (int) Math.ceil(player.getHealth()));
+        healthBarText.setText((int) Math.ceil(player.getHealth()) + " HP");
+
+        // update xp
+        xpBarInner.setWidth(XPBAR_WIDTH * ((double) player.getXp() / Player.xpNeeded(player.getLevel())));
+        xpBarText.setText("Level " + player.getLevel());
 
         // update hotbar
         InventoryItem[] inv = player.getInventory().getItems()[0];

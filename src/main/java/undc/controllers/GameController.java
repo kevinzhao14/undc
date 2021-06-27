@@ -790,7 +790,7 @@ public class GameController {
                     if (m != null) {
                         double dist = distance(player, m);
                         if (dist <= Vars.i("sv_player_attack_range")) {
-                            m.attackMonster(modifier * damage, true);
+                            m.attackMonster(modifier * damage);
                             break;
                         }
                     }
@@ -924,7 +924,7 @@ public class GameController {
                         for (Monster m : room.getMonsters()) {
                             dist = distance(m, o);
                             if (dist <= b.getRadius()) {
-                                m.attackMonster(b.getDamage(), true);
+                                m.attackMonster(b.getDamage());
                             }
                         }
 
