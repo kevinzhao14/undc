@@ -135,9 +135,7 @@ public class Inventory implements Iterable<InventoryItem> {
      */
     public void rotate() {
         InventoryItem[] firstrow = items[0];
-        for (int i = 0; i < items.length - 1; i++) {
-            items[i] = items[i + 1];
-        }
+        System.arraycopy(items, 1, items, 0, items.length - 1);
         items[items.length - 1] = firstrow;
     }
 

@@ -3,8 +3,8 @@ package undc.objects;
 public class Dummy implements Movable {
     private double x;
     private double y;
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
 
     public Dummy(double x, double y, int w, int h) {
         this.x = x;

@@ -4,7 +4,11 @@ import javafx.scene.Scene;
 import undc.gamestates.GameScreen;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
-import undc.handlers.*;
+import undc.handlers.Audio;
+import undc.handlers.Controls;
+import undc.handlers.LayoutGenerator;
+import undc.handlers.RoomRenderer;
+import undc.handlers.Vars;
 import undc.objects.Ammunition;
 import undc.objects.Bomb;
 import undc.objects.ChallengeRoom;
@@ -216,8 +220,8 @@ public class GameController {
             return;
         }
         for (int i = 0; i < quantity; i++) {
-            double x = player.getX() + player.getWidth() / 2;
-            double y = player.getY() + player.getHeight() / 2;
+            double x = player.getX() + player.getWidth() / 2.0;
+            double y = player.getY() + player.getHeight() / 2.0;
             Image sprite = item.getSprite();
             x -= sprite.getWidth() / 2;
             y -= sprite.getHeight() / 2;
@@ -378,6 +382,7 @@ public class GameController {
                 break;
             case "interact":
                 states.put("interact", isPress);
+                break;
             default:
                 break;
         }
@@ -649,6 +654,9 @@ public class GameController {
             drop(currentItem.getItem());
         }
 
+        /**
+         * Manages the player interacting with things.
+         */
         private void manageInteraction() {
             if (states.get("interact")) {
                 // check what player is facing & close enough to
@@ -819,7 +827,7 @@ public class GameController {
 
                 //create projectile
                 int dir = player.getDirection() % 4;
-                double x = player.getX() + player.getWidth() / 2;
+                double x = player.getX() + player.getWidth() / 2.0;
                 double y = player.getY() + player.getHeight();
                 Image sprite = weaponAmmo.getProjectile().getSpriteLeft();
                 if (dir == 1) {
@@ -840,8 +848,8 @@ public class GameController {
                 } else {
                     y -= 5;
                 }
-                x -= width / 2;
-                y -= height / 2;
+                x -= width / 2.0;
+                y -= height / 2.0;
 
                 //reset x and y coordinates
                 Coords check = checkPos(new Coords(x, y), width, height);
@@ -1153,17 +1161,17 @@ public class GameController {
                 double newStartX;
                 double newStartY;
                 if (newRoom.getType() == RoomType.EXITROOM) {
-                    newStartX = (newRoom.getWidth() + player.getWidth()) / 2;
+                    newStartX = (newRoom.getWidth() + player.getWidth()) / 2.0;
                     newStartY = 20;
                 } else if (d.equals(room.getTopDoor())) {
                     newDoor = newRoom.getBottomDoor();
                     newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
-                            - player.getWidth() / 2;
+                            - player.getWidth() / 2.0;
                     newStartY = newDoor.getY() + LayoutGenerator.DOORBOTTOM_HEIGHT + 10;
                 } else if (d.equals(room.getBottomDoor())) {
                     newDoor = newRoom.getTopDoor();
                     newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
-                            - player.getWidth() / 2;
+                            - player.getWidth() / 2.0;
                     newStartY = newDoor.getY() - player.getHeight() - 1;
                 } else if (d.equals(room.getRightDoor())) {
                     newDoor = newRoom.getLeftDoor();
@@ -1286,8 +1294,8 @@ public class GameController {
          * @return Returns the distance between the two objects
          */
         private double distance(Movable a, Movable b) {
-            double distX = (a.getX() + a.getWidth() / 2) - (b.getX() + b.getWidth() / 2);
-            double distY = (a.getY() + a.getHeight() / 2) - (b.getY() + b.getHeight() / 2);
+            double distX = (a.getX() + a.getWidth() / 2.0) - (b.getX() + b.getWidth() / 2.0);
+            double distY = (a.getY() + a.getHeight() / 2.0) - (b.getY() + b.getHeight() / 2.0);
             return round(Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2)));
         }
 
@@ -1298,8 +1306,8 @@ public class GameController {
          * @return Angle of the distance between the two objects
          */
         private double angle(Movable a, Movable b) {
-            double distX = (a.getX() + a.getWidth() / 2) - (b.getX() + b.getWidth() / 2);
-            double distY = (a.getY() + a.getHeight() / 2) - (b.getY() + b.getHeight() / 2);
+            double distX = (a.getX() + a.getWidth() / 2.0) - (b.getX() + b.getWidth() / 2.0);
+            double distY = (a.getY() + a.getHeight() / 2.0) - (b.getY() + b.getHeight() / 2.0);
             return Math.atan2(distY, distX);
         }
 

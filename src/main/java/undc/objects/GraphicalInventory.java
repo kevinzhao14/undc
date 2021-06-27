@@ -101,6 +101,9 @@ public class GraphicalInventory extends Overlay {
         this("Inventory", inventories);
     }
 
+    /**
+     * Hides the GraphicalInventory.
+     */
     public static void hide() {
         if (active != null) {
             active.toggle();
@@ -228,14 +231,13 @@ public class GraphicalInventory extends Overlay {
                                 }
                                 GameController.getInstance().drop(item.getItem());
                                 GameScreen.getInstance().updateHud();
-                                root.getChildren().remove(root.getChildren().size() - 1);
                             } else {
                                 // put it back to original spot
                                 square.getChildren().add(image);
                                 image.setTranslateX(0);
                                 image.setTranslateY(0);
-                                root.getChildren().remove(root.getChildren().size() - 1);
                             }
+                            root.getChildren().remove(root.getChildren().size() - 1);
                             update();
                         }
                     });

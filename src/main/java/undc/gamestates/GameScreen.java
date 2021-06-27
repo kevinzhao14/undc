@@ -18,7 +18,12 @@ import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.controllers.DataManager;
 import undc.controllers.GameController;
-import undc.handlers.*;
+import undc.handlers.Audio;
+import undc.handlers.Difficulty;
+import undc.handlers.LayoutGenerator;
+import undc.handlers.RoomRenderer;
+import undc.handlers.Vars;
+import undc.objects.CVar;
 import undc.objects.ChallengeRoom;
 import undc.objects.Chest;
 import undc.objects.DungeonLayout;
@@ -110,7 +115,12 @@ public class GameScreen extends GameState {
 
             // cvars
             Vars.CHEATS = true;
-            Vars.find("gm_god").setVal("true", true);
+            CVar god = Vars.find("gm_god");
+            if (god == null) {
+                Console.error("God is null.");
+                return;
+            }
+            god.setVal("true", true);
             Vars.set("sv_infinite_ammo", "true");
 
 
@@ -146,9 +156,8 @@ public class GameScreen extends GameState {
     /**
      * Handles transition to a new room and updates the previous room's visited value.
      * @param newRoom Room that the player entered
-     * @return boolean for whether or not the room is the dungeon's exit room
      */
-    public boolean setRoom(Room newRoom) {
+    public void setRoom(Room newRoom) {
         if (newRoom.equals(dungeonLayout.getExitRoom())) {
             Audio.playAudio("final_boss_music");
         } else {
@@ -170,8 +179,6 @@ public class GameScreen extends GameState {
         } else {
             createRoom();
         }
-        //returns true to stop the game if player has exited
-        return newRoom.equals(dungeonLayout.getExitRoom());
     }
 
     /**
@@ -387,16 +394,11 @@ public class GameScreen extends GameState {
         newGameButton.setMinWidth(600);
         newGameButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
 
-        newGameButton.setOnAction((e) -> {
-            Controller.setState(HomeScreen.getInstance());
-        });
+        newGameButton.setOnAction((e) -> Controller.setState(HomeScreen.getInstance()));
 
-        restartButton.setOnAction((e) -> {
-            restartGame();
-        });
-        endButton.setOnAction((e) -> {
-            Platform.exit();
-        });
+        restartButton.setOnAction((e) -> restartGame());
+
+        endButton.setOnAction((e) -> Controller.quit());
 
         //box.getChildren().addAll(deathLabel, restartButton, endButton);
         box.getChildren().addAll(deathLabel, monstersKilled, totalDamageDealt,
@@ -498,6 +500,10 @@ public class GameScreen extends GameState {
         playerInv.toggle();
     }
 
+    /**
+     * Adds an overlay object to the GameScreen to be toggled later.
+     * @param overlay Overlay to add
+     */
     public void addOverlay(Overlay overlay) {
         // check if it already exists
         for (Node n : hud.getHud().getChildren()) {
@@ -509,6 +515,10 @@ public class GameScreen extends GameState {
         Platform.runLater(() -> hud.getHud().getChildren().add(overlay.getRoot()));
     }
 
+    /**
+     * Removes an overlay from the GameScreen.
+     * @param overlay Overlay to add
+     */
     public void removeOverlay(Overlay overlay) {
         for (int i = 0; i < hud.getHud().getChildren().size(); i++) {
             Node n = hud.getHud().getChildren().get(i);
@@ -612,6 +622,6 @@ public class GameScreen extends GameState {
      * Enumerations for the different type of game modes.
      */
     public enum GameMode {
-        SANDBOX, STORY;
+        SANDBOX, STORY
     }
 }
