@@ -11,6 +11,9 @@ import undc.handlers.Audio;
  */
 public class NewGameController {
 
+    /**
+     * Starts a new story mode game.
+     */
     public void newStory() {
         Audio.playAudio("button");
         ConfigScreen.resetInstance();
@@ -28,6 +31,9 @@ public class NewGameController {
         GameScreen.getInstance().start();
     }
 
+    /**
+     * Returns the player to the play screen.
+     */
     public void cancel() {
         Audio.playAudio("button");
         PlayScreen.resetInstance();

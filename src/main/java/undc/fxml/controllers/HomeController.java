@@ -10,12 +10,18 @@ import undc.handlers.Audio;
  */
 public class HomeController {
 
+    /**
+     * Opens the play screen.
+     */
     public void play() {
         Audio.playAudio("button");
         PlayScreen.resetInstance();
         Controller.setState(PlayScreen.getInstance());
     }
 
+    /**
+     * Opens the settings screen.
+     */
     public void settings() {
         Audio.playAudio("button");
         SettingsScreen.resetInstance();

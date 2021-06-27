@@ -11,6 +11,10 @@ import undc.handlers.Vars;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Class that creates a Projectile that has been fired from a RangedWeapon, called a ShotProjectile. Handles its
+ * creation, animation, and functionality.
+ */
 public class ShotProjectile implements Movable {
     private Projectile projectile;
     private Image sprite;
@@ -23,6 +27,16 @@ public class ShotProjectile implements Movable {
     private int width;
     private double distance;
 
+    /**
+     * Constructor a ShotProjectile object.
+     * @param projectile Projectile that is shot
+     * @param posX double x-cord of projectile
+     * @param posY double y-cord of projectile
+     * @param velX double x-velocity of projectile
+     * @param velY double y-velocity of projectile
+     * @param width int width of projectile
+     * @param height int height of projectile
+     */
     public ShotProjectile(Projectile projectile, double posX, double posY, double velX, double velY, int width,
                           int height) {
         this.projectile = projectile;
@@ -34,6 +48,12 @@ public class ShotProjectile implements Movable {
         this.width = width;
     }
 
+    /**
+     * Draws the explosion animation for bombs. Also removes obstacles that get exploded.
+     * @param room Room that the explosion occurs in
+     * @param m Movable object to get x and y coords from
+     * @param width int width of explosion
+     */
     public static void addExplosion(Room room, Movable m, int width) {
         if (width > Vars.i("gc_explosion_maxwidth")) {
             width = Vars.i("gc_explosion_maxwidth");
@@ -56,6 +76,10 @@ public class ShotProjectile implements Movable {
     }
 
 
+    /**
+     * Handles when a ShotProjectile hits an object.
+     * @param e Entity that is hit by the ShotProjectile
+     */
     public void hit(Entity e) {
         //stop projectile
         velX = 0;

@@ -18,6 +18,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 
+/**
+ * Class that handles the graphics for the current Room the player is in.
+ */
 public class RoomRenderer {
 
     /**
@@ -138,6 +141,12 @@ public class RoomRenderer {
         return main;
     }
 
+    /**
+     * Creates the room and the objects in the room that the player is in.
+     * @param c Canvas
+     * @param room Room the play is in
+     * @param player Player
+     */
     public static void drawFrame(Canvas c, Room room, Player player) {
         //clear canvas
         GraphicsContext gc = c.getGraphicsContext2D();
@@ -220,6 +229,15 @@ public class RoomRenderer {
         gc.drawImage(img, x + Vars.i("gc_canvas_padding"), y + Vars.i("gc_canvas_padding"), w, h);
     }
 
+    /**
+     * Creates the graphics for monster's health bars.
+     * @param gc GraphicContext that is the visual representation of a health bar
+     * @param h double height
+     * @param w double width
+     * @param x double x-cord
+     * @param y double y-cord
+     * @param percent double percentage of monster's remaining health
+     */
     private static void drawHealthbar(GraphicsContext gc, double h, double w, double x, double y,
                                       double percent) {
         //draw health bar

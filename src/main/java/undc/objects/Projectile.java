@@ -6,6 +6,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import undc.controllers.Console;
 
+/**
+ * Class that handles objects launched by RangedWeapons called Projectiles.
+ */
 public class Projectile {
     private String id;
     private String name;
@@ -27,6 +30,10 @@ public class Projectile {
 
     }
 
+    /**
+     * Creates a copy of the projectile.
+     * @return Projectile that is the copy
+     */
     public Projectile copy() {
         Projectile proj = new Projectile();
         proj.id = this.id;
@@ -88,6 +95,11 @@ public class Projectile {
         return damage;
     }
 
+    /**
+     * Makes JSON data into a Projectile.
+     * @param o JSONObject to pull information from.
+     * @return Projectile that is created from JSONObject
+     */
     public static Projectile parse(JSONObject o) {
         Projectile proj = new Projectile();
         try {

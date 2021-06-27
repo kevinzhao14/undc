@@ -9,6 +9,9 @@ import undc.handlers.Audio;
  * Class that handles the play screen presented to the player when they select play from the home screen.
  */
 public class PlayScreenController {
+    /**
+     * Takes the player to the new game screen.
+     */
     public void newGame() {
         Audio.playAudio("button");
         NewGameScreen.resetInstance();
@@ -23,6 +26,9 @@ public class PlayScreenController {
         Audio.playAudio("button");
     }
 
+    /**
+     * Returns the player to the home screen.
+     */
     public void back() {
         Audio.playAudio("button");
         HomeScreen.resetInstance();

@@ -7,6 +7,9 @@ import undc.controllers.Controller;
 import undc.gamestates.GameScreen;
 import undc.handlers.Audio;
 
+/**
+ * Class that handles consumable items that buff the player called Potions.
+ */
 public class Potion extends Item {
     private PotionType type;
     private double modifier;
@@ -15,6 +18,10 @@ public class Potion extends Item {
 
     }
 
+    /**
+     * Creates a copy of the potion.
+     * @return Potion that is the copy
+     */
     public Potion copy() {
         Potion potion = new Potion();
         copy(potion);
@@ -27,6 +34,10 @@ public class Potion extends Item {
         return type;
     }
 
+    /**
+     * Gets the type of potion as a String.
+     * @return String representation of the potion
+     */
     public String getTypeString() {
         switch (type) {
             case HEALTH:
@@ -42,6 +53,10 @@ public class Potion extends Item {
         return modifier;
     }
 
+    /**
+     * Gets modifier information on a potion.
+     * @return String of modifier information
+     */
     public String getModifierString() {
         switch (type) {
             case HEALTH:
@@ -114,6 +129,11 @@ public class Potion extends Item {
         }
     }
 
+    /**
+     * Makes JSON data into a Potion.
+     * @param o JSONObjec to pull information from.
+     * @return Potion that is created from JSONObject
+     */
     static Potion parseJSON(JSONObject o) {
         Potion potion = new Potion();
         try {
