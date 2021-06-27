@@ -121,7 +121,7 @@ public class GameScreen extends GameState {
             inv.add(DataManager.ITEMS.get("attack_potion"), 2);
             inv.add(DataManager.ITEMS.get("bomb"));
 
-            inv.setGraphicalInventory(new GraphicalInventory(inv, player.getInventory()));
+            inv.setGraphicalInventory(new GraphicalInventory("Chest", inv, player.getInventory()));
 
             Chest chest = new Chest(400, 400, inv);
             start.getObstacles().add(chest);
@@ -138,6 +138,7 @@ public class GameScreen extends GameState {
             Console.error("Game Mode not set!");
             return;
         }
+        updateHud();
         GameController.resetInstance();
         getGame().start(dungeonLayout.getStartingRoom(), player);
     }
@@ -262,7 +263,6 @@ public class GameScreen extends GameState {
      */
     private void createHud() {
         hud = Hud.getInstance(player);
-        updateHud();
         createInventory();
     }
 

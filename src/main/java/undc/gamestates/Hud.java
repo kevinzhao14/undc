@@ -134,7 +134,7 @@ public class Hud {
      */
     public void update() {
         if (!(Controller.getState() instanceof GameScreen)) {
-            Console.error("Invalid state.");
+            Console.error("Invalid state. " + Controller.getState());
             return;
         }
         Player player = GameScreen.getInstance().getPlayer();

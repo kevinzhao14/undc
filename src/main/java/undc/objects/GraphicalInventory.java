@@ -14,8 +14,6 @@ import undc.gamestates.GameScreen;
 import undc.handlers.DraggableNode;
 import undc.handlers.PopupNode;
 
-import java.util.Arrays;
-
 
 /**
  * Class that handles the graphics for the player's inventory.
@@ -35,7 +33,7 @@ public class GraphicalInventory extends Overlay {
      * Constructor that creates javafx graphics for the GraphicalInventory.
      * @param inventories Player's inventory that is used to update the graphics with the proper items
      */
-    public GraphicalInventory(Inventory... inventories) {
+    public GraphicalInventory(String titleText, Inventory... inventories) {
         this.inventories = inventories;
 
         HBox parent = new HBox();
@@ -44,7 +42,7 @@ public class GraphicalInventory extends Overlay {
         container = new VBox();
         container.setId("container");
 
-        Label title = new Label("Inventory");
+        Label title = new Label(titleText);
         title.setId("title");
         container.getChildren().add(title);
 
@@ -57,6 +55,11 @@ public class GraphicalInventory extends Overlay {
 
         int offset = 0;
         for (Inventory inv : inventories) {
+            if (offset > 0) {
+                HBox spacer = new HBox();
+                spacer.getStyleClass().add("inv-spacer");
+                container.getChildren().add(spacer);
+            }
             for (int i = 0; i < inv.getRows(); i++) {
                 HBox row = new HBox();
                 row.getStyleClass().add("row");
@@ -68,9 +71,6 @@ public class GraphicalInventory extends Overlay {
                 rows[i + offset] = row;
                 container.getChildren().add(row);
             }
-            HBox spacer = new HBox();
-            spacer.getStyleClass().add("inv-spacer");
-            container.getChildren().add(spacer);
             offset += inv.getRows();
         }
 
@@ -97,6 +97,10 @@ public class GraphicalInventory extends Overlay {
         toggle();
     }
 
+    public GraphicalInventory(Inventory... inventories) {
+        this("Inventory", inventories);
+    }
+
     public static void hide() {
         if (active != null) {
             active.toggle();
@@ -113,8 +117,7 @@ public class GraphicalInventory extends Overlay {
      */
     public void update() {
         if (!(Controller.getState() instanceof GameScreen)) {
-            Console.error("Invalid game state.");
-            return;
+            Console.warn("Invalid game state.");
         }
         int offset = 0;
         for (Inventory inv : inventories) {
@@ -219,7 +222,6 @@ public class GraphicalInventory extends Overlay {
                             double x = ib.getMinX() + image.getFitWidth() / 2;
                             double y = ib.getMinY() + image.getFitHeight() / 2;
                             if (!container.contains(x, y) && !item.isInfinite()) {
-                                System.out.println("drop item");
                                 if (!inv.remove(item)) {
                                     Console.error("Failed to remove item to drop.");
                                     return;
@@ -228,7 +230,6 @@ public class GraphicalInventory extends Overlay {
                                 GameScreen.getInstance().updateHud();
                                 root.getChildren().remove(root.getChildren().size() - 1);
                             } else {
-                                System.out.println("put back");
                                 // put it back to original spot
                                 square.getChildren().add(image);
                                 image.setTranslateX(0);
@@ -261,7 +262,10 @@ public class GraphicalInventory extends Overlay {
      * Makes inventory visible or not visible.
      */
     public void toggle() {
-        update();
+        // update gui if it's about to show
+        if (!root.isVisible()) {
+            update();
+        }
         super.toggle();
         if (!root.isVisible()) {
             itemInfo.setVisible(false);
