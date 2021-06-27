@@ -200,6 +200,10 @@ public class Monster extends Entity {
             return new DroppedItem[0];
         }
         if (type == MonsterType.FINALBOSS) {
+            if (Audio.getSoundsClip("final_boss_music").isPlaying()) {
+                Audio.getSoundsClip("final_boss_music").stop();
+            }
+            Audio.playAudio("game_win");
             Item key = DataManager.getExitKey().copy();
             Image sprite = key.getSprite();
             double x = getX() + getWidth() / 2.0 - sprite.getWidth() / 2;

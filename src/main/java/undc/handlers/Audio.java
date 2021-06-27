@@ -30,6 +30,17 @@ public class Audio {
     }
 
     /**
+     * Stops all AudioClips that may be playing.
+     */
+    public static void stopAudio() {
+        for (AudioClip clip : DataManager.SOUNDS.values()) {
+            if (clip.isPlaying()) {
+                clip.stop();
+            }
+        }
+    }
+
+    /**
      * Turns a JSONObject into an Audio object.
      * @param o JSONObject to take data from and make an Audio object out of.
      * @return Audio object that is made from the JSONObject
@@ -58,5 +69,14 @@ public class Audio {
 
     public AudioClip getClip() {
         return clip;
+    }
+
+    /**
+     * Gets an AudioClip from the SOUNDS HashMap.
+     * @param sound String key of the value in SOUNDS
+     * @return AudioClip value in SOUNDS
+     */
+    public static AudioClip getSoundsClip(String sound) {
+        return DataManager.SOUNDS.get(sound);
     }
 }

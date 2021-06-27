@@ -1421,6 +1421,7 @@ public class GameController {
          * Shortcut for handling game-over.
          */
         private void gameOver() {
+            Audio.stopAudio();
             Audio.playAudio("game_over");
             Console.print("Game Over");
             GameScreen screen = getScreen();
