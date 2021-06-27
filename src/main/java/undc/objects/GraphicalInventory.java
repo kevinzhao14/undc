@@ -308,15 +308,17 @@ public class GraphicalInventory extends Overlay {
             Potion potion = (Potion) item;
             Label type = new Label(potion.getTypeString());
             Label modifier = new Label(potion.getModifierString());
+            Label quantity = new Label("Quantity: " + invItem.getQuantity());
 
-            description.getChildren().addAll(type, modifier);
+            description.getChildren().addAll(type, modifier, quantity);
         } else if (item instanceof Bomb) {
             Bomb bomb = (Bomb) item;
             Label damage = new Label(bomb.getDamage() + " Damage");
             Label radius = new Label(bomb.getRadius() + " Radius");
             Label fuse = new Label(((int) (bomb.getFuse() / 100) / 10) + "s Fuse");
+            Label quantity = new Label("Quantity: " + invItem.getQuantity());
 
-            description.getChildren().addAll(damage, radius, fuse);
+            description.getChildren().addAll(damage, radius, fuse, quantity);
         }
 
         if (invItem.isInfinite()) {

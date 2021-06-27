@@ -1,5 +1,7 @@
 package undc.objects;
 
+import undc.handlers.Audio;
+
 /**
  * Class that handles the construction of a room of heightened difficulty called a ChallengeRoom.
  */
@@ -33,5 +35,8 @@ public class ChallengeRoom extends Room {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+        if (completed && Audio.getSoundsClip("challenge_room").isPlaying()) {
+            Audio.getSoundsClip("challenge_room").stop();
+        }
     }
 }

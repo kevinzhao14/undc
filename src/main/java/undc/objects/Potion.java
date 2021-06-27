@@ -77,7 +77,6 @@ public class Potion extends Item {
         if (!(Controller.getState() instanceof GameScreen)) {
             return;
         }
-        Audio.playAudio("potion");
 
         GameScreen gameScreen = (GameScreen) Controller.getState();
         Player player = gameScreen.getPlayer();
@@ -87,6 +86,8 @@ public class Potion extends Item {
 
         switch (this.type) {
             case ATTACK:
+                Audio.playAudio("potion");
+
                 // damage nearby monsters by potion modifier
 
                 double duration = 15 * 1000;
@@ -112,6 +113,9 @@ public class Potion extends Item {
             case HEALTH:
                 // increase health by potion modifier
                 double health = gameScreen.getPlayer().getHealth();
+                if (health != gameScreen.getPlayer().getMaxHealth()) {
+                    Audio.playAudio("potion");
+                }
                 double newHealth = health + this.getModifier();
                 double maxHealth = gameScreen.getPlayer().getMaxHealth();
                 double cappedHealth = Math.min(newHealth, maxHealth);
