@@ -1,5 +1,6 @@
 package undc.gamestates;
 
+import javafx.animation.FadeTransition;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -12,6 +13,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
+import javafx.util.Duration;
 import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.objects.Effect;
@@ -42,6 +44,9 @@ public class Hud {
     private final HBox hotbar;
     private final Label ammoCounter;
     private final VBox effectsBox;
+    private final HBox playerImageOverlay;
+
+    private FadeTransition animation;
 
     /**
      * Creates a hude for the player.
@@ -75,12 +80,16 @@ public class Hud {
         playerInfo.setId("player-info");
 
         // player image/profile
-        HBox playerImageBox = new HBox();
+        StackPane playerImageBox = new StackPane();
         playerImageBox.setId("player-image");
         ImageView playerImage = new ImageView("player/profile.png");
         playerImage.setFitHeight(150);
         playerImage.setFitWidth(150);
-        playerImageBox.getChildren().add(playerImage);
+        playerImageOverlay = new HBox();
+        playerImageOverlay.setPrefHeight(150);
+        playerImageOverlay.setPrefWidth(150);
+        playerImageOverlay.setId("image-overlay");
+        playerImageBox.getChildren().addAll(playerImage, playerImageOverlay);
 
         // player stats/info
         VBox playerStats = new VBox();
@@ -232,5 +241,25 @@ public class Hud {
             instance = new Hud(player);
         }
         return instance;
+    }
+
+    /**
+     * Animates the overlay to show and hide (currently used as damage indicator).
+     */
+    public void showOverlay() {
+        if (animation != null) {
+            animation.stop();
+        }
+        animation = new FadeTransition(Duration.millis(150), playerImageOverlay);
+        animation.setFromValue(0);
+        animation.setToValue(1);
+        animation.setOnFinished(e -> {
+            animation = new FadeTransition(Duration.millis(300), playerImageOverlay);
+            animation.setFromValue(1);
+            animation.setToValue(0);
+            animation.setOnFinished(e2 -> animation = null);
+            animation.play();
+        });
+        animation.play();
     }
 }

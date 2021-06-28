@@ -137,6 +137,7 @@ public class Player extends Entity {
         }
         if (newHealth < health) {
             Audio.playAudio("take_damage");
+            GameScreen.getInstance().getHud().showOverlay();
         }
         super.setHealth(newHealth);
     }
