@@ -34,18 +34,15 @@ public class ShotProjectile implements Movable {
      * @param posY double y-cord of projectile
      * @param velX double x-velocity of projectile
      * @param velY double y-velocity of projectile
-     * @param width int width of projectile
-     * @param height int height of projectile
      */
-    public ShotProjectile(Projectile projectile, double posX, double posY, double velX, double velY, int width,
-                          int height) {
+    public ShotProjectile(Projectile projectile, double posX, double posY, double velX, double velY) {
         this.projectile = projectile;
         this.posX = posX;
         this.posY = posY;
         this.velX = velX;
         this.velY = velY;
-        this.height = height;
-        this.width = width;
+        this.height = projectile.getHeight();
+        this.width = projectile.getWidth();
     }
 
     /**

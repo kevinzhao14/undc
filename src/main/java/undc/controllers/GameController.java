@@ -837,8 +837,8 @@ public class GameController {
                 } else if (dir == 3) {
                     sprite = weaponAmmo.getProjectile().getSpriteDown();
                 }
-                int height = (int) sprite.getHeight();
-                int width = (int) sprite.getWidth();
+                int height = weaponAmmo.getProjectile().getHeight();
+                int width = weaponAmmo.getProjectile().getWidth();
                 if (dir == 0) {
                     x -= 5;
                 } else if (dir == 2) {
@@ -856,14 +856,13 @@ public class GameController {
                 x = check.getX();
                 y = check.getY();
 
-
                 //velocity
                 double speed = weaponAmmo.getProjectile().getSpeed();
                 double velX = dir == 0 ? -speed : (dir == 2 ? speed : 0);
                 double velY = dir == 1 ? speed : (dir == 3 ? -speed : 0);
 
                 //create projectile
-                ShotProjectile sp = new ShotProjectile(weaponAmmo.getProjectile(), x, y, velX, velY, width, height);
+                ShotProjectile sp = new ShotProjectile(weaponAmmo.getProjectile(), x, y, velX, velY);
                 sp.setSprite(sprite);
                 room.getProjectiles().add(sp);
             }

@@ -26,6 +26,9 @@ public class Projectile {
     //projectile multi/splash range
     private double splashRange;
 
+    private int height;
+    private int width;
+
     private Projectile() {
 
     }
@@ -47,6 +50,8 @@ public class Projectile {
         proj.range = this.range;
         proj.splash = this.splash;
         proj.splashRange = this.splashRange;
+        proj.height = this.height;
+        proj.width = this.width;
         return proj;
     }
 
@@ -93,6 +98,14 @@ public class Projectile {
 
     public double getDamage() {
         return damage;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
     }
 
     /**
@@ -163,6 +176,18 @@ public class Projectile {
             } else {
                 proj.splashRange = -1;
             }
+        }
+        try {
+            proj.width = o.getInt("width");
+        } catch (JSONException e) {
+            Console.error("Invalid value for projectile width.");
+            return null;
+        }
+        try {
+            proj.height = o.getInt("height");
+        } catch (JSONException e) {
+            Console.error("Invalid value for projectile height.");
+            return null;
         }
         return proj;
     }
