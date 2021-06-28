@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToWidth="true" hbarPolicy="NEVER" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="undc.fxml.controllers.AudioController">
+<ScrollPane fitToWidth="true" hbarPolicy="NEVER" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="undc.fxml.controllers.AudioController">
    <content>
       <GridPane>
          <columnConstraints>
