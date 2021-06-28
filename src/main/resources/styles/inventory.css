@@ -18,13 +18,22 @@
     -fx-spacing: 10px;
     -fx-alignment: center;
 }
-.row VBox {
+.row > VBox {
     -fx-pref-width: 75px;
     -fx-pref-height: 75px;
     -fx-background-color: #aaa;
     -fx-border-color: #fafafa;
     -fx-border-width: 3px;
     -fx-alignment: center;
+}
+.item-quantity {
+    -fx-alignment: bottom-right;
+}
+.item-quantity Label {
+    -fx-font-size: 1.5em;
+    -fx-text-fill: #fafafa;
+    -fx-padding: 0 3px 0 0;
+    -fx-translate-y: 3px;
 }
 #item-info {
     -fx-background-color:  #140413;

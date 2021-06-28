@@ -103,7 +103,7 @@ public class Potion extends Item {
                     }
                 }
 
-                Effect effect = new Effect(EffectType.ATTACKBOOST, 0.25, -1, duration);
+                Effect effect = new Effect(EffectType.ATTACKBOOST, 0.25, duration);
                 player.getEffects().add(effect);
 
                 //remove from inventory

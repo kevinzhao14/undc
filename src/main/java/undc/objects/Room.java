@@ -1,15 +1,14 @@
 package undc.objects;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
- * Room class implementation for handling game room
- * obstacles and doors.
- *
- * @version 1.0
- * @author Manas Harbola
+ * Room class implementation for handling game room obstacles and doors.
  */
-public class Room {
+public class Room implements Savable {
     private int height;
     private int width;
     private int startX;
@@ -139,5 +138,58 @@ public class Room {
 
     public ArrayList<ShotProjectile> getProjectiles() {
         return projectiles;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        o.put("width", width);
+        o.put("height", height);
+        o.put("visited", visited);
+        o.put("type", type.toString());
+
+        JSONArray obstaclesObj = new JSONArray();
+        for (Obstacle obs : obstacles) {
+            obstaclesObj.put(obs.saveObject());
+        }
+        o.put("obstacles", obstaclesObj);
+
+        JSONArray monstersObj = new JSONArray();
+        for (Monster m : monsters) {
+            monstersObj.put(m.saveObject());
+        }
+        o.put("monsters", monstersObj);
+
+        JSONArray droppedItemsObj = new JSONArray();
+        for (DroppedItem d : droppedItems) {
+            droppedItemsObj.put(d.saveObject());
+        }
+        o.put("droppedItems", droppedItemsObj);
+
+        JSONArray projectilesObj = new JSONArray();
+        for (ShotProjectile p : projectiles) {
+            projectilesObj.put(p.saveObject());
+        }
+        o.put("projectiles", projectilesObj);
+
+        if (topDoor != null) {
+            o.put("topDoor", topDoor.saveObject());
+        }
+        if (bottomDoor != null) {
+            o.put("bottomDoor", bottomDoor.saveObject());
+        }
+        if (leftDoor != null) {
+            o.put("leftDoor", leftDoor.saveObject());
+        }
+        if (rightDoor != null) {
+            o.put("rightDoor", rightDoor.saveObject());
+        }
+
+        return o;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package undc.objects;
 
+import org.json.JSONObject;
 import undc.controllers.Controller;
 import undc.controllers.DataManager;
 import undc.gamestates.GameScreen;
@@ -15,7 +16,7 @@ import java.util.TimerTask;
  * Class that creates a Projectile that has been fired from a RangedWeapon, called a ShotProjectile. Handles its
  * creation, animation, and functionality.
  */
-public class ShotProjectile implements Movable {
+public class ShotProjectile implements Movable, Savable {
     private final Projectile projectile;
     private Image sprite;
 
@@ -189,5 +190,25 @@ public class ShotProjectile implements Movable {
 
     public Projectile getProjectile() {
         return projectile;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        o.put("projectile", projectile.getId());
+        o.put("sprite", sprite.getUrl());
+        o.put("posX", posX);
+        o.put("posY", posY);
+        o.put("velX", velX);
+        o.put("velY", velY);
+        o.put("width", width);
+        o.put("height", height);
+        o.put("distance", distance);
+        return o;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return null;
     }
 }

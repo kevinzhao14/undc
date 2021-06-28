@@ -1,9 +1,11 @@
 package undc.objects;
 
+import org.json.JSONObject;
+
 /**
  * Class that handles items dropped from a player's inventory.
  */
-public class DroppedItem implements Movable {
+public class DroppedItem implements Movable, Savable {
     private Item item;
     private double x;
     private double y;
@@ -70,5 +72,21 @@ public class DroppedItem implements Movable {
     @Override
     public int getHeight() {
         return height;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        o.put("item", item.getId());
+        o.put("x", x);
+        o.put("y", y);
+        o.put("width", width);
+        o.put("height", height);
+        return o;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return null;
     }
 }

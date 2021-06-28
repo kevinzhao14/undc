@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import undc.controllers.Console;
 import undc.controllers.Controller;
@@ -150,6 +151,25 @@ public class GraphicalInventory extends Overlay {
                     image.setFitWidth(60);
                     image.setFitHeight(60);
 
+                    if (square.getChildren().size() != 0 && square.getChildren().get(0).equals(image)) {
+                        return;
+                    }
+
+                    square.getChildren().clear();
+                    // quantity label
+                    if (item.getQuantity() > 1) {
+                        VBox quantityContainer = new VBox();
+                        Label quantity = new Label(item.getQuantity() + "");
+                        quantityContainer.getStyleClass().add("item-quantity");
+                        quantityContainer.getChildren().add(quantity);
+
+                        StackPane container = new StackPane();
+                        container.getChildren().addAll(quantityContainer, image);
+                        square.getChildren().add(container);
+                    } else {
+                        square.getChildren().add(image);
+                    }
+
                     // making inventory draggable
                     DraggableNode.remove(square);
                     DraggableNode.DraggableObject obj = DraggableNode.add(square, image);
@@ -199,7 +219,6 @@ public class GraphicalInventory extends Overlay {
                                         for (Inventory inv1 : inventories) {
                                             rowcount -= inv1.getRows();
                                             if (rowcount < 0) {
-                                                System.out.println("it " + i1 + " " + rowcount + " " + inv1.getRows());
                                                 inv1.add(item, rowcount + inv1.getRows(), j1);
                                                 break;
                                             }
@@ -249,11 +268,6 @@ public class GraphicalInventory extends Overlay {
                             populateInfoBox(item);
                         }
                     });
-
-                    if (square.getChildren().size() == 0 || !square.getChildren().get(0).equals(image)) {
-                        square.getChildren().clear();
-                        square.getChildren().add(image);
-                    }
                 }
             }
             offset += inv.getRows();
@@ -308,17 +322,15 @@ public class GraphicalInventory extends Overlay {
             Potion potion = (Potion) item;
             Label type = new Label(potion.getTypeString());
             Label modifier = new Label(potion.getModifierString());
-            Label quantity = new Label("Quantity: " + invItem.getQuantity());
 
-            description.getChildren().addAll(type, modifier, quantity);
+            description.getChildren().addAll(type, modifier);
         } else if (item instanceof Bomb) {
             Bomb bomb = (Bomb) item;
             Label damage = new Label(bomb.getDamage() + " Damage");
             Label radius = new Label(bomb.getRadius() + " Radius");
             Label fuse = new Label(((int) (bomb.getFuse() / 100) / 10) + "s Fuse");
-            Label quantity = new Label("Quantity: " + invItem.getQuantity());
 
-            description.getChildren().addAll(damage, radius, fuse, quantity);
+            description.getChildren().addAll(damage, radius, fuse);
         }
 
         if (invItem.isInfinite()) {

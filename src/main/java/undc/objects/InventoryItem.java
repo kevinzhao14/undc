@@ -1,9 +1,11 @@
 package undc.objects;
 
+import org.json.JSONObject;
+
 /**
  * Class that handles Items that have quantities.
  */
-public class InventoryItem {
+public class InventoryItem implements Savable {
     private Item item;
     private int quantity;
     private boolean infinite;
@@ -39,5 +41,19 @@ public class InventoryItem {
 
     public String toString() {
         return "Item: " + item + " | Q: " + quantity;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        o.put("item", item.getId());
+        o.put("quantity", quantity);
+        o.put("infinite", infinite);
+        return o;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return null;
     }
 }

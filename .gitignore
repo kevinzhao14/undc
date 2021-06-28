@@ -18,6 +18,7 @@ buildNumber.properties
 
 #game stuff
 config/*
+saves/*
 
 #mac things
 */javafx-mac/*

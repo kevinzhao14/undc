@@ -292,6 +292,20 @@ public class Monster extends Entity {
         this.opacity = opacity;
     }
 
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = super.saveObject();
+        o.put("id", id);
+        o.put("reaction", reaction);
+        o.put("opacity", opacity);
+        return o;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return super.parseSave(o);
+    }
+
     /**
      * Assigns a monster's instance variables from JSON files.
      * @param o JSONObject that info on the monster is pulled from

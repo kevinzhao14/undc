@@ -1,6 +1,8 @@
 package undc.controllers;
 
 import javafx.scene.Scene;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import undc.gamestates.GameScreen;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -36,12 +38,14 @@ import undc.objects.Player;
 import undc.objects.RangedWeapon;
 import undc.objects.Room;
 import undc.objects.RoomType;
+import undc.objects.Savable;
 import undc.objects.ShotProjectile;
 import undc.objects.Weapon;
 import undc.objects.WeaponAmmo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -51,7 +55,7 @@ import java.util.TimerTask;
  * @author Kevin Zhao
  * @version 1.0
  */
-public class GameController {
+public class GameController implements Savable {
     private static GameController instance;
 
     private Timer timer;
@@ -458,6 +462,44 @@ public class GameController {
     public boolean isRunning() {
         return isRunning;
     }
+
+    public void save() {
+        JSONObject saveObj = new JSONObject();
+        saveObj.put("player", player.saveObject());
+        saveObj.put("game", saveObject());
+
+        if (Controller.getDataManager().saveGame(saveObj)) {
+            Console.print("Game Saved.");
+        }
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        o.put("room", room.saveObject());
+        o.put("velX", velX);
+        o.put("velY", velY);
+        o.put("accelX", accelX);
+        o.put("accelY", accelY);
+        o.put("ticks", ticks);
+        o.put("totalTime", totalTime);
+        JSONArray stateso = new JSONArray();
+        for (Map.Entry<String, Boolean> e : states.entrySet()) {
+            JSONObject obj = new JSONObject();
+            obj.put("key", e.getKey());
+            obj.put("value", e.getValue());
+            stateso.put(obj);
+        }
+        o.put("states", stateso);
+
+        return o;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return null;
+    }
+
 
     /**
      * Class that is used to calculate stuff on each tick.
@@ -1140,6 +1182,10 @@ public class GameController {
 
                 //if next room is the exit, don't let player go through unless they have key
                 if (room.getType() == RoomType.EXITROOM && d instanceof ExitDoor) {
+                    if (player.getInventory().contains(DataManager.getExitKey())) {
+                        stop();
+                        Platform.runLater(() -> getScreen().win());
+                    }
                     return player.getInventory().contains(DataManager.getExitKey());
 
                     // if in challenge room, don't let player leave if not completed

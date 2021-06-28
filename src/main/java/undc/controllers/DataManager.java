@@ -11,9 +11,13 @@ import undc.objects.Item;
 import undc.objects.Monster;
 import undc.objects.Obstacle;
 import undc.objects.Projectile;
+import undc.objects.Savable;
 import undc.objects.Weapon;
 import undc.objects.Key;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -23,7 +27,7 @@ import java.util.HashMap;
  * Class for storing and handling all session data.
  *
  */
-public class DataManager {
+public class DataManager implements Savable {
     public static final HashMap<String, Projectile> PROJECTILES = new HashMap<>();
 
     public static final HashMap<String, Item> ITEMS = new HashMap<>();
@@ -43,6 +47,8 @@ public class DataManager {
 
     private Difficulty difficulty;
     private Weapon weapon;
+    private String name = "Example";
+    private File saveFile;
 
     /**
      * Basic constructor for creating a DataManager.
@@ -111,6 +117,47 @@ public class DataManager {
         }
         Vars.find("sv_modifier").setVal(modifier + "", true);
         this.weapon = weapon.copy();
+        return true;
+    }
+
+    public boolean saveGame(JSONObject o) {
+        if (o == null) {
+            Console.error("Invalid save data.");
+            return false;
+        }
+        // new game save, then make new save file
+        if (saveFile == null) {
+            saveFile = new File("saves/" + name + ".save");
+            int counter = 0;
+            while (saveFile.exists()) {
+                counter++;
+                saveFile = new File("saves/" + name + "-" + counter + ".save");
+            }
+        }
+        // make folder if it doesn't exist
+        if (!saveFile.getParentFile().exists() && !saveFile.getParentFile().mkdirs()) {
+            Console.error("Failed to create save file location.");
+            return false;
+        }
+
+        // make file if it doesn't exist
+        if (!saveFile.exists()) {
+            try {
+                saveFile.createNewFile();
+            } catch (IOException e) {
+                Console.error("Failed to create save file.");
+                return false;
+            }
+        }
+        // write to file
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile.getPath()));
+            writer.write(o.toString(4));
+            writer.close();
+        } catch (IOException e) {
+            Console.error("Failed to save the game.");
+            return false;
+        }
         return true;
     }
 
@@ -331,5 +378,15 @@ public class DataManager {
         }
 
         return true;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        return null;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return null;
     }
 }
