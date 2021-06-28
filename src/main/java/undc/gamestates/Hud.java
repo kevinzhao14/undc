@@ -1,5 +1,6 @@
 package undc.gamestates;
 
+import javafx.animation.FadeTransition;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -12,6 +13,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
+import javafx.util.Duration;
 import undc.controllers.Console;
 import undc.controllers.Controller;
 import undc.objects.Effect;
@@ -28,6 +30,8 @@ import undc.objects.WeaponAmmo;
 public class Hud {
     private static final int HEALTHBAR_HEIGHT = 30;
     private static final int HEALTHBAR_WIDTH = 200;
+    private static final int XPBAR_HEIGHT = 20;
+    private static final int XPBAR_WIDTH = 200;
 
     private static Hud instance;
 
@@ -35,9 +39,14 @@ public class Hud {
     private final Label playerGold;
     private final Rectangle healthBarInner;
     private final Label healthBarText;
+    private final Rectangle xpBarInner;
+    private final Label xpBarText;
     private final HBox hotbar;
     private final Label ammoCounter;
     private final VBox effectsBox;
+    private final HBox playerImageOverlay;
+
+    private FadeTransition animation;
 
     /**
      * Creates a hude for the player.
@@ -71,12 +80,16 @@ public class Hud {
         playerInfo.setId("player-info");
 
         // player image/profile
-        HBox playerImageBox = new HBox();
+        StackPane playerImageBox = new StackPane();
         playerImageBox.setId("player-image");
         ImageView playerImage = new ImageView("player/profile.png");
         playerImage.setFitHeight(150);
         playerImage.setFitWidth(150);
-        playerImageBox.getChildren().add(playerImage);
+        playerImageOverlay = new HBox();
+        playerImageOverlay.setPrefHeight(150);
+        playerImageOverlay.setPrefWidth(150);
+        playerImageOverlay.setId("image-overlay");
+        playerImageBox.getChildren().addAll(playerImage, playerImageOverlay);
 
         // player stats/info
         VBox playerStats = new VBox();
@@ -89,16 +102,26 @@ public class Hud {
         playerGoldBox.getChildren().add(playerGold);
 
         // player healthbar
-        StackPane playerHealthBarPane = new StackPane();
-        playerHealthBarPane.setId("healthbar");
+        StackPane healthBarPane = new StackPane();
+        healthBarPane.setId("healthbar");
         Rectangle healthBarOuter = new Rectangle(HEALTHBAR_WIDTH, HEALTHBAR_HEIGHT);
         healthBarOuter.setId("healthbar-outer");
         healthBarInner = new Rectangle(HEALTHBAR_WIDTH, HEALTHBAR_HEIGHT);
         healthBarInner.setId("healthbar-inner");
-        healthBarText = new Label("100");
-        playerHealthBarPane.getChildren().addAll(healthBarOuter, healthBarInner, healthBarText);
+        healthBarText = new Label("100 HP");
+        healthBarPane.getChildren().addAll(healthBarOuter, healthBarInner, healthBarText);
 
-        playerStats.getChildren().addAll(playerGoldBox, playerHealthBarPane);
+        // player xp bar
+        StackPane xpBarPane = new StackPane();
+        xpBarPane.setId("xpbar");
+        Rectangle xpBarOuter = new Rectangle(XPBAR_WIDTH, XPBAR_HEIGHT);
+        xpBarOuter.setId("xpbar-outer");
+        xpBarInner = new Rectangle(XPBAR_WIDTH / 2.0, XPBAR_HEIGHT);
+        xpBarInner.setId("xpbar-inner");
+        xpBarText = new Label("Level 0");
+        xpBarPane.getChildren().addAll(xpBarOuter, xpBarInner, xpBarText);
+
+        playerStats.getChildren().addAll(playerGoldBox, healthBarPane, xpBarPane);
         playerInfo.getChildren().addAll(playerImageBox, playerStats);
         GridPane.setConstraints(playerInfo, 0, 1);
 
@@ -144,7 +167,11 @@ public class Hud {
 
         // update health
         healthBarInner.setWidth(HEALTHBAR_WIDTH * (player.getHealth() / player.getMaxHealth()));
-        healthBarText.setText("" + (int) Math.ceil(player.getHealth()));
+        healthBarText.setText((int) Math.ceil(player.getHealth()) + " HP");
+
+        // update xp
+        xpBarInner.setWidth(XPBAR_WIDTH * ((double) player.getXp() / Player.xpNeeded(player.getLevel())));
+        xpBarText.setText("Level " + player.getLevel());
 
         // update hotbar
         InventoryItem[] inv = player.getInventory().getItems()[0];
@@ -214,5 +241,25 @@ public class Hud {
             instance = new Hud(player);
         }
         return instance;
+    }
+
+    /**
+     * Animates the overlay to show and hide (currently used as damage indicator).
+     */
+    public void showOverlay() {
+        if (animation != null) {
+            animation.stop();
+        }
+        animation = new FadeTransition(Duration.millis(150), playerImageOverlay);
+        animation.setFromValue(0);
+        animation.setToValue(1);
+        animation.setOnFinished(e -> {
+            animation = new FadeTransition(Duration.millis(300), playerImageOverlay);
+            animation.setFromValue(1);
+            animation.setToValue(0);
+            animation.setOnFinished(e2 -> animation = null);
+            animation.play();
+        });
+        animation.play();
     }
 }

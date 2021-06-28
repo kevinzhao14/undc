@@ -16,15 +16,15 @@ import java.util.TimerTask;
  * creation, animation, and functionality.
  */
 public class ShotProjectile implements Movable {
-    private Projectile projectile;
+    private final Projectile projectile;
     private Image sprite;
 
     private double posX;
     private double posY;
     private double velX;
     private double velY;
-    private int height;
-    private int width;
+    private final int height;
+    private final int width;
     private double distance;
 
     /**
@@ -34,18 +34,15 @@ public class ShotProjectile implements Movable {
      * @param posY double y-cord of projectile
      * @param velX double x-velocity of projectile
      * @param velY double y-velocity of projectile
-     * @param width int width of projectile
-     * @param height int height of projectile
      */
-    public ShotProjectile(Projectile projectile, double posX, double posY, double velX, double velY, int width,
-                          int height) {
+    public ShotProjectile(Projectile projectile, double posX, double posY, double velX, double velY) {
         this.projectile = projectile;
         this.posX = posX;
         this.posY = posY;
         this.velX = velX;
         this.velY = velY;
-        this.height = height;
-        this.width = width;
+        this.height = projectile.getHeight();
+        this.width = projectile.getWidth();
     }
 
     /**
@@ -83,6 +80,7 @@ public class ShotProjectile implements Movable {
     public void hit(Entity e) {
         //stop projectile
         velX = 0;
+        velY = 0;
 
         GameScreen screen = (GameScreen) Controller.getState();
         Room room = screen.getRoom();
@@ -91,7 +89,7 @@ public class ShotProjectile implements Movable {
         //hit single monster
         if (e != null) {
             if (e instanceof Monster) {
-                ((Monster) e).attackMonster(projectile.getDamage(), true);
+                ((Monster) e).attackMonster(projectile.getDamage());
             }
         }
 
@@ -102,17 +100,17 @@ public class ShotProjectile implements Movable {
                     continue;
                 }
                 //calculate distance
-                double distX = (m.getX() + m.getWidth() / 2) - (posX + width / 2.0);
-                double distY = (m.getY() + m.getHeight() / 2) - (posY + height / 2.0);
+                double distX = (m.getX() + m.getWidth() / 2.0) - (posX + width / 2.0);
+                double distY = (m.getY() + m.getHeight() / 2.0) - (posY + height / 2.0);
                 double dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
                 //if in range of the blast
                 if (dist <= projectile.getSplashRange()) {
-                    m.attackMonster(projectile.getDamage(), true);
+                    m.attackMonster(projectile.getDamage());
                 }
             }
             //attack player
-            double distX = Math.pow(posX - player.getX() + player.getWidth() / 2, 2);
-            double distY = Math.pow(posY - player.getY() + player.getHeight() / 2, 2);
+            double distX = Math.pow(posX - player.getX() + player.getWidth() / 2.0, 2);
+            double distY = Math.pow(posY - player.getY() + player.getHeight() / 2.0, 2);
             double dist = Math.sqrt(distX + distY);
             if (dist <= projectile.getSplashRange()) {
                 player.setHealth(Math.max(0, player.getHealth() - projectile.getDamage()

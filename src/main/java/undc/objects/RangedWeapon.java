@@ -46,6 +46,9 @@ public class RangedWeapon extends Weapon {
         }
         isReloading = true;
         delay = reloadTime * 1000;
+        if (reloadTime == 0) {
+            finishReloading();
+        }
         Platform.runLater(() -> ((GameScreen) Controller.getState()).updateHud());
     }
 

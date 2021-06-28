@@ -16,7 +16,25 @@
       "speed": 500,
       "range": 400,
       "splash": true,
-      "splashRange": 25
+      "splashRange": 25,
+      "width": 17,
+      "height": 17
+    },
+    {
+      "id": "arrow",
+      "name": "Arrow",
+      "sprites": [
+        "weapons/arrow-left.png",
+        "weapons/arrow-up.png",
+        "weapons/arrow-right.png",
+        "weapons/arrow-down.png"
+      ],
+      "damage": 10,
+      "speed": 300,
+      "range": 200,
+      "splash": false,
+      "width": 16,
+      "height": 16
     }
   ],
   "monsters": [
@@ -209,6 +227,30 @@
       "type": "key",
       "name": "Special Key",
       "sprite": "items/key.png",
+      "spawnable": false
+    },
+    {
+      "id": "bow",
+      "type": "rangedweapon",
+      "name": "Bow",
+      "sprite": "weapons/bow.png",
+      "damage": 2,
+      "reloadTime": 0,
+      "fireRate": 0.75,
+      "ammo": {
+        "projectile": "arrow",
+        "size": 1,
+        "backupSize": 100
+      }
+    },
+    {
+      "id": "arrows",
+      "type": "ammunition",
+      "name": "Arrows",
+      "sprite": "weapons/arrow-right.png",
+      "amount": 10,
+      "projectile": "arrow",
+      "droppable": true,
       "spawnable": false
     }
   ],

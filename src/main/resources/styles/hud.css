@@ -8,37 +8,49 @@
 #player-image {
     -fx-border-color: #212121;
     -fx-border-width: 3px;
-    -fx-background-color: #eee;
+    -fx-background-color: rgba(200, 200, 200, 0.8);
+}
+#image-overlay {
+    -fx-background-color: rgba(255, 0, 0, 0.4);
+    -fx-opacity: 0;
 }
 #player-stats {
     -fx-padding: 0 0 0 10px;
 }
 #player-gold {
-    -fx-padding: 0 0 5px 0;
+    -fx-padding: 5px 5px 5px 10px;
+    -fx-background-color: rgba(0, 0, 0, 0.6);
 }
 #player-gold Label {
-    -fx-text-fill: white;
-    -fx-font-size: 2em;
+    -fx-text-fill: #efcc0e;
+    -fx-font-size: 20px;
 }
-#healthbar {
+#healthbar, #xpbar {
     -fx-alignment: center-left;
+    -fx-padding: 5px 0 0 0;
 }
-#healthbar-outer {
-    -fx-fill: #ccc;
+#healthbar-outer, #xpbar-outer {
+    -fx-fill: #bbb;
     -fx-stroke: #212121;
     -fx-stroke-width: 2px;
     -fx-stroke-type: outside;
 }
-#healthbar-inner {
-    -fx-fill: #e02121;
+#healthbar-inner, #xpbar-inner {
+    -fx-fill: #a20c0c;
     -fx-stroke: transparent;
     -fx-stroke-width: 2px;
     -fx-stroke-type: outside;
 }
-#healthbar Label {
-    -fx-font-size: 1.8em;
-    -fx-text-fill: #212121;
+#healthbar Label, #xpbar Label {
+    -fx-font-size: 24px;
+    -fx-text-fill: #fafafa;
     -fx-padding: 0 0 0 10px;
+}
+#xpbar-inner {
+    -fx-fill: #1e36ec;
+}
+#xpbar Label {
+    -fx-font-size: 18px;
 }
 #hotbar {
     -fx-fill-height: false;

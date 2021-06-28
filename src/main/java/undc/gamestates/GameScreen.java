@@ -230,6 +230,10 @@ public class GameScreen extends GameState {
         hud.update();
     }
 
+    public Hud getHud() {
+        return hud;
+    }
+
     /**
      * Makes the player.
      */

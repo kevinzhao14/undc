@@ -92,6 +92,9 @@ public class Console {
      * @param muted Whether to suppress all console outputs
      */
     public static void run(String command, boolean echo, boolean muted) {
+        // remove extra whitespaces
+        command = command.replaceAll("\\s{2,}", " ").trim();
+
         if (echo) {
             print(PREFIX + command);
         }
@@ -290,7 +293,7 @@ public class Console {
         if (commandPos > 0) { // show from command history
             command = COMMAND_HISTORY.get(commandPos - 1);
         } else if (commandPos < 0) { // show from suggestions
-            command = SUGGESTIONS.get(-commandPos - 1).getText();
+            command = SUGGESTIONS.get(-commandPos - 1).getText() + " ";
 
             // add/remove styles to highlight the selected suggestion
             Node prev = suggestBox.lookup(".suggestion-selected");

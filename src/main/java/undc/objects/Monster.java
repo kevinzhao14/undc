@@ -18,6 +18,8 @@ import java.util.Random;
  * Implementation of the Monster class.
  */
 public class Monster extends Entity {
+    private final ArrayList<Move> moveQueue;
+
     private String id;
     private String name;
     private MonsterType type;
@@ -26,7 +28,6 @@ public class Monster extends Entity {
 
     // status variables, changed through the game
     private double reaction;
-    private ArrayList<Move> moveQueue;
     private double opacity;
 
     /**
@@ -59,12 +60,10 @@ public class Monster extends Entity {
     /**
      * Updates health of monster after it receives damage and gives player gold for killing it.
      * @param damageAmount double amount of damage taken.
-     * @param giveGold boolean for whether or not to give gold after killing the monster.
-     * @return boolean on whether or not gold was given to the player
      */
-    public boolean attackMonster(double damageAmount, boolean giveGold) {
+    public void attackMonster(double damageAmount) {
         if (this.getHealth() <= 0) {
-            return false;
+            return;
         }
         //update damage dealt stat in player object
         ((GameScreen) Controller.getState()).getPlayer().addDamageDealt(
@@ -77,25 +76,14 @@ public class Monster extends Entity {
         if (this.getHealth() == 0.0) {
             GameScreen screen = (GameScreen) Controller.getState();
 
-            if (giveGold) {
-                double modifier;
-                switch (Controller.getDataManager().getDifficulty()) {
-                    case MEDIUM:
-                        modifier = Vars.d("sv_modifier_medium");
-                        break;
-                    case HARD:
-                        modifier = Vars.d("sv_modifier_hard");
-                        break;
-                    default:
-                        modifier = 1.0;
-                        break;
-                }
-                screen.getPlayer().setGold(screen.getPlayer().getGold()
-                        + (int) (Vars.d("sv_monster_gold") / modifier));
+            // give gold
+            screen.getPlayer().setGold(screen.getPlayer().getGold() + Vars.i("sv_monster_gold"));
 
-                //update number of monsters player killed
-                screen.getPlayer().addMonsterKilled();
-            }
+            // add xp
+            GameScreen.getInstance().getPlayer().addXp(Vars.i("sv_monster_xp"));
+
+            //update number of monsters player killed
+            screen.getPlayer().addMonsterKilled();
 
             //make monster disappear
             this.setOpacity(1 - (1000.0 / Vars.i("sv_tickrate") / Vars.i("gc_monster_fade_dur")));
@@ -150,7 +138,7 @@ public class Monster extends Entity {
                                             double randAngle = 2 * Math.PI * generator.nextDouble();
 
                                             //calculate x and y
-                                            x = player.getX() + player.getWidth() / 2 + (randDist
+                                            x = player.getX() + player.getWidth() / 2.0 + (randDist
                                                     * Math.cos(randAngle)) - width / 2.0;
                                             y = player.getY() + player.getHeight()  + (randDist
                                                     * Math.sin(randAngle)) - height / 2.0;
@@ -174,9 +162,7 @@ public class Monster extends Entity {
 
             //use run later to prevent any thread issues
             Platform.runLater(screen::updateHud);
-            return true;
         }
-        return false;
     }
 
     /**
@@ -224,7 +210,7 @@ public class Monster extends Entity {
         double maxRadius = 1.5 * getWidth();
         double x = getX();   //x-pos of item spawn
         double y = getY();   //y-pos of item spawn
-        boolean isValidLocation = false; //flag for whether item spawn location is valid
+        boolean isValidLocation; //flag for whether item spawn location is valid
 
         double randDist;   //random distance between item and monster
         double randAngle;  //random angle at which item is created
@@ -234,7 +220,6 @@ public class Monster extends Entity {
 
         for (int i = 0; i < numItems; i++) {
             isValidLocation = false; //reset flag
-
 
             //keep generating a new index until a droppable item is found
             Item item;

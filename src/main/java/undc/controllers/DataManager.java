@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import undc.handlers.Audio;
 import undc.handlers.Difficulty;
+import undc.handlers.Vars;
 import undc.objects.Item;
 import undc.objects.Monster;
 import undc.objects.Obstacle;
@@ -102,6 +103,13 @@ public class DataManager {
 
         //save data
         this.difficulty = difficulty;
+        double modifier = 1.0;
+        if (difficulty == Difficulty.MEDIUM) {
+            modifier = Vars.d("sv_modifier_medium");
+        } else if (difficulty == Difficulty.HARD) {
+            modifier = Vars.d("sv_modifier_hard");
+        }
+        Vars.find("sv_modifier").setVal(modifier + "", true);
         this.weapon = weapon.copy();
         return true;
     }

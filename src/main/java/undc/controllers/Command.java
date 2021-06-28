@@ -67,8 +67,8 @@ class Command {
         commands.add(new Command("clear", "", "Clears the console.", Command::clear));
         commands.add(new Command("quit", "", "Quits the game.", Command::quit));
         commands.add(new Command("give", "<id> [quantity]", "Gives the player an item(s)", Command::give));
-        commands.add(new Command("spawn", "<id> [x] [y]", "Spawns an entity. "
-                + "Defaults to the player's coordinates.", Command::spawn));
+        commands.add(new Command("spawn", "<id> [<x> <y>] [quantity]", "Spawns an entity. Defaults to 0, 0.",
+                Command::spawn));
         commands.add(new Command("help", "<command>", "Provides information about the command.", Command::help));
         commands.add(new Command("disconnect", "", "Disconnects from an active game.", Command::disconnect));
         commands.add(new Command("god", "", "Toggles god mode. Requires cheats.", Command::god));
@@ -284,18 +284,25 @@ class Command {
             Console.error("Cheats are disabled.");
             return;
         }
-        if (!(args.length == 1 || args.length == 3)) {
+        if (!(args.length == 1 || args.length == 3 || args.length == 4)) {
             Console.error("Invalid arguments for spawn.");
             return;
         }
         //spawn at 0,0
         if (args.length == 1) {
-            Console.run("spawn " + args[0] + " 0 0", false);
+            Console.run("spawn " + args[0] + " 0 0 1", false);
+        } else if (args.length == 3) {
+            Console.run("spawn " + args[0] + " " + args[1] + " " + args[2] + " 1", false);
         } else {
             try {
                 String id = args[0];
                 int x = Integer.parseInt(args[1]);
                 int y = Integer.parseInt(args[2]);
+                int n = Integer.parseInt(args[3]);
+                if (n < 1 || n > 1000) {
+                    Console.warn("Invalid value for quantity. Must be between 1 and 1,000");
+                    return;
+                }
                 if (!(Controller.getState() instanceof GameScreen)) {
                     Console.error("Cannot spawn because there is no game.");
                     return;
@@ -305,7 +312,10 @@ class Command {
                     Console.error("Invalid entity id.");
                     return;
                 }
-                GameController.getInstance().spawn(m, x, y);
+                for (int i = 0; i < n; i++) {
+                    GameController.getInstance().spawn(m, x, y);
+                }
+                Console.print("Spawned " + n + " " + id + " at " + x + ", " + y);
             } catch (NumberFormatException e) {
                 Console.error("Invalid argument values for spawn.");
             }
