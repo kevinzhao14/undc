@@ -235,8 +235,8 @@
       "name": "Bow",
       "sprite": "weapons/bow.png",
       "damage": 2,
-      "reloadTime": 0.25,
-      "fireRate": 0.25,
+      "reloadTime": 0,
+      "fireRate": 0.75,
       "ammo": {
         "projectile": "arrow",
         "size": 1,

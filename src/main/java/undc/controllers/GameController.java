@@ -807,7 +807,7 @@ public class GameController {
                 WeaponAmmo weaponAmmo = weapon.getAmmo();
 
                 //check for ammo
-                if (weaponAmmo.getRemaining() <= 0) {
+                if (weaponAmmo.getRemaining() <= 0 && !weapon.isReloading()) {
                     weapon.reload();
                     return;
                 }
