@@ -1,12 +1,13 @@
 package undc.objects;
 
 import javafx.scene.image.Image;
+import org.json.JSONObject;
 
 /**
  * Representation of an Entity object. Entities are objects that are "alive" and can interact with things in the game.
  */
 
-public abstract class Entity implements Movable {
+public abstract class Entity implements Movable, Savable {
     protected int maxHealth;
     protected double health;
     protected double attack;
@@ -131,5 +132,25 @@ public abstract class Entity implements Movable {
     public String toString() {
         return "HP: " + health + "/" + maxHealth + " | Pos: " + posX + ", " + posY + " | Size: "
                 + height + ", " + width;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        o.put("maxHealth", maxHealth);
+        o.put("health", health);
+        o.put("attack", attack);
+        o.put("sprite", sprite.getUrl());
+        o.put("width", width);
+        o.put("height", height);
+        o.put("posX", posX);
+        o.put("posY", posY);
+        o.put("attackCooldown", attackCooldown);
+        return o;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return null;
     }
 }

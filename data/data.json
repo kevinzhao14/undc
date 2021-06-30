@@ -175,7 +175,7 @@
       "sprite": "items/attack-potion.png",
       "stackSize": 10,
       "potionType": "attack",
-      "amount": 30,
+      "amount": 0.3,
       "droppable": true
     },
     {

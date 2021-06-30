@@ -8,7 +8,7 @@ import undc.controllers.Console;
 /**
  * Represents an Obstacle object. Obstacles are physical, static objects in the game that entities can interact with.
  */
-public class Obstacle implements Movable {
+public class Obstacle implements Movable, Savable {
     private double x;
     private double y;
     private int height;
@@ -93,6 +93,23 @@ public class Obstacle implements Movable {
 
     public void setSprite(Image sprite) {
         this.sprite = sprite;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        o.put("x", x);
+        o.put("y", y);
+        o.put("width", width);
+        o.put("height", height);
+        o.put("type", type.toString());
+        o.put("sprite", sprite.getUrl());
+        return o;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return null;
     }
 
     /**

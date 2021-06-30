@@ -413,6 +413,55 @@ public class GameScreen extends GameState {
         partialFadeIn(backdrop);
     }
 
+    public void win() {
+        StackPane root = new StackPane();
+
+        hud.getHud().setVisible(false);
+
+        VBox box = new VBox(40);
+        Label winnerLabel = new Label("Congratulations! You have escaped from the dungeon!");
+        winnerLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
+
+        //add stats
+        Label monstersKilled = new Label("Total monsters killed: "
+                + getPlayer().getMonstersKilled());
+        monstersKilled.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+        Label totalDamageDealt = new Label("Total damage dealt: "
+                + getPlayer().getTotalDamageDealt());
+        totalDamageDealt.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:25");
+        Label totalItemsConsumed = new Label("Total items consumed/used: "
+                + getPlayer().getTotalItemsConsumed());
+        totalItemsConsumed.setStyle("-fx-text-fill: white; -fx-font-family:VT323;"
+                + "-fx-font-size:25");
+
+        Button newGameButton = new Button("New Game");
+        newGameButton.setMinWidth(600);
+        newGameButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+
+        Button endButton = new Button("Exit");
+        endButton.setMinWidth(600);
+        endButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+
+        newGameButton.setOnAction((e) -> {
+            HomeScreen.resetInstance();
+            Controller.setState(HomeScreen.getInstance());
+        });
+
+        endButton.setOnAction((e) -> {
+            Platform.exit();
+        });
+
+        //box.getChildren().addAll(winnerLabel, newGameButton, endButton);
+        box.getChildren().addAll(winnerLabel, monstersKilled, totalDamageDealt,
+                totalItemsConsumed, newGameButton, endButton);
+        box.setAlignment(Pos.CENTER);
+        root.getChildren().addAll(box);
+        fadeIn(box, false);
+
+        root.setStyle("-fx-background-color: #34311b");
+        scene.setRoot(root);
+    }
+
     /**
      * Makes the pause menu graphics for when the game is paused.
      */
@@ -427,25 +476,29 @@ public class GameScreen extends GameState {
         pauseLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
 
         Button resumeButton = new Button("Resume");
-        Button endButton = new Button("Exit Game");
+        Button saveButton = new Button("Save Game");
+        Button exitButton = new Button("Exit Game");
 
         resumeButton.setMinWidth(600);
-        endButton.setMinWidth(600);
+        saveButton.setMinWidth(600);
+        exitButton.setMinWidth(600);
 
         resumeButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
-        endButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+        saveButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
+        exitButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
 
         resumeButton.setOnAction((e) -> {
             getGame().pause();
             togglePause();
         });
-        endButton.setOnAction((e) -> {
+        saveButton.setOnAction(e -> getGame().save());
+        exitButton.setOnAction((e) -> {
             togglePause();
             HomeScreen.resetInstance();
             Controller.setState(HomeScreen.getInstance());
         });
 
-        box.getChildren().addAll(pauseLabel, resumeButton, endButton);
+        box.getChildren().addAll(pauseLabel, resumeButton, saveButton, exitButton);
         box.setAlignment(Pos.CENTER);
         pause.getChildren().addAll(backdrop, box);
         hud.getHud().getChildren().add(pause);

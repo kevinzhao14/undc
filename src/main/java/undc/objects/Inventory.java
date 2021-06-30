@@ -1,5 +1,7 @@
 package undc.objects;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import undc.controllers.Console;
 
 import java.util.Iterator;
@@ -8,7 +10,7 @@ import java.util.Iterator;
  * Class that handles the games inventory/item storing system.
  * Is used by other classes to access items that the player possesses.
  */
-public class Inventory implements Iterable<InventoryItem> {
+public class Inventory implements Iterable<InventoryItem>, Savable {
     private final int rows;
     private final int columns;
     private InventoryItem[][] items;
@@ -207,6 +209,33 @@ public class Inventory implements Iterable<InventoryItem> {
 
     public void setGraphicalInventory(GraphicalInventory graphicalInventory) {
         this.graphicalInventory = graphicalInventory;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        o.put("rows", rows);
+        o.put("columns", columns);
+        o.put("size", size);
+        JSONArray items = new JSONArray();
+        for (InventoryItem[] irow : this.items) {
+            JSONArray row = new JSONArray();
+            for (InventoryItem invitem : irow) {
+                if (invitem == null) {
+                    row.put("");
+                } else {
+                    row.put(invitem.saveObject());
+                }
+            }
+            items.put(row);
+        }
+        o.put("items", items);
+        return o;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return null;
     }
 
     /**

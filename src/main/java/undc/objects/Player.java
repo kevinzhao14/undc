@@ -2,6 +2,8 @@ package undc.objects;
 
 import javafx.application.Platform;
 import javafx.scene.image.Image;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import undc.gamestates.GameScreen;
 import undc.handlers.Audio;
 import undc.handlers.Vars;
@@ -11,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Class that handles the main character of the game controlled by the person playing the game.
  */
-public class Player extends Entity {
+public class Player extends Entity implements Savable {
     private static final Image[] SPRITES = new Image[]{
         new Image("player/player-left.png"),
         new Image("player/player-up.png"),
@@ -172,5 +174,30 @@ public class Player extends Entity {
      */
     public static int xpNeeded(int level) {
         return (int) Math.pow(level, 1.8) + 100;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject obj = super.saveObject();
+        obj.put("gold", gold);
+        obj.put("monstersKilled", monstersKilled);
+        obj.put("totalDamageDealt", totalDamageDealt);
+        obj.put("totalItemsConsumed", totalItemsConsumed);
+        JSONArray eff = new JSONArray();
+        for (Effect e : effects) {
+            eff.put(e.saveObject());
+        }
+        obj.put("effects", eff);
+        obj.put("inventory", inventory.saveObject());
+        obj.put("selected", selected);
+        obj.put("direction", direction);
+        obj.put("level", level);
+        obj.put("xp", xp);
+        return obj;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return null;
     }
 }
