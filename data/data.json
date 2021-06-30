@@ -277,7 +277,7 @@
     },
     {
       "id":"take_damage",
-      "path": "src/main/resources/audio/classic_hurt.mp3"
+      "path": "src/main/resources/audio/hero_damage  001321.mp3"
     },
     {
       "id":"potion",
@@ -328,7 +328,7 @@
       "path": "src/main/resources/audio/tingle.mp3"
     },
     {
-      "id":"victory_credits",
+      "id":"game_win",
       "path": "src/main/resources/audio/25 Super Mario Galaxy.mp3"
     },
     {
@@ -338,10 +338,6 @@
     {
       "id":"final_boss_music",
       "path": "src/main/resources/audio/22 Final Battle with Bowser.mp3"
-    },
-    {
-      "id":"game_win",
-      "path": "src/main/resources/audio/smb_stage_clear.mp3"
     },
     {
       "id":"game_over",

@@ -189,7 +189,7 @@ public class Monster extends Entity {
             if (Audio.getSoundsClip("final_boss_music").isPlaying()) {
                 Audio.getSoundsClip("final_boss_music").stop();
             }
-            Audio.playAudio("game_win");
+            Audio.playAudio("boss_defeat");
             Item key = DataManager.getExitKey().copy();
             Image sprite = key.getSprite();
             double x = getX() + getWidth() / 2.0 - sprite.getWidth() / 2;
