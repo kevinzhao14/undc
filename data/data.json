@@ -261,11 +261,15 @@
     },
     {
       "id":"menu",
-      "path": "src/main/resources/audio/click.mp3"
+      "path": "src/main/resources/audio/23 Daybreak - A New Dawn Birth.mp3"
     },
     {
       "id":"footsteps",
       "path": "src/main/resources/audio/stone2.mp3"
+    },
+    {
+      "id":"weapon_swing",
+      "path": "src/main/resources/audio/hornet_sword.mp3"
     },
     {
       "id":"attack",
@@ -302,6 +306,30 @@
     {
       "id":"door",
       "path": "src/main/resources/audio/trigger.mp3"
+    },
+    {
+      "id":"chest_open",
+      "path": "src/main/resources/audio/chestopen.mp3"
+    },
+    {
+      "id":"chest_close",
+      "path": "src/main/resources/audio/chestclosed.mp3"
+    },
+    {
+      "id":"xp_gain",
+      "path": "src/main/resources/audio/orb.mp3"
+    },
+    {
+      "id":"level_up",
+      "path": "src/main/resources/audio/levelup.mp3"
+    },
+    {
+      "id":"boss_defeat",
+      "path": "src/main/resources/audio/tingle.mp3"
+    },
+    {
+      "id":"victory_credits",
+      "path": "src/main/resources/audio/25 Super Mario Galaxy.mp3"
     },
     {
       "id":"challenge_room",

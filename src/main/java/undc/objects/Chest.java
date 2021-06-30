@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import undc.controllers.GameController;
 import undc.gamestates.GameScreen;
+import undc.handlers.Audio;
 
 /**
  * Class representing a chest.
@@ -20,6 +21,7 @@ public class Chest extends Obstacle implements Interactable {
 
     @Override
     public boolean interact() {
+        Audio.playAudio("chest_open");
         GameScreen.getInstance().addOverlay(contents.getGraphicalInventory());
         Platform.runLater(() -> contents.getGraphicalInventory().toggle()); // show the inventory GUI
         GameController.getInstance().pause();
