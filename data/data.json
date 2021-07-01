@@ -305,7 +305,7 @@
     },
     {
       "id":"door",
-      "path": "src/main/resources/audio/trigger.mp3"
+      "path": "src/main/resources/audio/gate_slam.mp3"
     },
     {
       "id":"chest_open",

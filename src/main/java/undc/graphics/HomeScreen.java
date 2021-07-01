@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import undc.command.Console;
 import javafx.scene.Scene;
 import undc.command.Vars;
+import undc.general.Audio;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +49,13 @@ public class HomeScreen extends GameState {
         return instance;
     }
 
+    /**
+     * Resets the HomeScreen.
+     */
     public static void resetInstance() {
         instance = new HomeScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
+        if (!(Audio.getSoundsClip("menu").isPlaying())) {
+            Audio.playAudio("menu");
+        }
     }
 }

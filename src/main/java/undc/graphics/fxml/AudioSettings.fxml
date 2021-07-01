@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToWidth="true" hbarPolicy="NEVER" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="undc.fxml.controllers.AudioController">
+<ScrollPane fitToWidth="true" hbarPolicy="NEVER" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="undc.graphics.fxml.controllers.AudioController">
    <content>
       <GridPane>
          <columnConstraints>
@@ -27,7 +27,7 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <VBox GridPane.columnIndex="1">
+            <VBox fx:id="master" GridPane.columnIndex="1">
                <children>
                   <Label styleClass="controls-subtitle" text="Audio">
                      <VBox.margin>
@@ -51,7 +51,7 @@
                         <Label text="Game Effects Volume" GridPane.rowIndex="1" />
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                            <children>
-                              <Slider />
+                              <Slider fx:id="slider" />
                               <Button mnemonicParsing="false" text="x%" />
                            </children>
                         </HBox>
@@ -97,7 +97,7 @@
                      <graphic>
                         <ImageView fitHeight="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../resources/icons/resetClock.png" />
+                              <Image url="@../../../../resources/icons/resetClock.png" />
                            </image>
                         </ImageView>
                      </graphic>
