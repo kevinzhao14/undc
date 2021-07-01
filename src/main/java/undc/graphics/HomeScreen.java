@@ -26,7 +26,7 @@ public class HomeScreen extends GameState {
         super(width, height);
         Parent root;
         try {
-            URL url = new File("src/main/java/undc/fxml/HomeScreen.fxml").toURI().toURL();
+            URL url = new File("src/main/java/undc/graphics/fxml/HomeScreen.fxml").toURI().toURL();
             root = FXMLLoader.load(url);
         } catch (IOException e) {
             Console.error("Failed to load home screen.");

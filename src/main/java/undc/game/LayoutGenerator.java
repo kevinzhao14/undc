@@ -183,8 +183,13 @@ public class LayoutGenerator {
     }
 
     /**
+<<<<<<< HEAD:src/main/java/undc/game/LayoutGenerator.java
      * Generates a path of rooms in a specified direction.
      * @param dir Direction to generate in
+=======
+     * Generates a path between rooms in the passed int direction.
+     * @param dir int direction to generate path in
+>>>>>>> 48a2a87272059429a00abd5eefe4e7cd52f6694f:src/main/java/undc/handlers/LayoutGenerator.java
      */
     private void generatePath(int dir) {
         int x = GRID_WIDTH / 2;

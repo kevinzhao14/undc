@@ -23,7 +23,7 @@ public class NewGameScreen extends GameState {
     public NewGameScreen(int width, int height) {
         super(width, height);
         try {
-            URL url = new File("src/main/java/undc/fxml/NewGameScreen.fxml").toURI().toURL();
+            URL url = new File("src/main/java/undc/graphics/fxml/NewGameScreen.fxml").toURI().toURL();
             Parent root = FXMLLoader.load(url);
             scene = new Scene(root, width, height);
             scene.getStylesheets().addAll("styles/global.css", "styles/newgame.css");

@@ -413,10 +413,11 @@ public class GameScreen extends GameState {
     }
 
     /**
-     * Displays the win screen.
+     * Called when the player enters the door in the boss room. Presents the victor screen.
      */
     public void win() {
-        final StackPane root = new StackPane();
+        Audio.playAudio("game_win");
+        StackPane root = new StackPane();
 
         hud.getHud().setVisible(false);
 
@@ -445,11 +446,15 @@ public class GameScreen extends GameState {
         endButton.setStyle("-fx-font-family:VT323; -fx-font-size:25");
 
         newGameButton.setOnAction((e) -> {
+            Audio.stopAudio();
             HomeScreen.resetInstance();
             Controller.setState(HomeScreen.getInstance());
         });
 
-        endButton.setOnAction((e) -> Platform.exit());
+        endButton.setOnAction((e) -> {
+            Audio.stopAudio();
+            Controller.quit();
+        });
 
         //box.getChildren().addAll(winnerLabel, newGameButton, endButton);
         box.getChildren().addAll(winnerLabel, monstersKilled, totalDamageDealt,

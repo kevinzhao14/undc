@@ -12,7 +12,7 @@ public class Dummy implements Movable {
     private final int height;
 
     /**
-     * Constructor.
+     * Creates a Dummy object.
      * @param x X position
      * @param y Y position
      * @param w Width

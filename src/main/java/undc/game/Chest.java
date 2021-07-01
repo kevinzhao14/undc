@@ -3,6 +3,7 @@ package undc.game;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import org.json.JSONObject;
+import undc.general.Audio;
 import undc.general.Interactable;
 import undc.inventory.Inventory;
 import undc.general.Savable;
@@ -23,6 +24,7 @@ public class Chest extends Obstacle implements Interactable, Savable {
 
     @Override
     public boolean interact() {
+        Audio.playAudio("chest_open");
         GameScreen.getInstance().addOverlay(contents.getGraphicalInventory());
         Platform.runLater(() -> contents.getGraphicalInventory().toggle()); // show the inventory GUI
         GameController.getInstance().pause();

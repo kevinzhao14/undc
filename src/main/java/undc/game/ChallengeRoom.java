@@ -35,7 +35,7 @@ public class ChallengeRoom extends Room {
     }
 
     /**
-     * Sets the challenge room as [not] completed.
+     * Updates completed status of challenge room and stops music.
      * @param completed Whether the room has been completed.
      */
     public void setCompleted(boolean completed) {

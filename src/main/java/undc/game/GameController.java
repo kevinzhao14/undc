@@ -149,10 +149,11 @@ public class GameController implements Savable {
         isRunning = false;
         isStopped = false;
         states = new HashMap<>();
-        states.put("left", false);
-        states.put("up", false);
-        states.put("right", false);
-        states.put("down", false);
+        // states for player movement direction
+        states.put("north", false);
+        states.put("east", false);
+        states.put("south", false);
+        states.put("west", false);
         states.put("frictionX", false);
         states.put("frictionY", false);
         states.put("attacking", false);
@@ -404,14 +405,14 @@ public class GameController implements Savable {
      * @param isPress Whether player is pressing or releasing the key
      */
     private void handleMovementKey(Direction dir, boolean isPress) {
-        if (isPress == states.get(dir.toString())) {
+        if (isPress == states.get(dir.toString().toLowerCase())) {
             return;
         }
         int sign = isPress ? 1 : -1;
         if (dir == Direction.WEST || dir == Direction.SOUTH) {
             sign *= -1;
         }
-        states.put(dir.toString(), isPress);
+        states.put(dir.toString().toLowerCase(), isPress);
         double accel = (double) Vars.i("sv_acceleration") / Vars.i("sv_tickrate") / Vars.i("sv_tickrate");
         if (dir == Direction.WEST || dir == Direction.EAST) {
             accelX += round(sign * accel);

@@ -32,7 +32,7 @@ public class SettingsScreen extends GameState {
     private SettingsScreen(int width, int height) {
         super(width, height);
         try {
-            URL url = new File("src/main/java/undc/fxml/SettingsScreen.fxml").toURI().toURL();
+            URL url = new File("src/main/java/undc/graphics/fxml/SettingsScreen.fxml").toURI().toURL();
             Parent root = FXMLLoader.load(url);
 
             StackPane pane = new StackPane();

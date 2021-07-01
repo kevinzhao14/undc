@@ -163,10 +163,12 @@ public class Player extends Entity implements Savable {
      * @param amt The amount of xp to add
      */
     public void addXp(int amt) {
+        Audio.playAudio("xp_gain");
         xp += amt;
         while (xp >= xpNeeded(level)) {
             xp -= xpNeeded(level);
             level++;
+            Audio.playAudio("level_up");
         }
         Platform.runLater(() -> GameScreen.getInstance().updateHud());
     }
