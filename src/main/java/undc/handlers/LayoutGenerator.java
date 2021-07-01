@@ -189,6 +189,10 @@ public class LayoutGenerator {
         return new DungeonLayout(startRoom, exitRoom, roomGrid);
     }
 
+    /**
+     * Generates a path of rooms in a specified direction.
+     * @param dir Direction to generate in
+     */
     private void generatePath(int dir) {
         int x = GRID_WIDTH / 2;
         if (dir == 0) {

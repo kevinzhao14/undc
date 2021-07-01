@@ -12,10 +12,7 @@ import undc.controllers.Console;
 public class Projectile {
     private String id;
     private String name;
-    private Image spriteLeft;
-    private Image spriteUp;
-    private Image spriteRight;
-    private Image spriteDown;
+    private SpriteGroup sprites;
     private double damage;
     //speed of the projectile
     private double speed;
@@ -41,10 +38,7 @@ public class Projectile {
         Projectile proj = new Projectile();
         proj.id = this.id;
         proj.name = this.name;
-        proj.spriteLeft = this.spriteLeft;
-        proj.spriteUp = this.spriteUp;
-        proj.spriteRight = this.spriteRight;
-        proj.spriteDown = this.spriteDown;
+        proj.sprites = this.sprites;
         proj.damage = this.damage;
         proj.speed = this.speed;
         proj.range = this.range;
@@ -81,19 +75,19 @@ public class Projectile {
     }
 
     public Image getSpriteRight() {
-        return spriteRight;
+        return sprites.get(Direction.EAST);
     }
 
     public Image getSpriteLeft() {
-        return spriteLeft;
+        return sprites.get(Direction.WEST);
     }
 
     public Image getSpriteUp() {
-        return spriteUp;
+        return sprites.get(Direction.NORTH);
     }
 
     public Image getSpriteDown() {
-        return spriteDown;
+        return sprites.get(Direction.SOUTH);
     }
 
     public double getDamage() {
@@ -133,10 +127,12 @@ public class Projectile {
                 Console.error("Invalid length for projectile sprites.");
                 return null;
             }
-            proj.spriteLeft = new Image(sprites.getString(0));
-            proj.spriteUp = new Image(sprites.getString(1));
-            proj.spriteRight = new Image(sprites.getString(2));
-            proj.spriteDown = new Image(sprites.getString(3));
+            proj.sprites = new SpriteGroup(
+                new Image(sprites.getString(0)),
+                new Image(sprites.getString(1)),
+                new Image(sprites.getString(2)),
+                new Image(sprites.getString(3))
+            );
         } catch (JSONException e) {
             Console.error("Invalid value for projectile sprites.");
             return null;

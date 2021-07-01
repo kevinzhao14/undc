@@ -26,6 +26,7 @@ import undc.handlers.Vars;
 import undc.objects.CVar;
 import undc.objects.ChallengeRoom;
 import undc.objects.Chest;
+import undc.objects.Direction;
 import undc.objects.DungeonLayout;
 import undc.objects.GraphicalInventory;
 import undc.objects.Inventory;
@@ -239,7 +240,7 @@ public class GameScreen extends GameState {
      */
     private void createPlayer() {
         player = new Player(Vars.i("sv_player_health"), 1, Controller.getDataManager().getWeapon());
-        player.setDirection(3);
+        player.setDirection(Direction.SOUTH);
 
         // sandbox inventory
         if (mode == GameMode.SANDBOX) {
@@ -413,12 +414,15 @@ public class GameScreen extends GameState {
         partialFadeIn(backdrop);
     }
 
+    /**
+     * Displays the win screen.
+     */
     public void win() {
-        StackPane root = new StackPane();
+        final StackPane root = new StackPane();
 
         hud.getHud().setVisible(false);
 
-        VBox box = new VBox(40);
+        final VBox box = new VBox(40);
         Label winnerLabel = new Label("Congratulations! You have escaped from the dungeon!");
         winnerLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
 
@@ -447,9 +451,7 @@ public class GameScreen extends GameState {
             Controller.setState(HomeScreen.getInstance());
         });
 
-        endButton.setOnAction((e) -> {
-            Platform.exit();
-        });
+        endButton.setOnAction((e) -> Platform.exit());
 
         //box.getChildren().addAll(winnerLabel, newGameButton, endButton);
         box.getChildren().addAll(winnerLabel, monstersKilled, totalDamageDealt,

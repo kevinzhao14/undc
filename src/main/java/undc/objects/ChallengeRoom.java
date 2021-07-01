@@ -33,6 +33,10 @@ public class ChallengeRoom extends Room {
         return completed;
     }
 
+    /**
+     * Sets the challenge room as [not] completed.
+     * @param completed Whether the room has been completed.
+     */
     public void setCompleted(boolean completed) {
         this.completed = completed;
         if (completed && Audio.getSoundsClip("challenge_room").isPlaying()) {

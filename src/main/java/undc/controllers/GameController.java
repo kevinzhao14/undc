@@ -16,6 +16,7 @@ import undc.objects.Bomb;
 import undc.objects.ChallengeRoom;
 import undc.objects.Collision;
 import undc.objects.Coords;
+import undc.objects.Direction;
 import undc.objects.Door;
 import undc.objects.DroppedItem;
 import undc.objects.Dummy;
@@ -292,7 +293,7 @@ public class GameController implements Savable {
         String control = Controls.getInstance().getControl(key);
         //movement keys
         if (control.equals("up") || control.equals("down") || control.equals("right") || control.equals("left")) {
-            handleMovementKey(control, isPress);
+            handleMovementKey(Direction.parse(control), isPress);
             return;
         }
         if (control.equals("console") || (getScreen().isConsoleOpen() && control.equals("pause"))) {
@@ -412,20 +413,20 @@ public class GameController implements Savable {
      * @param dir Direction to apply force to
      * @param isPress Whether player is pressing or releasing the key
      */
-    private void handleMovementKey(String dir, boolean isPress) {
-        if (isPress == states.get(dir)) {
+    private void handleMovementKey(Direction dir, boolean isPress) {
+        if (isPress == states.get(dir.toString())) {
             return;
         }
         int sign = isPress ? 1 : -1;
-        if (dir.equals("left") || dir.equals("down")) {
+        if (dir == Direction.WEST || dir == Direction.SOUTH) {
             sign *= -1;
         }
-        states.put(dir, isPress);
+        states.put(dir.toString(), isPress);
         double accel = (double) Vars.i("sv_acceleration") / Vars.i("sv_tickrate") / Vars.i("sv_tickrate");
-        if (dir.equals("left") || dir.equals("right")) {
+        if (dir == Direction.WEST || dir == Direction.EAST) {
             accelX += round(sign * accel);
             accelX = round(accelX);
-        } else {
+        } else if (dir == Direction.NORTH || dir == Direction.SOUTH) {
             accelY += sign * accel;
             accelY = round(accelY);
         }
@@ -463,6 +464,9 @@ public class GameController implements Savable {
         return isRunning;
     }
 
+    /**
+     * Method to save the game.
+     */
     public void save() {
         JSONObject saveObj = new JSONObject();
         saveObj.put("player", player.saveObject());
@@ -584,17 +588,17 @@ public class GameController implements Savable {
                 Collision<Obstacle> check = checkCollisions(obs, player, new Coords(newPosX, newPosY));
                 if (check.getCollider() == null) {
                     //set player sprite
-                    int dir;
+                    Direction dir;
                     if (newPosX < posX) {
-                        dir = 4;
+                        dir = Direction.WEST;
                     } else if (newPosX > posX) {
-                        dir = 6;
+                        dir = Direction.EAST;
                     } else if (newPosY > posY) {
-                        dir = 5;
+                        dir = Direction.NORTH;
                     } else {
-                        dir = 7;
+                        dir = Direction.SOUTH;
                     }
-                    player.setDirection(dir);
+                    player.setDirection(dir, true);
 
                     //check for door intersections
                     if (checkDoors(new Coords(newPosX, newPosY))) {
@@ -704,7 +708,7 @@ public class GameController implements Savable {
                 // check what player is facing & close enough to
                 for (Obstacle o : room.getObstacles()) {
                     // player is facing the obstacle & it is interactable & it is in range
-                    if (directionOf(player, o).contains(player.getDirection() % 4) // mod by 4 to include moving
+                    if (directionOf(player, o).contains(player.getDirection()) // mod by 4 to include moving
                             && o instanceof Interactable
                             && distance(player, o) < Vars.i("sv_interact_distance")) {
                         ((Interactable) o).interact();
@@ -725,9 +729,9 @@ public class GameController implements Savable {
             double x = player.getX() + player.getWidth() / 2.0;
             double y = player.getY() + player.getHeight() / 2.0;
             Image itemSprite = item.getSprite();
-            int dir = player.getDirection() % 4;
-            x += dir == 0 ? -d : (dir == 2 ? d : 0);
-            y += dir == 3 ? -d : (dir == 1 ? d : 0);
+            Direction dir = player.getDirection();
+            x += dir == Direction.WEST ? -d : (dir == Direction.EAST ? d : 0);
+            y += dir == Direction.SOUTH ? -d : (dir == Direction.NORTH ? d : 0);
             x -= itemSprite.getWidth() / 2;
             y -= itemSprite.getHeight() / 2;
 
@@ -868,26 +872,26 @@ public class GameController implements Savable {
                 Platform.runLater(() -> getScreen().updateHud());
 
                 //create projectile
-                int dir = player.getDirection() % 4;
+                Direction dir = player.getDirection();
                 double x = player.getX() + player.getWidth() / 2.0;
                 double y = player.getY() + player.getHeight();
                 Image sprite = weaponAmmo.getProjectile().getSpriteLeft();
-                if (dir == 1) {
+                if (dir == Direction.NORTH) {
                     sprite = weaponAmmo.getProjectile().getSpriteUp();
-                } else if (dir == 2) {
+                } else if (dir == Direction.EAST) {
                     sprite = weaponAmmo.getProjectile().getSpriteRight();
-                } else if (dir == 3) {
+                } else if (dir == Direction.SOUTH) {
                     sprite = weaponAmmo.getProjectile().getSpriteDown();
                 }
                 int height = weaponAmmo.getProjectile().getHeight();
                 int width = weaponAmmo.getProjectile().getWidth();
-                if (dir == 0) {
+                if (dir == Direction.WEST) {
                     x -= 5;
-                } else if (dir == 2) {
+                } else if (dir == Direction.EAST) {
                     x += 5;
-                } else if (dir == 1) {
+                } else if (dir == Direction.NORTH) {
                     y += 5;
-                } else {
+                } else if (dir == Direction.SOUTH) {
                     y -= 5;
                 }
                 x -= width / 2.0;
@@ -900,8 +904,8 @@ public class GameController implements Savable {
 
                 //velocity
                 double speed = weaponAmmo.getProjectile().getSpeed();
-                double velX = dir == 0 ? -speed : (dir == 2 ? speed : 0);
-                double velY = dir == 1 ? speed : (dir == 3 ? -speed : 0);
+                double velX = dir == Direction.WEST ? -speed : (dir == Direction.EAST ? speed : 0);
+                double velY = dir == Direction.NORTH ? speed : (dir == Direction.SOUTH ? -speed : 0);
 
                 //create projectile
                 ShotProjectile sp = new ShotProjectile(weaponAmmo.getProjectile(), x, y, velX, velY);
@@ -997,7 +1001,7 @@ public class GameController implements Savable {
                 //was moving before and decelerated to 0
             } else if (states.get("frictionX") && Math.abs(originalVelX) < Math.abs(accelX)) {
                 if (velY == 0) {
-                    player.setDirection((originalVelX > 0) ? 2 : 0);
+                    player.setDirection((originalVelX > 0) ? Direction.EAST : Direction.WEST);
                 }
                 velX = 0;
                 accelX -= (accelX > 0 ? 1 : -1) * friction;
@@ -1007,7 +1011,7 @@ public class GameController implements Savable {
                 velY = (velY > 0 ? 1 : -1) * maxVel;
             } else if (states.get("frictionY") && Math.abs(originalVelY) < Math.abs(accelY)) {
                 if (velX == 0) {
-                    player.setDirection((originalVelY > 0) ? 1 : 3);
+                    player.setDirection((originalVelY > 0) ? Direction.NORTH : Direction.SOUTH);
                 }
                 velY = 0;
                 accelY -= (accelY > 0 ? 1 : -1) * friction;
@@ -1098,19 +1102,19 @@ public class GameController implements Savable {
          * @param obj Object to check
          * @return Returns the direction obj is to origin
          */
-        private ArrayList<Integer> directionOf(Movable origin, Movable obj) {
-            ArrayList<Integer> dirs = new ArrayList<>();
+        private ArrayList<Direction> directionOf(Movable origin, Movable obj) {
+            ArrayList<Direction> dirs = new ArrayList<>();
             if (obj.getX() <= origin.getX()) {
-                dirs.add(0);
+                dirs.add(Direction.WEST);
             }
             if (obj.getX() > origin.getX()) {
-                dirs.add(2);
+                dirs.add(Direction.EAST);
             }
             if (obj.getY() <= origin.getY()) {
-                dirs.add(3);
+                dirs.add(Direction.SOUTH);
             }
             if (obj.getY() > origin.getY()) {
-                dirs.add(1);
+                dirs.add(Direction.NORTH);
             }
             return dirs;
         }

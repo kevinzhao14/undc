@@ -1,11 +1,21 @@
 package undc.objects;
 
+/**
+ * Represents a dummy entity/movable object used in imiatating an object's position.
+ */
 public class Dummy implements Movable {
     private double x;
     private double y;
     private final int width;
     private final int height;
 
+    /**
+     * Constructor.
+     * @param x X position
+     * @param y Y position
+     * @param w Width
+     * @param h Height
+     */
     public Dummy(double x, double y, int w, int h) {
         this.x = x;
         this.y = y;

@@ -120,6 +120,11 @@ public class DataManager implements Savable {
         return true;
     }
 
+    /**
+     * Handles saving some save data to a file.
+     * @param o Save data to save
+     * @return Returns true on success, false on failure
+     */
     public boolean saveGame(JSONObject o) {
         if (o == null) {
             Console.error("Invalid save data.");

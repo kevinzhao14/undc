@@ -14,16 +14,19 @@ import java.util.ArrayList;
  * Class that handles the main character of the game controlled by the person playing the game.
  */
 public class Player extends Entity implements Savable {
-    private static final Image[] SPRITES = new Image[]{
+    private static final SpriteGroup STANDING_SPRITES = new SpriteGroup(
         new Image("player/player-left.png"),
         new Image("player/player-up.png"),
         new Image("player/player-right.png"),
-        new Image("player/player-down.png"),
+        new Image("player/player-down.png")
+    );
+
+    private static final SpriteGroup MOVING_SPRITES = new SpriteGroup(
         new Image("player/player-walk-left.gif"),
         new Image("player/player-walk-up.gif"),
         new Image("player/player-walk-right.gif"),
         new Image("player/player-walk-down.gif")
-    };
+    );
 
     private int gold;
     private int monstersKilled;
@@ -33,7 +36,7 @@ public class Player extends Entity implements Savable {
 
     private Inventory inventory;
     private int selected;
-    private int direction;
+    private Direction direction;
     private int level;
     private int xp;
 
@@ -52,7 +55,7 @@ public class Player extends Entity implements Savable {
         totalDamageDealt = 0.0;
         totalItemsConsumed = 0;
         selected = 0;
-        direction = 0;
+        direction = Direction.SOUTH;
         effects = new ArrayList<>();
     }
 
@@ -88,9 +91,13 @@ public class Player extends Entity implements Savable {
         totalItemsConsumed++;
     }
 
-    public void setDirection(int dir) {
-        this.setSprite(SPRITES[dir]);
+    public void setDirection(Direction dir, boolean moving) {
+        this.setSprite(moving ? MOVING_SPRITES.get(dir) : STANDING_SPRITES.get(dir));
         direction = dir;
+    }
+
+    public void setDirection(Direction dir) {
+        setDirection(dir, false);
     }
 
     public Inventory getInventory() {
@@ -121,7 +128,7 @@ public class Player extends Entity implements Savable {
         this.selected = selected % inventory.getCols();
     }
 
-    public int getDirection() {
+    public Direction getDirection() {
         return direction;
     }
 
@@ -188,7 +195,7 @@ public class Player extends Entity implements Savable {
         obj.put("effects", eff);
         obj.put("inventory", inventory.saveObject());
         obj.put("selected", selected);
-        obj.put("direction", direction);
+        obj.put("direction", direction.toString());
         obj.put("level", level);
         obj.put("xp", xp);
         return obj;
