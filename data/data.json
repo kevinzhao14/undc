@@ -257,91 +257,113 @@
   "sounds": [
     {
     "id": "button",
-    "path": "src/main/resources/audio/click.mp3"
+    "path": "src/main/resources/audio/click.mp3",
+    "type": "effect"
     },
     {
       "id":"menu",
-      "path": "src/main/resources/audio/23 Daybreak - A New Dawn Birth.mp3"
+      "path": "src/main/resources/audio/23 Daybreak - A New Dawn Birth.mp3",
+      "type": "music"
     },
     {
       "id":"footsteps",
-      "path": "src/main/resources/audio/stone2.mp3"
+      "path": "src/main/resources/audio/stone2.mp3",
+      "type": "effect"
     },
     {
       "id":"weapon_swing",
-      "path": "src/main/resources/audio/hornet_sword.mp3"
+      "path": "src/main/resources/audio/hornet_sword.mp3",
+      "type": "effect"
     },
     {
       "id":"attack",
-      "path": "src/main/resources/audio/hit2.mp3"
+      "path": "src/main/resources/audio/hit2.mp3",
+      "type": "effect"
     },
     {
       "id":"take_damage",
-      "path": "src/main/resources/audio/hero_damage  001321.mp3"
+      "path": "src/main/resources/audio/hero_damage  001321.mp3",
+      "type": "effect"
     },
     {
       "id":"potion",
-      "path": "src/main/resources/audio/drink.mp3"
+      "path": "src/main/resources/audio/drink.mp3",
+      "type": "effect"
     },
     {
       "id":"fuse",
-      "path": "src/main/resources/audio/fuse.mp3"
+      "path": "src/main/resources/audio/fuse.mp3",
+      "type": "effect"
     },
     {
       "id":"bomb_explosion",
-      "path": "src/main/resources/audio/explode1.mp3"
+      "path": "src/main/resources/audio/explode1.mp3",
+      "type": "effect"
     },
     {
       "id":"rocket_launch",
-      "path": "src/main/resources/audio/largeBlast1.mp3"
+      "path": "src/main/resources/audio/largeBlast1.mp3",
+      "type": "effect"
     },
     {
       "id":"rocket_explosion",
-      "path": "src/main/resources/audio/explode2.mp3"
+      "path": "src/main/resources/audio/explode2.mp3",
+      "type": "effect"
     },
     {
       "id":"monster",
-      "path": "src/main/resources/audio/say1.mp3"
+      "path": "src/main/resources/audio/say1.mp3",
+      "type": "effect"
     },
     {
       "id":"door",
-      "path": "src/main/resources/audio/gate_slam.mp3"
+      "path": "src/main/resources/audio/gate_slam.mp3",
+      "type": "effect"
     },
     {
       "id":"chest_open",
-      "path": "src/main/resources/audio/chestopen.mp3"
+      "path": "src/main/resources/audio/chestopen.mp3",
+      "type": "effect"
     },
     {
       "id":"chest_close",
-      "path": "src/main/resources/audio/chestclosed.mp3"
+      "path": "src/main/resources/audio/chestclosed.mp3",
+      "type": "effect"
     },
     {
       "id":"xp_gain",
-      "path": "src/main/resources/audio/orb.mp3"
+      "path": "src/main/resources/audio/orb.mp3",
+      "type": "effect"
     },
     {
       "id":"level_up",
-      "path": "src/main/resources/audio/levelup.mp3"
+      "path": "src/main/resources/audio/levelup.mp3",
+      "type": "effect"
     },
     {
       "id":"boss_defeat",
-      "path": "src/main/resources/audio/tingle.mp3"
+      "path": "src/main/resources/audio/tingle.mp3",
+      "type": "music"
     },
     {
       "id":"game_win",
-      "path": "src/main/resources/audio/25 Super Mario Galaxy.mp3"
+      "path": "src/main/resources/audio/25 Super Mario Galaxy.mp3",
+      "type": "music"
     },
     {
       "id":"challenge_room",
-      "path": "src/main/resources/audio/05 Peach's Castle Stolen.mp3"
+      "path": "src/main/resources/audio/05 Peach's Castle Stolen.mp3",
+      "type": "music"
     },
     {
       "id":"final_boss_music",
-      "path": "src/main/resources/audio/22 Final Battle with Bowser.mp3"
+      "path": "src/main/resources/audio/22 Final Battle with Bowser.mp3",
+      "type": "music"
     },
     {
       "id":"game_over",
-      "path": "src/main/resources/audio/smb_gameover.mp3"
+      "path": "src/main/resources/audio/smb_gameover.mp3",
+      "type": "music"
     }
   ]
 }

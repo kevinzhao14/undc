@@ -51,14 +51,14 @@
                         <Label text="Game Effects Volume" GridPane.rowIndex="1" />
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                            <children>
-                              <Slider fx:id="slider" />
-                              <Button mnemonicParsing="false" text="x%" />
+                              <Slider id="master-volume" fx:id="slider" />
+                              <Button mnemonicParsing="false" onAction="#changeVolume" text="x%" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <children>
-                              <Slider />
-                              <Button mnemonicParsing="false" text="x%" />
+                              <Slider id="game-effects" />
+                              <Button mnemonicParsing="false" onAction="#changeVolume" text="x%" />
                            </children>
                         </HBox>
                      </children>
@@ -83,8 +83,8 @@
                         <Label text="Music Volume" />
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                            <children>
-                              <Slider />
-                              <Button mnemonicParsing="false" text="x%" />
+                              <Slider id="music" />
+                              <Button mnemonicParsing="false" onAction="#changeVolume" text="x%" />
                            </children>
                         </HBox>
                      </children>

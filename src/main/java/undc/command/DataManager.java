@@ -35,7 +35,7 @@ public class DataManager implements Savable {
 
     public static final HashMap<String, Monster> MONSTERS = new HashMap<>();
 
-    public static final HashMap<String, AudioClip> SOUNDS = new HashMap<>();
+    public static final HashMap<String, Audio> SOUNDS = new HashMap<>();
 
     public static final String EXPLOSION = "textures/boom.gif";
 
@@ -378,11 +378,17 @@ public class DataManager implements Savable {
                 Console.error("Duplicate audio id " + audio.getId());
                 return false;
             }
-            SOUNDS.put(audio.getId(), audio.getClip());
+            SOUNDS.put(audio.getId(), audio);
         }
         // Set up properties for AudioClips that require slight altering such as making them repeat indefinitely or
         // adjusting play rate
-        SOUNDS.get("menu").setCycleCount(AudioClip.INDEFINITE);
+        SOUNDS.get("menu").getClip().setCycleCount(AudioClip.INDEFINITE);
+
+        // Set up initial volume values for the AudioClips
+        for (Audio audio : DataManager.SOUNDS.values()) {
+            audio.getClip().setVolume(Vars.d("volume"));
+            System.out.println(audio.getClip().getVolume());
+        }
 
         return true;
     }

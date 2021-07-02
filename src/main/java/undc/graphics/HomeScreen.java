@@ -54,7 +54,7 @@ public class HomeScreen extends GameState {
      */
     public static void resetInstance() {
         instance = new HomeScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
-        if (!(Audio.getSoundsClip("menu").isPlaying())) {
+        if (!(Audio.getAudioClip("menu").isPlaying())) {
             Audio.playAudio("menu");
         }
     }

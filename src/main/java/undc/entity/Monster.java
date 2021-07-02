@@ -192,8 +192,8 @@ public class Monster extends Entity {
             return new DroppedItem[0];
         }
         if (type == MonsterType.FINALBOSS) {
-            if (Audio.getSoundsClip("final_boss_music").isPlaying()) {
-                Audio.getSoundsClip("final_boss_music").stop();
+            if (Audio.getAudioClip("final_boss_music").isPlaying()) {
+                Audio.getAudioClip("final_boss_music").stop();
             }
             Audio.playAudio("boss_defeat");
             Item key = DataManager.getExitKey().copy();

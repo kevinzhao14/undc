@@ -15,6 +15,7 @@ import java.io.File;
 public class Audio {
     private String id;
     private AudioClip clip;
+    private String type;
 
     private Audio() {
 
@@ -25,8 +26,7 @@ public class Audio {
      * @param id String used to locate desired AudioClip in SOUNDS HashMap
      */
     public static void playAudio(String id) {
-        AudioClip clip = DataManager.SOUNDS.get(id);
-        clip.setVolume(Vars.d("volume"));
+        AudioClip clip = DataManager.SOUNDS.get(id).getClip();
         clip.play();
     }
 
@@ -34,9 +34,9 @@ public class Audio {
      * Stops all AudioClips that may be playing.
      */
     public static void stopAudio() {
-        for (AudioClip clip : DataManager.SOUNDS.values()) {
-            if (clip.isPlaying()) {
-                clip.stop();
+        for (Audio audio : DataManager.SOUNDS.values()) {
+            if (audio.getClip().isPlaying()) {
+                audio.getClip().stop();
             }
         }
     }
@@ -60,6 +60,12 @@ public class Audio {
             Console.error("Invalid value for audio clip");
             return null;
         }
+        try {
+            audio.type = o.getString("type");
+        } catch (JSONException e){
+            Console.error("Invalid value for audio type.");
+            return null;
+        }
         audio.clip.setVolume(Vars.d("volume"));
         return audio;
     }
@@ -74,10 +80,10 @@ public class Audio {
 
     /**
      * Gets an AudioClip from the SOUNDS HashMap.
-     * @param sound String key of the value in SOUNDS
+     * @param id String key of the value in SOUNDS
      * @return AudioClip value in SOUNDS
      */
-    public static AudioClip getSoundsClip(String sound) {
-        return DataManager.SOUNDS.get(sound);
+    public static AudioClip getAudioClip(String id) {
+        return DataManager.SOUNDS.get(id).getClip();
     }
 }

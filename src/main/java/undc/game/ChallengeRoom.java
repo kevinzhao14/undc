@@ -40,8 +40,8 @@ public class ChallengeRoom extends Room {
      */
     public void setCompleted(boolean completed) {
         this.completed = completed;
-        if (completed && Audio.getSoundsClip("challenge_room").isPlaying()) {
-            Audio.getSoundsClip("challenge_room").stop();
+        if (completed && Audio.getAudioClip("challenge_room").isPlaying()) {
+            Audio.getAudioClip("challenge_room").stop();
         }
     }
 }

@@ -75,7 +75,7 @@ public class Vars {
         DOUBLE_VARS.add(new DoubleCVar("sv_modifier_medium", "modMed", 0, 10, 1.5, true, false));
         DOUBLE_VARS.add(new DoubleCVar("sv_modifier_hard", "modHard", 0, 10, 2, true, false));
         DOUBLE_VARS.add(new DoubleCVar("gc_effect_scale", "effectScale", 0, 10, 1.5));
-        DOUBLE_VARS.add(new DoubleCVar("volume", "volume", 0, 1, 0.1));
+        DOUBLE_VARS.add(new DoubleCVar("volume", "volume", 0, 1, 0.5));
     }
 
     /**
