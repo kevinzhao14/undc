@@ -18,6 +18,10 @@ public class NewGameController {
         Audio.playAudio("button");
         ConfigScreen.resetInstance();
         Controller.setState(ConfigScreen.getInstance());
+        if (Audio.getSoundsClip("menu").isPlaying()) {
+            System.out.println("Audio, is playing, lets stop it");
+            Audio.getSoundsClip("menu").stop();
+        }
     }
 
     /**
@@ -29,6 +33,10 @@ public class NewGameController {
         GameScreen.getInstance().newGame(GameScreen.GameMode.SANDBOX);
         Controller.setState(GameScreen.getInstance());
         GameScreen.getInstance().start();
+        if (Audio.getSoundsClip("menu").isPlaying()) {
+            System.out.println("Audio, is playing, lets stop it");
+            Audio.getSoundsClip("menu").stop();
+        }
     }
 
     /**

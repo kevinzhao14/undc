@@ -16,6 +16,13 @@
 .button-active {
     -fx-border-color: #212121;
 }
+.slider .track {
+    -fx-pref-height: 10;
+}
+.slider .thumb {
+    -fx-pref-height: 20;
+    -fx-pref-width: 20;
+}
 #title-hBox {
     -fx-padding: 10px 10px 10px 20px;
     -fx-spacing: 10px;
@@ -82,6 +89,9 @@
 }
 .controls-grid Button:hover {
     -fx-text-fill: black;
+}
+.controls-grid Slider {
+    -fx-pref-width: 400;
 }
 .cancel-button {
     -fx-border-color: transparent;
