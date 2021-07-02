@@ -394,7 +394,6 @@ public class DataManager implements Savable {
         // Set up initial volume values for the AudioClips
         for (Audio audio : DataManager.SOUNDS.values()) {
             audio.getClip().setVolume(Vars.d("volume"));
-            System.out.println(audio.getClip().getVolume());
         }
         return true;
     }
