@@ -59,6 +59,8 @@ public class GameController implements Savable {
     private boolean isRunning;
     private boolean isStopped;
     private GameRunner runner;
+    private double camX;
+    private double camY;
 
     //debug variables
     private long ticks;
@@ -97,6 +99,9 @@ public class GameController implements Savable {
 
         //reset the game on start
         reset();
+
+        camX = room.getWidth() / 2.0;
+        camY = room.getHeight() / 2.0;
 
         //set the current room & scene
         setRoom(room);
@@ -149,6 +154,13 @@ public class GameController implements Savable {
         isRunning = false;
         isStopped = false;
         states = new HashMap<>();
+        if (room == null) {
+            camX = 0;
+            camY = 0;
+        } else {
+            camX = room.getWidth() / 2.0;
+            camY = room.getHeight() / 2.0;
+        }
         // states for player movement direction
         states.put("north", false);
         states.put("east", false);
@@ -493,6 +505,14 @@ public class GameController implements Savable {
     @Override
     public Object parseSave(JSONObject o) {
         return null;
+    }
+
+    public double getCamX() {
+        return camX;
+    }
+
+    public double getCamY() {
+        return camY;
     }
 
 

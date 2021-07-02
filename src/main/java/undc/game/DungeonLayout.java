@@ -1,7 +1,5 @@
 package undc.game;
 
-import undc.game.Room;
-
 /**
  * Class implementation of the DungeonLayout class. DungeonLayout will
  * be used for traversing and maintaining the graph/layout of Rooms

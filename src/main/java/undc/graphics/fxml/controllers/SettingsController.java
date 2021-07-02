@@ -81,7 +81,8 @@ public class SettingsController {
             game = FXMLLoader.load(new File("src/main/java/undc/graphics/fxml/GameSettings.fxml").toURI().toURL());
             video = FXMLLoader.load(new File("src/main/java/undc/graphics/fxml/VideoSettings.fxml").toURI().toURL());
             audio = FXMLLoader.load(new File("src/main/java/undc/graphics/fxml/AudioSettings.fxml").toURI().toURL());
-            controls = FXMLLoader.load(new File("src/main/java/undc/graphics/fxml/ControlsSettings.fxml").toURI().toURL());
+            controls = FXMLLoader.load(new File("src/main/java/undc/graphics/fxml/ControlsSettings.fxml")
+                    .toURI().toURL());
         } catch (IOException e) {
             Console.error("Failed to load settings.");
             e.printStackTrace();

@@ -50,7 +50,6 @@ public class Vars {
         INT_VARS.add(new IntCVar("ai_boss_reaction_time", "bossReact", 0, 10000, 150));
         INT_VARS.add(new IntCVar("gc_monster_fade_dur", "monsterFade", 0, 10000, 400, true, false));
         INT_VARS.add(new IntCVar("gc_healthbar_height", "healthbarHeight", 0, 1000, 5, true, false));
-        INT_VARS.add(new IntCVar("gc_canvas_padding", "canvasPadding", 0, 1000, 150, true, false));
         INT_VARS.add(new IntCVar("sv_player_width", "playerWidth", 0, 100, 16, true, false));
         INT_VARS.add(new IntCVar("sv_player_height", "playerHeight", 0, 100, 16, true, false));
         INT_VARS.add(new IntCVar("sv_player_pickup_range", "playerPickup", 0, 1000, 25));

@@ -1,9 +1,12 @@
 package undc.game;
 
+import javafx.scene.image.Image;
 import undc.command.Console;
 import undc.command.Vars;
 import undc.general.Controller;
 import undc.command.DataManager;
+import undc.graphics.GameScreen;
+import undc.inventory.GraphicalInventory;
 import undc.item.WeaponAmmo;
 import undc.item.Ammunition;
 import undc.inventory.Inventory;
@@ -23,8 +26,10 @@ public class LayoutGenerator {
     private static final int GRID_WIDTH = 15;
     private static final int GRID_HEIGHT = 15;
 
-    public static final int ROOM_HEIGHT = 264;
-    public static final int ROOM_WIDTH = (int) Math.round(ROOM_HEIGHT * 2.18181818);
+    public static final int ROOM_HEIGHT = 384;
+    public static final int ROOM_WIDTH = 576;
+    private static final int SANDBOX_WIDTH = 512;
+    private static final int SANDBOX_HEIGHT = 512;
 
     public static final int DOOR_HEIGHT = (int) Math.round(ROOM_HEIGHT * 0.40530303);
     public static final int DOOR_WIDTH = (int) Math.round(DOOR_HEIGHT * 0.308411215);
@@ -40,14 +45,13 @@ public class LayoutGenerator {
 
     private static final double CHALLENGE_ODDS = 0.25;
 
+    private final Inventory cr1Rewards;
+    private final Inventory cr2Rewards;
+
     private Room startRoom;
     private Room exitRoom;
-
-    private Inventory cr1Rewards;
-    private Inventory cr2Rewards;
     private ChallengeRoom cr1;
     private ChallengeRoom cr2;
-
     private int challengeCount;
     private boolean exitPlaced;
     private int[] exitCoords;
@@ -89,14 +93,14 @@ public class LayoutGenerator {
     private void reset() {
         startRoom = new Room(ROOM_WIDTH, ROOM_HEIGHT, (int) ((ROOM_WIDTH
                 - Vars.i("sv_player_width")) / 2.0), (int) (ROOM_HEIGHT / 2.0
-                - Vars.i("sv_player_height")), RoomType.STARTROOM);
+                - Vars.i("sv_player_height")), RoomType.STARTROOM, generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
         startRoom.setMonsters(new ArrayList<>());
         generateObstacles(startRoom);
 
         int exitWidth = 832;
         int exitHeight = 444;
 
-        exitRoom = new Room(exitWidth, exitHeight, 100, 100, RoomType.EXITROOM);
+        exitRoom = new Room(exitWidth, exitHeight, 100, 100, RoomType.EXITROOM, generateFloors(exitWidth, exitHeight));
         generateObstacles(exitRoom, 4);
 
         Monster boss = DataManager.getFinalBoss();
@@ -108,8 +112,8 @@ public class LayoutGenerator {
                 exitHeight - 1, DOORTOP_WIDTH, DOORTOP_HEIGHT);
         exitRoom.setTopDoor(ed);
 
-        cr1 = new ChallengeRoom(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, cr1Rewards);
-        cr2 = new ChallengeRoom(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, cr2Rewards);
+        cr1 = new ChallengeRoom(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, cr1Rewards, generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
+        cr2 = new ChallengeRoom(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, cr2Rewards, generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
 
         setMonsters(cr1);
         setMonsters(cr2);
@@ -183,13 +187,39 @@ public class LayoutGenerator {
     }
 
     /**
-<<<<<<< HEAD:src/main/java/undc/game/LayoutGenerator.java
+     * Generates the layout for a Sandbox game.
+     * @return Returns the DungeonLayout for a Sandbox.
+     */
+    public DungeonLayout generateSandbox() {
+        Room start = new Room(SANDBOX_WIDTH, SANDBOX_HEIGHT,
+                (int) ((SANDBOX_WIDTH - Vars.i("sv_player_width")) / 2.0),
+                (int) (SANDBOX_HEIGHT / 2.0 - Vars.i("sv_player_height")), RoomType.STARTROOM,
+                generateFloors(SANDBOX_WIDTH, SANDBOX_HEIGHT));
+        start.setMonsters(new ArrayList<>());
+
+        Room exit = new Room(10, 10, 0, 0, RoomType.EXITROOM, generateFloors(10, 10));
+        exit.setMonsters(new ArrayList<>());
+
+        // chest
+        Inventory inv = new Inventory(4, 4);
+        inv.add(DataManager.ITEMS.get("sword"));
+        inv.add(DataManager.ITEMS.get("small_health_potion"), 4);
+        inv.add(DataManager.ITEMS.get("attack_potion"), 2);
+        inv.add(DataManager.ITEMS.get("bomb"));
+
+        inv.setGraphicalInventory(new GraphicalInventory("Chest", inv,
+                GameScreen.getInstance().getPlayer().getInventory()));
+
+        Chest chest = new Chest(400, 400, inv);
+        start.getObstacles().add(chest);
+
+        Room[][] arr = new Room[][]{new Room[]{start, exit}};
+        return new DungeonLayout(start, exit, arr);
+    }
+
+    /**
      * Generates a path of rooms in a specified direction.
      * @param dir Direction to generate in
-=======
-     * Generates a path between rooms in the passed int direction.
-     * @param dir int direction to generate path in
->>>>>>> 48a2a87272059429a00abd5eefe4e7cd52f6694f:src/main/java/undc/handlers/LayoutGenerator.java
      */
     private void generatePath(int dir) {
         int x = GRID_WIDTH / 2;
@@ -205,7 +235,8 @@ public class LayoutGenerator {
             y--;
         }
         //create origin room
-        Room r = new Room(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, RoomType.EMPTYROOM);
+        Room r = new Room(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, RoomType.EMPTYROOM,
+                generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
         setMonsters(r);
         generateObstacles(r);
         roomGrid[x][y] = r;
@@ -293,7 +324,8 @@ public class LayoutGenerator {
                 default:
                     break;
             }
-            Room r = new Room(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, RoomType.EMPTYROOM);
+            Room r = new Room(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, RoomType.EMPTYROOM,
+                    generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
             setMonsters(r);
             generateObstacles(r);
             grid[nx][ny] = r;
@@ -302,6 +334,30 @@ public class LayoutGenerator {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Generates the floors for a room given the room's width and height. For optimal tiling, height and width should be
+     * a multiple of the floor size.
+     * @param width Width of the room
+     * @param height Height of the room
+     * @return A list of the floors
+     */
+    private ArrayList<Floor> generateFloors(int width, int height) {
+        ArrayList<Floor> floors = new ArrayList<>();
+        Random rand = new Random();
+        int size = DataManager.FLOOR_SIZE;
+        double x = 0;
+        while (x < width) {
+            double y = 0;
+            while (y < height) {
+                Image image = DataManager.FLOORS.get(rand.nextInt(DataManager.FLOORS.size()));
+                floors.add(new Floor(image, size, size, x, y));
+                y += size;
+            }
+            x += size;
+        }
+        return floors;
     }
 
     /**

@@ -4,7 +4,7 @@ package undc.game.calc;
  * Represents a cardinal direction.
  */
 public enum Direction {
-    NONE, NORTH, SOUTH, WEST, EAST;
+    NONE, NORTH, SOUTH, WEST, EAST, NORTHEAST, SOUTHEAST, SOUTHWEST, NORTHWEST;
 
     /**
      * Parses a string into a Direction.
