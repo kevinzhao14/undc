@@ -3,29 +3,64 @@ package undc.graphics;
 import javafx.scene.image.Image;
 import undc.game.calc.Direction;
 
+import java.util.HashMap;
+
 /**
  * Represents a group of sprites, generally grouped by direction.
  */
 public class SpriteGroup {
     public static final Image NONE = new Image("textures/none.png");
 
-    private final Image left;
-    private final Image up;
-    private final Image right;
-    private final Image down;
+    private final HashMap<Direction, Image> sprites = new HashMap<>();
 
     /**
-     * Constructor.
-     * @param left Left sprite
-     * @param up Up sprite
-     * @param right Right sprite
-     * @param down Down sprite
+     * Constructor for four directions.
+     * @param west Left sprite
+     * @param north Up sprite
+     * @param east Right sprite
+     * @param south Down sprite
      */
-    public SpriteGroup(Image left, Image up, Image right, Image down) {
-        this.left = left;
-        this.up = up;
-        this.right = right;
-        this.down = down;
+    public SpriteGroup(Image west, Image north, Image east, Image south) {
+        this(west, null, north, null, east, null, south, null);
+    }
+
+    /**
+     * Constructor for eight directions.
+     * @param west West sprite
+     * @param northwest Northwest sprite
+     * @param north North sprite
+     * @param northeast Northeast sprite
+     * @param east East sprite
+     * @param southeast Southeast sprite
+     * @param south South sprite
+     * @param southwest Southwest sprite
+     */
+    public SpriteGroup(Image west, Image northwest, Image north, Image northeast, Image east, Image southeast,
+                       Image south, Image southwest) {
+        if (west != null) {
+            sprites.put(Direction.WEST, west);
+        }
+        if (northwest != null) {
+            sprites.put(Direction.NORTHWEST, northwest);
+        }
+        if (north != null) {
+            sprites.put(Direction.NORTH, north);
+        }
+        if (northeast != null) {
+            sprites.put(Direction.NORTHEAST, northeast);
+        }
+        if (east != null) {
+            sprites.put(Direction.EAST, east);
+        }
+        if (southeast != null) {
+            sprites.put(Direction.SOUTHEAST, southeast);
+        }
+        if (south != null) {
+            sprites.put(Direction.SOUTH, south);
+        }
+        if (southwest != null) {
+            sprites.put(Direction.SOUTHWEST, southwest);
+        }
     }
 
     /**
@@ -34,16 +69,7 @@ public class SpriteGroup {
      * @return Returns the corresponding sprite, the none sprite if invalid
      */
     public Image get(Direction dir) {
-        if (dir == Direction.WEST) {
-            return left;
-        } else if (dir == Direction.NORTH) {
-            return up;
-        } else if (dir == Direction.EAST) {
-            return right;
-        } else if (dir == Direction.SOUTH) {
-            return down;
-        } else {
-            return NONE;
-        }
+        Image sprite = sprites.get(dir);
+        return sprite == null ? NONE : sprite;
     }
 }

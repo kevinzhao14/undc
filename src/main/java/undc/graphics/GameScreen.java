@@ -24,7 +24,6 @@ import undc.game.LayoutGenerator;
 import undc.command.Vars;
 import undc.command.CVar;
 import undc.game.ChallengeRoom;
-import undc.game.Chest;
 import undc.game.calc.Direction;
 import undc.game.DungeonLayout;
 import undc.inventory.GraphicalInventory;
@@ -36,7 +35,6 @@ import undc.entity.Player;
 import undc.game.Room;
 import undc.game.RoomType;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -44,8 +42,6 @@ import java.util.Map;
  */
 public class GameScreen extends GameState {
     private static GameScreen instance;
-    private static final int SANDBOX_WIDTH = 1000;
-    private static final int SANDBOX_HEIGHT = 1000;
 
     private Player player;
     private DungeonLayout dungeonLayout;
@@ -101,16 +97,7 @@ public class GameScreen extends GameState {
         if (mode == GameMode.SANDBOX) {
             Controller.getDataManager().newGame("example", Difficulty.EASY, DataManager.getStartingWeapons()[0]);
 
-            Room start = new Room(SANDBOX_WIDTH, SANDBOX_HEIGHT,
-                    (int) ((SANDBOX_WIDTH - Vars.i("sv_player_width")) / 2.0),
-                    (int) (SANDBOX_HEIGHT / 2.0 - Vars.i("sv_player_height")), RoomType.STARTROOM);
-            start.setMonsters(new ArrayList<>());
-
-            Room exit = new Room(10, 10, 0, 0, RoomType.EXITROOM);
-            exit.setMonsters(new ArrayList<>());
-
-            Room[][] arr = new Room[][]{new Room[]{start, exit}};
-            dungeonLayout = new DungeonLayout(start, exit, arr);
+            dungeonLayout = new LayoutGenerator().generateSandbox();
 
             // cvars
             Vars.CHEATS = true;
@@ -121,19 +108,6 @@ public class GameScreen extends GameState {
             }
             god.setVal("true", true);
             Vars.set("sv_infinite_ammo", "true");
-
-
-            // chest
-            Inventory inv = new Inventory(4, 4);
-            inv.add(DataManager.ITEMS.get("sword"));
-            inv.add(DataManager.ITEMS.get("small_health_potion"), 4);
-            inv.add(DataManager.ITEMS.get("attack_potion"), 2);
-            inv.add(DataManager.ITEMS.get("bomb"));
-
-            inv.setGraphicalInventory(new GraphicalInventory("Chest", inv, player.getInventory()));
-
-            Chest chest = new Chest(400, 400, inv);
-            start.getObstacles().add(chest);
         } else if (mode == GameMode.STORY) {
             dungeonLayout = new LayoutGenerator().generateLayout();
         }
@@ -417,7 +391,7 @@ public class GameScreen extends GameState {
      */
     public void win() {
         Audio.playAudio("game_win");
-        StackPane root = new StackPane();
+        final StackPane root = new StackPane();
 
         hud.getHud().setVisible(false);
 
@@ -575,20 +549,6 @@ public class GameScreen extends GameState {
         }
 
         Platform.runLater(() -> hud.getHud().getChildren().add(overlay.getRoot()));
-    }
-
-    /**
-     * Removes an overlay from the GameScreen.
-     * @param overlay Overlay to add
-     */
-    public void removeOverlay(Overlay overlay) {
-        for (int i = 0; i < hud.getHud().getChildren().size(); i++) {
-            Node n = hud.getHud().getChildren().get(i);
-            if (n.equals(overlay.getRoot())) {
-                hud.getHud().getChildren().remove(i);
-                return;
-            }
-        }
     }
 
     /**

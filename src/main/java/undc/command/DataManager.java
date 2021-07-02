@@ -1,5 +1,6 @@
 package undc.command;
 
+import javafx.scene.image.Image;
 import javafx.scene.media.AudioClip;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -36,6 +38,10 @@ public class DataManager implements Savable {
     public static final HashMap<String, Monster> MONSTERS = new HashMap<>();
 
     public static final HashMap<String, Audio> SOUNDS = new HashMap<>();
+
+    public static final ArrayList<Image> FLOORS = new ArrayList<>();
+
+    public static final int FLOOR_SIZE = 64;
 
     public static final String EXPLOSION = "textures/boom.gif";
 
@@ -206,7 +212,8 @@ public class DataManager implements Savable {
             return;
         }
         JSONObject obj = new JSONObject(file);
-        if (!loadProjectiles(obj) || !loadMonsters(obj) || !loadObstacles(obj) || !loadItems(obj) || loadSounds(obj)) {
+        if (!loadProjectiles(obj) || !loadMonsters(obj) || !loadObstacles(obj) || !loadItems(obj) || !loadSounds(obj)
+                || !loadFloors(obj)) {
             //TODO: stop game
         }
     }
@@ -389,7 +396,25 @@ public class DataManager implements Savable {
             audio.getClip().setVolume(Vars.d("volume"));
             System.out.println(audio.getClip().getVolume());
         }
+        return true;
+    }
 
+    /**
+     * Loads all floor sprites into images.
+     * @param obj JSON object to load from
+     * @return Returns true if successful, false otherwise
+     */
+    private static boolean loadFloors(JSONObject obj) {
+        JSONArray floors = obj.getJSONArray("floors");
+        for (int i = 0; i < floors.length(); i++) {
+            try {
+                Image img = new Image(floors.getString(i));
+                FLOORS.add(img);
+            } catch (JSONException e) {
+                Console.error("Invalid value for floor.");
+                return false;
+            }
+        }
         return true;
     }
 

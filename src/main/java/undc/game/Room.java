@@ -11,20 +11,22 @@ import java.util.ArrayList;
  * Room class implementation for handling game room obstacles and doors.
  */
 public class Room implements Savable {
-    private int height;
-    private int width;
+    private final int height;
+    private final int width;
+    private final ArrayList<Obstacle> obstacles;
+    private final ArrayList<DroppedItem> droppedItems;
+    private final ArrayList<ShotProjectile> projectiles;
+    private final ArrayList<Floor> floors;
+    private final RoomType type;
+
+    private ArrayList<Monster> monsters;
     private int startX;
     private int startY;
     private boolean visited;
-    private ArrayList<Obstacle> obstacles;
-    private ArrayList<Monster> monsters;
-    private ArrayList<DroppedItem> droppedItems;
-    private ArrayList<ShotProjectile> projectiles;
     private Door topDoor;
     private Door bottomDoor;
     private Door rightDoor;
     private Door leftDoor;
-    private RoomType type;
 
     /**
      * Constructor for defining all Room features except Door layouts.
@@ -36,7 +38,7 @@ public class Room implements Savable {
      * @param startY Initial y-position of player in room, in game units
      * @param roomType Style of the Room object
      */
-    public Room(int width, int height, int startX, int startY, RoomType roomType) {
+    public Room(int width, int height, int startX, int startY, RoomType roomType, ArrayList<Floor> floors) {
         this.startX = startX;
         this.startY = startY;
         this.width = width;
@@ -49,6 +51,7 @@ public class Room implements Savable {
         this.type = roomType;
         this.droppedItems = new ArrayList<>();
         this.projectiles = new ArrayList<>();
+        this.floors = floors;
 
         //Need to change this later
         this.monsters = null;
@@ -193,5 +196,9 @@ public class Room implements Savable {
     @Override
     public Object parseSave(JSONObject o) {
         return null;
+    }
+
+    public ArrayList<Floor> getFloors() {
+        return floors;
     }
 }

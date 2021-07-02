@@ -365,5 +365,9 @@
       "path": "src/main/resources/audio/smb_gameover.mp3",
       "type": "music"
     }
+  ],
+  "floors": [
+    "textures/room/floor1.png",
+    "textures/room/floor2.png"
   ]
 }

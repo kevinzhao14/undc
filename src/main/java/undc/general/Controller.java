@@ -90,4 +90,8 @@ public class Controller extends Application {
     public static void quit() {
         Platform.exit();
     }
+
+    public static Controller getInstance() {
+        return instance;
+    }
 }

@@ -3,6 +3,8 @@ package undc.game;
 import undc.general.Audio;
 import undc.inventory.Inventory;
 
+import java.util.ArrayList;
+
 /**
  * Class that handles the construction of a room of heightened difficulty called a ChallengeRoom.
  */
@@ -20,8 +22,8 @@ public class ChallengeRoom extends Room {
      * @param startY Initial y-position of player in room, in game units
      * @param rewards Rewards for beating the room
      */
-    public ChallengeRoom(int width, int height, int startX, int startY, Inventory rewards) {
-        super(width, height, startX, startY, RoomType.CHALLENGEROOM);
+    public ChallengeRoom(int width, int height, int startX, int startY, Inventory rewards, ArrayList<Floor> floors) {
+        super(width, height, startX, startY, RoomType.CHALLENGEROOM, floors);
         this.rewards = rewards;
         this.completed = false;
     }
