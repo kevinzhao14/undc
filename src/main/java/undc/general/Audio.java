@@ -27,6 +27,7 @@ public class Audio {
      */
     public static void playAudio(String id) {
         AudioClip clip = DataManager.SOUNDS.get(id).getClip();
+        clip.setVolume(Vars.d("volume"));
         clip.play();
     }
 
@@ -62,7 +63,7 @@ public class Audio {
         }
         try {
             audio.type = o.getString("type");
-        } catch (JSONException e){
+        } catch (JSONException e) {
             Console.error("Invalid value for audio type.");
             return null;
         }

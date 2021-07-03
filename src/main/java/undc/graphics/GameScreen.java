@@ -54,6 +54,7 @@ public class GameScreen extends GameState {
     private StackPane challenge;
     private boolean consoleOpen;
     private GameMode mode;
+    private Pane main;
 
     /**
      * Constructor for a screen.
@@ -85,13 +86,19 @@ public class GameScreen extends GameState {
      */
     public void newGame(GameMode mode) {
         scene = new Scene(new Pane(), this.width, this.height);
-        canvas = new Canvas();
         consoleOpen = false;
         this.mode = mode;
 
         createPlayer();
         createHud();
         createPauseMenu();
+
+        StackPane root = new StackPane();
+        canvas = new Canvas();
+        main = RoomRenderer.drawRoom(canvas);
+        root.getChildren().addAll(main, hud.getHud());
+        root.setStyle("-fx-background-color: #34311b");
+        scene.setRoot(root);
         scene.getStylesheets().add("styles/global.css");
 
         if (mode == GameMode.SANDBOX) {
@@ -148,45 +155,29 @@ public class GameScreen extends GameState {
         //fade out old room
         Pane root = (Pane) scene.getRoot();
         if (root.getChildren().size() > 0) {
-            fadeOut((Pane) root.getChildren().get(0));
+            fadeOut(main);
         } else {
             createRoom();
         }
     }
 
     /**
-     * Loads in changes to the room.
-     */
-    public void updateRoom() {
-        StackPane root = new StackPane();
-        Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
-        root.getChildren().addAll(roomPane, hud.getHud());
-        root.setStyle("-fx-background-color: #34311b");
-        scene.setRoot(root);
-    }
-
-    /**
      * Makes a new room.
      */
     private void createRoom() {
-        //set new room
-        StackPane root = new StackPane();
-
         //create player and hud
         getGame().resetPos();
         if (room.getType() == RoomType.CHALLENGEROOM) {
+            ((ChallengeRoom) room).closeDoors();
             createChallengeOverlay();
         }
 
-        Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
-        root.getChildren().addAll(roomPane, hud.getHud());
-        root.setStyle("-fx-background-color: #34311b");
-        scene.setRoot(root);
         if (scene.getRoot().getChildrenUnmodifiable().size() > 0) {
+            RoomRenderer.drawFrame(canvas, room, player);
             if (room.getType() != RoomType.CHALLENGEROOM || ((ChallengeRoom) room).isCompleted()) {
-                fadeIn(roomPane);
+                fadeIn(main);
             } else {
-                fadeIn(roomPane, false);
+                fadeIn(main, false);
             }
         } else {
             getGame().updateRoom();

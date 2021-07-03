@@ -175,6 +175,7 @@ public class GameController implements Savable {
         states.put("usePress", false);
         states.put("drop", false);
         states.put("interact", false);
+        states.put("stopframe", false);
         ticks = 0;
         totalTime = 0;
     }
@@ -535,6 +536,10 @@ public class GameController implements Savable {
 
             //move the player
             managePlayerMovement();
+            if (states.get("stopframe")) {
+                states.put("stopframe", false);
+                return;
+            }
 
             //update velocity
             updatePlayerVelocity();
@@ -613,6 +618,7 @@ public class GameController implements Savable {
 
                     //check for door intersections
                     if (checkDoors(new Coords(newPosX, newPosY))) {
+                        states.put("stopframe", true);
                         return;
                     }
                     player.setX(newPosX);
@@ -1227,7 +1233,7 @@ public class GameController implements Savable {
                     newDoor = newRoom.getBottomDoor();
                     newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
                             - player.getWidth() / 2.0;
-                    newStartY = newDoor.getY() + LayoutGenerator.DOORBOTTOM_HEIGHT + 10;
+                    newStartY = newDoor.getY() + LayoutGenerator.DOOR_SIZE + 10;
                 } else if (d.equals(room.getBottomDoor())) {
                     newDoor = newRoom.getTopDoor();
                     newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
@@ -1235,7 +1241,7 @@ public class GameController implements Savable {
                     newStartY = newDoor.getY() - player.getHeight() - 1;
                 } else if (d.equals(room.getRightDoor())) {
                     newDoor = newRoom.getLeftDoor();
-                    newStartX = newDoor.getX() + 10 + LayoutGenerator.DOOR_WIDTH;
+                    newStartX = newDoor.getX() + 10 + LayoutGenerator.DOOR_SIZE;
                     newStartY = newDoor.getY() + newDoor.getHeight() / 5.0;
                 } else {
                     newDoor = newRoom.getRightDoor();

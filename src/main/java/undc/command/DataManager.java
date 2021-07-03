@@ -390,11 +390,6 @@ public class DataManager implements Savable {
         // Set up properties for AudioClips that require slight altering such as making them repeat indefinitely or
         // adjusting play rate
         SOUNDS.get("menu").getClip().setCycleCount(AudioClip.INDEFINITE);
-
-        // Set up initial volume values for the AudioClips
-        for (Audio audio : DataManager.SOUNDS.values()) {
-            audio.getClip().setVolume(Vars.d("volume"));
-        }
         return true;
     }
 

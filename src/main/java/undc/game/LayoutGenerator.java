@@ -3,9 +3,11 @@ package undc.game;
 import javafx.scene.image.Image;
 import undc.command.Console;
 import undc.command.Vars;
+import undc.game.calc.Direction;
 import undc.general.Controller;
 import undc.command.DataManager;
 import undc.graphics.GameScreen;
+import undc.graphics.SpriteGroup;
 import undc.inventory.GraphicalInventory;
 import undc.item.WeaponAmmo;
 import undc.item.Ammunition;
@@ -25,25 +27,33 @@ import java.util.Random;
 public class LayoutGenerator {
     private static final int GRID_WIDTH = 15;
     private static final int GRID_HEIGHT = 15;
-
-    public static final int ROOM_HEIGHT = 384;
     public static final int ROOM_WIDTH = 576;
-    private static final int SANDBOX_WIDTH = 512;
-    private static final int SANDBOX_HEIGHT = 512;
+    public static final int ROOM_HEIGHT = 384;
+    private static final int SANDBOX_WIDTH = 600;
+    private static final int SANDBOX_HEIGHT = 600;
 
-    public static final int DOOR_HEIGHT = (int) Math.round(ROOM_HEIGHT * 0.40530303);
-    public static final int DOOR_WIDTH = (int) Math.round(DOOR_HEIGHT * 0.308411215);
+    public static final SpriteGroup DOORS = new SpriteGroup(
+        new Image("textures/room/doors/left.png"),
+        new Image("textures/room/doors/top.png"),
+        new Image("textures/room/doors/right.png"),
+        new Image("textures/room/doors/bottom.png")
+    );
 
-    public static final int DOORTOP_HEIGHT = (int) Math.round(ROOM_HEIGHT * 0.246212121);
-    public static final int DOORTOP_WIDTH = (int) Math.round(DOORTOP_HEIGHT * 1.29230769);
+    public static final SpriteGroup DOORS_BLOCKED = new SpriteGroup(
+        new Image("textures/room/doors/left-blocked.png"),
+        new Image("textures/room/doors/top-blocked.png"),
+        new Image("textures/room/doors/right-blocked.png"),
+        new Image("textures/room/doors/bottom-blocked.png")
+    );
 
-    public static final int DOORBOTTOM_HEIGHT = (int) Math.round(ROOM_HEIGHT * 0.125);
-    public static final int DOORBOTTOM_WIDTH = (int) Math.round(DOORBOTTOM_HEIGHT * 1.75757576);
+    public static final Image DOOR_EXIT = new Image("textures/room/doors/top-portal.png");
+
+    public static final int DOOR_SIZE = 64;
 
     private static final int PATH_MIN = 6;
     private static final int PATH_MAX = 10;
 
-    private static final double CHALLENGE_ODDS = 0.25;
+    private static final double CHALLENGE_ODDS = 0.1;
 
     private final Inventory cr1Rewards;
     private final Inventory cr2Rewards;
@@ -97,8 +107,8 @@ public class LayoutGenerator {
         startRoom.setMonsters(new ArrayList<>());
         generateObstacles(startRoom);
 
-        int exitWidth = 832;
-        int exitHeight = 444;
+        int exitWidth = ROOM_WIDTH * 2;
+        int exitHeight = ROOM_HEIGHT * 2;
 
         exitRoom = new Room(exitWidth, exitHeight, 100, 100, RoomType.EXITROOM, generateFloors(exitWidth, exitHeight));
         generateObstacles(exitRoom, 4);
@@ -108,8 +118,7 @@ public class LayoutGenerator {
         boss.setY(exitHeight - boss.getHeight() - 5);
         exitRoom.setMonsters(new ArrayList<>());
         exitRoom.getMonsters().add(DataManager.getFinalBoss());
-        ExitDoor ed = new ExitDoor((exitWidth - DOORTOP_WIDTH) / 2,
-                exitHeight - 1, DOORTOP_WIDTH, DOORTOP_HEIGHT);
+        ExitDoor ed = new ExitDoor(DOOR_EXIT, (exitWidth - DOOR_SIZE) / 2, exitHeight - 1, DOOR_SIZE, DOOR_SIZE);
         exitRoom.setTopDoor(ed);
 
         cr1 = new ChallengeRoom(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, cr1Rewards, generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
@@ -155,29 +164,20 @@ public class LayoutGenerator {
             for (int j = 1; j < GRID_HEIGHT - 1; j++) {
                 if (roomGrid[i][j] != null && roomGrid[i][j].getType() != RoomType.EXITROOM) {
                     if (roomGrid[i + 1][j] != null) {
-                        roomGrid[i][j].setRightDoor(
-                                new Door(ROOM_WIDTH - 1, (ROOM_HEIGHT - DOOR_HEIGHT) / 2.0,
-                                        DOOR_WIDTH, DOOR_HEIGHT / 2,
-                                roomGrid[i + 1][j], DoorOrientation.RIGHT));
+                        roomGrid[i][j].setRightDoor(new Door(Direction.EAST, ROOM_WIDTH - 1,
+                                (ROOM_HEIGHT - DOOR_SIZE) / 2.0, DOOR_SIZE, DOOR_SIZE, roomGrid[i + 1][j]));
                     }
                     if (roomGrid[i - 1][j] != null) {
-                        roomGrid[i][j].setLeftDoor(
-                                new Door(-DOOR_WIDTH + 1, (ROOM_HEIGHT - DOOR_HEIGHT) / 2.0,
-                                        DOOR_WIDTH, DOOR_HEIGHT / 2,
-                                        roomGrid[i - 1][j], DoorOrientation.LEFT));
+                        roomGrid[i][j].setLeftDoor(new Door(Direction.WEST, -DOOR_SIZE + 1,
+                                (ROOM_HEIGHT - DOOR_SIZE) / 2.0, DOOR_SIZE, DOOR_SIZE, roomGrid[i - 1][j]));
                     }
                     if (roomGrid[i][j + 1] != null) {
-                        roomGrid[i][j].setBottomDoor(
-                                new Door((ROOM_WIDTH - DOORBOTTOM_WIDTH) / 2.0,
-                                        -DOORBOTTOM_HEIGHT + 1,
-                                        DOORBOTTOM_WIDTH, DOORBOTTOM_HEIGHT,
-                                        roomGrid[i][j + 1], DoorOrientation.BOTTOM));
+                        roomGrid[i][j].setBottomDoor(new Door(Direction.SOUTH, (ROOM_WIDTH - DOOR_SIZE) / 2.0,
+                                -DOOR_SIZE + 1, DOOR_SIZE, DOOR_SIZE, roomGrid[i][j + 1]));
                     }
                     if (roomGrid[i][j - 1] != null) {
-                        roomGrid[i][j].setTopDoor(
-                                new Door((ROOM_WIDTH - DOORTOP_WIDTH) / 2.0, ROOM_HEIGHT - 1,
-                                        DOORTOP_WIDTH, DOORTOP_HEIGHT,
-                                        roomGrid[i][j - 1], DoorOrientation.TOP));
+                        roomGrid[i][j].setTopDoor(new Door(Direction.NORTH, (ROOM_WIDTH - DOOR_SIZE) / 2.0,
+                                ROOM_HEIGHT - 1, DOOR_SIZE, DOOR_SIZE, roomGrid[i][j - 1]));
                     }
                 }
             }
@@ -241,7 +241,7 @@ public class LayoutGenerator {
         generateObstacles(r);
         roomGrid[x][y] = r;
 
-        int[] coords = generateRoom(roomGrid, x, y, 0);
+        int[] coords = generateRoom(roomGrid, x, y, dir);
         Random rand = new Random();
         int pathLength = rand.nextInt(PATH_MAX - PATH_MIN + 1) + PATH_MIN;
         for (int i = 0; i < pathLength; i++) {
@@ -294,8 +294,7 @@ public class LayoutGenerator {
             blockedDirections[0] = true;
         }
 
-        if (!(blockedDirections[0] && blockedDirections[1]
-                && blockedDirections[2] && blockedDirections[3])) {
+        if (!(blockedDirections[0] && blockedDirections[1] && blockedDirections[2] && blockedDirections[3])) {
             int newDirection;
             do {
                 newDirection = (int) (Math.random() * 4);

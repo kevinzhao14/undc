@@ -46,4 +46,22 @@ public class ChallengeRoom extends Room {
             Audio.getAudioClip("challenge_room").stop();
         }
     }
+
+    /**
+     * Changes the door sprites to be unblocked.
+     */
+    public void openDoors() {
+        for (Door d : getDoors()) {
+            d.setSprite(LayoutGenerator.DOORS.get(d.getOrientation()));
+        }
+    }
+
+    /**
+     * Changes the door sprites to be blocked.
+     */
+    public void closeDoors() {
+        for (Door d : getDoors()) {
+            d.setSprite(LayoutGenerator.DOORS_BLOCKED.get(d.getOrientation()));
+        }
+    }
 }

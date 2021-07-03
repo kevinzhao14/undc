@@ -201,4 +201,25 @@ public class Room implements Savable {
     public ArrayList<Floor> getFloors() {
         return floors;
     }
+
+    /**
+     * Gets a list of all the doors in the room.
+     * @return Returns all the doors
+     */
+    public ArrayList<Door> getDoors() {
+        ArrayList<Door> doors = new ArrayList<>();
+        if (topDoor != null) {
+            doors.add(topDoor);
+        }
+        if (leftDoor != null) {
+            doors.add(leftDoor);
+        }
+        if (bottomDoor != null) {
+            doors.add(bottomDoor);
+        }
+        if (rightDoor != null) {
+            doors.add(rightDoor);
+        }
+        return doors;
+    }
 }
