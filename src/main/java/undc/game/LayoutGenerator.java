@@ -29,8 +29,8 @@ public class LayoutGenerator {
     private static final int GRID_HEIGHT = 15;
     public static final int ROOM_WIDTH = 576;
     public static final int ROOM_HEIGHT = 384;
-    private static final int SANDBOX_WIDTH = 600;
-    private static final int SANDBOX_HEIGHT = 600;
+    private static final int SANDBOX_WIDTH = 1000;
+    private static final int SANDBOX_HEIGHT = 1000;
 
     public static final SpriteGroup DOORS = new SpriteGroup(
         new Image("textures/room/doors/left.png"),

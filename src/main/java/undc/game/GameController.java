@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import undc.command.Console;
 import undc.general.Controller;
 import undc.command.DataManager;
+import undc.graphics.Camera;
 import undc.graphics.GameScreen;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -49,6 +50,8 @@ import java.util.TimerTask;
 public class GameController implements Savable {
     private static GameController instance;
 
+    private final Camera camera;
+
     private Timer timer;
     private Room room;
     private Player player;
@@ -59,8 +62,6 @@ public class GameController implements Savable {
     private boolean isRunning;
     private boolean isStopped;
     private GameRunner runner;
-    private double camX;
-    private double camY;
 
     //debug variables
     private long ticks;
@@ -73,6 +74,7 @@ public class GameController implements Savable {
      * Constructor for GameController.
      */
     private GameController() {
+        camera = new Camera();
     }
 
     /**
@@ -100,8 +102,8 @@ public class GameController implements Savable {
         //reset the game on start
         reset();
 
-        camX = room.getWidth() / 2.0;
-        camY = room.getHeight() / 2.0;
+        camera.setX(room.getWidth() / 2.0);
+        camera.setY(room.getHeight() / 2.0);
 
         //set the current room & scene
         setRoom(room);
@@ -155,11 +157,11 @@ public class GameController implements Savable {
         isStopped = false;
         states = new HashMap<>();
         if (room == null) {
-            camX = 0;
-            camY = 0;
+            camera.setX(0);
+            camera.setY(0);
         } else {
-            camX = room.getWidth() / 2.0;
-            camY = room.getHeight() / 2.0;
+            camera.setX(room.getWidth() / 2.0);
+            camera.setY(room.getHeight() / 2.0);
         }
         // states for player movement direction
         states.put("north", false);
@@ -508,14 +510,9 @@ public class GameController implements Savable {
         return null;
     }
 
-    public double getCamX() {
-        return camX;
+    public Camera getCamera() {
+        return camera;
     }
-
-    public double getCamY() {
-        return camY;
-    }
-
 
     /**
      * Class that is used to calculate stuff on each tick.
@@ -540,6 +537,8 @@ public class GameController implements Savable {
                 states.put("stopframe", false);
                 return;
             }
+
+            manageCamera();
 
             //update velocity
             updatePlayerVelocity();
@@ -624,7 +623,13 @@ public class GameController implements Savable {
                     player.setX(newPosX);
                     player.setY(newPosY);
                 }
+
+
             }
+        }
+
+        private void manageCamera() {
+
         }
 
         /**

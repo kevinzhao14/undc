@@ -72,10 +72,12 @@ public class RoomRenderer {
         gc.setGlobalAlpha(1);
         room = r;
 
+        // data vars
         GameController game = GameController.getInstance();
+        Camera cam = game.getCamera();
         // how far the edge of the canvas is from the edge of the room
-        offsetX = game.getCamX() - c.getWidth() / 2.0 / Vars.d("gc_ppu");
-        offsetY = game.getCamY() - c.getHeight() / 2.0 / Vars.d("gc_ppu");
+        offsetX = cam.getX() - c.getWidth() / 2.0 / Vars.d("gc_ppu");
+        offsetY = room.getHeight() - (cam.getY() + c.getHeight() / 2.0 / Vars.d("gc_ppu"));
 
         double x;
         double y;
@@ -87,22 +89,30 @@ public class RoomRenderer {
 
         // draw floor
         for (Floor f : room.getFloors()) {
-            if (f.getX() + f.getWidth() > offsetX && f.getX() < offsetX + c.getWidth()
-                    && f.getY() + f.getHeight() > offsetY && f.getY() < offsetY + c.getHeight()) {
+            // if the floor unit is within the visible bounds of the canvas, ie it should be visible, then draw it
+            // right side of floor is within the left wall of the canvas, or the left side of floor is within right
+            // wall of the canvas, and vice versa with Y
+            if ((f.getX() + f.getWidth() > offsetX || f.getX() < offsetX + c.getWidth())
+                    && (getY(f.getY(), f.getHeight()) + f.getHeight() > offsetY
+                    || getY(f.getY(), f.getHeight()) < offsetY)) {
                 h = f.getHeight();
                 w = f.getWidth();
+
                 // clip the sprite if it overflows the room
+                // if the right side of the floor passes the right wall of the room, then set the display width to as
+                // far as the floor can go until it hits the room's wall
                 if (f.getX() + f.getWidth() > room.getWidth()) {
                     w = room.getWidth() - f.getX();
                 }
                 if (f.getY() + f.getHeight() > room.getHeight()) {
                     h = room.getHeight() - f.getY();
                 }
+
                 // get the height/width of the sprite based on percentage of new h / original h
                 sw = w / f.getWidth() * f.getSprite().getWidth();
                 sh = h / f.getHeight() * f.getSprite().getHeight();
                 drawImg(f.getSprite(), sw, sh, 0, 0, getPx(w), getPx(h), getPx(f.getX()),
-                        getPx(getY(room, f.getY(), h)));
+                        getPx(getY(f.getY(), h)));
             }
         }
 
@@ -110,48 +120,51 @@ public class RoomRenderer {
         // left
         double size = getPx(WALL_SIZE);
         if (offsetX < 0) {
-            y = Math.max(offsetY, 0);
-            while (y < room.getHeight()) {
+            // start drawing walls at the earliest visible wall tile
+            y = Math.floor(Math.max(offsetY, 0) / WALL_SIZE) * WALL_SIZE;
+            // keep drawing until the walls hit the room's wall or should not be visible
+            while (y < room.getHeight() && y - offsetY < getUnits(c.getHeight())) {
                 drawWall(Direction.WEST, 0, y);
                 y += WALL_SIZE;
             }
         }
         // right
         if (offsetX + c.getWidth() > room.getWidth()) {
-            y = Math.max(offsetX, 0);
-            while (y < room.getHeight()) {
+            y = Math.floor(Math.max(offsetY, 0) / WALL_SIZE) * WALL_SIZE;
+            while (y < room.getHeight() && y - offsetY < getUnits(c.getHeight())) {
                 drawWall(Direction.EAST, 0, y);
                 y += WALL_SIZE;
             }
         }
         // top
-        if (offsetY + c.getHeight() > room.getHeight()) {
-            x = Math.max(offsetX, 0);
-            while (x < room.getWidth()) {
+        if (offsetY < 0) {
+            x = Math.floor(Math.max(offsetX, 0) / WALL_SIZE) * WALL_SIZE;
+            while (x < room.getWidth() && x - offsetX < getUnits(c.getWidth())) {
                 drawWall(Direction.NORTH, x, 0);
                 x += WALL_SIZE;
             }
         }
+
         // corners
         // bottom left
-        if (offsetX < 0 && offsetY < 0) {
-            drawImg(WALLS.get(Direction.SOUTHWEST), size, size, -size,
-                    getPx(getY(room, -WALL_SIZE + 16, WALL_SIZE)));
+        // if the bottom-left corner should be visible, then draw it
+        // if the left wall is showing & the bottom wall is showing
+        if (offsetX < 0 && offsetY + c.getHeight() > room.getHeight()) {
+            drawImg(WALLS.get(Direction.SOUTHWEST), size, size, -size, getPx(getY(-WALL_SIZE + 16, WALL_SIZE)));
         }
         // top left
-        if (offsetX < 0 && offsetY + c.getHeight() > room.getHeight()) {
-            drawImg(WALLS.get(Direction.NORTHWEST), size, size, -size,
-                    getPx(getY(room, room.getHeight(), WALL_SIZE)));
+        if (offsetX < 0 && offsetY < 0) {
+            drawImg(WALLS.get(Direction.NORTHWEST), size, size, -size, getPx(getY(room.getHeight(), WALL_SIZE)));
         }
         // top right
-        if (offsetX + c.getWidth() > room.getWidth() && offsetY + c.getHeight() > room.getHeight()) {
+        if (offsetX + c.getWidth() > room.getWidth() && offsetY < 0) {
             drawImg(WALLS.get(Direction.NORTHEAST), size, size, getPx(room.getWidth()),
-                    getPx(getY(room, room.getHeight(), WALL_SIZE)));
+                    getPx(getY(room.getHeight(), WALL_SIZE)));
         }
         // bottom right
-        if (offsetX + c.getWidth() > room.getWidth() && offsetY < 0) {
+        if (offsetX + c.getWidth() > room.getWidth() && offsetY + c.getHeight() > room.getHeight()) {
             drawImg(WALLS.get(Direction.SOUTHEAST), size, size, getPx(room.getWidth()),
-                    getPx(getY(room, -WALL_SIZE + 16, WALL_SIZE)));
+                    getPx(getY(-WALL_SIZE + 16, WALL_SIZE)));
         }
 
         // doors
@@ -172,7 +185,7 @@ public class RoomRenderer {
                     continue;
                 }
                 x = getPx(obstacle.getX());
-                y = getPx(getY(room, obstacle.getY(), obstacle.getHeight()));
+                y = getPx(getY(obstacle.getY(), obstacle.getHeight()));
                 w = getPx(obstacle.getWidth());
                 h = getPx(obstacle.getHeight());
                 img = obstacle.getSprite();
@@ -185,7 +198,7 @@ public class RoomRenderer {
                     h = getPx(m.getHeight());
                     w = getPx(m.getWidth());
                     x = getPx(m.getX());
-                    y = getPx(getY(room, m.getY(), m.getHeight()));
+                    y = getPx(getY(m.getY(), m.getHeight()));
                     gc.setGlobalAlpha(m.getOpacity());
                     drawImg(m.getSprite(), w, h, x, y);
                     h = Vars.i("gc_healthbar_height");
@@ -203,7 +216,7 @@ public class RoomRenderer {
                 h = getPx(item.getHeight()) * scale;
                 w = getPx(item.getWidth()) * scale;
                 x = getPx(item.getX() + item.getWidth() * (1 - scale) / 2);
-                y = getPx(getY(room, item.getY(), item.getHeight()) + item.getHeight() * (1 - scale) / 2);
+                y = getPx(getY(item.getY(), item.getHeight()) + item.getHeight() * (1 - scale) / 2);
                 img = item.getItem().getSprite();
                 drawImg(img, w, h, x, y);
             }
@@ -213,7 +226,7 @@ public class RoomRenderer {
             h = getPx(p.getHeight());
             w = getPx(p.getWidth());
             x = getPx(p.getX());
-            y = getPx(getY(room, p.getY(), p.getHeight()));
+            y = getPx(getY(p.getY(), p.getHeight()));
             img = p.getSprite();
             drawImg(img, w, h, x, y);
         }
@@ -221,17 +234,33 @@ public class RoomRenderer {
         //draw player
         if (player.getHealth() > 0) {
             x = getPx(player.getX());
-            y = getPx(getY(room, player.getY(), player.getHeight() * 2));
+            y = getPx(getY(player.getY(), player.getHeight() * 2));
             h = getPx(player.getHeight() * 2);
             w = getPx(player.getWidth());
             img = player.getSprite();
             drawImg(img, w, h, x, y);
+
+            // move camera if necessary
+            int spacing = Vars.i("gc_camera_spacing_x");
+            x = player.getX() - offsetX;
+            if (x < spacing) {
+                cam.setX(cam.getX() - (spacing - x));
+            } else if (getUnits(c.getWidth()) - x + player.getWidth() < spacing) {
+                cam.setX(cam.getX() + (spacing - (getUnits(c.getWidth()) - x + player.getWidth())));
+            }
+            spacing = Vars.i("gc_camera_spacing_y");
+            y = getY(player.getY(), player.getHeight()) - offsetY;
+            if (y < spacing) {
+                cam.setY(cam.getY() + (spacing - y));
+            } else if (getUnits(c.getHeight()) - y + player.getHeight() < spacing) {
+                cam.setY(cam.getY() - (spacing - (getUnits(c.getHeight()) - y + player.getHeight())));
+            }
         }
 
         // bottom wall
-        if (offsetY < 0) {
-            x = Math.max(offsetX, 0);
-            while (x < room.getWidth()) {
+        if (offsetY + c.getHeight() > room.getHeight()) {
+            x = Math.floor(Math.max(offsetX, 0) / WALL_SIZE) * WALL_SIZE;
+            while (x < room.getWidth() && x - offsetX < getUnits(c.getWidth())) {
                 drawWall(Direction.SOUTH, x, 0);
                 x += WALL_SIZE;
             }
@@ -259,7 +288,7 @@ public class RoomRenderer {
         int x = dir == Direction.WEST ? -1 : (dir == Direction.EAST ? 1 : 0);
         int y = dir == Direction.SOUTH ? 15 : (dir == Direction.NORTH ? 1 : 0);
         drawImg(door.getSprite(), getPx(door.getWidth()), getPx(door.getHeight()), getPx(door.getX() + x),
-                getPx(getY(room, door.getY() + y, door.getHeight())));
+                getPx(getY(door.getY() + y, door.getHeight())));
     }
 
     /**
@@ -269,12 +298,15 @@ public class RoomRenderer {
      * @param y Y position of the wall
      */
     private static void drawWall(Direction dir, double x, double y) {
+        // data variables
         double size = getPx(WALL_SIZE);
         double w = WALL_SIZE;
         double h = WALL_SIZE;
         Image sprite = WALLS.get(dir);
         double sw = sprite.getWidth();
         double sh = sprite.getHeight();
+
+        // clip the sprite if it overflows the room; see floor rendering for how this works
         if ((dir == Direction.SOUTH || dir == Direction.NORTH) && x + WALL_SIZE > room.getWidth()) {
             w = room.getHeight() - x;
             sw = w / WALL_SIZE * sprite.getWidth();
@@ -283,19 +315,20 @@ public class RoomRenderer {
             h = room.getHeight() - y;
             sh = h / WALL_SIZE * sprite.getHeight();
         }
+
         double dx = 0;
         double dy = 0;
         double dw = size;
         double dh = size;
         if (dir == Direction.WEST || dir == Direction.EAST) {
             dh = getPx(h);
-            dy = getPx(getY(room, y, h));
+            dy = getPx(y);
             dx = dir == Direction.WEST ? -size : getPx(room.getWidth());
         }
         if (dir == Direction.SOUTH || dir == Direction.NORTH) {
             dw = getPx(w);
             dx = getPx(x);
-            dy = getPx(getY(room, dir == Direction.SOUTH ? -WALL_SIZE + 16 : room.getHeight(), WALL_SIZE));
+            dy = getPx(getY(dir == Direction.SOUTH ? -WALL_SIZE + 16 : room.getHeight(), WALL_SIZE));
         }
         drawImg(sprite, sw, sh, 0, 0, dw, dh, dx, dy);
     }
@@ -325,7 +358,11 @@ public class RoomRenderer {
         return (coord * Vars.d("gc_ppu"));
     }
 
-    private static double getY(Room r, double y, double h) {
-        return r.getHeight() - y - h;
+    private static double getUnits(double px) {
+        return px / Vars.d("gc_ppu");
+    }
+
+    private static double getY(double y, double h) {
+        return room.getHeight() - y - h;
     }
 }

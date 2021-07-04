@@ -63,6 +63,8 @@ public class Vars {
         INT_VARS.add(new IntCVar("sv_interact_distance", "interactDist", 0, 1000, 30, true, false));
         INT_VARS.add(new IntCVar("sv_monster_gold", "monsterGold", 0, 1000, 20));
         INT_VARS.add(new IntCVar("sv_monster_xp", "monsterXp", 0, 1000, 10));
+        INT_VARS.add(new IntCVar("gc_camera_spacing_x", "camSpacing", 0, 1000, 150, true));
+        INT_VARS.add(new IntCVar("gc_camera_spacing_y", "camSpacing", 0, 1000, 100, true));
 
         // Double CVars
         DOUBLE_VARS.add(new DoubleCVar("gc_ppu", "ppu", 0, 100, 1.5, true, false));
