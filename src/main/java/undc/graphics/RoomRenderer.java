@@ -1,5 +1,6 @@
 package undc.graphics;
 
+import undc.command.DataManager;
 import undc.command.Vars;
 import undc.game.Door;
 import undc.game.DroppedItem;
@@ -109,9 +110,10 @@ public class RoomRenderer {
                 }
 
                 // get the height/width of the sprite based on percentage of new h / original h
-                sw = w / f.getWidth() * f.getSprite().getWidth();
-                sh = h / f.getHeight() * f.getSprite().getHeight();
-                drawImg(f.getSprite(), sw, sh, 0, 0, getPx(w), getPx(h), getPx(f.getX()),
+                Image sprite = DataManager.FLOORS.get(f.getId());
+                sw = w / f.getWidth() * sprite.getWidth();
+                sh = h / f.getHeight() * sprite.getHeight();
+                drawImg(sprite, sw, sh, 0, 0, getPx(w), getPx(h), getPx(f.getX()),
                         getPx(getY(f.getY(), h)));
             }
         }

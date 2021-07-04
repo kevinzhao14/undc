@@ -11,6 +11,7 @@ import undc.general.Savable;
  * Represents an Obstacle object. Obstacles are physical, static objects in the game that entities can interact with.
  */
 public class Obstacle implements Movable, Savable {
+    private String id;
     private double x;
     private double y;
     private int height;
@@ -46,6 +47,7 @@ public class Obstacle implements Movable, Savable {
      */
     public Obstacle copy() {
         Obstacle o = new Obstacle();
+        o.id = id;
         o.x = 0;
         o.y = 0;
         o.height = this.height;
@@ -100,12 +102,9 @@ public class Obstacle implements Movable, Savable {
     @Override
     public JSONObject saveObject() {
         JSONObject o = new JSONObject();
+        o.put("id", id);
         o.put("x", x);
         o.put("y", y);
-        o.put("width", width);
-        o.put("height", height);
-        o.put("type", type.toString());
-        o.put("sprite", sprite.getUrl());
         return o;
     }
 
@@ -121,6 +120,12 @@ public class Obstacle implements Movable, Savable {
      */
     public static Obstacle parse(JSONObject o) {
         Obstacle obs = new Obstacle();
+        try {
+            obs.id = o.getString("id");
+        } catch (JSONException e) {
+            Console.error("Invalid value for obstacle id.");
+            return null;
+        }
         try {
             obs.type = ObstacleType.valueOf(o.getString("type").toUpperCase());
         } catch (JSONException e) {

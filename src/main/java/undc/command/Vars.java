@@ -1,5 +1,7 @@
 package undc.command;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -52,13 +54,13 @@ public class Vars {
         INT_VARS.add(new IntCVar("gc_healthbar_height", "healthbarHeight", 0, 1000, 5, true, false));
         INT_VARS.add(new IntCVar("sv_player_width", "playerWidth", 0, 100, 16, true, false));
         INT_VARS.add(new IntCVar("sv_player_height", "playerHeight", 0, 100, 16, true, false));
-        INT_VARS.add(new IntCVar("sv_player_pickup_range", "playerPickup", 0, 1000, 25));
+        INT_VARS.add(new IntCVar("sv_player_pickup_range", "playerPickup", 0, 1000, 20));
         INT_VARS.add(new IntCVar("sv_precision", "precision", 0, 1000000, 10000, true, false));
         INT_VARS.add(new IntCVar("sv_obstacle_gendist", "obsDist", 0, 1000, 64));
         INT_VARS.add(new IntCVar("sv_acceleration", "accel", 0, 10000, 1000));
         INT_VARS.add(new IntCVar("sv_max_velocity", "maxVel", 0, 1000, 100));
         INT_VARS.add(new IntCVar("sv_friction", "friction", 0, 10000, 2000));
-        INT_VARS.add(new IntCVar("sv_dropitem_distance", "dropDist", 0, 1000, 25));
+        INT_VARS.add(new IntCVar("sv_dropitem_distance", "dropDist", 0, 1000, 30));
         INT_VARS.add(new IntCVar("gc_explosion_maxwidth", "explosionWidth", 0, 1000, 75));
         INT_VARS.add(new IntCVar("sv_interact_distance", "interactDist", 0, 1000, 30, true, false));
         INT_VARS.add(new IntCVar("sv_monster_gold", "monsterGold", 0, 1000, 20));
@@ -256,5 +258,25 @@ public class Vars {
         }
         v.reset();
         return true;
+    }
+
+    /**
+     * Creates a JSONObject with the variable data that needs to be saved.
+     * @return the JSONObject
+     */
+    public static JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        o.put("cheats", CHEATS);
+        o.put("debug", DEBUG);
+
+        if (CHEATS) {
+            for (CVar v : all()) {
+                if (v.requiresCheats() && !v.value().equals(v.defValue())) {
+                    o.put(v.getName(), v.value());
+                }
+            }
+        }
+
+        return o;
     }
 }

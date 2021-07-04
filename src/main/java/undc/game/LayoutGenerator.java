@@ -66,6 +66,7 @@ public class LayoutGenerator {
     private boolean exitPlaced;
     private int[] exitCoords;
     private Room[][] roomGrid;
+    private int roomId;
 
     /**
      * Creates the rewards for the challenge rooms.
@@ -101,7 +102,9 @@ public class LayoutGenerator {
      * Makes the star, exit, and challenge rooms, and populates them with monsters, items, etc..
      */
     private void reset() {
-        startRoom = new Room(ROOM_WIDTH, ROOM_HEIGHT, (int) ((ROOM_WIDTH
+        roomId = 0;
+
+        startRoom = new Room(roomId++, ROOM_WIDTH, ROOM_HEIGHT, (int) ((ROOM_WIDTH
                 - Vars.i("sv_player_width")) / 2.0), (int) (ROOM_HEIGHT / 2.0
                 - Vars.i("sv_player_height")), RoomType.STARTROOM, generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
         startRoom.setMonsters(new ArrayList<>());
@@ -110,7 +113,8 @@ public class LayoutGenerator {
         int exitWidth = ROOM_WIDTH * 2;
         int exitHeight = ROOM_HEIGHT * 2;
 
-        exitRoom = new Room(exitWidth, exitHeight, 100, 100, RoomType.EXITROOM, generateFloors(exitWidth, exitHeight));
+        exitRoom = new Room(roomId++, exitWidth, exitHeight, 100, 100, RoomType.EXITROOM,
+                generateFloors(exitWidth, exitHeight));
         generateObstacles(exitRoom, 4);
 
         Monster boss = DataManager.getFinalBoss();
@@ -121,8 +125,10 @@ public class LayoutGenerator {
         ExitDoor ed = new ExitDoor(DOOR_EXIT, (exitWidth - DOOR_SIZE) / 2, exitHeight - 1, DOOR_SIZE, DOOR_SIZE);
         exitRoom.setTopDoor(ed);
 
-        cr1 = new ChallengeRoom(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, cr1Rewards, generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
-        cr2 = new ChallengeRoom(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, cr2Rewards, generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
+        cr1 = new ChallengeRoom(roomId++, ROOM_WIDTH, ROOM_HEIGHT, 100, 100, cr1Rewards,
+                generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
+        cr2 = new ChallengeRoom(roomId++, ROOM_WIDTH, ROOM_HEIGHT, 100, 100, cr2Rewards,
+                generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
 
         setMonsters(cr1);
         setMonsters(cr2);
@@ -191,13 +197,13 @@ public class LayoutGenerator {
      * @return Returns the DungeonLayout for a Sandbox.
      */
     public DungeonLayout generateSandbox() {
-        Room start = new Room(SANDBOX_WIDTH, SANDBOX_HEIGHT,
+        Room start = new Room(0, SANDBOX_WIDTH, SANDBOX_HEIGHT,
                 (int) ((SANDBOX_WIDTH - Vars.i("sv_player_width")) / 2.0),
                 (int) (SANDBOX_HEIGHT / 2.0 - Vars.i("sv_player_height")), RoomType.STARTROOM,
                 generateFloors(SANDBOX_WIDTH, SANDBOX_HEIGHT));
         start.setMonsters(new ArrayList<>());
 
-        Room exit = new Room(10, 10, 0, 0, RoomType.EXITROOM, generateFloors(10, 10));
+        Room exit = new Room(1, 10, 10, 0, 0, RoomType.EXITROOM, generateFloors(10, 10));
         exit.setMonsters(new ArrayList<>());
 
         // chest
@@ -235,7 +241,7 @@ public class LayoutGenerator {
             y--;
         }
         //create origin room
-        Room r = new Room(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, RoomType.EMPTYROOM,
+        Room r = new Room(roomId++, ROOM_WIDTH, ROOM_HEIGHT, 100, 100, RoomType.EMPTYROOM,
                 generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
         setMonsters(r);
         generateObstacles(r);
@@ -323,7 +329,7 @@ public class LayoutGenerator {
                 default:
                     break;
             }
-            Room r = new Room(ROOM_WIDTH, ROOM_HEIGHT, 100, 100, RoomType.EMPTYROOM,
+            Room r = new Room(roomId++, ROOM_WIDTH, ROOM_HEIGHT, 100, 100, RoomType.EMPTYROOM,
                     generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
             setMonsters(r);
             generateObstacles(r);
@@ -347,11 +353,12 @@ public class LayoutGenerator {
         Random rand = new Random();
         int size = DataManager.FLOOR_SIZE;
         double x = 0;
+        ArrayList<String> floorsList = new ArrayList<>(DataManager.FLOORS.keySet());
         while (x < width) {
             double y = 0;
             while (y < height) {
-                Image image = DataManager.FLOORS.get(rand.nextInt(DataManager.FLOORS.size()));
-                floors.add(new Floor(image, size, size, x, y));
+                String id = floorsList.get(rand.nextInt(floorsList.size()));
+                floors.add(new Floor(id, size, size, x, y));
                 y += size;
             }
             x += size;

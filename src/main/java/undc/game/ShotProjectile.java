@@ -202,7 +202,6 @@ public class ShotProjectile implements Movable, Savable {
     public JSONObject saveObject() {
         JSONObject o = new JSONObject();
         o.put("projectile", projectile.getId());
-        o.put("sprite", sprite.getUrl());
         o.put("posX", posX);
         o.put("posY", posY);
         o.put("velX", velX);

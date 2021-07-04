@@ -11,6 +11,7 @@ import java.util.ArrayList;
  * Room class implementation for handling game room obstacles and doors.
  */
 public class Room implements Savable {
+    private final int id;
     private final int height;
     private final int width;
     private final ArrayList<Obstacle> obstacles;
@@ -38,7 +39,8 @@ public class Room implements Savable {
      * @param startY Initial y-position of player in room, in game units
      * @param roomType Style of the Room object
      */
-    public Room(int width, int height, int startX, int startY, RoomType roomType, ArrayList<Floor> floors) {
+    public Room(int id, int width, int height, int startX, int startY, RoomType roomType, ArrayList<Floor> floors) {
+        this.id = id;
         this.startX = startX;
         this.startY = startY;
         this.width = width;
@@ -148,6 +150,7 @@ public class Room implements Savable {
     @Override
     public JSONObject saveObject() {
         JSONObject o = new JSONObject();
+        o.put("id", id);
         o.put("width", width);
         o.put("height", height);
         o.put("visited", visited);
@@ -176,6 +179,12 @@ public class Room implements Savable {
             projectilesObj.put(p.saveObject());
         }
         o.put("projectiles", projectilesObj);
+
+        JSONArray floorsObj = new JSONArray();
+        for (Floor f : floors) {
+            floorsObj.put(f.saveObject());
+        }
+        o.put("floors", floorsObj);
 
         if (topDoor != null) {
             o.put("topDoor", topDoor.saveObject());
@@ -221,5 +230,9 @@ public class Room implements Savable {
             doors.add(rightDoor);
         }
         return doors;
+    }
+
+    public int getId() {
+        return id;
     }
 }

@@ -11,7 +11,6 @@ import undc.item.Item;
 import undc.entity.Monster;
 import undc.game.Obstacle;
 import undc.item.Projectile;
-import undc.general.Savable;
 import undc.item.Weapon;
 import undc.item.Key;
 
@@ -21,14 +20,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Class for storing and handling all session data.
- *
  */
-public class DataManager implements Savable {
+public class DataManager {
     public static final HashMap<String, Projectile> PROJECTILES = new HashMap<>();
 
     public static final HashMap<String, Item> ITEMS = new HashMap<>();
@@ -39,7 +36,7 @@ public class DataManager implements Savable {
 
     public static final HashMap<String, Audio> SOUNDS = new HashMap<>();
 
-    public static final ArrayList<Image> FLOORS = new ArrayList<>();
+    public static final HashMap<String, Image> FLOORS = new HashMap<>();
 
     public static final int FLOOR_SIZE = 64;
 
@@ -191,12 +188,12 @@ public class DataManager implements Savable {
         return finalBoss;
     }
 
-    /**
-     * Getter for the weapon.
-     * @return The weapon
-     */
     public Weapon getWeapon() {
         return weapon;
+    }
+
+    public String getName() {
+        return name;
     }
 
     /**
@@ -401,24 +398,23 @@ public class DataManager implements Savable {
     private static boolean loadFloors(JSONObject obj) {
         JSONArray floors = obj.getJSONArray("floors");
         for (int i = 0; i < floors.length(); i++) {
+            JSONObject f = floors.getJSONObject(i);
+            String id;
+            Image img;
             try {
-                Image img = new Image(floors.getString(i));
-                FLOORS.add(img);
+                img = new Image(f.getString("sprite"));
             } catch (JSONException e) {
                 Console.error("Invalid value for floor.");
                 return false;
             }
+            try {
+                id = f.getString("id");
+            } catch (JSONException e) {
+                Console.error("Invalid value for floor id.");
+                return false;
+            }
+            FLOORS.put(id, img);
         }
         return true;
-    }
-
-    @Override
-    public JSONObject saveObject() {
-        return null;
-    }
-
-    @Override
-    public Object parseSave(JSONObject o) {
-        return null;
     }
 }

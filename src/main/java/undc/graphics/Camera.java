@@ -1,9 +1,12 @@
 package undc.graphics;
 
+import org.json.JSONObject;
+import undc.general.Savable;
+
 /**
  * Represents a camera. Used to set the visible viewport.
  */
-public class Camera {
+public class Camera implements Savable {
     private double x;
     private double y;
 
@@ -26,5 +29,18 @@ public class Camera {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        o.put("x", x);
+        o.put("y", y);
+        return o;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return null;
     }
 }

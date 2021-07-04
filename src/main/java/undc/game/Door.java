@@ -1,12 +1,12 @@
 package undc.game;
 
+import org.json.JSONObject;
 import undc.game.calc.Direction;
 
 /**
  * Class that handles doors in game. These objects grant access to rooms.
  */
 public class Door extends Obstacle {
-
     private final Room goesTo;
     private final Direction orientation;
 
@@ -31,5 +31,19 @@ public class Door extends Obstacle {
 
     public Direction getOrientation() {
         return orientation;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = super.saveObject();
+        o.put("goesTo", goesTo == null ? "" : goesTo.getId());
+        o.put("orientation", orientation.toString());
+        o.put("class", "Door");
+        return o;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return super.parseSave(o);
     }
 }

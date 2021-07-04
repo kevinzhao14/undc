@@ -1,17 +1,18 @@
 package undc.game;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import undc.general.Savable;
+
 /**
  * Class implementation of the DungeonLayout class. DungeonLayout will
  * be used for traversing and maintaining the graph/layout of Rooms
  * which compose the game map.
- *
- * @author Manas Harbola
- * @version 1.0
  */
-public class DungeonLayout {
-    private Room startingRoom;
-    private Room exitRoom;
-    private Room[][] grid;
+public class DungeonLayout implements Savable {
+    private final Room startingRoom;
+    private final Room exitRoom;
+    private final Room[][] grid;
 
     /**
      * Constructor for initializing starting and ending Rooms in Dungeon map.
@@ -49,4 +50,25 @@ public class DungeonLayout {
         return this.grid;
     }
 
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        o.put("start", startingRoom.getId());
+        o.put("exit", exitRoom.getId());
+        JSONArray gridObj = new JSONArray();
+        for (Room[] row : grid) {
+            JSONArray rowObj = new JSONArray();
+            for (Room r : row) {
+                rowObj.put(r == null ? "" : r.saveObject());
+            }
+            gridObj.put(rowObj);
+        }
+        o.put("grid", gridObj);
+        return o;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return null;
+    }
 }

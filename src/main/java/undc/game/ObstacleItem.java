@@ -3,12 +3,11 @@ package undc.game;
 import javafx.scene.image.Image;
 import org.json.JSONObject;
 import undc.item.Item;
-import undc.general.Savable;
 
 /**
  * CLass that handles items that can act as physical obstacles within the game (ex: a bomb).
  */
-public class ObstacleItem extends Obstacle implements Savable {
+public class ObstacleItem extends Obstacle {
     private Item item;
 
     public ObstacleItem(Image sprite, double x, double y, int w, int h, ObstacleType type) {

@@ -299,16 +299,21 @@ public class Monster extends Entity {
 
     @Override
     public JSONObject saveObject() {
-        JSONObject o = super.saveObject();
+        JSONObject o = new JSONObject();
         o.put("id", id);
+        o.put("health", health);
+        o.put("posX", posX);
+        o.put("posY", posY);
+        o.put("attackCooldown", attackCooldown);
         o.put("reaction", reaction);
         o.put("opacity", opacity);
+        o.put("class", "Monster");
         return o;
     }
 
     @Override
     public Object parseSave(JSONObject o) {
-        return super.parseSave(o);
+        return null;
     }
 
     /**

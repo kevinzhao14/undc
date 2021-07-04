@@ -6,13 +6,12 @@ import org.json.JSONObject;
 import undc.general.Audio;
 import undc.general.Interactable;
 import undc.inventory.Inventory;
-import undc.general.Savable;
 import undc.graphics.GameScreen;
 
 /**
  * Class representing a chest.
  */
-public class Chest extends Obstacle implements Interactable, Savable {
+public class Chest extends Obstacle implements Interactable {
     private static final Image SPRITE = new Image("textures/chest.png");
 
     private final Inventory contents;

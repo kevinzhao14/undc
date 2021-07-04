@@ -189,7 +189,7 @@ public class GameController implements Savable {
         if (isRunning) {
             if (Vars.DEBUG) {
                 Console.print("Game has been paused");
-                Console.print("Average Server FPS in " + ticks + " ticks: " + round(1000.0 / (totalTime / ticks)));
+                Console.print("Average Server FPS in " + ticks + " ticks: " + round(1000.0 / totalTime * ticks));
             }
             timer.cancel();
         } else {
@@ -476,7 +476,9 @@ public class GameController implements Savable {
     public void save() {
         JSONObject saveObj = new JSONObject();
         saveObj.put("player", player.saveObject());
-        saveObj.put("game", saveObject());
+        saveObj.put("gamedata", saveObject());
+        saveObj.put("game", getScreen().saveObject());
+        saveObj.put("vars", Vars.saveObject());
 
         if (Controller.getDataManager().saveGame(saveObj)) {
             Console.print("Game Saved.");
@@ -486,13 +488,14 @@ public class GameController implements Savable {
     @Override
     public JSONObject saveObject() {
         JSONObject o = new JSONObject();
-        o.put("room", room.saveObject());
+        o.put("room", room.getId());
         o.put("velX", velX);
         o.put("velY", velY);
         o.put("accelX", accelX);
         o.put("accelY", accelY);
         o.put("ticks", ticks);
         o.put("totalTime", totalTime);
+        o.put("camera", camera.saveObject());
         JSONArray stateso = new JSONArray();
         for (Map.Entry<String, Boolean> e : states.entrySet()) {
             JSONObject obj = new JSONObject();
@@ -529,7 +532,7 @@ public class GameController implements Savable {
             }
 
             ticks++;
-            long startTime = System.nanoTime();
+            final long startTime = System.nanoTime();
 
             //move the player
             managePlayerMovement();
@@ -537,8 +540,6 @@ public class GameController implements Savable {
                 states.put("stopframe", false);
                 return;
             }
-
-            manageCamera();
 
             //update velocity
             updatePlayerVelocity();
@@ -574,11 +575,9 @@ public class GameController implements Savable {
             //draw the frame
             refresh();
 
-            if (Vars.DEBUG) {
-                long endTime = System.nanoTime();
-                double execTime = round((endTime - startTime) / 1000000.0); //in milliseconds
-                totalTime += execTime;
-            }
+            long endTime = System.nanoTime();
+            double execTime = round((endTime - startTime) / 1000000.0); //in milliseconds
+            totalTime = round(totalTime + execTime);
         }
 
         /**
@@ -626,10 +625,6 @@ public class GameController implements Savable {
 
 
             }
-        }
-
-        private void manageCamera() {
-
         }
 
         /**

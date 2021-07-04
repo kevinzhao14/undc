@@ -36,6 +36,10 @@ public abstract class CVar {
 
     public abstract String toString();
 
+    public abstract String value();
+
+    public abstract String defValue();
+
     public String getName() {
         return name;
     }

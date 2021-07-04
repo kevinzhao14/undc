@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import org.json.JSONObject;
 import undc.command.Console;
 import undc.general.Controller;
 import undc.command.DataManager;
@@ -26,6 +27,7 @@ import undc.command.CVar;
 import undc.game.ChallengeRoom;
 import undc.game.calc.Direction;
 import undc.game.DungeonLayout;
+import undc.general.Savable;
 import undc.inventory.GraphicalInventory;
 import undc.inventory.Inventory;
 import undc.inventory.InventoryItem;
@@ -40,7 +42,7 @@ import java.util.Map;
 /**
  * Class that handles the different screens the player will see throughout the game.
  */
-public class GameScreen extends GameState {
+public class GameScreen extends GameState implements Savable {
     private static GameScreen instance;
 
     private Player player;
@@ -629,6 +631,23 @@ public class GameScreen extends GameState {
 
     public GameMode getMode() {
         return mode;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        o.put("layout", dungeonLayout.saveObject());
+        o.put("room", room.getId());
+        o.put("mode", mode.toString());
+        o.put("difficulty", Controller.getDataManager().getDifficulty().toString());
+        o.put("weapon", Controller.getDataManager().getWeapon().getId());
+        o.put("name", Controller.getDataManager().getName());
+        return o;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return null;
     }
 
     /**
