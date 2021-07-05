@@ -104,7 +104,7 @@ public class GameScreen extends GameState implements Savable {
         scene.getStylesheets().add("styles/global.css");
 
         if (mode == GameMode.SANDBOX) {
-            Controller.getDataManager().newGame("example", Difficulty.EASY, DataManager.getStartingWeapons()[0]);
+            DataManager.getInstance().newGame("example", Difficulty.EASY, DataManager.getStartingWeapons()[0]);
 
             dungeonLayout = new LayoutGenerator().generateSandbox();
 
@@ -204,7 +204,7 @@ public class GameScreen extends GameState implements Savable {
      * Makes the player.
      */
     private void createPlayer() {
-        player = new Player(Vars.i("sv_player_health"), 1, Controller.getDataManager().getWeapon());
+        player = new Player(Vars.i("sv_player_health"), 1, DataManager.getInstance().getWeapon());
         player.setDirection(Direction.SOUTH);
 
         // sandbox inventory
@@ -639,9 +639,11 @@ public class GameScreen extends GameState implements Savable {
         o.put("layout", dungeonLayout.saveObject());
         o.put("room", room.getId());
         o.put("mode", mode.toString());
-        o.put("difficulty", Controller.getDataManager().getDifficulty().toString());
-        o.put("weapon", Controller.getDataManager().getWeapon().getId());
-        o.put("name", Controller.getDataManager().getName());
+        DataManager dm = DataManager.getInstance();
+        o.put("difficulty", dm.getDifficulty().toString());
+        o.put("weapon", dm.getWeapon().getId());
+        o.put("name", dm.getName());
+        o.put("unlockedAmmo", dm.isUnlockedAmmo());
         return o;
     }
 

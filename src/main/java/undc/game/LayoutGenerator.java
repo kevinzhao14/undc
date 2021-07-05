@@ -4,7 +4,6 @@ import javafx.scene.image.Image;
 import undc.command.Console;
 import undc.command.Vars;
 import undc.game.calc.Direction;
-import undc.general.Controller;
 import undc.command.DataManager;
 import undc.graphics.GameScreen;
 import undc.graphics.SpriteGroup;
@@ -386,7 +385,7 @@ public class LayoutGenerator {
         }
         for (int i = 0; i < numMonsters; i++) {
             int n = (int) (Math.random() * monsterslist.size());
-            Difficulty diff = Controller.getDataManager().getDifficulty();
+            Difficulty diff = DataManager.getInstance().getDifficulty();
             double modifier = 1;
             if (diff == Difficulty.MEDIUM) {
                 modifier = Vars.d("sv_modifier_medium");

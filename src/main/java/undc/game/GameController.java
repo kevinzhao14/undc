@@ -35,6 +35,8 @@ import undc.general.Savable;
 import undc.item.Weapon;
 import undc.item.WeaponAmmo;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -480,7 +482,13 @@ public class GameController implements Savable {
         saveObj.put("game", getScreen().saveObject());
         saveObj.put("vars", Vars.saveObject());
 
-        if (Controller.getDataManager().saveGame(saveObj)) {
+        saveObj.put("name", DataManager.getInstance().getName());
+        String mode = getScreen().getMode().toString().toLowerCase();
+        saveObj.put("mode", mode.substring(0, 1).toUpperCase() + mode.substring(1));
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");
+        saveObj.put("date", dtf.format(LocalDateTime.now()));
+
+        if (DataManager.getInstance().saveGame(saveObj)) {
             Console.print("Game Saved.");
         }
     }

@@ -26,6 +26,7 @@ import java.util.HashMap;
  * Class for storing and handling all session data.
  */
 public class DataManager {
+
     public static final HashMap<String, Projectile> PROJECTILES = new HashMap<>();
 
     public static final HashMap<String, Item> ITEMS = new HashMap<>();
@@ -42,7 +43,8 @@ public class DataManager {
 
     public static final String EXPLOSION = "textures/boom.gif";
 
-    private static boolean unlockedAmmo = false;
+    private static DataManager instance;
+
     private static Key exitKey;
     private static Weapon[] startingWeapons;
     private static Monster finalBoss;
@@ -51,35 +53,47 @@ public class DataManager {
     private Weapon weapon;
     private String name = "Example";
     private File saveFile;
+    private boolean unlockedAmmo = false;
 
     /**
      * Basic constructor for creating a DataManager.
      */
-    public DataManager() {
+    private DataManager() {
         difficulty = null;
         weapon = null;
         load();
     }
 
-    public static boolean isUnlockedAmmo() {
+    /**
+     * Gets the current singleton instance, creating one if none exist.
+     * @return Returns the DataManager instance
+     */
+    public static DataManager getInstance() {
+        if (instance == null) {
+            instance = new DataManager();
+        }
+        return instance;
+    }
+
+    public boolean isUnlockedAmmo() {
         return unlockedAmmo;
     }
 
-    public static void setUnlockedAmmo(boolean unlockedAmmo) {
-        DataManager.unlockedAmmo = unlockedAmmo;
+    public void setUnlockedAmmo(boolean unlockedAmmo) {
+        this.unlockedAmmo = unlockedAmmo;
     }
 
     /**
      * Method for handling data from the initial configuration.
-     * @param username Username of the player
+     * @param name Username of the player
      * @param difficulty Difficulty level selected by the player
      * @param weapon Starting weapon selected by the player.
      * @return Returns true if data is valid and saved successfully. Otherwise, false
      * @throws IllegalArgumentException Throws Exception if any field is invalid.
      */
-    public boolean newGame(String username, Difficulty difficulty, Weapon weapon) {
+    public boolean newGame(String name, Difficulty difficulty, Weapon weapon) {
         //Checks for empty/whitespace-only username
-        if (username == null || username.replaceAll("\\s", "").length() == 0) {
+        if (name == null || name.replaceAll("\\s", "").length() == 0) {
             throw new IllegalArgumentException("Username cannot be empty.");
         }
 
@@ -109,7 +123,8 @@ public class DataManager {
             throw new IllegalArgumentException("Invalid weapon selection.");
         }
 
-        //save data
+        // save data
+        this.name = name.replaceAll("\\s{2,}", " ").trim();
         this.difficulty = difficulty;
         double modifier = 1.0;
         if (difficulty == Difficulty.MEDIUM) {

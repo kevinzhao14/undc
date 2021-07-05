@@ -28,31 +28,7 @@
                 <RowConstraints vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <VBox id="save-box" alignment="TOP_CENTER" minWidth="1000.0" GridPane.columnIndex="1">
-                     <children>
-                        <VBox styleClass="save-item">
-                           <children>
-                              <Label styleClass="save-name" text="Placeholder Name" />
-                              <Label styleClass="save-date" text="Last Played: 5/24/2021 3:00 PM" />
-                              <Label styleClass="save-mode" text="Story Mode" />
-                           </children>
-                        </VBox>
-                        <VBox styleClass="save-item">
-                           <children>
-                              <Label styleClass="save-name" text="Placeholder Name" />
-                              <Label styleClass="save-date" text="Last Played: 5/24/2021 3:00 PM" />
-                              <Label styleClass="save-mode" text="Story Mode" />
-                           </children>
-                        </VBox>
-                        <VBox styleClass="save-item">
-                           <children>
-                              <Label styleClass="save-name" text="Placeholder Name" />
-                              <Label styleClass="save-date" text="Last Played: 5/24/2021 3:00 PM" />
-                              <Label styleClass="save-mode" text="Story Mode" />
-                           </children>
-                        </VBox>
-                     </children>
-                  </VBox>
+                   <VBox id="save-box" fx:id="saves" alignment="TOP_CENTER" GridPane.columnIndex="1"/>
                </children>
             </GridPane>
          </content>

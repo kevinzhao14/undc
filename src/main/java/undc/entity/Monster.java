@@ -119,7 +119,7 @@ public class Monster extends Entity {
                             for (InventoryItem item : itemRow) {
                                 if (item != null) {
                                     if (item.getItem().equals(DataManager.ITEMS.get("rocket_launcher"))) {
-                                        DataManager.setUnlockedAmmo(true);
+                                        DataManager.getInstance().setUnlockedAmmo(true);
                                     }
                                     for (int i = 0; i < item.getQuantity(); i++) {
                                         DroppedItem newItem = new DroppedItem(item.getItem());
@@ -231,7 +231,8 @@ public class Monster extends Entity {
             ArrayList<Item> items = new ArrayList<>(DataManager.ITEMS.values());
             do {
                 item = items.get(generator.nextInt(items.size()));
-            } while (!item.isDroppable() || (item instanceof Ammunition && !DataManager.isUnlockedAmmo()));
+            } while (!item.isDroppable()
+                    || (item instanceof Ammunition && !DataManager.getInstance().isUnlockedAmmo()));
 
             droppedItems[i] = new DroppedItem(item.copy());
 

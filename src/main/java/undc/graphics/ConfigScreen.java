@@ -26,8 +26,6 @@ import javafx.scene.layout.VBox;
 public class ConfigScreen extends GameState {
     private static ConfigScreen instance;
 
-    //Application Window dimensions
-    private final Button nextButton;
     private final TextField playerNameEntry;
 
     /**
@@ -38,11 +36,11 @@ public class ConfigScreen extends GameState {
      */
     public ConfigScreen(int width, int height) {
         super(width, height);
-        nextButton = new Button("Next");
+        //Application Window dimensions
+        Button nextButton = new Button("Next");
         nextButton.setAlignment(Pos.CENTER);
 
-
-        Label enterPlayerName = new Label("Enter player name:");
+        Label enterPlayerName = new Label("Enter Game Name:");
         playerNameEntry = new TextField();
         enterPlayerName.setAlignment(Pos.TOP_LEFT);
         playerNameEntry.setAlignment(Pos.TOP_LEFT);
@@ -75,7 +73,7 @@ public class ConfigScreen extends GameState {
         VBox row1 = new VBox(5);
         row1.getChildren().addAll(enterPlayerName, playerNameEntry);
         root.add(row1, 0, 0);
-        root.setColumnSpan(row1, 2);
+        GridPane.setColumnSpan(row1, 2);
 
         //Create difficulty row
         GridPane row2 = new GridPane();
@@ -92,7 +90,7 @@ public class ConfigScreen extends GameState {
 
         //Add row2 to root
         root.add(row2, 0, 1);
-        root.setColumnSpan(row2, 2);
+        GridPane.setColumnSpan(row2, 2);
 
         VBox row3 = new VBox(5);
         //Adjust button size
@@ -125,7 +123,7 @@ public class ConfigScreen extends GameState {
                     ? null : Difficulty.valueOf(selectedDifficulty.getText());
 
             try {
-                if (Controller.getDataManager().newGame(playerName, difficultyRef, weaponRef)) {
+                if (DataManager.getInstance().newGame(playerName, difficultyRef, weaponRef)) {
                     GameScreen gameScreen = GameScreen.getInstance();
                     gameScreen.newGame(GameScreen.GameMode.STORY);
                     Controller.setState(gameScreen);
