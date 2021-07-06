@@ -9,7 +9,6 @@ import undc.item.Weapon;
 import undc.general.Controller;
 import undc.command.DataManager;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -124,6 +123,7 @@ public class ConfigScreen extends GameState {
 
             try {
                 if (DataManager.getInstance().newGame(playerName, difficultyRef, weaponRef)) {
+                    GameScreen.resetInstance();
                     GameScreen gameScreen = GameScreen.getInstance();
                     gameScreen.newGame(GameScreen.GameMode.STORY);
                     Controller.setState(gameScreen);
@@ -137,7 +137,7 @@ public class ConfigScreen extends GameState {
         });
 
 
-        this.scene = new Scene(root, this.width, this.height);
+        this.scene.setRoot(root);
         scene.getStylesheets().addAll("styles/config.css", "styles/global.css");
         enterPlayerName.getStyleClass().add("label");
         selectDifficulty.getStyleClass().add("label");

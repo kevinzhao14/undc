@@ -3,7 +3,6 @@ package undc.graphics;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import undc.command.Console;
-import javafx.scene.Scene;
 import undc.command.Vars;
 import undc.general.Audio;
 
@@ -33,7 +32,7 @@ public class HomeScreen extends GameState {
             Console.error("Failed to load home screen.");
             return;
         }
-        scene = new Scene(root, this.width, this.height);
+        scene.setRoot(root);
         scene.getStylesheets().add("styles/global.css");
         scene.getStylesheets().add("styles/home.css");
     }

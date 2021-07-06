@@ -12,7 +12,6 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import undc.general.Audio;
 import undc.general.Controls;
-import undc.graphics.RoomRenderer;
 import undc.command.Vars;
 import undc.item.Ammunition;
 import undc.item.Bomb;
@@ -101,11 +100,10 @@ public class GameController implements Savable {
     public void start(Room room, Player player) {
         this.player = player;
 
+        this.room = room;
+
         //reset the game on start
         reset();
-
-        camera.setX(room.getWidth() / 2.0);
-        camera.setY(room.getHeight() / 2.0);
 
         //set the current room & scene
         setRoom(room);
@@ -127,6 +125,9 @@ public class GameController implements Savable {
         if (isRunning) {
             stop();
         }
+        velX = 0;
+        velY = 0;
+        player.setDirection(player.getDirection());
         room = newRoom;
         Platform.runLater(() -> getScreen().setRoom(newRoom));
     }
@@ -194,11 +195,13 @@ public class GameController implements Savable {
                 Console.print("Average Server FPS in " + ticks + " ticks: " + round(1000.0 / totalTime * ticks));
             }
             timer.cancel();
+            getScreen().getTimer().stop();
         } else {
             if (Vars.DEBUG) {
                 Console.print("Game has been resumed");
             }
             startTimer();
+            getScreen().getTimer().start();
         }
         if (!isRunning && isStopped) {
             isStopped = false;
@@ -453,7 +456,6 @@ public class GameController implements Savable {
      * Shortcut to refresh/draw the frame.
      */
     private void refresh() {
-//        Platform.runLater(() -> RoomRenderer.drawFrame(getScreen().getCanvas(), room, player));
     }
 
     /**
@@ -1024,7 +1026,7 @@ public class GameController implements Savable {
             if (Math.abs(velX) > maxVel) {
                 velX = (velX > 0 ? 1 : -1) * maxVel;
                 //was moving before and decelerated to 0
-            } else if (states.get("frictionX") && Math.abs(originalVelX) < Math.abs(accelX)) {
+            } else if (states.get("frictionX") && Math.abs(originalVelX) <= Math.abs(accelX)) {
                 if (velY == 0) {
                     player.setDirection((originalVelX > 0) ? Direction.EAST : Direction.WEST);
                 }
@@ -1034,7 +1036,7 @@ public class GameController implements Savable {
             }
             if (Math.abs(velY) > maxVel) {
                 velY = (velY > 0 ? 1 : -1) * maxVel;
-            } else if (states.get("frictionY") && Math.abs(originalVelY) < Math.abs(accelY)) {
+            } else if (states.get("frictionY") && Math.abs(originalVelY) <= Math.abs(accelY)) {
                 if (velX == 0) {
                     player.setDirection((originalVelY > 0) ? Direction.NORTH : Direction.SOUTH);
                 }

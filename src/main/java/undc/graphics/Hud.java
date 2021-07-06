@@ -33,8 +33,6 @@ public class Hud {
     private static final int XPBAR_HEIGHT = 20;
     private static final int XPBAR_WIDTH = 200;
 
-    private static Hud instance;
-
     private final StackPane hud;
     private final Label playerGold;
     private final Rectangle healthBarInner;
@@ -229,18 +227,6 @@ public class Hud {
 
     public StackPane getHud() {
         return hud;
-    }
-
-    /**
-     * Acts as a singleton for the Hud. Creates a new hud if one doesn't already exist.
-     * @param player Player that the hud reflects information for
-     * @return Hud for the player
-     */
-    public static Hud getInstance(Player player) {
-        if (instance == null) {
-            instance = new Hud(player);
-        }
-        return instance;
     }
 
     /**

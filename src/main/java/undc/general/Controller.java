@@ -37,10 +37,6 @@ public class Controller extends Application {
 
         stage.setTitle("UNDC");
         stage.setScene(state.getScene());
-        stage.widthProperty().addListener((obs, oldVal, newVal) -> Vars.set("gc_screen_width", newVal.intValue() + ""));
-
-        stage.heightProperty().addListener((obs, oldVal, newVal) -> Vars.set("gc_screen_height", newVal.intValue()
-                + ""));
         stage.show();
 
         // catch & print all exceptions to console to manage errors

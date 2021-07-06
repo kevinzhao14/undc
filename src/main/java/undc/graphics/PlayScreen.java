@@ -2,7 +2,6 @@ package undc.graphics;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import undc.command.Vars;
 
 import java.io.File;
@@ -26,7 +25,7 @@ public class PlayScreen extends GameState {
         try {
             URL url = new File("src/main/java/undc/graphics/fxml/PlayScreen.fxml").toURI().toURL();
             Parent root = FXMLLoader.load(url);
-            scene = new Scene(root, width, height);
+            scene.setRoot(root);
             scene.getStylesheets().addAll("styles/global.css", "styles/playscreen.css");
         } catch (IOException e) {
             e.printStackTrace();

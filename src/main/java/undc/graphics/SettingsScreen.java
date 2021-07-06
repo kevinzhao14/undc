@@ -3,7 +3,6 @@ package undc.graphics;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -33,14 +32,14 @@ public class SettingsScreen extends GameState {
         super(width, height);
         try {
             URL url = new File("src/main/java/undc/graphics/fxml/SettingsScreen.fxml").toURI().toURL();
-            Parent root = FXMLLoader.load(url);
+            Parent pane = FXMLLoader.load(url);
 
-            StackPane pane = new StackPane();
+            StackPane root = new StackPane();
             popup = new ResetPopup();
             popup.toggle();
-            pane.getChildren().addAll(root, popup.getRoot());
+            root.getChildren().addAll(pane, popup.getRoot());
 
-            scene = new Scene(pane, this.width, this.height);
+            scene.setRoot(root);
             scene.getStylesheets().add("styles/global.css");
             scene.getStylesheets().add("styles/settings.css");
 

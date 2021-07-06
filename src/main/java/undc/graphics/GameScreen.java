@@ -5,7 +5,6 @@ import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -91,21 +90,13 @@ public class GameScreen extends GameState implements Savable {
      * @param mode GameMode the player selected
      */
     public void newGame(GameMode mode) {
-        scene = new Scene(new Pane(), this.width, this.height);
         consoleOpen = false;
         this.mode = mode;
 
         createPlayer();
         createHud();
         createPauseMenu();
-
-        StackPane root = new StackPane();
-        canvas = new Canvas();
-        main = RoomRenderer.drawRoom(canvas);
-        root.getChildren().addAll(main, hud.getHud());
-        root.setStyle("-fx-background-color: #34311b");
-        scene.setRoot(root);
-        scene.getStylesheets().add("styles/global.css");
+        drawRoom();
 
         if (mode == GameMode.SANDBOX) {
             DataManager.getInstance().newGame("example", Difficulty.EASY, DataManager.getStartingWeapons()[0]);
@@ -137,7 +128,6 @@ public class GameScreen extends GameState implements Savable {
         updateHud();
         GameController.resetInstance();
         getGame().start(dungeonLayout.getStartingRoom(), player);
-        Platform.runLater(timer::start);
     }
 
     /**
@@ -180,7 +170,7 @@ public class GameScreen extends GameState implements Savable {
         }
 
         if (scene.getRoot().getChildrenUnmodifiable().size() > 0) {
-//            RoomRenderer.drawFrame(canvas, room, player);
+            RoomRenderer.drawFrame(canvas, room, player);
             if (room.getType() != RoomType.CHALLENGEROOM || ((ChallengeRoom) room).isCompleted()) {
                 fadeIn(main);
             } else {
@@ -192,6 +182,19 @@ public class GameScreen extends GameState implements Savable {
         if (room.getType() == RoomType.CHALLENGEROOM && !((ChallengeRoom) room).isCompleted()) {
             onChallengeEnter();
         }
+    }
+
+    /**
+     * Draws the room and JavaFX elements.
+     */
+    private void drawRoom() {
+        StackPane root = new StackPane();
+        canvas = new Canvas();
+        main = RoomRenderer.drawRoom(canvas);
+        root.getChildren().addAll(main, hud.getHud());
+        root.setStyle("-fx-background-color: #34311b");
+        scene.setRoot(root);
+        scene.getStylesheets().add("styles/global.css");
     }
 
     /**
@@ -244,7 +247,7 @@ public class GameScreen extends GameState implements Savable {
      * Makes the hud.
      */
     private void createHud() {
-        hud = Hud.getInstance(player);
+        hud = new Hud(player);
         createInventory();
     }
 
@@ -520,9 +523,11 @@ public class GameScreen extends GameState implements Savable {
         Inventory inv = player.getInventory();
         createPlayer();
         player.setInventory(inv);
+        createHud();
+        drawRoom();
 
         //go to starting room
-        getGame().start(dungeonLayout.getStartingRoom(), player);
+        start();
     }
 
     public void createInventory() {
@@ -653,6 +658,10 @@ public class GameScreen extends GameState implements Savable {
         return null;
     }
 
+    public RenderTimer getTimer() {
+        return timer;
+    }
+
     /**
      * Enumerations for the different type of game modes.
      */
@@ -660,8 +669,10 @@ public class GameScreen extends GameState implements Savable {
         SANDBOX, STORY
     }
 
-    private class RenderTimer extends AnimationTimer {
-        private long delta;
+    /**
+     * Represents the client's rendering process.
+     */
+    public class RenderTimer extends AnimationTimer {
         private long lastFrameTime;
 
         RenderTimer() {
@@ -670,10 +681,10 @@ public class GameScreen extends GameState implements Savable {
         @Override
         public void handle(long now) {
             RoomRenderer.drawFrame(canvas, room, player);
-            delta = now - lastFrameTime;
+            long delta = now - lastFrameTime;
             lastFrameTime = now;
             double fps = 1d / delta;
-            System.out.println(fps * 1e9);
+            // System.out.println(fps * 1e9);
         }
     }
 }
