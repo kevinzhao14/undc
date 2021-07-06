@@ -17,7 +17,6 @@ public class Controller extends Application {
 
     private Stage stage;
     private GameState state;
-    private DataManager dataManager;
 
     /**
      * Entrypoint for the game.
@@ -27,9 +26,9 @@ public class Controller extends Application {
     public void start(Stage stage) {
         instance = this;
 
-        //load things
+        // load things
         Vars.load();
-        this.dataManager = new DataManager();
+        DataManager.getInstance();
         Console.create();
         Controls.getInstance();
 
@@ -69,22 +68,8 @@ public class Controller extends Application {
         instance.stage.setScene(state.getScene());
     }
 
-    /**
-     * Get the current GameState which is showing on the JavaFX stage.
-     *
-     * @return current GameState
-     */
     public static GameState getState() {
         return instance.state;
-    }
-
-    /**
-     * Returns the DataManager for the game.
-     *
-     * @return the DataManager
-     */
-    public static DataManager getDataManager() {
-        return instance.dataManager;
     }
 
     public static void quit() {

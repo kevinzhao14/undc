@@ -112,15 +112,14 @@ public class Monster extends Entity {
                     }
                 }
                 if (allDead) {
+                    ((ChallengeRoom) screen.getRoom()).openDoors();
                     ((ChallengeRoom) screen.getRoom()).setCompleted(true);
-                    Platform.runLater(screen::updateRoom);
-                    for (InventoryItem[] itemRow
-                            : ((ChallengeRoom) screen.getRoom()).getRewards().getItems()) {
+                    for (InventoryItem[] itemRow : ((ChallengeRoom) screen.getRoom()).getRewards().getItems()) {
                         if (itemRow != null) {
                             for (InventoryItem item : itemRow) {
                                 if (item != null) {
                                     if (item.getItem().equals(DataManager.ITEMS.get("rocket_launcher"))) {
-                                        DataManager.setUnlockedAmmo(true);
+                                        DataManager.getInstance().setUnlockedAmmo(true);
                                     }
                                     for (int i = 0; i < item.getQuantity(); i++) {
                                         DroppedItem newItem = new DroppedItem(item.getItem());
@@ -232,7 +231,8 @@ public class Monster extends Entity {
             ArrayList<Item> items = new ArrayList<>(DataManager.ITEMS.values());
             do {
                 item = items.get(generator.nextInt(items.size()));
-            } while (!item.isDroppable() || (item instanceof Ammunition && !DataManager.isUnlockedAmmo()));
+            } while (!item.isDroppable()
+                    || (item instanceof Ammunition && !DataManager.getInstance().isUnlockedAmmo()));
 
             droppedItems[i] = new DroppedItem(item.copy());
 
@@ -300,16 +300,21 @@ public class Monster extends Entity {
 
     @Override
     public JSONObject saveObject() {
-        JSONObject o = super.saveObject();
+        JSONObject o = new JSONObject();
         o.put("id", id);
+        o.put("health", health);
+        o.put("posX", posX);
+        o.put("posY", posY);
+        o.put("attackCooldown", attackCooldown);
         o.put("reaction", reaction);
         o.put("opacity", opacity);
+        o.put("class", "Monster");
         return o;
     }
 
     @Override
     public Object parseSave(JSONObject o) {
-        return super.parseSave(o);
+        return null;
     }
 
     /**

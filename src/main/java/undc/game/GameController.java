@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import undc.command.Console;
 import undc.general.Controller;
 import undc.command.DataManager;
+import undc.graphics.Camera;
 import undc.graphics.GameScreen;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -34,6 +35,8 @@ import undc.general.Savable;
 import undc.item.Weapon;
 import undc.item.WeaponAmmo;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +52,8 @@ import java.util.TimerTask;
 public class GameController implements Savable {
     private static GameController instance;
 
+    private final Camera camera;
+
     private Timer timer;
     private Room room;
     private Player player;
@@ -59,8 +64,6 @@ public class GameController implements Savable {
     private boolean isRunning;
     private boolean isStopped;
     private GameRunner runner;
-    private double camX;
-    private double camY;
 
     //debug variables
     private long ticks;
@@ -73,6 +76,7 @@ public class GameController implements Savable {
      * Constructor for GameController.
      */
     private GameController() {
+        camera = new Camera();
     }
 
     /**
@@ -100,8 +104,8 @@ public class GameController implements Savable {
         //reset the game on start
         reset();
 
-        camX = room.getWidth() / 2.0;
-        camY = room.getHeight() / 2.0;
+        camera.setX(room.getWidth() / 2.0);
+        camera.setY(room.getHeight() / 2.0);
 
         //set the current room & scene
         setRoom(room);
@@ -155,11 +159,11 @@ public class GameController implements Savable {
         isStopped = false;
         states = new HashMap<>();
         if (room == null) {
-            camX = 0;
-            camY = 0;
+            camera.setX(0);
+            camera.setY(0);
         } else {
-            camX = room.getWidth() / 2.0;
-            camY = room.getHeight() / 2.0;
+            camera.setX(room.getWidth() / 2.0);
+            camera.setY(room.getHeight() / 2.0);
         }
         // states for player movement direction
         states.put("north", false);
@@ -175,6 +179,7 @@ public class GameController implements Savable {
         states.put("usePress", false);
         states.put("drop", false);
         states.put("interact", false);
+        states.put("stopframe", false);
         ticks = 0;
         totalTime = 0;
     }
@@ -186,7 +191,7 @@ public class GameController implements Savable {
         if (isRunning) {
             if (Vars.DEBUG) {
                 Console.print("Game has been paused");
-                Console.print("Average Server FPS in " + ticks + " ticks: " + round(1000.0 / (totalTime / ticks)));
+                Console.print("Average Server FPS in " + ticks + " ticks: " + round(1000.0 / totalTime * ticks));
             }
             timer.cancel();
         } else {
@@ -473,9 +478,17 @@ public class GameController implements Savable {
     public void save() {
         JSONObject saveObj = new JSONObject();
         saveObj.put("player", player.saveObject());
-        saveObj.put("game", saveObject());
+        saveObj.put("gamedata", saveObject());
+        saveObj.put("game", getScreen().saveObject());
+        saveObj.put("vars", Vars.saveObject());
 
-        if (Controller.getDataManager().saveGame(saveObj)) {
+        saveObj.put("name", DataManager.getInstance().getName());
+        String mode = getScreen().getMode().toString().toLowerCase();
+        saveObj.put("mode", mode.substring(0, 1).toUpperCase() + mode.substring(1));
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");
+        saveObj.put("date", dtf.format(LocalDateTime.now()));
+
+        if (DataManager.getInstance().saveGame(saveObj)) {
             Console.print("Game Saved.");
         }
     }
@@ -483,13 +496,14 @@ public class GameController implements Savable {
     @Override
     public JSONObject saveObject() {
         JSONObject o = new JSONObject();
-        o.put("room", room.saveObject());
+        o.put("room", room.getId());
         o.put("velX", velX);
         o.put("velY", velY);
         o.put("accelX", accelX);
         o.put("accelY", accelY);
         o.put("ticks", ticks);
         o.put("totalTime", totalTime);
+        o.put("camera", camera.saveObject());
         JSONArray stateso = new JSONArray();
         for (Map.Entry<String, Boolean> e : states.entrySet()) {
             JSONObject obj = new JSONObject();
@@ -507,14 +521,9 @@ public class GameController implements Savable {
         return null;
     }
 
-    public double getCamX() {
-        return camX;
+    public Camera getCamera() {
+        return camera;
     }
-
-    public double getCamY() {
-        return camY;
-    }
-
 
     /**
      * Class that is used to calculate stuff on each tick.
@@ -531,10 +540,14 @@ public class GameController implements Savable {
             }
 
             ticks++;
-            long startTime = System.nanoTime();
+            final long startTime = System.nanoTime();
 
             //move the player
             managePlayerMovement();
+            if (states.get("stopframe")) {
+                states.put("stopframe", false);
+                return;
+            }
 
             //update velocity
             updatePlayerVelocity();
@@ -570,11 +583,9 @@ public class GameController implements Savable {
             //draw the frame
             refresh();
 
-            if (Vars.DEBUG) {
-                long endTime = System.nanoTime();
-                double execTime = round((endTime - startTime) / 1000000.0); //in milliseconds
-                totalTime += execTime;
-            }
+            long endTime = System.nanoTime();
+            double execTime = round((endTime - startTime) / 1000000.0); //in milliseconds
+            totalTime = round(totalTime + execTime);
         }
 
         /**
@@ -613,11 +624,14 @@ public class GameController implements Savable {
 
                     //check for door intersections
                     if (checkDoors(new Coords(newPosX, newPosY))) {
+                        states.put("stopframe", true);
                         return;
                     }
                     player.setX(newPosX);
                     player.setY(newPosY);
                 }
+
+
             }
         }
 
@@ -1227,7 +1241,7 @@ public class GameController implements Savable {
                     newDoor = newRoom.getBottomDoor();
                     newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
                             - player.getWidth() / 2.0;
-                    newStartY = newDoor.getY() + LayoutGenerator.DOORBOTTOM_HEIGHT + 10;
+                    newStartY = newDoor.getY() + LayoutGenerator.DOOR_SIZE + 10;
                 } else if (d.equals(room.getBottomDoor())) {
                     newDoor = newRoom.getTopDoor();
                     newStartX = newDoor.getX() + newDoor.getWidth() / 2.0
@@ -1235,7 +1249,7 @@ public class GameController implements Savable {
                     newStartY = newDoor.getY() - player.getHeight() - 1;
                 } else if (d.equals(room.getRightDoor())) {
                     newDoor = newRoom.getLeftDoor();
-                    newStartX = newDoor.getX() + 10 + LayoutGenerator.DOOR_WIDTH;
+                    newStartX = newDoor.getX() + 10 + LayoutGenerator.DOOR_SIZE;
                     newStartY = newDoor.getY() + newDoor.getHeight() / 5.0;
                 } else {
                     newDoor = newRoom.getRightDoor();

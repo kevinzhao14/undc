@@ -367,7 +367,13 @@
     }
   ],
   "floors": [
-    "textures/room/floor1.png",
-    "textures/room/floor2.png"
+    {
+      "id": "floor1",
+      "sprite": "textures/room/floor1.png"
+    },
+    {
+      "id": "floor2",
+      "sprite": "textures/room/floor2.png"
+    }
   ]
 }

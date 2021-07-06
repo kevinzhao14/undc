@@ -29,6 +29,16 @@ public class StringCVar extends CVar {
     }
 
     @Override
+    public String value() {
+        return getVal();
+    }
+
+    @Override
+    public String defValue() {
+        return def;
+    }
+
+    @Override
     public boolean setVal(String val, boolean override) {
         if (!override && !checkSet()) {
             return false;

@@ -192,22 +192,28 @@ public class Player extends Entity implements Savable {
 
     @Override
     public JSONObject saveObject() {
-        JSONObject obj = super.saveObject();
-        obj.put("gold", gold);
-        obj.put("monstersKilled", monstersKilled);
-        obj.put("totalDamageDealt", totalDamageDealt);
-        obj.put("totalItemsConsumed", totalItemsConsumed);
+        JSONObject o = new JSONObject();
+        o.put("health", health);
+        o.put("posX", posX);
+        o.put("posY", posY);
+        o.put("attackCooldown", attackCooldown);
+
+        o.put("gold", gold);
+        o.put("monstersKilled", monstersKilled);
+        o.put("totalDamageDealt", totalDamageDealt);
+        o.put("totalItemsConsumed", totalItemsConsumed);
         JSONArray eff = new JSONArray();
         for (Effect e : effects) {
             eff.put(e.saveObject());
         }
-        obj.put("effects", eff);
-        obj.put("inventory", inventory.saveObject());
-        obj.put("selected", selected);
-        obj.put("direction", direction.toString());
-        obj.put("level", level);
-        obj.put("xp", xp);
-        return obj;
+        o.put("effects", eff);
+        o.put("inventory", inventory.saveObject());
+        o.put("selected", selected);
+        o.put("direction", direction.toString());
+        o.put("level", level);
+        o.put("xp", xp);
+        o.put("class", "Player");
+        return o;
     }
 
     @Override

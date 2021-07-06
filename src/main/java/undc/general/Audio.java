@@ -27,6 +27,7 @@ public class Audio {
      */
     public static void playAudio(String id) {
         AudioClip clip = DataManager.SOUNDS.get(id).getClip();
+        clip.setVolume(Vars.d("volume"));
         clip.play();
     }
 

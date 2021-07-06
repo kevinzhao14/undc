@@ -7,9 +7,9 @@ import undc.general.Savable;
  * Class that handles buffs the player can receive in game.
  */
 public class Effect implements Savable {
-    private EffectType type;
+    private final EffectType type;
     //amount of effect per occurence
-    private double amount;
+    private final double amount;
     //seconds per occurence
     private double duration;
 

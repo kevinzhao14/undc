@@ -1,7 +1,6 @@
 package undc.entity;
 
 import javafx.scene.image.Image;
-import org.json.JSONObject;
 import undc.general.Movable;
 import undc.general.Savable;
 
@@ -16,9 +15,9 @@ public abstract class Entity implements Movable, Savable {
     protected Image sprite;
     protected int height;
     protected int width;
-    private double posX;
-    private double posY;
-    private double attackCooldown;
+    protected double posX;
+    protected double posY;
+    protected double attackCooldown;
 
     /**
      * Constructor.
@@ -134,25 +133,5 @@ public abstract class Entity implements Movable, Savable {
     public String toString() {
         return "HP: " + health + "/" + maxHealth + " | Pos: " + posX + ", " + posY + " | Size: "
                 + height + ", " + width;
-    }
-
-    @Override
-    public JSONObject saveObject() {
-        JSONObject o = new JSONObject();
-        o.put("maxHealth", maxHealth);
-        o.put("health", health);
-        o.put("attack", attack);
-        o.put("sprite", sprite.getUrl());
-        o.put("width", width);
-        o.put("height", height);
-        o.put("posX", posX);
-        o.put("posY", posY);
-        o.put("attackCooldown", attackCooldown);
-        return o;
-    }
-
-    @Override
-    public Object parseSave(JSONObject o) {
-        return null;
     }
 }

@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import org.json.JSONObject;
 import undc.command.Console;
 import undc.general.Controller;
 import undc.command.DataManager;
@@ -26,6 +27,7 @@ import undc.command.CVar;
 import undc.game.ChallengeRoom;
 import undc.game.calc.Direction;
 import undc.game.DungeonLayout;
+import undc.general.Savable;
 import undc.inventory.GraphicalInventory;
 import undc.inventory.Inventory;
 import undc.inventory.InventoryItem;
@@ -40,7 +42,7 @@ import java.util.Map;
 /**
  * Class that handles the different screens the player will see throughout the game.
  */
-public class GameScreen extends GameState {
+public class GameScreen extends GameState implements Savable {
     private static GameScreen instance;
 
     private Player player;
@@ -54,6 +56,7 @@ public class GameScreen extends GameState {
     private StackPane challenge;
     private boolean consoleOpen;
     private GameMode mode;
+    private Pane main;
 
     /**
      * Constructor for a screen.
@@ -85,17 +88,23 @@ public class GameScreen extends GameState {
      */
     public void newGame(GameMode mode) {
         scene = new Scene(new Pane(), this.width, this.height);
-        canvas = new Canvas();
         consoleOpen = false;
         this.mode = mode;
 
         createPlayer();
         createHud();
         createPauseMenu();
+
+        StackPane root = new StackPane();
+        canvas = new Canvas();
+        main = RoomRenderer.drawRoom(canvas);
+        root.getChildren().addAll(main, hud.getHud());
+        root.setStyle("-fx-background-color: #34311b");
+        scene.setRoot(root);
         scene.getStylesheets().add("styles/global.css");
 
         if (mode == GameMode.SANDBOX) {
-            Controller.getDataManager().newGame("example", Difficulty.EASY, DataManager.getStartingWeapons()[0]);
+            DataManager.getInstance().newGame("example", Difficulty.EASY, DataManager.getStartingWeapons()[0]);
 
             dungeonLayout = new LayoutGenerator().generateSandbox();
 
@@ -148,45 +157,29 @@ public class GameScreen extends GameState {
         //fade out old room
         Pane root = (Pane) scene.getRoot();
         if (root.getChildren().size() > 0) {
-            fadeOut((Pane) root.getChildren().get(0));
+            fadeOut(main);
         } else {
             createRoom();
         }
     }
 
     /**
-     * Loads in changes to the room.
-     */
-    public void updateRoom() {
-        StackPane root = new StackPane();
-        Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
-        root.getChildren().addAll(roomPane, hud.getHud());
-        root.setStyle("-fx-background-color: #34311b");
-        scene.setRoot(root);
-    }
-
-    /**
      * Makes a new room.
      */
     private void createRoom() {
-        //set new room
-        StackPane root = new StackPane();
-
         //create player and hud
         getGame().resetPos();
         if (room.getType() == RoomType.CHALLENGEROOM) {
+            ((ChallengeRoom) room).closeDoors();
             createChallengeOverlay();
         }
 
-        Pane roomPane = RoomRenderer.drawRoom(scene, room, canvas);
-        root.getChildren().addAll(roomPane, hud.getHud());
-        root.setStyle("-fx-background-color: #34311b");
-        scene.setRoot(root);
         if (scene.getRoot().getChildrenUnmodifiable().size() > 0) {
+            RoomRenderer.drawFrame(canvas, room, player);
             if (room.getType() != RoomType.CHALLENGEROOM || ((ChallengeRoom) room).isCompleted()) {
-                fadeIn(roomPane);
+                fadeIn(main);
             } else {
-                fadeIn(roomPane, false);
+                fadeIn(main, false);
             }
         } else {
             getGame().updateRoom();
@@ -211,7 +204,7 @@ public class GameScreen extends GameState {
      * Makes the player.
      */
     private void createPlayer() {
-        player = new Player(Vars.i("sv_player_health"), 1, Controller.getDataManager().getWeapon());
+        player = new Player(Vars.i("sv_player_health"), 1, DataManager.getInstance().getWeapon());
         player.setDirection(Direction.SOUTH);
 
         // sandbox inventory
@@ -638,6 +631,25 @@ public class GameScreen extends GameState {
 
     public GameMode getMode() {
         return mode;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        o.put("layout", dungeonLayout.saveObject());
+        o.put("room", room.getId());
+        o.put("mode", mode.toString());
+        DataManager dm = DataManager.getInstance();
+        o.put("difficulty", dm.getDifficulty().toString());
+        o.put("weapon", dm.getWeapon().getId());
+        o.put("name", dm.getName());
+        o.put("unlockedAmmo", dm.isUnlockedAmmo());
+        return o;
+    }
+
+    @Override
+    public Object parseSave(JSONObject o) {
+        return null;
     }
 
     /**
