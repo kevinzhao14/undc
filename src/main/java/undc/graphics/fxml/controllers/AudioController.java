@@ -2,12 +2,12 @@ package undc.graphics.fxml.controllers;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import undc.command.Console;
 import undc.command.DataManager;
@@ -24,10 +24,13 @@ import java.util.Set;
 public class AudioController implements Initializable {
 
     @FXML
-    VBox master;
+    private VBox master;
 
-    int percent;
-    Set<Node> sliders;
+    private int percent;
+    private Set<Node> sliders;
+    private Set<Node> buttons;
+    private boolean buttonActive = false; // whether or not a button is clicked
+    private Button activeButton; // currently active button
 
     /**
      * Sets up a listener for the sliders to show the percentage.
@@ -36,6 +39,7 @@ public class AudioController implements Initializable {
      */
     public void initialize(URL arg0, ResourceBundle arg1) {
         sliders = master.lookupAll(".controls-grid Slider");
+        buttons = master.lookupAll(".control-grid Button");
         for (Node n : sliders) {
             if (!(n instanceof Slider)) {
                 Console.error("invalid node");
@@ -63,10 +67,18 @@ public class AudioController implements Initializable {
                     }
                 }
             });
+            for (Node node : buttons) {
+                if (!(node instanceof Button)) {
+                    Console.error("Invalid node");
+                    return;
+                }
+                Button b = (Button) node;
+                b.setOnMouseReleased(e -> changeVolume(e, b));
+            }
         }
     }
 
-    public void changeVolume(ActionEvent e) {
-        System.out.println("clicked");
+    public void changeVolume(MouseEvent me, Button button) {
+        // ToDo
     }
 }
