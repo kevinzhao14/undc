@@ -453,7 +453,7 @@ public class GameController implements Savable {
      * Shortcut to refresh/draw the frame.
      */
     private void refresh() {
-        Platform.runLater(() -> RoomRenderer.drawFrame(getScreen().getCanvas(), room, player));
+//        Platform.runLater(() -> RoomRenderer.drawFrame(getScreen().getCanvas(), room, player));
     }
 
     /**

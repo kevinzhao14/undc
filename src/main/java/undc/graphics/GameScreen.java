@@ -1,5 +1,6 @@
 package undc.graphics;
 
+import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -58,6 +59,8 @@ public class GameScreen extends GameState implements Savable {
     private GameMode mode;
     private Pane main;
 
+    private final RenderTimer timer;
+
     /**
      * Constructor for a screen.
      * @param width int width of the screen
@@ -65,6 +68,7 @@ public class GameScreen extends GameState implements Savable {
      */
     private GameScreen(int width, int height) {
         super(width, height);
+        timer = new RenderTimer();
     }
 
     /**
@@ -133,6 +137,7 @@ public class GameScreen extends GameState implements Savable {
         updateHud();
         GameController.resetInstance();
         getGame().start(dungeonLayout.getStartingRoom(), player);
+        Platform.runLater(timer::start);
     }
 
     /**
@@ -175,7 +180,7 @@ public class GameScreen extends GameState implements Savable {
         }
 
         if (scene.getRoot().getChildrenUnmodifiable().size() > 0) {
-            RoomRenderer.drawFrame(canvas, room, player);
+//            RoomRenderer.drawFrame(canvas, room, player);
             if (room.getType() != RoomType.CHALLENGEROOM || ((ChallengeRoom) room).isCompleted()) {
                 fadeIn(main);
             } else {
@@ -613,10 +618,6 @@ public class GameScreen extends GameState implements Savable {
         return player;
     }
 
-    public Canvas getCanvas() {
-        return canvas;
-    }
-
     private GameController getGame() {
         return GameController.getInstance();
     }
@@ -657,5 +658,22 @@ public class GameScreen extends GameState implements Savable {
      */
     public enum GameMode {
         SANDBOX, STORY
+    }
+
+    private class RenderTimer extends AnimationTimer {
+        private long delta;
+        private long lastFrameTime;
+
+        RenderTimer() {
+        }
+
+        @Override
+        public void handle(long now) {
+            RoomRenderer.drawFrame(canvas, room, player);
+            delta = now - lastFrameTime;
+            lastFrameTime = now;
+            double fps = 1d / delta;
+            System.out.println(fps * 1e9);
+        }
     }
 }
