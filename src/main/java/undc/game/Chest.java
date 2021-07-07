@@ -12,7 +12,7 @@ import undc.graphics.GameScreen;
  * Class representing a chest.
  */
 public class Chest extends Obstacle implements Interactable {
-    private static final Image SPRITE = new Image("textures/chest.png");
+    private static final Image SPRITE = new Image("textures/obstacles/chest.png");
 
     private final Inventory contents;
 

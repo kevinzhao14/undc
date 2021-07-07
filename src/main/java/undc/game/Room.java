@@ -160,13 +160,13 @@ public class Room implements Savable {
         for (Obstacle obs : obstacles) {
             obstaclesObj.put(obs.saveObject());
         }
-        o.put("obstacles", obstaclesObj);
+        o.put("textures/obstacles", obstaclesObj);
 
         JSONArray monstersObj = new JSONArray();
         for (Monster m : monsters) {
             monstersObj.put(m.saveObject());
         }
-        o.put("monsters", monstersObj);
+        o.put("entities/monsters", monstersObj);
 
         JSONArray droppedItemsObj = new JSONArray();
         for (DroppedItem d : droppedItems) {

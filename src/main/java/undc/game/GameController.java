@@ -479,7 +479,7 @@ public class GameController implements Savable {
      */
     public void save() {
         JSONObject saveObj = new JSONObject();
-        saveObj.put("player", player.saveObject());
+        saveObj.put("entities/player", player.saveObject());
         saveObj.put("gamedata", saveObject());
         saveObj.put("game", getScreen().saveObject());
         saveObj.put("vars", Vars.saveObject());

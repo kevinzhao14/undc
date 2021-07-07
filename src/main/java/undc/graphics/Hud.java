@@ -80,7 +80,7 @@ public class Hud {
         // player image/profile
         StackPane playerImageBox = new StackPane();
         playerImageBox.setId("player-image");
-        ImageView playerImage = new ImageView("player/profile.png");
+        ImageView playerImage = new ImageView("entities/player/profile.png");
         playerImage.setFitHeight(150);
         playerImage.setFitWidth(150);
         playerImageOverlay = new HBox();

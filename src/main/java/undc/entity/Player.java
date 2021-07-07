@@ -22,17 +22,17 @@ import java.util.ArrayList;
  */
 public class Player extends Entity implements Savable {
     private static final SpriteGroup STANDING_SPRITES = new SpriteGroup(
-        new Image("player/player-left.png"),
-        new Image("player/player-up.png"),
-        new Image("player/player-right.png"),
-        new Image("player/player-down.png")
+        new Image("entities/player/player-left.png"),
+        new Image("entities/player/player-up.png"),
+        new Image("entities/player/player-right.png"),
+        new Image("entities/player/player-down.png")
     );
 
     private static final SpriteGroup MOVING_SPRITES = new SpriteGroup(
-        new Image("player/player-walk-left.gif"),
-        new Image("player/player-walk-up.gif"),
-        new Image("player/player-walk-right.gif"),
-        new Image("player/player-walk-down.gif")
+        new Image("entities/player/player-walk-left.gif"),
+        new Image("entities/player/player-walk-up.gif"),
+        new Image("entities/player/player-walk-right.gif"),
+        new Image("entities/player/player-walk-down.gif")
     );
 
     private int gold;
