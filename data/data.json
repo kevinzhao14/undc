@@ -7,10 +7,10 @@
       "id": "rocket",
       "name": "Rocket",
       "sprites": [
-        "weapons/rocket-left.png",
-        "weapons/rocket-up.png",
-        "weapons/rocket-right.png",
-        "weapons/rocket-down.png"
+        "items/weapons/rocket-left.png",
+        "items/weapons/rocket-up.png",
+        "items/weapons/rocket-right.png",
+        "items/weapons/rocket-down.png"
       ],
       "damage": 25,
       "speed": 500,
@@ -24,10 +24,10 @@
       "id": "arrow",
       "name": "Arrow",
       "sprites": [
-        "weapons/arrow-left.png",
-        "weapons/arrow-up.png",
-        "weapons/arrow-right.png",
-        "weapons/arrow-down.png"
+        "items/weapons/arrow-left.png",
+        "items/weapons/arrow-up.png",
+        "items/weapons/arrow-right.png",
+        "items/weapons/arrow-down.png"
       ],
       "damage": 10,
       "speed": 300,
@@ -41,7 +41,7 @@
     {
       "id": "fast",
       "name": "Fast Monster",
-      "sprite": "monsters/monster-fast.png",
+      "sprite": "entities/monsters/monster-fast.png",
       "health": 20,
       "attack": 4,
       "speed": 150,
@@ -53,7 +53,7 @@
     {
       "id": "normal",
       "name": "Normal Monster",
-      "sprite": "monsters/monster-normal.png",
+      "sprite": "entities/monsters/monster-normal.png",
       "health": 40,
       "attack": 5,
       "speed": 100,
@@ -65,7 +65,7 @@
     {
       "id": "tank",
       "name": "Tank Monster",
-      "sprite": "monsters/monster-tank.png",
+      "sprite": "entities/monsters/monster-tank.png",
       "health": 80,
       "attack": 10,
       "speed": 50,
@@ -77,7 +77,7 @@
     {
       "id": "final",
       "name": "Final Boss",
-      "sprite": "monsters/final-boss.gif",
+      "sprite": "entities/monsters/final-boss.gif",
       "health": 200,
       "attack": 15,
       "speed": 100,
@@ -92,7 +92,7 @@
       "id": "boulders",
       "name": "Boulders",
       "type": "solid",
-      "sprite": "obstacles/boulders.png",
+      "sprite": "textures/obstacles/boulders.png",
       "width": 23,
       "height": 17
     },
@@ -100,7 +100,7 @@
       "id": "small_ruins",
       "name": "Small Ruins",
       "type": "solid",
-      "sprite": "obstacles/ruin1.png",
+      "sprite": "textures/obstacles/ruin1.png",
       "width": 10,
       "height": 11
     },
@@ -108,7 +108,7 @@
       "id": "large_ruins",
       "name": "Large Ruins",
       "type": "solid",
-      "sprite": "obstacles/ruin2.png",
+      "sprite": "textures/obstacles/ruin2.png",
       "width": 31,
       "height": 18
     }
@@ -118,7 +118,7 @@
       "id": "axe",
       "type": "weapon",
       "name": "Axe",
-      "sprite": "weapons/axe.png",
+      "sprite": "items/weapons/axe.png",
       "damage": 16,
       "attackSpeed": 1
     },
@@ -126,7 +126,7 @@
       "id": "mace",
       "type": "weapon",
       "name": "Mace",
-      "sprite": "weapons/mace.png",
+      "sprite": "items/weapons/mace.png",
       "damage": 12,
       "attackSpeed": 0.75
     },
@@ -134,7 +134,7 @@
       "id": "sword",
       "type": "weapon",
       "name": "Sword",
-      "sprite": "weapons/sword.png",
+      "sprite": "items/weapons/sword.png",
       "damage": 8,
       "attackSpeed": 0.5
     },
@@ -182,7 +182,7 @@
       "id": "dagger",
       "type": "weapon",
       "name": "Dagger",
-      "sprite": "weapons/dagger.png",
+      "sprite": "items/weapons/dagger.png",
       "damage": 5,
       "attackSpeed": 0.25,
       "droppable": true
@@ -202,7 +202,7 @@
       "id": "rocket_launcher",
       "type": "rangedweapon",
       "name": "Rocket Launcher",
-      "sprite": "weapons/rocketlauncher.png",
+      "sprite": "items/weapons/rocketlauncher.png",
       "damage": 4,
       "reloadTime": 1,
       "fireRate": 1,
@@ -216,7 +216,7 @@
       "id": "rockets",
       "type": "ammunition",
       "name": "Rockets",
-      "sprite": "weapons/rocket-right.png",
+      "sprite": "items/weapons/rocket-right.png",
       "amount": 5,
       "projectile": "rocket",
       "droppable": true,
@@ -233,7 +233,7 @@
       "id": "bow",
       "type": "rangedweapon",
       "name": "Bow",
-      "sprite": "weapons/bow.png",
+      "sprite": "items/weapons/bow.png",
       "damage": 2,
       "reloadTime": 0,
       "fireRate": 0.75,
@@ -247,7 +247,7 @@
       "id": "arrows",
       "type": "ammunition",
       "name": "Arrows",
-      "sprite": "weapons/arrow-right.png",
+      "sprite": "items/weapons/arrow-right.png",
       "amount": 10,
       "projectile": "arrow",
       "droppable": true,

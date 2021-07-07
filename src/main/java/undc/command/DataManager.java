@@ -259,7 +259,7 @@ public class DataManager {
      */
 
     private static boolean loadMonsters(JSONObject obj) {
-        JSONArray monsters = obj.getJSONArray("entities/monsters");
+        JSONArray monsters = obj.getJSONArray("monsters");
         for (int i = 0; i < monsters.length(); i++) {
             JSONObject o = monsters.getJSONObject(i);
             Monster monster = Monster.parse(o);
@@ -294,7 +294,7 @@ public class DataManager {
      * @return Returns true if successful, false otherwise
      */
     private static boolean loadObstacles(JSONObject obj) {
-        JSONArray obstacles = obj.getJSONArray("textures/obstacles");
+        JSONArray obstacles = obj.getJSONArray("obstacles");
         for (int i = 0; i < obstacles.length(); i++) {
             JSONObject o = obstacles.getJSONObject(i);
             Obstacle obs = Obstacle.parse(o);
