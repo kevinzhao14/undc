@@ -16,6 +16,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import org.json.JSONObject;
 import undc.command.Console;
+import undc.entity.Entity;
 import undc.general.Controller;
 import undc.command.DataManager;
 import undc.game.GameController;
@@ -507,13 +508,13 @@ public class GameScreen extends GameState implements Savable {
                     room.getDroppedItems().clear();
                     room.getProjectiles().clear();
                     if (mode == GameMode.SANDBOX) {
-                        room.getMonsters().clear();
+                        room.getEntities().clear();
                     } else {
-                        for (Monster m : room.getMonsters()) {
-                            if (m != null) {
+                        for (Entity e : room.getEntities()) {
+                            if (e instanceof Monster) {
                                 int monsterX = (int) (Math.random() * (room.getWidth() - 39)) + 20;
                                 int monsterY = (int) (Math.random() * (room.getHeight() - 39)) + 20;
-                                m.revive(monsterX, monsterY);
+                                ((Monster) e).revive(monsterX, monsterY);
                             }
                         }
                     }

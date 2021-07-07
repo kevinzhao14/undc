@@ -102,17 +102,17 @@ public class ShotProjectile implements Movable, Savable {
 
         //splash damage
         if (projectile.isSplash()) {
-            for (Monster m : room.getMonsters()) {
-                if (m == e) {
+            for (Entity t : room.getEntities()) {
+                if (t == e || !(t instanceof Monster)) {
                     continue;
                 }
                 //calculate distance
-                double distX = (m.getX() + m.getWidth() / 2.0) - (posX + width / 2.0);
-                double distY = (m.getY() + m.getHeight() / 2.0) - (posY + height / 2.0);
+                double distX = (t.getX() + t.getWidth() / 2.0) - (posX + width / 2.0);
+                double distY = (t.getY() + t.getHeight() / 2.0) - (posY + height / 2.0);
                 double dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
                 //if in range of the blast
                 if (dist <= projectile.getSplashRange()) {
-                    m.attackMonster(projectile.getDamage());
+                    ((Monster) t).attackMonster(projectile.getDamage());
                 }
             }
             //attack player

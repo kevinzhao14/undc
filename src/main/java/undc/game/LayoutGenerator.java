@@ -3,8 +3,12 @@ package undc.game;
 import javafx.scene.image.Image;
 import undc.command.Console;
 import undc.command.Vars;
+import undc.entity.Dialogue;
+import undc.entity.Entity;
+import undc.entity.NPC;
 import undc.game.calc.Direction;
 import undc.command.DataManager;
+import undc.general.Controls;
 import undc.graphics.GameScreen;
 import undc.graphics.SpriteGroup;
 import undc.inventory.GraphicalInventory;
@@ -106,7 +110,7 @@ public class LayoutGenerator {
         startRoom = new Room(roomId++, ROOM_WIDTH, ROOM_HEIGHT, (int) ((ROOM_WIDTH
                 - Vars.i("sv_player_width")) / 2.0), (int) (ROOM_HEIGHT / 2.0
                 - Vars.i("sv_player_height")), RoomType.STARTROOM, generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
-        startRoom.setMonsters(new ArrayList<>());
+        startRoom.setEntities(new ArrayList<>());
         generateObstacles(startRoom);
 
         int exitWidth = ROOM_WIDTH * 2;
@@ -119,8 +123,8 @@ public class LayoutGenerator {
         Monster boss = DataManager.getFinalBoss();
         boss.setX(exitWidth / 2.0 - boss.getWidth() / 2.0);
         boss.setY(exitHeight - boss.getHeight() - 5);
-        exitRoom.setMonsters(new ArrayList<>());
-        exitRoom.getMonsters().add(DataManager.getFinalBoss());
+        exitRoom.setEntities(new ArrayList<>());
+        exitRoom.getEntities().add(DataManager.getFinalBoss());
         ExitDoor ed = new ExitDoor(DOOR_EXIT, (exitWidth - DOOR_SIZE) / 2, exitHeight - 1, DOOR_SIZE, DOOR_SIZE);
         exitRoom.setTopDoor(ed);
 
@@ -200,10 +204,10 @@ public class LayoutGenerator {
                 (int) ((SANDBOX_WIDTH - Vars.i("sv_player_width")) / 2.0),
                 (int) (SANDBOX_HEIGHT / 2.0 - Vars.i("sv_player_height")), RoomType.STARTROOM,
                 generateFloors(SANDBOX_WIDTH, SANDBOX_HEIGHT));
-        start.setMonsters(new ArrayList<>());
+        start.setEntities(new ArrayList<>());
 
         Room exit = new Room(1, 10, 10, 0, 0, RoomType.EXITROOM, generateFloors(10, 10));
-        exit.setMonsters(new ArrayList<>());
+        exit.setEntities(new ArrayList<>());
 
         // chest
         Inventory inv = new Inventory(4, 4);
@@ -217,6 +221,18 @@ public class LayoutGenerator {
 
         Chest chest = new Chest(400, 400, inv);
         start.getObstacles().add(chest);
+
+        // NPC
+        String[] dialogue = new String[]{
+            "Hello there!",
+            "My name is John. I am an example NPC",
+            "As you know, you can press [" + Controls.getInstance().getKey("interact") + "] to talk to me!",
+            "My favorite foods are pecan pie and mashed potatoes.",
+            "Goodbye!"
+        };
+        Dialogue d = new Dialogue(dialogue, false);
+        NPC john = new NPC(32, 32, 300, 300, new Image("entities/npcs/one.png"), "John", d);
+        start.getEntities().add(john);
 
         Room[][] arr = new Room[][]{new Room[]{start, exit}};
         return new DungeonLayout(start, exit, arr);
@@ -376,7 +392,7 @@ public class LayoutGenerator {
         if (room instanceof ChallengeRoom) {
             numMonsters = 5;
         }
-        ArrayList<Monster> monsters = new ArrayList<>();
+        ArrayList<Entity> monsters = new ArrayList<>();
         ArrayList<Monster> monsterslist = new ArrayList<>();
         for (Map.Entry<String, Monster> e : DataManager.MONSTERS.entrySet()) {
             if (!e.getValue().getId().equalsIgnoreCase("final")) {
@@ -399,7 +415,7 @@ public class LayoutGenerator {
             m.setY(monsterY);
             monsters.add(m);
         }
-        room.setMonsters(monsters);
+        room.setEntities(monsters);
     }
 
     /**

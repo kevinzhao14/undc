@@ -2,6 +2,7 @@ package undc.graphics;
 
 import undc.command.DataManager;
 import undc.command.Vars;
+import undc.entity.Entity;
 import undc.game.Door;
 import undc.game.DroppedItem;
 import undc.entity.Monster;
@@ -194,20 +195,24 @@ public class RoomRenderer {
                 drawImg(img, w, h, x, y);
             }
         }
-        if (room.getMonsters() != null) {
-            for (Monster m : room.getMonsters()) {
-                if (m != null && (m.getHealth() > 0 || m.getOpacity() > 0)) {
-                    h = getPx(m.getHeight());
-                    w = getPx(m.getWidth());
-                    x = getPx(m.getX());
-                    y = getPx(getY(m.getY(), m.getHeight()));
-                    gc.setGlobalAlpha(m.getOpacity());
-                    drawImg(m.getSprite(), w, h, x, y);
-                    h = Vars.i("gc_healthbar_height");
-                    drawHealthbar(w, h, x, y - h - 10, m.getHealth() / m.getMaxHealth());
-                    if (m.getOpacity() < 1) {
-                        m.setOpacity(m.getOpacity() - (1000.0 / Vars.i("gc_monster_fade_dur") / Vars.i("sv_tickrate")));
+        if (room.getEntities() != null) {
+            for (Entity e : room.getEntities()) {
+                if (e.getHealth() > 0 || (e instanceof Monster && ((Monster) e).getOpacity() > 0)) {
+                    h = getPx(e.getHeight());
+                    w = getPx(e.getWidth());
+                    x = getPx(e.getX());
+                    y = getPx(getY(e.getY(), e.getHeight()));
+                    if (e instanceof Monster) {
+                        Monster m = (Monster) e;
+                        gc.setGlobalAlpha(m.getOpacity());
+                        h = Vars.i("gc_healthbar_height");
+                        drawHealthbar(w, h, x, y - h - 10, e.getHealth() / e.getMaxHealth());
+                        if (m.getOpacity() < 1) {
+                            m.setOpacity(m.getOpacity() - (1000.0 / Vars.i("gc_monster_fade_dur")
+                                    / Vars.i("sv_tickrate")));
+                        }
                     }
+                    drawImg(e.getSprite(), w, h, x, y);
                 }
             }
         }

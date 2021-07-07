@@ -2,7 +2,7 @@ package undc.game;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import undc.entity.Monster;
+import undc.entity.Entity;
 import undc.general.Savable;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class Room implements Savable {
     private final ArrayList<Floor> floors;
     private final RoomType type;
 
-    private ArrayList<Monster> monsters;
+    private ArrayList<Entity> entities;
     private int startX;
     private int startY;
     private boolean visited;
@@ -56,7 +56,7 @@ public class Room implements Savable {
         this.floors = floors;
 
         //Need to change this later
-        this.monsters = null;
+        this.entities = null;
     }
 
     public void setTopDoor(Door d) {
@@ -79,8 +79,8 @@ public class Room implements Savable {
         this.visited = status;
     }
 
-    public void setMonsters(ArrayList<Monster> monsters) {
-        this.monsters = monsters;
+    public void setEntities(ArrayList<Entity> entities) {
+        this.entities = entities;
     }
 
     public int getHeight() {
@@ -135,8 +135,8 @@ public class Room implements Savable {
         return this.obstacles;
     }
 
-    public ArrayList<Monster> getMonsters() {
-        return this.monsters;
+    public ArrayList<Entity> getEntities() {
+        return this.entities;
     }
 
     public ArrayList<DroppedItem> getDroppedItems() {
@@ -160,13 +160,13 @@ public class Room implements Savable {
         for (Obstacle obs : obstacles) {
             obstaclesObj.put(obs.saveObject());
         }
-        o.put("textures/obstacles", obstaclesObj);
+        o.put("obstacles", obstaclesObj);
 
-        JSONArray monstersObj = new JSONArray();
-        for (Monster m : monsters) {
-            monstersObj.put(m.saveObject());
+        JSONArray entitiesObj = new JSONArray();
+        for (Entity m : entities) {
+            entitiesObj.put(m.saveObject());
         }
-        o.put("entities/monsters", monstersObj);
+        o.put("entities", entitiesObj);
 
         JSONArray droppedItemsObj = new JSONArray();
         for (DroppedItem d : droppedItems) {

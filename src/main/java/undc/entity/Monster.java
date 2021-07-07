@@ -105,8 +105,8 @@ public class Monster extends Entity {
                 }
             } else {    //drop the rewards if challenge room is complete
                 boolean allDead = true;
-                for (Monster m : screen.getRoom().getMonsters()) {
-                    if (m != null && m.getHealth() > 0) {
+                for (Entity e : screen.getRoom().getEntities()) {
+                    if (e instanceof Monster && e.getHealth() > 0) {
                         allDead = false;
                         break;
                     }

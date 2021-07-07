@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import undc.command.Console;
+import undc.entity.Entity;
 import undc.general.Controller;
 import undc.command.DataManager;
 import undc.graphics.Camera;
@@ -271,7 +272,7 @@ public class GameController implements Savable {
             Monster m = ((Monster) ent).copy(1);
             m.setX(x);
             m.setY(y);
-            room.getMonsters().add(m);
+            room.getEntities().add(m);
         } else if (ent instanceof Obstacle) {
             Obstacle o = ((Obstacle) ent).copy();
             o.setX(x);
@@ -732,12 +733,15 @@ public class GameController implements Savable {
          */
         private void manageInteraction() {
             if (states.get("interact")) {
+                ArrayList<Object> check = new ArrayList<>();
+                check.addAll(room.getObstacles());
+                check.addAll(room.getEntities());
                 // check what player is facing & close enough to
-                for (Obstacle o : room.getObstacles()) {
+                for (Object o : check) {
                     // player is facing the obstacle & it is interactable & it is in range
-                    if (directionOf(player, o).contains(player.getDirection()) // mod by 4 to include moving
-                            && o instanceof Interactable
-                            && distance(player, o) < Vars.i("sv_interact_distance")) {
+                    if (o instanceof Interactable && o instanceof Movable
+                            && directionOf(player, (Movable) o).contains(player.getDirection())
+                            && distance(player, (Movable) o) < Vars.i("sv_interact_distance")) {
                         ((Interactable) o).interact();
                         states.put("interact", false);
                         return;
@@ -814,7 +818,7 @@ public class GameController implements Savable {
                     //check for entity collisions
                     newX = check.getX();
                     newY = check.getY();
-                    Collision<Monster> c = checkCollisions(room.getMonsters().toArray(new Monster[0]), p,
+                    Collision<Monster> c = checkCollisions(room.getEntities().toArray(new Monster[0]), p,
                             new Coords(newX, newY));
                     Monster m = c.getCollider();
                     //hit a monster
@@ -859,11 +863,11 @@ public class GameController implements Savable {
                     }
                 }
                 player.setAttackCooldown(1000 * cooldown);
-                for (Monster m : room.getMonsters()) {
-                    if (m != null) {
-                        double dist = distance(player, m);
+                for (Entity e : room.getEntities()) {
+                    if (e instanceof Monster) {
+                        double dist = distance(player, e);
                         if (dist <= Vars.i("sv_player_attack_range")) {
-                            m.attackMonster(modifier * damage);
+                            ((Monster) e).attackMonster(modifier * damage);
                             break;
                         }
                     }
@@ -945,12 +949,12 @@ public class GameController implements Savable {
          * Manages monsters.
          */
         private void manageMonsters() {
-            for (Monster m : room.getMonsters()) {
-                if (m == null || m.getHealth() == 0) {
+            for (Entity e : room.getEntities()) {
+                if (!(e instanceof Monster) || e.getHealth() == 0) {
                     continue;
                 }
                 //check and move the monster
-                if (monsterMove(m)) {
+                if (monsterMove((Monster) e)) {
                     return;
                 }
             }
@@ -993,10 +997,10 @@ public class GameController implements Savable {
                         }
 
                         //get all entities within range of the bomb
-                        for (Monster m : room.getMonsters()) {
-                            dist = distance(m, o);
+                        for (Entity e : room.getEntities()) {
+                            dist = distance(e, o);
                             if (dist <= b.getRadius()) {
-                                m.attackMonster(b.getDamage());
+                                ((Monster) e).attackMonster(b.getDamage());
                             }
                         }
 
@@ -1226,8 +1230,8 @@ public class GameController implements Savable {
 
                 //check if not visited & if there are still monsters
                 if (!newRoom.wasVisited()) {
-                    for (Monster m : room.getMonsters()) {
-                        if (m != null && m.getHealth() > 0) {
+                    for (Entity e : room.getEntities()) {
+                        if (e instanceof Monster && e.getHealth() > 0) {
                             return false;
                         }
                     }

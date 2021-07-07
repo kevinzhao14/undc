@@ -18,6 +18,7 @@ public abstract class Entity implements Movable, Savable {
     protected double posX;
     protected double posY;
     protected double attackCooldown;
+    protected boolean invulnerable;
 
     /**
      * Constructor.
@@ -34,6 +35,7 @@ public abstract class Entity implements Movable, Savable {
         this.width = width;
         this.height = height;
         this.sprite = (sprite == null) ? null : new Image(sprite);
+        invulnerable = false;
     }
 
     /**
@@ -128,6 +130,10 @@ public abstract class Entity implements Movable, Savable {
 
     public Image getSprite() {
         return sprite;
+    }
+
+    public boolean isInvulnerable() {
+        return invulnerable;
     }
 
     public String toString() {
