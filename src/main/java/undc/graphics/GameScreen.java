@@ -46,20 +46,21 @@ import java.util.Map;
 public class GameScreen extends GameState implements Savable {
     private static GameScreen instance;
 
-    private Player player;
+    private final RenderTimer timer;
+
+    private boolean consoleOpen;
     private DungeonLayout dungeonLayout;
+    private GameMode mode;
+    private Player player;
     private Room previous;
     private Room room;
-    private Hud hud;
+
     private Canvas canvas;
     private GraphicalInventory playerInv;
-    private StackPane pause;
-    private StackPane challenge;
-    private boolean consoleOpen;
-    private GameMode mode;
+    private Hud hud;
     private Pane main;
-
-    private final RenderTimer timer;
+    private StackPane challenge;
+    private StackPane pause;
 
     /**
      * Constructor for a screen.

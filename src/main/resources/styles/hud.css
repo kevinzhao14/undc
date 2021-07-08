@@ -79,3 +79,25 @@
     -fx-alignment: top-right;
     -fx-spacing: 10px;
 }
+#dialogue-container {
+    -fx-alignment: bottom-center;
+}
+#dialogue-box {
+    -fx-pref-width: 800px;
+    -fx-pref-height: 150px;
+    -fx-border-color: #a76c32;
+    -fx-border-width: 3px;
+    -fx-translate-y: 50px;
+}
+#dialogue-text {
+    -fx-pref-width: 800px;
+    -fx-pref-height: 150px;
+    -fx-border-color: #fddcb3;
+    -fx-border-width: 2px;
+    -fx-background-color: rgba(221, 158, 96, 0.8);
+    -fx-padding: 10px;
+    -fx-font-size: 1.75em;
+    -fx-text-fill: #441900;
+    -fx-wrap-text: true;
+    -fx-alignment: top-left;
+}

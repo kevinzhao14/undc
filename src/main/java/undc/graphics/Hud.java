@@ -33,16 +33,17 @@ public class Hud {
     private static final int XPBAR_HEIGHT = 20;
     private static final int XPBAR_WIDTH = 200;
 
-    private final StackPane hud;
-    private final Label playerGold;
-    private final Rectangle healthBarInner;
-    private final Label healthBarText;
-    private final Rectangle xpBarInner;
-    private final Label xpBarText;
+    private final HBox dialogueBox;
     private final HBox hotbar;
-    private final Label ammoCounter;
-    private final VBox effectsBox;
     private final HBox playerImageOverlay;
+    private final Label ammoCounter;
+    private final Label healthBarText;
+    private final Label playerGold;
+    private final Label xpBarText;
+    private final Rectangle healthBarInner;
+    private final Rectangle xpBarInner;
+    private final StackPane hud;
+    private final VBox effectsBox;
 
     private FadeTransition animation;
 
@@ -70,9 +71,10 @@ public class Hud {
 
         // gridpane rows
         RowConstraints row1 = new RowConstraints();
+        row1.setVgrow(Priority.ALWAYS);
         RowConstraints row2 = new RowConstraints();
-        row2.setVgrow(Priority.SOMETIMES);
-        grid.getRowConstraints().addAll(row1, row2);
+        RowConstraints row3 = new RowConstraints();
+        grid.getRowConstraints().addAll(row1, row2, row3);
 
         HBox playerInfo = new HBox();
         playerInfo.setId("player-info");
@@ -121,7 +123,7 @@ public class Hud {
 
         playerStats.getChildren().addAll(playerGoldBox, healthBarPane, xpBarPane);
         playerInfo.getChildren().addAll(playerImageBox, playerStats);
-        GridPane.setConstraints(playerInfo, 0, 1);
+        GridPane.setConstraints(playerInfo, 0, 2);
 
         // hotbar
         hotbar = new HBox();
@@ -130,7 +132,7 @@ public class Hud {
             VBox temp = new VBox();
             hotbar.getChildren().add(temp);
         }
-        GridPane.setConstraints(hotbar, 1, 1);
+        GridPane.setConstraints(hotbar, 1, 2);
 
         // ammo counter
         HBox ammoBox = new HBox();
@@ -138,14 +140,23 @@ public class Hud {
         ammoCounter = new Label("Ammo: 0 / 0");
         ammoCounter.setVisible(false);
         ammoBox.getChildren().add(ammoCounter);
-        GridPane.setConstraints(ammoBox, 2, 1);
+        GridPane.setConstraints(ammoBox, 2, 2);
+
+        // dialogue box display
+        HBox dialogueContainer = new HBox();
+        dialogueContainer.setId("dialogue-container");
+        dialogueBox = new HBox();
+        dialogueBox.setId("dialogue-box");
+        dialogueBox.setVisible(false);
+        dialogueContainer.getChildren().add(dialogueBox);
+        GridPane.setConstraints(dialogueContainer, 1, 1);
 
         // effects display
         effectsBox = new VBox();
         effectsBox.setId("effects");
         GridPane.setConstraints(effectsBox, 2, 0);
 
-        grid.getChildren().addAll(playerInfo, hotbar, ammoBox, effectsBox);
+        grid.getChildren().addAll(playerInfo, hotbar, ammoBox, dialogueContainer, effectsBox);
         hud.getChildren().add(grid);
         hud.getStylesheets().add("styles/hud.css");
     }
@@ -227,6 +238,22 @@ public class Hud {
 
     public StackPane getHud() {
         return hud;
+    }
+
+    /**
+     * Sets the dialogue box's text and shows it.
+     * @param str Text to show
+     */
+    public void setDialogue(String str) {
+        Label temp = new Label(str);
+        temp.setId("dialogue-text");
+        dialogueBox.getChildren().clear();
+        dialogueBox.getChildren().add(temp);
+        dialogueBox.setVisible(true);
+    }
+
+    public void hideDialogue() {
+        dialogueBox.setVisible(false);
     }
 
     /**

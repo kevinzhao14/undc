@@ -228,9 +228,10 @@ public class LayoutGenerator {
             "My name is John. I am an example NPC",
             "As you know, you can press [" + Controls.getInstance().getKey("interact") + "] to talk to me!",
             "My favorite foods are pecan pie and mashed potatoes.",
-            "Goodbye!"
+            "Goodbye!",
+            ""
         };
-        Dialogue d = new Dialogue(dialogue, false);
+        Dialogue d = new Dialogue(dialogue, true);
         NPC john = new NPC(32, 32, 300, 300, new Image("entities/npcs/one.png"), "John", d);
         start.getEntities().add(john);
 

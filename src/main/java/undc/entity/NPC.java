@@ -1,8 +1,10 @@
 package undc.entity;
 
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import org.json.JSONObject;
 import undc.general.Interactable;
+import undc.graphics.GameScreen;
 
 /**
  * Represents an NPC, a non-player character.
@@ -53,7 +55,9 @@ public class NPC extends Entity implements Interactable {
     public boolean interact() {
         String line = dialogue.next();
         if (!line.equals("")) {
-            System.out.println(name + ": " + line);
+            Platform.runLater(() -> GameScreen.getInstance().getHud().setDialogue(name + ": " + line));
+        } else {
+            Platform.runLater(() -> GameScreen.getInstance().getHud().hideDialogue());
         }
         return true;
     }
