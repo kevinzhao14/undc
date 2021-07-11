@@ -16,6 +16,7 @@ public class Audio {
     private String id;
     private AudioClip clip;
     private String type;
+    private boolean indefinite;
 
     private Audio() {
 
@@ -26,8 +27,23 @@ public class Audio {
      * @param id String used to locate desired AudioClip in SOUNDS HashMap
      */
     public static void playAudio(String id) {
-        AudioClip clip = DataManager.SOUNDS.get(id).getClip();
-        clip.setVolume(Vars.d("volume"));
+        Audio audio = getAudio(id);
+        AudioClip clip = audio.getClip();
+
+        double volume;
+        // Get type of audio, then set volume accordingly
+        switch (audio.getType()) {
+            case "effect":
+                volume = Vars.d("cl_effects_volume");
+                break;
+            case "music":
+                volume = Vars.d("cl_music_volume");
+                break;
+            default:
+                volume = 1;
+                break;
+        }
+        clip.setVolume(Vars.d("volume") * volume);
         clip.play();
     }
 
@@ -67,7 +83,12 @@ public class Audio {
             Console.error("Invalid value for audio type.");
             return null;
         }
-        audio.clip.setVolume(Vars.d("volume"));
+        try {
+            audio.indefinite = o.getString("indefinite").equals("true");
+        } catch (JSONException e) {
+            Console.error("Invalid value for an AudioClip's indefinite status.");
+            return null;
+        }
         return audio;
     }
 
@@ -86,5 +107,17 @@ public class Audio {
      */
     public static AudioClip getAudioClip(String id) {
         return DataManager.SOUNDS.get(id).getClip();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public static Audio getAudio(String id) {
+        return DataManager.SOUNDS.get(id);
+    }
+
+    public boolean isIndefinite() {
+        return indefinite;
     }
 }

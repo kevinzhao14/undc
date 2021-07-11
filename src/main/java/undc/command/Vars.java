@@ -24,6 +24,7 @@ public class Vars {
          * gc - Graphics: things to do with graphics, such as window size, quality, etc.
          * sv - Server: things to do with server settings, such as tickrate, player health, etc.
          * ai - AI: things related to ai, such as monsters
+         * cl - Client:
          */
 
         // Boolean CVars
@@ -73,12 +74,15 @@ public class Vars {
         DOUBLE_VARS.add(new DoubleCVar("sv_self_damage_modifier", "selfDamageMod", 0, 10, 0.75));
         DOUBLE_VARS.add(new DoubleCVar("sv_fist_damage", "fistDamage", 0, 100, 1));
         DOUBLE_VARS.add(new DoubleCVar("sv_fist_cooldown", "fistCooldown", 0, 10, 0.5));
+        DOUBLE_VARS.add(new DoubleCVar("sv_walk_cooldown", "walkCooldown", 0, 10, 0.5));
         DOUBLE_VARS.add(new DoubleCVar("gc_dropitem_scale", "dropScale", 0, 10, 0.75, true, false));
         DOUBLE_VARS.add(new DoubleCVar("sv_modifier", "modifier", 0, 10, 1, true, false));
         DOUBLE_VARS.add(new DoubleCVar("sv_modifier_medium", "modMed", 0, 10, 1.5, true, false));
         DOUBLE_VARS.add(new DoubleCVar("sv_modifier_hard", "modHard", 0, 10, 2, true, false));
         DOUBLE_VARS.add(new DoubleCVar("gc_effect_scale", "effectScale", 0, 10, 1.5));
         DOUBLE_VARS.add(new DoubleCVar("volume", "volume", 0, 1, 0.5, false));
+        DOUBLE_VARS.add(new DoubleCVar("cl_effects_volume", "volume", 0, 1, 0.5, false));
+        DOUBLE_VARS.add(new DoubleCVar("cl_music_volume", "volume", 0, 1, 0.5, false));
     }
 
     /**
@@ -240,6 +244,14 @@ public class Vars {
             return false;
         }
         return v.setVal(val);
+    }
+
+    public static boolean set(String var, double val) {
+        return set(var, val + "");
+    }
+
+    public static boolean set(String var, int val) {
+        return set(var, val + "");
     }
 
     /**

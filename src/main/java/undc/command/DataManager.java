@@ -398,10 +398,12 @@ public class DataManager {
                 return false;
             }
             SOUNDS.put(audio.getId(), audio);
+            // Set up properties for AudioClips that require slight altering such as making them repeat indefinitely,
+            // adjusting play rate, etc.
+            if (audio.isIndefinite()) {
+                audio.getClip().setCycleCount(AudioClip.INDEFINITE);
+            }
         }
-        // Set up properties for AudioClips that require slight altering such as making them repeat indefinitely or
-        // adjusting play rate
-        SOUNDS.get("menu").getClip().setCycleCount(AudioClip.INDEFINITE);
         return true;
     }
 

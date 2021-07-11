@@ -1,7 +1,5 @@
 package undc.graphics.fxml.controllers;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -10,9 +8,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import undc.command.Console;
-import undc.command.DataManager;
 import undc.command.Vars;
-import undc.general.Audio;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -26,59 +22,61 @@ public class AudioController implements Initializable {
     @FXML
     private VBox master;
 
-    private int percent;
-    private Set<Node> sliders;
-    private Set<Node> buttons;
-    private boolean buttonActive = false; // whether or not a button is clicked
-    private Button activeButton; // currently active button
-
     /**
      * Sets up a listener for the sliders to show the percentage.
      * @param arg0 URL
      * @param arg1 ResourceBundle
      */
     public void initialize(URL arg0, ResourceBundle arg1) {
-        sliders = master.lookupAll(".controls-grid Slider");
-        buttons = master.lookupAll(".control-grid Button");
+        Set<Node> sliders = master.lookupAll(".controls-grid Slider");
+        Set<Node> buttons = master.lookupAll(".control-grid Button");
         for (Node n : sliders) {
             if (!(n instanceof Slider)) {
-                Console.error("invalid node");
+                Console.error("Invalid node.");
                 return;
             }
             Slider slider = (Slider) n;
             Button button = (Button) slider.getParent().getChildrenUnmodifiable().get(1);
             // Set up initial volumes
-            slider.setValue(Vars.d("volume") * 100);
-            button.setText((int) slider.getValue() + "%");
+            slider.setValue(Vars.d("volume"));
+            button.setText(Math.round(slider.getValue() * 100) + "%");
 
             // Add listener to apply slider value to button as percent
-            slider.valueProperty().addListener(new ChangeListener<Number>() {
-
-                @Override
-                public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-                    percent = (int) slider.getValue();
-                    button.setText(percent + "%");
-
-                    // Change volume to new value of slider
-                    if (slider.getId().equals("master-volume")) {
-                        for (Audio audio : DataManager.SOUNDS.values()) {
-                            audio.getClip().setVolume(slider.getValue() / 100);
-                        }
-                    }
+            slider.valueProperty().addListener((arg01, arg11, arg2) -> {
+                button.setText(Math.round(slider.getValue() * 100) + "%");
+                String id = slider.getId();
+                // Change volume to new value of slider
+                switch (id) {
+                    case "master-volume":
+                        Vars.set("volume", round(slider.getValue()));
+                        break;
+                    case "effects-volume":
+                        Vars.set("cl_effects_volume", round(slider.getValue()));
+                        break;
+                    case "music-volume":
+                        Vars.set("cl_music_volume", round(slider.getValue()));
+                        break;
+                    default:
+                        break;
                 }
+
             });
             for (Node node : buttons) {
                 if (!(node instanceof Button)) {
-                    Console.error("Invalid node");
+                    Console.error("Invalid node.");
                     return;
                 }
                 Button b = (Button) node;
-                b.setOnMouseReleased(e -> changeVolume(e, b));
+                b.setOnMouseReleased(e -> setVolume(e, b));
             }
         }
     }
 
-    public void changeVolume(MouseEvent me, Button button) {
+    public void setVolume(MouseEvent me, Button button) {
         // ToDo
+    }
+
+    private double round(double val) {
+        return Math.round(val * Vars.i("sv_precision")) / (double) Vars.i("sv_precision");
     }
 }
