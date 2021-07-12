@@ -46,6 +46,7 @@ public class Player extends Entity implements Savable {
     private Direction direction;
     private int level;
     private int xp;
+    private double walkCooldown;
 
     /**
      * Creates a Player object.
@@ -64,6 +65,7 @@ public class Player extends Entity implements Savable {
         selected = 0;
         direction = Direction.SOUTH;
         effects = new ArrayList<>();
+        walkCooldown = 0;
     }
 
     public int getGold() {
@@ -219,5 +221,13 @@ public class Player extends Entity implements Savable {
     @Override
     public Object parseSave(JSONObject o) {
         return null;
+    }
+
+    public double getWalkCooldown() {
+        return walkCooldown;
+    }
+
+    public void setWalkCooldown(double walkCooldown) {
+        this.walkCooldown = walkCooldown;
     }
 }

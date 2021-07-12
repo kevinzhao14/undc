@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToWidth="true" hbarPolicy="NEVER" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="undc.graphics.fxml.controllers.AudioController">
+<ScrollPane fitToWidth="true" hbarPolicy="NEVER" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="undc.graphics.fxml.controllers.AudioController">
    <content>
       <GridPane>
          <columnConstraints>
@@ -48,16 +48,16 @@
                      </rowConstraints>
                      <children>
                         <Label text="Master Volume" />
-                        <Label text="Game Effects Volume" GridPane.rowIndex="1" />
+                        <Label text="Effects Volume" GridPane.rowIndex="1" />
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                            <children>
-                              <Slider id="master-volume" fx:id="slider" />
+                              <Slider id="master-volume" fx:id="slider" blockIncrement="0.01" max="1.0" />
                               <Button mnemonicParsing="false" text="x%" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <children>
-                              <Slider id="game-effects" />
+                              <Slider id="effects-volume" blockIncrement="0.01" max="1.0" />
                               <Button mnemonicParsing="false" text="x%" />
                            </children>
                         </HBox>
@@ -83,7 +83,7 @@
                         <Label text="Music Volume" />
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                            <children>
-                              <Slider id="music" />
+                              <Slider id="music-volume" blockIncrement="0.01" max="1.0" />
                               <Button mnemonicParsing="false" text="x%" />
                            </children>
                         </HBox>

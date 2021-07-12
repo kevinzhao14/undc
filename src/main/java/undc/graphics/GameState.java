@@ -23,9 +23,8 @@ public abstract class GameState {
         scene = new Scene(new Pane(), this.width, this.height);
 
         // resizing the scene sets the size cvars so that different states remain the same size.
-        scene.widthProperty().addListener((obs, oldVal, newVal) -> Vars.set("gc_screen_width", newVal.intValue() + ""));
-        scene.heightProperty().addListener((obs, oldVal, newVal) ->
-                Vars.set("gc_screen_height", newVal.intValue() + ""));
+        scene.widthProperty().addListener((obs, oldVal, newVal) -> Vars.set("gc_screen_width", newVal.intValue()));
+        scene.heightProperty().addListener((obs, oldVal, newVal) -> Vars.set("gc_screen_height", newVal.intValue()));
     }
 
     public Scene getScene() {

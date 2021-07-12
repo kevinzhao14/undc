@@ -330,6 +330,7 @@ public class GameController implements Savable {
                 if (screen.isInventoryOpen()) {
                     screen.toggleInventory();
                 } else if (GraphicalInventory.isActive()) {
+                    Audio.playAudio("chest_close");
                     GraphicalInventory.hide();
                 } else {
                     screen.togglePause();
@@ -603,8 +604,12 @@ public class GameController implements Savable {
             //check if position is valid. If it is, move.
             Coords movePos = checkPos(new Coords(newPosX, newPosY), player.getWidth(), player.getHeight());
             if (movePos.getX() != posX || movePos.getY() != posY) {
-                // give a cooldown to playing the audio
-                // Audio.playAudio("footsteps");
+                // give a cool down to playing the audio
+                if (player.getWalkCooldown() == 0) {
+                    Audio.playAudio("footsteps");
+                    double cooldown = Vars.d("sv_walk_cooldown");
+                    player.setWalkCooldown(800 * cooldown);
+                }
                 newPosX = movePos.getX();
                 newPosY = movePos.getY();
 
@@ -784,7 +789,9 @@ public class GameController implements Savable {
             if (player.getAttackCooldown() > 0) {
                 player.setAttackCooldown(Math.max(0.0, player.getAttackCooldown() - tickTime()));
             }
-
+            if (player.getWalkCooldown() > 0) {
+                player.setWalkCooldown(Math.max(0.0, player.getWalkCooldown() - tickTime()));
+            }
             //lower held weapon delay if rangedweapon
             Item item = player.getItemSelected() != null ? player.getItemSelected().getItem() : null;
             if (item instanceof RangedWeapon && ((RangedWeapon) item).getDelay() > 0) {
@@ -848,6 +855,7 @@ public class GameController implements Savable {
         private void managePlayerAttack() {
             Item item = player.getItemSelected() != null ? player.getItemSelected().getItem() : null;
             if (states.get("attacking") && player.getAttackCooldown() == 0) {
+                Audio.playAudio("weapon_swing");
                 double damage = Vars.d("sv_fist_damage");
                 double cooldown = Vars.d("sv_fist_cooldown");
                 double modifier = player.getAttack();
@@ -942,6 +950,11 @@ public class GameController implements Savable {
                 ShotProjectile sp = new ShotProjectile(weaponAmmo.getProjectile(), x, y, velX, velY);
                 sp.setSprite(sprite);
                 room.getProjectiles().add(sp);
+                if (sp.getProjectile().getId().equals("rocket")) {
+                    Audio.playAudio("rocket_launch");
+                } else if (sp.getProjectile().getId().equals("arrow")) {
+                    Audio.playAudio("bow");
+                }
             }
         }
 
