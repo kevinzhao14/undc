@@ -8,7 +8,7 @@ import undc.entity.Entity;
 import undc.entity.NPC;
 import undc.game.calc.Direction;
 import undc.command.DataManager;
-import undc.general.Controls;
+import undc.general.Config;
 import undc.graphics.GameScreen;
 import undc.graphics.SpriteGroup;
 import undc.inventory.GraphicalInventory;
@@ -53,8 +53,8 @@ public class LayoutGenerator {
 
     public static final int DOOR_SIZE = 64;
 
-    private static final int PATH_MIN = 6;
-    private static final int PATH_MAX = 10;
+    private static final int PATH_MIN = 1;
+    private static final int PATH_MAX = 3;
 
     private static final double CHALLENGE_ODDS = 0.1;
 
@@ -163,7 +163,7 @@ public class LayoutGenerator {
         //check exit distance
         double exitDistance = Math.abs(exitCoords[0] - GRID_WIDTH / 2) + Math.abs(exitCoords[1]
                 - GRID_HEIGHT / 2);
-        if (!exitPlaced || exitDistance < 6 || challengeCount < 2) {
+        if (!exitPlaced || exitDistance < PATH_MAX - 2 || challengeCount < 2) {
             return generateLayout();
         }
         printGrid(roomGrid);
@@ -226,7 +226,7 @@ public class LayoutGenerator {
         String[] dialogue = new String[]{
             "Hello there!",
             "My name is John. I am an example NPC",
-            "As you know, you can press [" + Controls.getInstance().getKey("interact") + "] to talk to me!",
+            "As you know, you can press [" + Config.getInstance().getKey("interact") + "] to talk to me!",
             "My favorite foods are pecan pie and mashed potatoes.",
             "Goodbye!",
             ""

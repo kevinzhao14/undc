@@ -125,14 +125,7 @@ public class DataManager {
 
         // save data
         this.name = name.replaceAll("\\s{2,}", " ").trim();
-        this.difficulty = difficulty;
-        double modifier = 1.0;
-        if (difficulty == Difficulty.MEDIUM) {
-            modifier = Vars.d("sv_modifier_medium");
-        } else if (difficulty == Difficulty.HARD) {
-            modifier = Vars.d("sv_modifier_hard");
-        }
-        Vars.find("sv_modifier").setVal(modifier + "", true);
+        setDifficulty(difficulty);
         this.weapon = weapon.copy();
         return true;
     }
@@ -209,6 +202,17 @@ public class DataManager {
 
     public String getName() {
         return name;
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+        double modifier = 1.0;
+        if (difficulty == Difficulty.MEDIUM) {
+            modifier = Vars.d("sv_modifier_medium");
+        } else if (difficulty == Difficulty.HARD) {
+            modifier = Vars.d("sv_modifier_hard");
+        }
+        Vars.find("sv_modifier").setVal(modifier + "", true);
     }
 
     /**

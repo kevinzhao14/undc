@@ -15,6 +15,8 @@ import undc.general.Audio;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Class that handles the play screen presented to the player when they select play from the home screen.
@@ -45,6 +47,7 @@ public class PlayScreenController {
             Console.error("Failed to retrieve saves.");
             return;
         }
+        Arrays.sort(files, Comparator.comparingLong(File::lastModified).reversed());
         for (File f : files) {
             if (f.isDirectory()) {
                 continue;
@@ -125,7 +128,6 @@ public class PlayScreenController {
 
     public void play() {
         Audio.playAudio("button");
-        System.out.println("playing " + selected + " " + selectedObj.getString("name"));
     }
 
     public void edit() {

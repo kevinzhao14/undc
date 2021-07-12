@@ -12,7 +12,7 @@ import undc.graphics.GameScreen;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import undc.general.Audio;
-import undc.general.Controls;
+import undc.general.Config;
 import undc.command.Vars;
 import undc.item.Ammunition;
 import undc.item.Bomb;
@@ -111,11 +111,11 @@ public class GameController implements Savable {
         Scene scene = getScreen().getScene();
 
         //Handle key events
-        scene.setOnKeyPressed(e -> handleKey(Controls.keyStringify(e.getCode()), true));
-        scene.setOnKeyReleased(e -> handleKey(Controls.keyStringify(e.getCode()), false));
-        scene.setOnMousePressed(e -> handleKey(Controls.mbStringify(e.getButton()), true));
-        scene.setOnMouseReleased(e -> handleKey(Controls.mbStringify(e.getButton()), false));
-        scene.setOnScroll(e -> handleKey(Controls.scrollStringify(e.getDeltaY()), false));
+        scene.setOnKeyPressed(e -> handleKey(Config.keyStringify(e.getCode()), true));
+        scene.setOnKeyReleased(e -> handleKey(Config.keyStringify(e.getCode()), false));
+        scene.setOnMousePressed(e -> handleKey(Config.mbStringify(e.getButton()), true));
+        scene.setOnMouseReleased(e -> handleKey(Config.mbStringify(e.getButton()), false));
+        scene.setOnScroll(e -> handleKey(Config.scrollStringify(e.getDeltaY()), false));
     }
 
     /**
@@ -130,6 +130,8 @@ public class GameController implements Savable {
         velY = 0;
         player.setDirection(player.getDirection());
         room = newRoom;
+        camera.setX(room.getWidth() / 2.0);
+        camera.setY(room.getHeight() / 2.0);
         Platform.runLater(() -> getScreen().setRoom(newRoom));
     }
 
@@ -269,12 +271,12 @@ public class GameController implements Savable {
             return;
         }
         if (ent instanceof Monster) {
-            Monster m = ((Monster) ent).copy(1);
+            Monster m = (Monster) ent;
             m.setX(x);
             m.setY(y);
             room.getEntities().add(m);
         } else if (ent instanceof Obstacle) {
-            Obstacle o = ((Obstacle) ent).copy();
+            Obstacle o = (Obstacle) ent;
             o.setX(x);
             o.setY(y);
             room.getObstacles().add(o);
@@ -302,7 +304,7 @@ public class GameController implements Savable {
      * @param isPress Whether the event is a press or release event
      */
     private void handleKey(String key, boolean isPress) {
-        String control = Controls.getInstance().getControl(key);
+        String control = Config.getInstance().getControl(key);
         //movement keys
         if (control.equals("up") || control.equals("down") || control.equals("right") || control.equals("left")) {
             handleMovementKey(Direction.parse(control), isPress);

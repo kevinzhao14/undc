@@ -38,13 +38,23 @@ public class AudioController implements Initializable {
             Slider slider = (Slider) n;
             Button button = (Button) slider.getParent().getChildrenUnmodifiable().get(1);
             // Set up initial volumes
-            slider.setValue(Vars.d("volume"));
+            String id = slider.getId();
+            switch(id) {
+                case "master-volume":
+                    slider.setValue(Vars.d("volume"));
+                    break;
+                case "effects-volume":
+                    slider.setValue(Vars.d("cl_effects_volume"));
+                    break;
+                case "music-volume":
+                    slider.setValue(Vars.d("cl_music_volume"));
+                    break;
+            }
             button.setText(Math.round(slider.getValue() * 100) + "%");
 
             // Add listener to apply slider value to button as percent
             slider.valueProperty().addListener((arg01, arg11, arg2) -> {
                 button.setText(Math.round(slider.getValue() * 100) + "%");
-                String id = slider.getId();
                 // Change volume to new value of slider
                 switch (id) {
                     case "master-volume":

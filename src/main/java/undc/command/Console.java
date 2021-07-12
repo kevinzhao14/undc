@@ -14,7 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import undc.game.GameController;
 import undc.graphics.GameScreen;
-import undc.general.Controls;
+import undc.general.Config;
 import undc.general.DraggableNode;
 import undc.general.ResizableNode;
 
@@ -234,7 +234,7 @@ public class Console {
         });
 
         input.setOnKeyPressed(e -> {
-            handleKey(Controls.keyStringify(e.getCode()));
+            handleKey(Config.keyStringify(e.getCode()));
             e.consume();
         });
         input.setOnKeyReleased(e -> genSuggestions());
@@ -312,7 +312,7 @@ public class Console {
      * @param key Key that was pressed
      */
     private static void handleKey(String key) {
-        String control = Controls.getInstance().getControl(key);
+        String control = Config.getInstance().getControl(key);
 
         if (control.equals("console") || control.equals("pause")) { // toggle console
             GameScreen.getInstance().toggleConsole();

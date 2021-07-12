@@ -102,6 +102,7 @@ public class ConfigScreen extends GameState {
         root.add(row3, 1, 2);
 
         nextButton.setOnAction(e -> {
+            Vars.set("cheats", "false");
             Audio.playAudio("button");
             String playerName = playerNameEntry.getText();
             RadioButton selectedDifficulty = (RadioButton) difficultyGroup.getSelectedToggle();

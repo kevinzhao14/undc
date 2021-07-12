@@ -30,7 +30,7 @@ public class Controller extends Application {
         Vars.load();
         DataManager.getInstance();
         Console.create();
-        Controls.getInstance();
+        Config.getInstance();
 
         this.stage = stage;
         state = HomeScreen.getInstance();

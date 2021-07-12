@@ -202,6 +202,7 @@ public class RoomRenderer {
                     w = getPx(e.getWidth());
                     x = getPx(e.getX());
                     y = getPx(getY(e.getY(), e.getHeight()));
+                    drawImg(e.getSprite(), w, h, x, y);
                     if (e instanceof Monster) {
                         Monster m = (Monster) e;
                         gc.setGlobalAlpha(m.getOpacity());
@@ -212,7 +213,6 @@ public class RoomRenderer {
                                     / Vars.i("sv_tickrate")));
                         }
                     }
-                    drawImg(e.getSprite(), w, h, x, y);
                 }
             }
         }

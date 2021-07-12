@@ -2,7 +2,9 @@ package undc.general;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
+import undc.command.CVar;
 import undc.command.Console;
+import undc.command.Vars;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,8 +21,8 @@ import java.util.Objects;
  * @version 1.0
  * @author Kevin Zhao
  */
-public class Controls {
-    public static Controls instance;
+public class Config {
+    public static Config instance;
 
     private final File saveFile;
     private final HashMap<String, String> keyMap = new HashMap<>();
@@ -29,7 +31,7 @@ public class Controls {
      * Constructor for a Controls config object.
      * @param file File for the save file.
      */
-    private Controls(File file) {
+    private Config(File file) {
         saveFile = file;
     }
 
@@ -37,9 +39,9 @@ public class Controls {
      * Static singleton method to allow access to current controls.
      * @return Controls object with the current controls for the game
      */
-    public static Controls getInstance() {
+    public static Config getInstance() {
         if (instance == null) {
-            instance = new Controls();
+            instance = new Config();
             //If save file exists, then load data from file
             if (instance.saveFile.exists() && !instance.saveFile.isDirectory()) {
                 instance.loadConfig(instance.saveFile.getPath());
@@ -54,7 +56,7 @@ public class Controls {
     /**
      * Default Constructor for a Controls object. Sets save file to config/config.cfg.
      */
-    public Controls() {
+    public Config() {
         this(new File("config/config.cfg"));
     }
 
@@ -144,6 +146,12 @@ public class Controls {
             for (Map.Entry<String, String> e : keyMap.entrySet()) {
                 saveString.append("bind ").append(e.getKey().toLowerCase())
                         .append(" ").append(e.getValue().toLowerCase()).append("\n");
+            }
+            // add changed vars
+            for (CVar v : Vars.all()) {
+                if (!v.requiresCheats() && !v.value().equals(v.defValue())) {
+                    saveString.append(v.getName()).append(" ").append(v.value()).append("\n");
+                }
             }
 
             //write to file

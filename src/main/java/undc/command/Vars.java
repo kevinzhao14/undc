@@ -1,6 +1,7 @@
 package undc.command;
 
 import org.json.JSONObject;
+import undc.general.Config;
 
 import java.util.ArrayList;
 
@@ -34,7 +35,7 @@ public class Vars {
         // Integer CVars
         INT_VARS.add(new IntCVar("gc_screen_width", "screenWidth", 400, 7680, 1920, false));
         INT_VARS.add(new IntCVar("gc_screen_height", "screenHeight", 200, 4320, 1080, false));
-        INT_VARS.add(new IntCVar("sv_tickrate", "fps", 10, 1000, 200, false));
+        INT_VARS.add(new IntCVar("sv_tickrate", "fps", 10, 1000, 200));
         INT_VARS.add(new IntCVar("sv_player_health", "playerHP", 1, 10000, 100));
         INT_VARS.add(new IntCVar("sv_player_attack_range", "playerRange", 0, 1000, 20));
         INT_VARS.add(new IntCVar("sv_inventory_rows", "invRows", 1, 100, 2));
@@ -243,7 +244,9 @@ public class Vars {
             Console.error("Could not set " + var);
             return false;
         }
-        return v.setVal(val);
+        boolean res = v.setVal(val);
+        Config.getInstance().save();
+        return res;
     }
 
     public static boolean set(String var, double val) {

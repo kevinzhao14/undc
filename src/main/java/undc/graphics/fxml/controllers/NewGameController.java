@@ -1,5 +1,6 @@
 package undc.graphics.fxml.controllers;
 
+import undc.command.Vars;
 import undc.general.Controller;
 import undc.graphics.ConfigScreen;
 import undc.graphics.GameScreen;

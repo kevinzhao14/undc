@@ -54,6 +54,7 @@ public class Monster extends Entity {
         Monster m = new Monster();
         copy(m);
         m.maxHealth = (int) (maxHealth * modifier);
+        m.health = m.maxHealth;
         m.attack = attack * modifier;
         m.id = this.id;
         m.name = this.name;

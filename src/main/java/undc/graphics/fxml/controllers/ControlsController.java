@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
 import undc.command.Console;
 import undc.general.Controller;
 import undc.graphics.SettingsScreen;
-import undc.general.Controls;
+import undc.general.Config;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -46,7 +46,7 @@ public class ControlsController extends SettingsPageController {
      */
     private void load() {
         HashMap<String, String> temp = new HashMap<>();
-        Controls.getInstance().getMapUnmodifiable().forEach((k, v) -> temp.put(v, k.toUpperCase()));
+        Config.getInstance().getMapUnmodifiable().forEach((k, v) -> temp.put(v, k.toUpperCase()));
 
         // go through each button to load its respective control key
         Set<Node> buttons = master.lookupAll(".controls-grid Button");
@@ -78,7 +78,7 @@ public class ControlsController extends SettingsPageController {
     public void changeKey(MouseEvent me, Button button) {
         if (buttonActive || me.getButton() != MouseButton.PRIMARY) {
             if (activeButton != button) {
-                handleChangeKey(activeButton, Controls.mbStringify(me.getButton()));
+                handleChangeKey(activeButton, Config.mbStringify(me.getButton()));
             }
             return;
         }
@@ -95,19 +95,19 @@ public class ControlsController extends SettingsPageController {
             if (e.getCode() == KeyCode.ESCAPE) {
                 handleChangeKey(button, "cancel");
             } else {
-                handleChangeKey(button, Controls.keyStringify(e.getCode()));
+                handleChangeKey(button, Config.keyStringify(e.getCode()));
             }
         });
-        scene.setOnMousePressed(e -> handleChangeKey(button, Controls.mbStringify(e.getButton())));
+        scene.setOnMousePressed(e -> handleChangeKey(button, Config.mbStringify(e.getButton())));
         grid.setOnScroll(e -> {
-            handleChangeKey(button, Controls.scrollStringify(e.getDeltaY()));
+            handleChangeKey(button, Config.scrollStringify(e.getDeltaY()));
             e.consume();
         });
         // Allows mouse controls to be set by clicking on the button
-        button.setOnMouseReleased(e -> handleChangeKey(button, Controls.mbStringify(e.getButton())));
+        button.setOnMouseReleased(e -> handleChangeKey(button, Config.mbStringify(e.getButton())));
 
         Node cancelBox = button.getParent().getChildrenUnmodifiable().get(1);
-        cancelBox.setOnMouseReleased(e -> handleChangeKey(button, Controls.mbStringify(e.getButton())));
+        cancelBox.setOnMouseReleased(e -> handleChangeKey(button, Config.mbStringify(e.getButton())));
         cancelBox.setVisible(true);
     }
 
@@ -118,7 +118,7 @@ public class ControlsController extends SettingsPageController {
      */
     private void handleChangeKey(Button button, String key) {
         String control = button.getId();
-        Controls c = Controls.getInstance();
+        Config c = Config.getInstance();
         if (!key.equalsIgnoreCase("cancel") && !key.equalsIgnoreCase(c.getKey(control))) {
             //unbind old key
             String oldKey = c.getKey(control);
@@ -173,7 +173,7 @@ public class ControlsController extends SettingsPageController {
      * Resets the most recently changed control button or the control button that is currently being changed.
      */
     public void cancel() {
-        handleChangeKey(activeButton, Controls.getInstance().getKey(activeButton.getId()));
+        handleChangeKey(activeButton, Config.getInstance().getKey(activeButton.getId()));
     }
 
     /**
@@ -181,7 +181,7 @@ public class ControlsController extends SettingsPageController {
      */
     public void resetSettings() {
         resetHandlers();
-        Controls.getInstance().resetKeys();
+        Config.getInstance().resetKeys();
         load();
         SettingsScreen.getInstance().showPopup(this);
     }

@@ -81,4 +81,5 @@ p {
     font-size: 12px;
     line-height: 125%;
     margin: 5px 0px 5px 0px;
+    word-wrap: break-word;
 }

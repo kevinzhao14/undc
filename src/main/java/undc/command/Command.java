@@ -1,10 +1,11 @@
 package undc.command;
 
+import undc.game.Difficulty;
 import undc.game.GameController;
 import undc.general.Controller;
 import undc.graphics.GameScreen;
 import undc.graphics.HomeScreen;
-import undc.general.Controls;
+import undc.general.Config;
 import undc.item.Item;
 import undc.entity.Monster;
 import undc.game.Obstacle;
@@ -66,13 +67,14 @@ class Command {
         commands.add(new Command("reset", "<cvar>", "Resets a cvar.", Command::reset));
         commands.add(new Command("clear", "", "Clears the console.", Command::clear));
         commands.add(new Command("quit", "", "Quits the game.", Command::quit));
-        commands.add(new Command("give", "<id> [quantity]", "Gives the player an item(s)", Command::give));
+        commands.add(new Command("give", "<id> [quantity]", "Gives the player an item(s).", Command::give));
         commands.add(new Command("spawn", "<id> [<x> <y>] [quantity]", "Spawns an entity. Defaults to 0, 0.",
                 Command::spawn));
         commands.add(new Command("help", "<command>", "Provides information about the command.", Command::help));
         commands.add(new Command("disconnect", "", "Disconnects from an active game.", Command::disconnect));
         commands.add(new Command("god", "", "Toggles god mode. Requires cheats.", Command::god));
-        commands.add(new Command("place", "<id> <x> <y>", "Places an obstacle", Command::place));
+        commands.add(new Command("place", "<id> <x> <y>", "Places an obstacle.", Command::place));
+        commands.add(new Command("difficulty", "[difficulty]", "Sets the game's difficulty.", Command::difficulty));
 
         // player commands
         commands.add(new Command("gm_player_health", "[value]", "Returns or sets the value of the "
@@ -130,11 +132,11 @@ class Command {
         if (args.length == 2) { // New bind. Format: bind <key> <command>
             String key = clean(args[0]);
             String control = clean(args[1]);
-            Controls.getInstance().setKey(key, control);
+            Config.getInstance().setKey(key, control);
             Console.print("Key bound.");
         } else if (args.length == 1) { // Retrieval. Format: bind <key>
             String key = clean(args[0]);
-            String control = Controls.getInstance().getControl(key);
+            String control = Config.getInstance().getControl(key);
             if (control.equals("")) {
                 Console.error("Key is not bound.");
             } else {
@@ -155,7 +157,7 @@ class Command {
             return;
         }
         String key = clean(args[0]);
-        Controls.getInstance().removeKey(key);
+        Config.getInstance().removeKey(key);
     }
 
     /**
@@ -307,7 +309,7 @@ class Command {
                     Console.error("Cannot spawn because there is no game.");
                     return;
                 }
-                Monster m = DataManager.MONSTERS.get(id);
+                Monster m = DataManager.MONSTERS.get(id).copy(Vars.d("sv_modifier"));
                 if (m == null) {
                     Console.error("Invalid entity id.");
                     return;
@@ -456,7 +458,7 @@ class Command {
                 Console.error("Cannot spawn because there is no game.");
                 return;
             }
-            Obstacle o = DataManager.OBSTACLES.get(id);
+            Obstacle o = DataManager.OBSTACLES.get(id).copy();
             if (o == null) {
                 Console.error("Invalid entity id.");
                 return;
@@ -464,6 +466,22 @@ class Command {
             GameController.getInstance().spawn(o, x, y);
         } catch (NumberFormatException e) {
             Console.error("Invalid argument values for spawn.");
+        }
+    }
+
+    private static void difficulty(String[] args) {
+        if (!(args.length == 0 || args.length == 1)) {
+            Console.error("Invalid arguments for difficulty.");
+            return;
+        }
+        if (args.length == 0) {
+            Console.print(DataManager.getInstance().getDifficulty().toString());
+        } else {
+            try {
+                DataManager.getInstance().setDifficulty(Difficulty.valueOf(args[0].toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                Console.error("Invalid value for difficulty.");
+            }
         }
     }
 }
