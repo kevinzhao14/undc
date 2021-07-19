@@ -17,6 +17,8 @@ import java.util.ArrayList;
  * Represents a Command that can be run in the Console.
  */
 public class Command {
+    public static final ArrayList<String> SAVED = new ArrayList<>();
+
     private final String name;
     private final String desc;
     private final String format;
@@ -81,6 +83,8 @@ public class Command {
         commands.add(new Command("god", "", "Toggles god mode. Requires cheats.", Command::god));
         commands.add(new Command("place", "<id> <x> <y>", "Places an obstacle.", Command::place));
         commands.add(new Command("difficulty", "[difficulty]", "Sets the game's difficulty.", Command::difficulty));
+        commands.add(new Command("fullscreen", "<true | false>", "Sets the game's fullscreen status.",
+                Command::fullscreen));
 
         // player commands
         commands.add(new Command("gm_player_health", "[value]", "Returns or sets the value of the "
@@ -493,5 +497,23 @@ public class Command {
                 Console.error("Invalid value for difficulty.");
             }
         }
+    }
+
+    /**
+     * Changes the game's fullscreen state.
+     * @param args Arguments
+     */
+    private static void fullscreen(String[] args) {
+        if (args.length != 1) {
+            Console.error("Invalid arguments for fullscreen.");
+            return;
+        }
+        if (args[0].equalsIgnoreCase("true")) {
+            SAVED.add("fullscreen true");
+        } else if (args[0].equalsIgnoreCase("false")) {
+            SAVED.remove("fullscreen true");
+        }
+        Vars.set("gc_fullscreen", args[0]);
+        Controller.setFullscreen();
     }
 }

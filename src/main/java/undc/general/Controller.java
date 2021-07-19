@@ -25,6 +25,7 @@ public class Controller extends Application {
      */
     public void start(Stage stage) {
         instance = this;
+        this.stage = stage;
 
         // load things
         Vars.load();
@@ -32,11 +33,10 @@ public class Controller extends Application {
         Console.create();
         Config.getInstance();
 
-        this.stage = stage;
-        state = HomeScreen.getInstance();
+        setState(HomeScreen.getInstance());
 
         stage.setTitle("UNDC");
-        stage.setScene(state.getScene());
+        stage.setFullScreenExitHint("");
         stage.show();
 
         // catch & print all exceptions to console to manage errors
@@ -62,6 +62,7 @@ public class Controller extends Application {
     public static void setState(GameState state) {
         instance.state = state;
         instance.stage.setScene(state.getScene());
+        setFullscreen();
     }
 
     public static GameState getState() {
@@ -74,5 +75,9 @@ public class Controller extends Application {
 
     public static Controller getInstance() {
         return instance;
+    }
+
+    public static void setFullscreen() {
+        instance.stage.setFullScreen(Vars.b("gc_fullscreen"));
     }
 }

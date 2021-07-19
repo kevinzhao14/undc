@@ -5,3 +5,7 @@
 * {
     -fx-font-family: "VT323", monospace;
 }
+Scene {
+    -fx-border-width: 5px;
+    -fx-border-color: blue;
+}

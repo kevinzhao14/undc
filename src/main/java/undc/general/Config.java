@@ -3,6 +3,7 @@ package undc.general;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import undc.command.CVar;
+import undc.command.Command;
 import undc.command.Console;
 import undc.command.Vars;
 
@@ -149,9 +150,13 @@ public class Config {
             }
             // add changed vars
             for (CVar v : Vars.all()) {
-                if (!v.requiresCheats() && !v.value().equals(v.defValue())) {
+                if (v.isModifiable() && !v.requiresCheats() && !v.value().equals(v.defValue())) {
                     saveString.append(v.getName()).append(" ").append(v.value()).append("\n");
                 }
+            }
+            // add saved commands
+            for (String s : Command.SAVED) {
+                saveString.append(s).append("\n");
             }
 
             //write to file

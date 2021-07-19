@@ -61,10 +61,6 @@ public abstract class CVar {
      * @return Returns true if the CVar passes its checks, false otherwise
      */
     protected boolean checkSet() {
-        if (!modifiable) {
-            Console.error("You cannot modify this variable.");
-            return false;
-        }
         if (requireCheats && !Vars.CHEATS) {
             Console.error("Cheats are disabled.");
             return false;
