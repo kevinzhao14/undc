@@ -4,7 +4,7 @@ package undc.game.calc;
  * Class that handles the equation for the line used to detect collisions.
  */
 public class Equation {
-    private double slope;
+    private final double slope;
     private double intercept;
     private boolean vertical;
 

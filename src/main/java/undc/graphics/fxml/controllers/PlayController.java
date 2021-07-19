@@ -3,6 +3,8 @@ package undc.graphics.fxml.controllers;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,16 +23,24 @@ import java.util.Comparator;
 /**
  * Class that handles the play screen presented to the player when they select play from the home screen.
  */
-public class PlayScreenController {
+public class PlayController {
     @FXML
     private VBox saves;
+    @FXML
+    private ScrollPane savesScroll;
+    @FXML
+    private GridPane savesGrid;
 
     private VBox selected;
     private JSONObject selectedObj;
 
-    public PlayScreenController() {
+    public PlayController() {
         // populate saves box with all current saves
         Platform.runLater(this::loadSaves);
+    }
+
+    public void initialize() {
+        savesGrid.setOnScroll(e -> savesScroll.setVvalue(savesScroll.getVvalue() - e.getDeltaY() * 0.0025));
     }
 
     /**
@@ -38,6 +48,9 @@ public class PlayScreenController {
      */
     private void loadSaves() {
         File dir = new File("saves");
+        if (!dir.exists()) {
+            return;
+        }
         if (!dir.isDirectory()) {
             Console.error("Saves directory is not a directory.");
             return;

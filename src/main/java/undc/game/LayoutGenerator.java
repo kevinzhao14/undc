@@ -12,12 +12,12 @@ import undc.general.Config;
 import undc.graphics.GameScreen;
 import undc.graphics.SpriteGroup;
 import undc.inventory.GraphicalInventory;
-import undc.item.WeaponAmmo;
-import undc.item.Ammunition;
+import undc.items.WeaponAmmo;
+import undc.items.Ammunition;
 import undc.inventory.Inventory;
-import undc.item.Item;
+import undc.items.Item;
 import undc.entity.Monster;
-import undc.item.RangedWeapon;
+import undc.items.RangedWeapon;
 
 import java.util.ArrayList;
 import java.util.HashMap;

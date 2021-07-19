@@ -3,6 +3,7 @@ package undc.entity;
 import javafx.scene.image.Image;
 import undc.general.Movable;
 import undc.general.Savable;
+import undc.graphics.SpriteGroup;
 
 /**
  * Representation of an Entity object. Entities are objects that are "alive" and can interact with things in the game.
@@ -45,6 +46,7 @@ public abstract class Entity implements Movable, Savable {
         posX = 0;
         posY = 0;
         attackCooldown = 0;
+        sprite = SpriteGroup.NONE;
     }
 
     /**

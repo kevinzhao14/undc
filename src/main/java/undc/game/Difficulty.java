@@ -7,5 +7,5 @@ package undc.game;
  * @author Kevin Zhao
  */
 public enum Difficulty {
-    EASY, MEDIUM, HARD;
+    EASY, MEDIUM, HARD
 }

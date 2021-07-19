@@ -10,7 +10,7 @@ import undc.inventory.Inventory;
 import undc.inventory.InventoryItem;
 import undc.general.Savable;
 import undc.graphics.SpriteGroup;
-import undc.item.Weapon;
+import undc.items.Weapon;
 import undc.graphics.GameScreen;
 import undc.general.Audio;
 import undc.command.Vars;

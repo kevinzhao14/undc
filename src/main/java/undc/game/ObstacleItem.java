@@ -2,7 +2,7 @@ package undc.game;
 
 import javafx.scene.image.Image;
 import org.json.JSONObject;
-import undc.item.Item;
+import undc.items.Item;
 
 /**
  * CLass that handles items that can act as physical obstacles within the game (ex: a bomb).

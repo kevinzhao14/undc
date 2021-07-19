@@ -39,7 +39,7 @@ public class AudioController implements Initializable {
             Button button = (Button) slider.getParent().getChildrenUnmodifiable().get(1);
             // Set up initial volumes
             String id = slider.getId();
-            switch(id) {
+            switch (id) {
                 case "master-volume":
                     slider.setValue(Vars.d("volume"));
                     break;

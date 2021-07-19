@@ -8,9 +8,7 @@ import undc.command.Vars;
  * Abstract class that provides a frame work for different game states.
  */
 public abstract class GameState {
-    protected Scene scene;
-    protected int width;
-    protected int height;
+    protected final Scene scene;
 
     /**
      * Constructor for a GameState.
@@ -18,9 +16,7 @@ public abstract class GameState {
      * @param height Height of the GameState
      */
     public GameState(int width, int height) {
-        this.width = width;
-        this.height = height;
-        scene = new Scene(new Pane(), this.width, this.height);
+        scene = new Scene(new Pane(), width, height);
 
         // resizing the scene sets the size cvars so that different states remain the same size.
         scene.widthProperty().addListener((obs, oldVal, newVal) -> Vars.set("gc_screen_width", newVal.intValue()));

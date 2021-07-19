@@ -3,13 +3,13 @@ package undc.entity;
 import org.json.JSONException;
 import org.json.JSONObject;
 import undc.command.Console;
+import undc.game.GameController;
 import undc.general.Controller;
 import undc.command.DataManager;
-import undc.item.Ammunition;
+import undc.items.Ammunition;
 import undc.game.ChallengeRoom;
-import undc.game.DroppedItem;
 import undc.inventory.InventoryItem;
-import undc.item.Item;
+import undc.items.Item;
 import undc.game.calc.Move;
 import undc.graphics.GameScreen;
 import javafx.application.Platform;
@@ -70,41 +70,43 @@ public class Monster extends Entity {
      */
     public void attackMonster(double damageAmount) {
         if (this.getHealth() <= 0) {
+            Console.error("Cannont attack slain monster.");
             return;
         }
-        //update damage dealt stat in player object
-        ((GameScreen) Controller.getState()).getPlayer().addDamageDealt(
-                Math.min(this.getHealth(), damageAmount));
-        //change monster health
+        if (!(Controller.getState() instanceof GameScreen)) {
+            Console.error("Invalid State.");
+            return;
+        }
+        GameScreen screen = GameScreen.getInstance();
+
+        // update damage dealt stat in player object
+        screen.getPlayer().addDamageDealt(Math.min(this.getHealth(), damageAmount));
+
+        // play attack sound
         Audio.playAudio("attack");
-        this.setHealth(Math.max(0, this.getHealth() - damageAmount));
 
-        //Give gold to player after slaying a monster
-        if (this.getHealth() == 0.0) {
-            GameScreen screen = (GameScreen) Controller.getState();
+        // change monster health
+        health = Math.max(0, this.getHealth() - damageAmount);
 
+        // Give gold to player after slaying a monster
+        if (health == 0) {
             // give gold
             screen.getPlayer().setGold(screen.getPlayer().getGold() + Vars.i("sv_monster_gold"));
 
             // add xp
             GameScreen.getInstance().getPlayer().addXp(Vars.i("sv_monster_xp"));
 
-            //update number of monsters player killed
+            // update number of monsters player killed
             screen.getPlayer().addMonsterKilled();
 
-            //make monster disappear
-            this.setOpacity(1 - (1000.0 / Vars.i("sv_tickrate") / Vars.i("gc_monster_fade_dur")));
+            // make monster disappear
+            opacity = 1 - (1000.0 / Vars.i("sv_tickrate") / Vars.i("gc_monster_fade_dur"));
 
-            //only drop items if it's not a challenge room
+            // only drop items if it's not a challenge room
             if (!(screen.getRoom() instanceof ChallengeRoom)) {
-                //generate drop items and add to Room ArrayList
-                DroppedItem[] itemDrops = dropItems();
-
-                //Add dropped items to Room ArrayList
-                for (DroppedItem item : itemDrops) {
-                    screen.getRoom().getDroppedItems().add(item);
-                }
-            } else {    //drop the rewards if challenge room is complete
+                // generate drop items and add to Room ArrayList
+                dropItems();
+            } else { // drop the rewards if challenge room is complete
                 boolean allDead = true;
                 for (Entity e : screen.getRoom().getEntities()) {
                     if (e instanceof Monster && e.getHealth() > 0) {
@@ -115,52 +117,17 @@ public class Monster extends Entity {
                 if (allDead) {
                     ((ChallengeRoom) screen.getRoom()).openDoors();
                     ((ChallengeRoom) screen.getRoom()).setCompleted(true);
-                    for (InventoryItem[] itemRow : ((ChallengeRoom) screen.getRoom()).getRewards().getItems()) {
-                        if (itemRow != null) {
-                            for (InventoryItem item : itemRow) {
-                                if (item != null) {
-                                    if (item.getItem().equals(DataManager.ITEMS.get("rocket_launcher"))) {
-                                        DataManager.getInstance().setUnlockedAmmo(true);
-                                    }
-                                    for (int i = 0; i < item.getQuantity(); i++) {
-                                        DroppedItem newItem = new DroppedItem(item.getItem());
-                                        int width = (int) item.getItem().getSprite().getWidth();
-                                        int height = (int) item.getItem().getSprite().getHeight();
-                                        newItem.setWidth(width);
-                                        newItem.setHeight(height);
+                    Player player = screen.getPlayer();
 
-                                        double maxRadius = Vars.i("sv_player_pickup_range");
-                                        Random generator = new Random();
-                                        Player player = screen.getPlayer();
-                                        double x = 0;
-                                        double y = 0;
-
-                                        boolean isValidLocation = false;
-
-                                        while (!isValidLocation) {
-                                            //generate randDist between item and monster
-                                            double randDist = maxRadius * generator.nextDouble();
-                                            //generate randAngle
-                                            double randAngle = 2 * Math.PI * generator.nextDouble();
-
-                                            //calculate x and y
-                                            x = player.getX() + player.getWidth() / 2.0 + (randDist
-                                                    * Math.cos(randAngle)) - width / 2.0;
-                                            y = player.getY() + player.getHeight()  + (randDist
-                                                    * Math.sin(randAngle)) - height / 2.0;
-
-                                            isValidLocation = x >= 0.0 && x < screen.getRoom()
-                                                    .getWidth() && y > 0.0 && y < screen.getRoom()
-                                                    .getHeight();
-                                        }
-
-                                        //Set x and y
-                                        newItem.setX(x);
-                                        newItem.setY(y);
-                                        screen.getRoom().getDroppedItems().add(newItem);
-                                    }
-                                }
-                            }
+                    // drop items
+                    for (InventoryItem item : ((ChallengeRoom) screen.getRoom()).getRewards()) {
+                        if (item.getItem().equals(DataManager.ITEMS.get("rocket_launcher"))) {
+                            DataManager.getInstance().setUnlockedAmmo(true);
+                        }
+                        for (int i = 0; i < item.getQuantity(); i++) {
+                            double x = player.getX() + player.getWidth() / 2.0;
+                            double y = player.getY() + player.getHeight() / 2.0;
+                            GameController.getInstance().dropAt(item.getItem(), x, y);
                         }
                     }
                 }
@@ -177,89 +144,62 @@ public class Monster extends Entity {
      * @param posY int y-chord to reset player to
      */
     public void revive(int posX, int posY) {
-        setX(posX);
-        setY(posY);
-        setHealth(getMaxHealth());
-        setOpacity(1.0);
+        this.posX = posX;
+        this.posY = posY;
+        health = maxHealth;
+        opacity = 1;
     }
 
     /**
      * Handles dropping items fo the player to receive upon killing a monster.
-     * @return DropItems[] array containing the dropped items
      */
-    public DroppedItem[] dropItems() {
+    public void dropItems() {
         if (DataManager.ITEMS.size() == 0 && type != MonsterType.FINALBOSS) {
-            return new DroppedItem[0];
+            Console.error("No items available to drop.");
+            return;
         }
+        GameController gc = GameController.getInstance();
+
+        // Drop final boss key
         if (type == MonsterType.FINALBOSS) {
             if (Audio.getAudioClip("final_boss_music").isPlaying()) {
                 Audio.getAudioClip("final_boss_music").stop();
             }
             Audio.playAudio("boss_defeat");
-            Item key = DataManager.getExitKey().copy();
+            Item key = DataManager.getExitKey();
             Image sprite = key.getSprite();
-            double x = getX() + getWidth() / 2.0 - sprite.getWidth() / 2;
-            double y = getY() + getHeight() / 2.0 - sprite.getHeight() / 2;
-            return new DroppedItem[]{
-                new DroppedItem(key, x, y, (int) sprite.getWidth(), (int) sprite.getHeight())
-            };
+            double x = posX + width / 2.0 - sprite.getWidth() / 2;
+            double y = posY + height / 2.0 - sprite.getHeight() / 2;
+            gc.dropAt(key, x, y);
+            return;
         }
+        ArrayList<Item> items = new ArrayList<>(DataManager.ITEMS.values());
+
         Random generator = new Random();
         //Calculate number of items to drop
         int min = Vars.i("sv_itemdrop_min");
         int max = Vars.i("sv_itemdrop_max");
         int numItems = generator.nextInt(max - min + 1) + min;
 
-        DroppedItem[] droppedItems = new DroppedItem[numItems];
-
-        //Maximum distance between monster death location and item spawn location
+        // Maximum distance between monster death location and item spawn location
         double maxRadius = 1.5 * getWidth();
-        double x = getX();   //x-pos of item spawn
-        double y = getY();   //y-pos of item spawn
-        boolean isValidLocation; //flag for whether item spawn location is valid
-
-        double randDist;   //random distance between item and monster
-        double randAngle;  //random angle at which item is created
-
-        double roomWidth = ((GameScreen) Controller.getState()).getRoom().getWidth();
-        double roomHeight = ((GameScreen) Controller.getState()).getRoom().getHeight();
 
         for (int i = 0; i < numItems; i++) {
-            isValidLocation = false; //reset flag
-
-            //keep generating a new index until a droppable item is found
+            // keep generating a new item until a droppable item is found
             Item item;
-            ArrayList<Item> items = new ArrayList<>(DataManager.ITEMS.values());
             do {
                 item = items.get(generator.nextInt(items.size()));
             } while (!item.isDroppable()
                     || (item instanceof Ammunition && !DataManager.getInstance().isUnlockedAmmo()));
 
-            droppedItems[i] = new DroppedItem(item.copy());
+            // calculate x and y
+            double randDist = maxRadius * generator.nextDouble();
+            double randAngle = 2 * Math.PI * generator.nextDouble();
+            double x = getX() + (randDist * Math.cos(randAngle));
+            double y = getY() + (randDist * Math.sin(randAngle));
 
-            //Set width and height
-            droppedItems[i].setWidth((int) droppedItems[i].getItem().getSprite().getWidth());
-            droppedItems[i].setHeight((int) droppedItems[i].getItem().getSprite().getHeight());
-
-            //Keep generating x and y position of item until an acceptable one is found
-            while (!isValidLocation) {
-                //generate randDist between item and monster
-                randDist = maxRadius * generator.nextDouble();
-                //generate randAngle
-                randAngle = 2 * Math.PI * generator.nextDouble();
-
-                //calculate x and y
-                x = getX() + (randDist * Math.cos(randAngle));
-                y = getY() + (randDist * Math.sin(randAngle));
-
-                isValidLocation = (x > 0.0 && x < roomWidth && y > 0.0 && y < roomHeight);
-            }
-
-            //Set x and y
-            droppedItems[i].setX(x);
-            droppedItems[i].setY(y);
+            gc.dropAt(item, x, y);
         }
-        return droppedItems;
     }
 
     public double getReaction() {

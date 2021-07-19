@@ -6,17 +6,20 @@ import undc.general.Controller;
 import undc.graphics.GameScreen;
 import undc.graphics.HomeScreen;
 import undc.general.Config;
-import undc.item.Item;
+import undc.items.Item;
 import undc.entity.Monster;
 import undc.game.Obstacle;
 import undc.entity.Player;
 
 import java.util.ArrayList;
 
-class Command {
-    String name;
-    String desc;
-    String format;
+/**
+ * Represents a Command that can be run in the Console.
+ */
+public class Command {
+    private final String name;
+    private final String desc;
+    private final String format;
 
     private final CommandObj obj;
 
@@ -50,6 +53,9 @@ class Command {
         return format;
     }
 
+    /**
+     * Interface for the code to run when running a command.
+     */
     public interface CommandObj {
         void run(String[] args);
     }
@@ -469,6 +475,10 @@ class Command {
         }
     }
 
+    /**
+     * Changes the difficulty of a game.
+     * @param args Arguments
+     */
     private static void difficulty(String[] args) {
         if (!(args.length == 0 || args.length == 1)) {
             Console.error("Invalid arguments for difficulty.");

@@ -7,7 +7,7 @@ import undc.entity.Entity;
 import undc.entity.Monster;
 import undc.entity.Player;
 import undc.general.Movable;
-import undc.item.Projectile;
+import undc.items.Projectile;
 import undc.general.Savable;
 import undc.graphics.GameScreen;
 import javafx.application.Platform;

@@ -19,10 +19,10 @@ import undc.general.Controller;
 import undc.game.Effect;
 import undc.game.EffectType;
 import undc.inventory.InventoryItem;
-import undc.item.Item;
+import undc.items.Item;
 import undc.entity.Player;
-import undc.item.RangedWeapon;
-import undc.item.WeaponAmmo;
+import undc.items.RangedWeapon;
+import undc.items.WeaponAmmo;
 
 /**
  * Class that handles the graphics and functionality of the hud.

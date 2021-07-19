@@ -1,4 +1,4 @@
-package undc.item;
+package undc.items;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,8 +51,8 @@ public class Bomb extends Item {
         //place object as an obstacle
         int width = 20;
         int height = 20;
-        double x = player.getX() + player.getWidth() / 2 - width / 2.0;
-        double y = player.getY() + player.getHeight() / 2 - height / 2.0;
+        double x = player.getX() + player.getWidth() / 2.0 - width / 2.0;
+        double y = player.getY() + player.getHeight() / 2.0 - height / 2.0;
         ObstacleItem o = new ObstacleItem(getSprite(), x, y, width, height, ObstacleType.NONSOLID);
         Bomb timer = copy();
         o.setItem(timer);

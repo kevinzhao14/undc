@@ -11,14 +11,14 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane id="main" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="undc.graphics.fxml.controllers.PlayScreenController">
+<BorderPane id="main" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="undc.graphics.fxml.controllers.PlayController">
    <top>
       <Label id="title" text="Select Save" BorderPane.alignment="CENTER" />
    </top>
    <center>
-      <ScrollPane id="save-scroll" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" hmax="0.0" BorderPane.alignment="CENTER">
+      <ScrollPane fx:id="savesScroll" id="save-scroll" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" hmax="0.0" BorderPane.alignment="CENTER">
          <content>
-            <GridPane>
+            <GridPane fx:id="savesGrid">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" percentWidth="60.0" />

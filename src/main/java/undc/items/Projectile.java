@@ -1,4 +1,4 @@
-package undc.item;
+package undc.items;
 
 import javafx.scene.image.Image;
 import org.json.JSONArray;

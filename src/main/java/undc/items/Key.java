@@ -1,4 +1,4 @@
-package undc.item;
+package undc.items;
 
 import org.json.JSONObject;
 

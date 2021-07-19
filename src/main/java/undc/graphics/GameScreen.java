@@ -32,7 +32,7 @@ import undc.general.Savable;
 import undc.inventory.GraphicalInventory;
 import undc.inventory.Inventory;
 import undc.inventory.InventoryItem;
-import undc.item.Item;
+import undc.items.Item;
 import undc.entity.Monster;
 import undc.entity.Player;
 import undc.game.Room;
@@ -165,7 +165,6 @@ public class GameScreen extends GameState implements Savable {
      */
     private void createRoom() {
         //create player and hud
-        getGame().resetPos();
         if (room.getType() == RoomType.CHALLENGEROOM) {
             ((ChallengeRoom) room).closeDoors();
             createChallengeOverlay();

@@ -3,7 +3,7 @@ package undc.inventory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import undc.command.Console;
-import undc.item.Item;
+import undc.items.Item;
 import undc.general.Savable;
 
 import java.util.Iterator;
@@ -246,7 +246,7 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
     public static class InventoryIterator implements Iterator<InventoryItem> {
         private int row;
         private int col;
-        InventoryItem[][] items;
+        private final InventoryItem[][] items;
 
         /**
          * Constructor that sets up the iterator to begin iterating from row and column 0 through the 2D array items.

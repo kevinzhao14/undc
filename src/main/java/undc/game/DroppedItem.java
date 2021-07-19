@@ -1,7 +1,7 @@
 package undc.game;
 
 import org.json.JSONObject;
-import undc.item.Item;
+import undc.items.Item;
 import undc.general.Movable;
 import undc.general.Savable;
 
@@ -9,7 +9,8 @@ import undc.general.Savable;
  * Class that handles items dropped from a player's inventory.
  */
 public class DroppedItem implements Movable, Savable {
-    private Item item;
+    private final Item item;
+
     private double x;
     private double y;
     private int width;

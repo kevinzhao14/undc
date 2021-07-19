@@ -7,12 +7,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import undc.general.Audio;
 import undc.game.Difficulty;
-import undc.item.Item;
+import undc.items.Item;
 import undc.entity.Monster;
 import undc.game.Obstacle;
-import undc.item.Projectile;
-import undc.item.Weapon;
-import undc.item.Key;
+import undc.items.Projectile;
+import undc.items.Weapon;
+import undc.items.Key;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -204,6 +204,10 @@ public class DataManager {
         return name;
     }
 
+    /**
+     * Setter for the difficulty. Changes sv_modifier appropriately.
+     * @param difficulty Difficulty to change to
+     */
     public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
         double modifier = 1.0;
@@ -231,6 +235,7 @@ public class DataManager {
         if (!loadProjectiles(obj) || !loadMonsters(obj) || !loadObstacles(obj) || !loadItems(obj) || !loadSounds(obj)
                 || !loadFloors(obj)) {
             //TODO: stop game
+            Console.error("Failed to load data.");
         }
     }
 

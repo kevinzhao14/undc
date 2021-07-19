@@ -114,7 +114,7 @@ public class RoomRenderer {
                 Image sprite = DataManager.FLOORS.get(f.getId());
                 sw = w / f.getWidth() * sprite.getWidth();
                 sh = h / f.getHeight() * sprite.getHeight();
-                drawImg(sprite, sw, sh, 0, 0, getPx(w), getPx(h), getPx(f.getX()),
+                drawImg(sprite, sw, sh, getPx(w), getPx(h), getPx(f.getX()),
                         getPx(getY(f.getY(), h)));
             }
         }
@@ -202,17 +202,20 @@ public class RoomRenderer {
                     w = getPx(e.getWidth());
                     x = getPx(e.getX());
                     y = getPx(getY(e.getY(), e.getHeight()));
-                    drawImg(e.getSprite(), w, h, x, y);
                     if (e instanceof Monster) {
                         Monster m = (Monster) e;
                         gc.setGlobalAlpha(m.getOpacity());
-                        h = Vars.i("gc_healthbar_height");
-                        drawHealthbar(w, h, x, y - h - 10, e.getHealth() / e.getMaxHealth());
+                        double hbh = Vars.i("gc_healthbar_height");
+                        drawHealthbar(w, hbh, x, y - hbh - 10, e.getHealth() / e.getMaxHealth());
                         if (m.getOpacity() < 1) {
-                            m.setOpacity(m.getOpacity() - (1000.0 / Vars.i("gc_monster_fade_dur")
-                                    / Vars.i("sv_tickrate")));
+                            double newOpacity = m.getOpacity() - (1000.0 / Vars.i("gc_monster_fade_dur")
+                                    / Vars.i("sv_tickrate"));
+                            newOpacity = Math.round(newOpacity * Vars.i("sv_precision"))
+                                    / (double) Vars.i("sv_precision");
+                            m.setOpacity(newOpacity);
                         }
                     }
+                    drawImg(e.getSprite(), w, h, x, y);
                 }
             }
         }
@@ -281,9 +284,8 @@ public class RoomRenderer {
         gc.drawImage(img, x - getPx(offsetX), y - getPx(offsetY), w, h);
     }
 
-    private static void drawImg(Image img, double sw, double sh, double sx, double sy, double dw, double dh,
-                                double dx, double dy) {
-        gc.drawImage(img, sx, sy, sw, sh, dx - getPx(offsetX), dy - getPx(offsetY), dw, dh);
+    private static void drawImg(Image img, double sw, double sh, double dw, double dh, double dx, double dy) {
+        gc.drawImage(img, 0, 0, sw, sh, dx - getPx(offsetX), dy - getPx(offsetY), dw, dh);
     }
 
     /**
@@ -337,7 +339,7 @@ public class RoomRenderer {
             dx = getPx(x);
             dy = getPx(getY(dir == Direction.SOUTH ? -WALL_SIZE + 16 : room.getHeight(), WALL_SIZE));
         }
-        drawImg(sprite, sw, sh, 0, 0, dw, dh, dx, dy);
+        drawImg(sprite, sw, sh, dw, dh, dx, dy);
     }
 
     /**

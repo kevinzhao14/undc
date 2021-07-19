@@ -1,7 +1,7 @@
 package undc.inventory;
 
 import org.json.JSONObject;
-import undc.item.Item;
+import undc.items.Item;
 import undc.general.Savable;
 
 /**

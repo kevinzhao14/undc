@@ -14,8 +14,8 @@ import javafx.scene.image.Image;
 import undc.general.Audio;
 import undc.general.Config;
 import undc.command.Vars;
-import undc.item.Ammunition;
-import undc.item.Bomb;
+import undc.items.Ammunition;
+import undc.items.Bomb;
 import undc.game.calc.Collision;
 import undc.game.calc.Coords;
 import undc.game.calc.Direction;
@@ -24,16 +24,16 @@ import undc.game.calc.Equation;
 import undc.inventory.GraphicalInventory;
 import undc.general.Interactable;
 import undc.inventory.InventoryItem;
-import undc.item.Item;
+import undc.items.Item;
 import undc.entity.Monster;
 import undc.entity.MonsterType;
 import undc.general.Movable;
 import undc.game.calc.Move;
 import undc.entity.Player;
-import undc.item.RangedWeapon;
+import undc.items.RangedWeapon;
 import undc.general.Savable;
-import undc.item.Weapon;
-import undc.item.WeaponAmmo;
+import undc.items.Weapon;
+import undc.items.WeaponAmmo;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -100,11 +100,12 @@ public class GameController implements Savable {
      */
     public void start(Room room, Player player) {
         this.player = player;
-
         this.room = room;
 
         //reset the game on start
         reset();
+        player.setX(room.getStartX());
+        player.setY(room.getStartY());
 
         //set the current room & scene
         setRoom(room);
@@ -140,15 +141,6 @@ public class GameController implements Savable {
      */
     public void updateRoom() {
         pause();
-    }
-
-    /**
-     * Resets the player's position to the room's starting position.
-     */
-    public void resetPos() {
-        player.setX(room.getStartX());
-        player.setY(room.getStartY());
-        refresh();
     }
 
     /**
@@ -286,6 +278,10 @@ public class GameController implements Savable {
 
     public void drop(Item item) {
         runner.drop(item);
+    }
+
+    public void dropAt(Item item, double x, double y) {
+        runner.dropAt(item, x, y);
     }
 
     /**
@@ -772,13 +768,25 @@ public class GameController implements Savable {
             y += dir == Direction.SOUTH ? -d : (dir == Direction.NORTH ? d : 0);
             x -= itemSprite.getWidth() / 2;
             y -= itemSprite.getHeight() / 2;
+            dropAt(item, x, y);
+        }
+
+        /**
+         * Drops an item at a specified location.
+         * @param item Item to drop
+         * @param x X position
+         * @param y Y position
+         */
+        private void dropAt(Item item, double x, double y) {
+            int width = (int) item.getSprite().getWidth();
+            int height = (int) item.getSprite().getHeight();
 
             //keep inside room
-            Coords check = checkPos(new Coords(x, y), itemSprite.getWidth(), itemSprite.getHeight());
+            Coords check = checkPos(new Coords(x, y), width, height);
             x = check.getX();
             y = check.getY();
 
-            DroppedItem di = new DroppedItem(item, x, y, (int) itemSprite.getWidth(), (int) itemSprite.getHeight());
+            DroppedItem di = new DroppedItem(item, x, y, width, height);
             room.getDroppedItems().add(di);
             Platform.runLater(() -> getScreen().updateHud());
         }
@@ -827,9 +835,9 @@ public class GameController implements Savable {
                     //check for entity collisions
                     newX = check.getX();
                     newY = check.getY();
-                    Collision<Monster> c = checkCollisions(room.getEntities().toArray(new Monster[0]), p,
+                    Collision<Entity> c = checkCollisions(room.getEntities().toArray(new Entity[0]), p,
                             new Coords(newX, newY));
-                    Monster m = c.getCollider();
+                    Entity m = c.getCollider();
                     //hit a monster
                     if (m != null) {
                         p.hit(m);
@@ -1277,8 +1285,8 @@ public class GameController implements Savable {
                     newStartX = newDoor.getX() - 10 - player.getWidth();
                     newStartY = newDoor.getY() + newDoor.getHeight() / 5.0;
                 }
-                newRoom.setStartX((int) newStartX);
-                newRoom.setStartY((int) newStartY);
+                player.setX(newStartX);
+                player.setY(newStartY);
                 setRoom(newRoom);
                 return true;
             }
@@ -1439,7 +1447,6 @@ public class GameController implements Savable {
             Dummy md = new Dummy(mPosX, mPosY, m.getWidth(), m.getHeight());
             double d = distance(md, player);
 
-
             double range = Vars.i("ai_monster_move_range");
             double reactTime = Vars.i("ai_monster_reaction_time");
             if (m.getType() == MonsterType.FINALBOSS) {
@@ -1455,7 +1462,7 @@ public class GameController implements Savable {
                 double newPosY = mPosY + round(Math.sin(angle) * speed);
 
                 //check collisions with obstacles
-                Coords newPos = checkPos(new Coords(newPosX, newPosY), m.getWidth(), m.getHeight());
+                Coords newPos = checkPos(new Coords(round(newPosX), round(newPosY)), m.getWidth(), m.getHeight());
 
                 //add to queue
                 Move moveItem = new Move(newPos, reactTime);

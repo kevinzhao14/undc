@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import undc.general.Audio;
 import undc.game.Difficulty;
 import undc.command.Vars;
-import undc.item.Weapon;
+import undc.items.Weapon;
 import undc.general.Controller;
 import undc.command.DataManager;
 import javafx.geometry.Pos;

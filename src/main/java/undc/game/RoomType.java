@@ -6,5 +6,5 @@ package undc.game;
  * RoomType designation.
  */
 public enum RoomType {
-    EMPTYROOM, STARTROOM, EXITROOM, CHALLENGEROOM;
+    EMPTYROOM, STARTROOM, EXITROOM, CHALLENGEROOM
 }

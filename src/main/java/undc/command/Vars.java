@@ -227,6 +227,11 @@ public class Vars {
                 CHEATS = true;
             } else if (val.equalsIgnoreCase("false")) {
                 CHEATS = false;
+                for (CVar v : all()) {
+                    if (v.requiresCheats() && !v.value().equals(v.defValue())) {
+                        v.reset();
+                    }
+                }
             } else {
                 Console.error("Invalid Value.");
                 return false;
