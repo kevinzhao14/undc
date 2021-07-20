@@ -120,6 +120,27 @@ public class GameController implements Savable {
     }
 
     /**
+     * Starts the game after a save is loaded.
+     * @param room Room to load into
+     * @param player Player to load
+     */
+    public void startLoaded(Room room, Player player) {
+        this.player = player;
+        this.room = room;
+
+        //set the current room & scene
+        setRoom(room);
+        Scene scene = getScreen().getScene();
+
+        //Handle key events
+        scene.setOnKeyPressed(e -> handleKey(Config.keyStringify(e.getCode()), true));
+        scene.setOnKeyReleased(e -> handleKey(Config.keyStringify(e.getCode()), false));
+        scene.setOnMousePressed(e -> handleKey(Config.mbStringify(e.getButton()), true));
+        scene.setOnMouseReleased(e -> handleKey(Config.mbStringify(e.getButton()), false));
+        scene.setOnScroll(e -> handleKey(Config.scrollStringify(e.getDeltaY()), false));
+    }
+
+    /**
      * Changes the room.
      * @param newRoom Room to change to
      */
@@ -153,7 +174,6 @@ public class GameController implements Savable {
         accelY = 0;
         isRunning = false;
         isStopped = false;
-        states = new HashMap<>();
         if (room == null) {
             camera.setX(0);
             camera.setY(0);
@@ -162,6 +182,7 @@ public class GameController implements Savable {
             camera.setY(room.getHeight() / 2.0);
         }
         // states for player movement direction
+        states = new HashMap<>();
         states.put("north", false);
         states.put("east", false);
         states.put("south", false);
@@ -520,6 +541,27 @@ public class GameController implements Savable {
 
     @Override
     public boolean parseSave(JSONObject o) {
+        try {
+            reset();
+            velX = o.getDouble("velX");
+            velY = o.getDouble("velY");
+            accelX = o.getDouble("accelX");
+            accelY = o.getDouble("accelY");
+            ticks = o.getLong("ticks");
+            totalTime = o.getDouble("totalTime");
+            if (!camera.parseSave(o.getJSONObject("camera"))) {
+                return false;
+            }
+            JSONArray statesObj = o.getJSONArray("states");
+            for (int i = 0; i < statesObj.length(); i++) {
+                JSONObject obj = statesObj.getJSONObject(i);
+                states.put(obj.getString("key"), obj.getBoolean("value"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Console.error("Failed to load Game Controller.");
+            return false;
+        }
         return true;
     }
 

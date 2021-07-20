@@ -1,6 +1,8 @@
 package undc.game;
 
 import org.json.JSONObject;
+import undc.command.Console;
+import undc.command.DataManager;
 import undc.items.Item;
 import undc.general.Movable;
 import undc.general.Savable;
@@ -91,6 +93,30 @@ public class DroppedItem implements Movable, Savable {
 
     @Override
     public boolean parseSave(JSONObject o) {
+        try {
+            x = o.getDouble("x");
+            y = o.getDouble("y");
+            width = o.getInt("width");
+            height = o.getInt("height");
+        } catch (Exception e) {
+            Console.error("Failed to load DroppedItem");
+            return false;
+        }
         return true;
+    }
+
+    /**
+     * Loads save data into a DroppedItem object.
+     * @param o The data to load
+     * @return The corresponding DroppedItem object
+     */
+    public static DroppedItem parseSaveObject(JSONObject o) {
+        try {
+            Item item = DataManager.ITEMS.get(o.getString("item"));
+            return new DroppedItem(item, 0, 0, 0, 0);
+        } catch (Exception e) {
+            Console.error("Failed to create Dropped Item.");
+            return null;
+        }
     }
 }

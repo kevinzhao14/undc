@@ -13,8 +13,8 @@ import java.util.Iterator;
  * Is used by other classes to access items that the player possesses.
  */
 public class Inventory implements Iterable<InventoryItem>, Savable {
-    private int rows;
-    private int columns;
+    private final int rows;
+    private final int columns;
     private InventoryItem[][] items;
     private int size;
     private GraphicalInventory graphicalInventory;
@@ -238,11 +238,8 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
     @Override
     public boolean parseSave(JSONObject o) {
         try {
-            rows = o.getInt("rows");
-            columns = o.getInt("columns");
             size = o.getInt("size");
             JSONArray itms = o.getJSONArray("items");
-            items = new InventoryItem[rows][columns];
             for (int i = 0; i < itms.length(); i++) {
                 JSONArray row = itms.getJSONArray(i);
                 for (int j = 0; j < row.length(); j++) {
@@ -262,6 +259,22 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Loads save data into an Inventory object.
+     * @param o The data to load
+     * @return The corresponding Inventory object
+     */
+    public static Inventory parseSaveObject(JSONObject o) {
+        try {
+            int rows = o.getInt("rows");
+            int columns = o.getInt("columns");
+            return new Inventory(rows, columns);
+        } catch (Exception e) {
+            Console.error("Failed to create Inventory.");
+            return null;
+        }
     }
 
     /**

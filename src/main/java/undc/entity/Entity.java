@@ -1,6 +1,8 @@
 package undc.entity;
 
 import javafx.scene.image.Image;
+import org.json.JSONObject;
+import undc.command.Console;
 import undc.general.Movable;
 import undc.general.Savable;
 import undc.graphics.SpriteGroup;
@@ -141,5 +143,28 @@ public abstract class Entity implements Movable, Savable {
     public String toString() {
         return "HP: " + health + "/" + maxHealth + " | Pos: " + posX + ", " + posY + " | Size: "
                 + height + ", " + width;
+    }
+
+    /**
+     * Loads save data into a Entity object.
+     * @param o The data to load
+     * @return The corresponding Entity object
+     */
+    public static Entity parseSaveObject(JSONObject o) {
+        try {
+            String eclass = o.getString("class");
+            switch (eclass) {
+                case "Monster":
+                    return Monster.parseSaveObject(o);
+                case "NPC":
+                    return NPC.parseSaveObject(o);
+                default:
+                    Console.error("Invalid entity type.");
+                    return null;
+            }
+        } catch (Exception e) {
+            Console.error("Failed to create entity.");
+            return null;
+        }
     }
 }

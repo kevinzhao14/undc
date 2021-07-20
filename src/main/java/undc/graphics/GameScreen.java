@@ -14,7 +14,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-import org.json.JSONException;
 import org.json.JSONObject;
 import undc.command.Console;
 import undc.entity.Entity;
@@ -131,6 +130,11 @@ public class GameScreen extends GameState implements Savable {
         updateHud();
         GameController.resetInstance();
         getGame().start(dungeonLayout.getStartingRoom(), player);
+    }
+
+    public void startLoaded() {
+        updateHud();
+        getGame().startLoaded(room, player);
     }
 
     /**

@@ -77,6 +77,11 @@ public class Floor implements Movable, Savable {
         return true;
     }
 
+    /**
+     * Loads save data into a Floor object.
+     * @param o The data to load
+     * @return The corresponding Floor object
+     */
     public static Floor parseSaveObject(JSONObject o) {
         try {
             String id = o.getString("id");

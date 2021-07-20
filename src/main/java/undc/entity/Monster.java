@@ -255,7 +255,33 @@ public class Monster extends Entity {
 
     @Override
     public boolean parseSave(JSONObject o) {
+        try {
+            health = o.getDouble("health");
+            posX = o.getDouble("posX");
+            posY = o.getDouble("posY");
+            attackCooldown = o.getDouble("attackCooldown");
+            reaction = o.getDouble("reaction");
+            opacity = o.getDouble("opacity");
+        } catch (Exception e) {
+            Console.error("Failed to load Monster.");
+            return false;
+        }
         return true;
+    }
+
+    /**
+     * Loads save data into a Monster object.
+     * @param o The data to load
+     * @return The corresponding Monster object
+     */
+    public static Monster parseSaveObject(JSONObject o) {
+        try {
+            String id = o.getString("id");
+            return DataManager.MONSTERS.get(id);
+        } catch (Exception e) {
+            Console.error("Failed to create Monster.");
+            return null;
+        }
     }
 
     /**

@@ -5,7 +5,6 @@ import org.json.JSONObject;
 import undc.command.Console;
 import undc.general.Savable;
 
-import java.util.ArrayList;
 
 /**
  * Class implementation of the DungeonLayout class. DungeonLayout will
@@ -53,6 +52,11 @@ public class DungeonLayout implements Savable {
         return this.grid;
     }
 
+    /**
+     * Gets a room by its id.
+     * @param id Id of the room to get
+     * @return The corresponding room
+     */
     public Room get(int id) {
         for (Room[] row : grid) {
             for (Room r : row) {
@@ -103,6 +107,15 @@ public class DungeonLayout implements Savable {
                                 return false;
                             }
                             grid[i][j] = r;
+                        }
+                    }
+                }
+                // load doors after loading all rooms since doors depend on having the rooms
+                for (int i = 0; i < gridObj.length(); i++) {
+                    JSONArray row = gridObj.getJSONArray(i);
+                    for (int j = 0; j < row.length(); j++) {
+                        if (!grid[i][j].parseSaveDoors(row.getJSONObject(j))) {
+                            return false;
                         }
                     }
                 }

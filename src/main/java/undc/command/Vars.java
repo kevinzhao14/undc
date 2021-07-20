@@ -1,5 +1,6 @@
 package undc.command;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import undc.general.Config;
 
@@ -291,17 +292,42 @@ public class Vars {
         o.put("debug", DEBUG);
 
         if (CHEATS) {
+            JSONArray other = new JSONArray();
             for (CVar v : all()) {
                 if (v.requiresCheats() && !v.value().equals(v.defValue())) {
-                    o.put(v.getName(), v.value());
+                    JSONObject var = new JSONObject();
+                    var.put("name", v.getName());
+                    var.put("value", v.value());
+                    other.put(var);
                 }
             }
+            o.put("other", other);
         }
 
         return o;
     }
 
+    /**
+     * Loads the save data into the object.
+     * @param o The data to load
+     * @return True on success, false on failure
+     */
     public static boolean parseSave(JSONObject o) {
+        try {
+            CHEATS = o.getBoolean("cheats");
+            DEBUG = o.getBoolean("debug");
+
+            if (CHEATS) {
+                JSONArray other = o.getJSONArray("other");
+                for (int i = 0; i < other.length(); i++) {
+                    JSONObject var = other.getJSONObject(i);
+                    set(var.getString("name"), var.getString("value"));
+                }
+            }
+        } catch (Exception e) {
+            Console.error("Failed to load CVars.");
+            return false;
+        }
         return true;
     }
 }

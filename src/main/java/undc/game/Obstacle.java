@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import org.json.JSONException;
 import org.json.JSONObject;
 import undc.command.Console;
+import undc.command.DataManager;
 import undc.general.Movable;
 import undc.general.Savable;
 
@@ -91,6 +92,10 @@ public class Obstacle implements Movable, Savable {
         return type;
     }
 
+    public void setType(ObstacleType type) {
+        this.type = type;
+    }
+
     public Image getSprite() {
         return sprite;
     }
@@ -105,12 +110,58 @@ public class Obstacle implements Movable, Savable {
         o.put("id", id);
         o.put("x", x);
         o.put("y", y);
+        o.put("width", width);
+        o.put("height", height);
+        o.put("type", type.toString());
+        o.put("class", "Obstacle");
         return o;
     }
 
     @Override
     public boolean parseSave(JSONObject o) {
+        try {
+            String oclass = o.getString("class");
+            if (oclass.equals("Obstacle")) {
+                id = o.getString("id");
+                sprite = DataManager.OBSTACLES.get(id).getSprite();
+            }
+            x = o.getDouble("x");
+            y = o.getDouble("y");
+            width = o.getInt("width");
+            height = o.getInt("height");
+            type = ObstacleType.valueOf(o.getString("type"));
+        } catch (Exception e) {
+            Console.error("Failed to load Obstacle.");
+            return false;
+        }
         return true;
+    }
+
+    /**
+     * Loads save data into an Obstacle object.
+     * @param o The data to load
+     * @return The corresponding Obstacle object
+     */
+    public static Obstacle parseSaveObject(JSONObject o) {
+        try {
+            Obstacle obs;
+            String oclass = o.getString("class");
+            switch (oclass) {
+                case "ObstacleItem":
+                    obs = ObstacleItem.parseSaveObject(o);
+                    break;
+                case "Chest":
+                    obs = Chest.parseSaveObject(o);
+                    break;
+                default:
+                    obs = new Obstacle();
+                    break;
+            }
+            return obs;
+        } catch (Exception e) {
+            Console.error("Failed to create Obstacle.");
+            return null;
+        }
     }
 
     /**

@@ -16,6 +16,8 @@ public class ExitDoor extends Door {
     @Override
     public JSONObject saveObject() {
         JSONObject o = super.saveObject();
+        String[] spriteArr = getSprite().getUrl().split("/");
+        o.put("sprite", spriteArr[spriteArr.length - 1]);
         o.put("class", "ExitDoor");
         return o;
     }

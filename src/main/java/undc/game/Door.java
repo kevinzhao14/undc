@@ -1,7 +1,10 @@
 package undc.game;
 
+import javafx.scene.image.Image;
 import org.json.JSONObject;
+import undc.command.Console;
 import undc.game.calc.Direction;
+import undc.graphics.GameScreen;
 
 /**
  * Class that handles doors in game. These objects grant access to rooms.
@@ -44,6 +47,36 @@ public class Door extends Obstacle {
 
     @Override
     public boolean parseSave(JSONObject o) {
-        return super.parseSave(o);
+        if (!super.parseSave(o)) {
+            return false;
+        }
+        setSprite(LayoutGenerator.DOORS.get(orientation));
+        setType(ObstacleType.DOOR);
+        return true;
+    }
+
+    /**
+     * Loads save data into a Door object.
+     * @param o The data to load
+     * @return The corresponding Door object
+     */
+    public static Door parseSaveObject(JSONObject o) {
+        try {
+            String c = o.getString("class");
+            Direction orientation = Direction.valueOf(o.getString("direction"));
+            Room goesTo = GameScreen.getInstance().getLayout().get(o.getInt("goesTo"));
+            if (c.equals("Door")) {
+                return new Door(orientation, 0, 0, 0, 0, goesTo);
+            } else if (c.equals("ExitDoor")) {
+                Image sprite = new Image("textures/room/doors/" + o.getString("sprite"));
+                return new ExitDoor(sprite, 0, 0, 0, 0);
+            } else {
+                Console.error("Invalid door type.");
+                return null;
+            }
+        } catch (Exception e) {
+            Console.error("Failed to create Door.");
+            return null;
+        }
     }
 }

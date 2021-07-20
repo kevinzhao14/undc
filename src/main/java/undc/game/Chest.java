@@ -3,6 +3,7 @@ package undc.game;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import org.json.JSONObject;
+import undc.command.Console;
 import undc.general.Audio;
 import undc.general.Interactable;
 import undc.inventory.Inventory;
@@ -44,6 +45,31 @@ public class Chest extends Obstacle implements Interactable {
 
     @Override
     public boolean parseSave(JSONObject o) {
-        return super.parseSave(o);
+        if (!super.parseSave(o)) {
+            return false;
+        }
+        setSprite(SPRITE);
+        return true;
+    }
+
+    /**
+     * Loads save data into a Chest object.
+     * @param o Data to load
+     * @return The corresponding Chest object.
+     */
+    public static Chest parseSaveObject(JSONObject o) {
+        try {
+            Inventory contents = Inventory.parseSaveObject(o.getJSONObject("contents"));
+            if (contents == null) {
+                return null;
+            }
+            if (!contents.parseSave(o.getJSONObject("contents"))) {
+                return null;
+            }
+            return new Chest(0, 0, contents);
+        } catch (Exception e) {
+            Console.error("Failed to create Chest.");
+            return null;
+        }
     }
 }

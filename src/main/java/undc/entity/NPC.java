@@ -3,6 +3,7 @@ package undc.entity;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import org.json.JSONObject;
+import undc.command.Console;
 import undc.general.Interactable;
 import undc.graphics.GameScreen;
 
@@ -33,14 +34,63 @@ public class NPC extends Entity implements Interactable {
         this.dialogue = dialogue;
     }
 
+    private NPC(String name, Dialogue dialogue) {
+        this.name = name;
+        this.dialogue = dialogue;
+    }
+
     @Override
     public JSONObject saveObject() {
-        return null;
+        JSONObject o = new JSONObject();
+        o.put("width", width);
+        o.put("height", height);
+        o.put("posX", posX);
+        o.put("posY", posY);
+        String[] spriteArr = sprite.getUrl().split("/");
+        o.put("sprite", spriteArr[spriteArr.length - 1]);
+        o.put("name", name);
+        o.put("dialogue", dialogue.saveObject());
+        o.put("class", "NPC");
+        return o;
     }
 
     @Override
     public boolean parseSave(JSONObject o) {
+        try {
+            maxHealth = 100;
+            health = 100;
+            width = o.getInt("width");
+            height = o.getInt("height");
+            posX = o.getDouble("posX");
+            posY = o.getDouble("posY");
+            setSprite(new Image("entities/npcs/" + o.getString("sprite")));
+        } catch (Exception e) {
+            Console.error("Failed to load NPC.");
+            return false;
+        }
         return true;
+    }
+
+    /**
+     * Loads save data into an NPC object.
+     * @param o The data to load
+     * @return The corresponding NPC object
+     */
+    public static NPC parseSaveObject(JSONObject o) {
+        try {
+            String name = o.getString("name");
+            Dialogue dialogue = Dialogue.parseSaveObject(o.getJSONObject("dialogue"));
+            if (dialogue == null) {
+                return null;
+            }
+            if (!dialogue.parseSave(o.getJSONObject("dialogue"))) {
+                return null;
+            }
+            return new NPC(name, dialogue);
+        } catch (Exception e) {
+            Console.error("Failed to create NPC");
+            return null;
+        }
     }
 
     public String getName() {

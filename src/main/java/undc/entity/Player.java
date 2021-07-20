@@ -3,7 +3,6 @@ package undc.entity;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import undc.command.Console;
 import undc.game.calc.Direction;
@@ -243,6 +242,10 @@ public class Player extends Entity implements Savable {
                     return false;
                 }
                 effects.add(e);
+            }
+            inventory = Inventory.parseSaveObject(o.getJSONObject("inventory"));
+            if (inventory == null) {
+                return false;
             }
             if (!inventory.parseSave(o.getJSONObject("inventory"))) {
                 return false;

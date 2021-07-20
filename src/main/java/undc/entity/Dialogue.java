@@ -1,9 +1,14 @@
 package undc.entity;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import undc.command.Console;
+import undc.general.Savable;
+
 /**
  * Represents dialogue options for an entity.
  */
-public class Dialogue {
+public class Dialogue implements Savable {
     private final String[] dialogue;
     private final boolean loops;
 
@@ -33,5 +38,49 @@ public class Dialogue {
             pos %= dialogue.length;
         }
         return res;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        JSONArray d = new JSONArray();
+        for (String s : dialogue) {
+            d.put(s);
+        }
+        o.put("dialogue", d);
+        o.put("loops", loops);
+        o.put("pos", pos);
+        return o;
+    }
+
+    @Override
+    public boolean parseSave(JSONObject o) {
+        try {
+            pos = o.getInt("pos");
+        } catch (Exception e) {
+            Console.error("Failed to load Dialogue.");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Loads save data into a Dialogue object.
+     * @param o Data to load
+     * @return The corresponding dialogue object
+     */
+    public static Dialogue parseSaveObject(JSONObject o) {
+        try {
+            JSONArray dObj = o.getJSONArray("dialogue");
+            String[] dialogue = new String[dObj.length()];
+            for (int i = 0; i < dObj.length(); i++) {
+                dialogue[i] = dObj.getString(i);
+            }
+            boolean loops = o.getBoolean("loops");
+            return new Dialogue(dialogue, loops);
+        } catch (Exception e) {
+            Console.error("Failed to create Dialogue.");
+            return null;
+        }
     }
 }

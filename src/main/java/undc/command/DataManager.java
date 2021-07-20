@@ -5,7 +5,6 @@ import javafx.scene.media.AudioClip;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import undc.entity.Player;
 import undc.game.GameController;
 import undc.general.Audio;
 import undc.game.Difficulty;
@@ -180,21 +179,33 @@ public class DataManager implements Savable {
         return true;
     }
 
+    /**
+     * Loads a saved game's data.
+     * @param o Data to load
+     * @return True on success, false on failure
+     */
     public boolean loadGame(JSONObject o) {
         // load game
         GameScreen.resetInstance();
-        GameScreen.getInstance().parseSave(o.getJSONObject("game"));
+        if (!GameScreen.getInstance().parseSave(o.getJSONObject("game"))) {
+            return false;
+        }
 
         // load data
-        parseSave(o.getJSONObject("data"));
+        if (!parseSave(o.getJSONObject("data"))) {
+            return false;
+        }
 
         // load game controller
         GameController.resetInstance();
-        GameController.getInstance().parseSave(o.getJSONObject("gamedata"));
+        if (!GameController.getInstance().parseSave(o.getJSONObject("gamedata"))) {
+            return false;
+        }
 
         // parse vars
-        Vars.parseSave(o.getJSONObject("vars"));
-
+        if (!Vars.parseSave(o.getJSONObject("vars"))) {
+            return false;
+        }
         return true;
     }
 
@@ -210,7 +221,16 @@ public class DataManager implements Savable {
 
     @Override
     public boolean parseSave(JSONObject o) {
-        return false;
+        try {
+            difficulty = Difficulty.valueOf(o.getString("difficulty"));
+            weapon = (Weapon) ITEMS.get(o.getString("weapon"));
+            name = o.getString("name");
+            unlockedAmmo = o.getBoolean("unlockedAmmo");
+        } catch (Exception e) {
+            Console.error("Failed to load Data.");
+            return false;
+        }
+        return true;
     }
 
     /**

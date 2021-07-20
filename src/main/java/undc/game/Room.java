@@ -57,7 +57,7 @@ public class Room implements Savable {
         this.floors = floors;
 
         //Need to change this later
-        this.entities = null;
+        this.entities = new ArrayList<>();
     }
 
     public void setTopDoor(Door d) {
@@ -205,9 +205,113 @@ public class Room implements Savable {
 
     @Override
     public boolean parseSave(JSONObject o) {
+        try {
+            visited = o.getBoolean("visited");
+            JSONArray obs = o.getJSONArray("obstacles");
+            for (int i = 0; i < obs.length(); i++) {
+                Obstacle obstacle = Obstacle.parseSaveObject(obs.getJSONObject(i));
+                if (obstacle == null) {
+                    return false;
+                }
+                if (!obstacle.parseSave(obs.getJSONObject(i))) {
+                    return false;
+                }
+                obstacles.add(obstacle);
+            }
+
+            // load entities
+            JSONArray entitiesObj = o.getJSONArray("entities");
+            for (int i = 0; i < entitiesObj.length(); i++) {
+                Entity ent = Entity.parseSaveObject(entitiesObj.getJSONObject(i));
+                if (ent == null) {
+                    return false;
+                }
+                if (!ent.parseSave(entitiesObj.getJSONObject(i))) {
+                    return false;
+                }
+                entities.add(ent);
+            }
+
+            JSONArray diObj = o.getJSONArray("droppedItems");
+            for (int i = 0; i < diObj.length(); i++) {
+                DroppedItem di = DroppedItem.parseSaveObject(diObj.getJSONObject(i));
+                if (di == null) {
+                    return false;
+                }
+                if (!di.parseSave(diObj.getJSONObject(i))) {
+                    return false;
+                }
+                droppedItems.add(di);
+            }
+
+            JSONArray projObj = o.getJSONArray("projectiles");
+            for (int i = 0; i < projObj.length(); i++) {
+                ShotProjectile proj = ShotProjectile.parseSaveObject(projObj.getJSONObject(i));
+                if (proj == null) {
+                    return false;
+                }
+                if (!proj.parseSave(projObj.getJSONObject(i))) {
+                    return false;
+                }
+                projectiles.add(proj);
+            }
+        } catch (Exception e) {
+            Console.error("Failed to load Room.");
+            return false;
+        }
         return true;
     }
 
+    /**
+     * Loads door data for a room.
+     * @param o The data to load
+     * @return True on success, false on failure
+     */
+    public boolean parseSaveDoors(JSONObject o) {
+        if (o.has("topDoor")) {
+            topDoor = Door.parseSaveObject(o.getJSONObject("topDoor"));
+            if (topDoor == null) {
+                return false;
+            }
+            if (!topDoor.parseSave(o.getJSONObject("topDoor"))) {
+                return false;
+            }
+        }
+        if (o.has("bottomDoor")) {
+            bottomDoor = Door.parseSaveObject(o.getJSONObject("bottomDoor"));
+            if (bottomDoor == null) {
+                return false;
+            }
+            if (!bottomDoor.parseSave(o.getJSONObject("bottomDoor"))) {
+                return false;
+            }
+        }
+        if (o.has("leftDoor")) {
+            leftDoor = Door.parseSaveObject(o.getJSONObject("leftDoor"));
+            if (leftDoor == null) {
+                return false;
+            }
+            if (!leftDoor.parseSave(o.getJSONObject("leftDoor"))) {
+                return false;
+            }
+        }
+        if (o.has("rightDoor")) {
+            rightDoor = Door.parseSaveObject(o.getJSONObject("rightDoor"));
+            if (rightDoor == null) {
+                return false;
+            }
+            if (!rightDoor.parseSave(o.getJSONObject("rightDoor"))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Loads save data into a Room object.
+     * @param o The data to load
+     * @return The corresponding Room object
+     */
     public static Room parseSaveObject(JSONObject o) {
         try {
             int id = o.getInt("id");

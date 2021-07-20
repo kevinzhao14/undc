@@ -2,6 +2,8 @@ package undc.game;
 
 import javafx.scene.image.Image;
 import org.json.JSONObject;
+import undc.command.Console;
+import undc.command.DataManager;
 import undc.items.Item;
 
 /**
@@ -12,6 +14,10 @@ public class ObstacleItem extends Obstacle {
 
     public ObstacleItem(Image sprite, double x, double y, int w, int h, ObstacleType type) {
         super(sprite, x, y, w, h, type);
+    }
+
+    private ObstacleItem() {
+
     }
 
     public Item getItem() {
@@ -32,6 +38,20 @@ public class ObstacleItem extends Obstacle {
 
     @Override
     public boolean parseSave(JSONObject o) {
-        return super.parseSave(o);
+        if (!super.parseSave(o)) {
+            return false;
+        }
+        try {
+            item = DataManager.ITEMS.get(o.getString("item"));
+            setSprite(item.getSprite());
+        } catch (Exception e) {
+            Console.error("Failed to load ObstacleItem.");
+            return false;
+        }
+        return true;
+    }
+
+    public static ObstacleItem parseSaveObject(JSONObject o) {
+        return new ObstacleItem();
     }
 }

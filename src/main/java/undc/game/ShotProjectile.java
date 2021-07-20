@@ -1,6 +1,7 @@
 package undc.game;
 
 import org.json.JSONObject;
+import undc.command.Console;
 import undc.general.Controller;
 import undc.command.DataManager;
 import undc.entity.Entity;
@@ -24,14 +25,14 @@ import java.util.TimerTask;
  */
 public class ShotProjectile implements Movable, Savable {
     private final Projectile projectile;
+    private final int width;
+    private final int height;
     private Image sprite;
 
     private double posX;
     private double posY;
     private double velX;
     private double velY;
-    private final int height;
-    private final int width;
     private double distance;
 
     /**
@@ -206,14 +207,46 @@ public class ShotProjectile implements Movable, Savable {
         o.put("posY", posY);
         o.put("velX", velX);
         o.put("velY", velY);
-        o.put("width", width);
-        o.put("height", height);
         o.put("distance", distance);
         return o;
     }
 
     @Override
     public boolean parseSave(JSONObject o) {
+        try {
+            posX = o.getDouble("posX");
+            posY = o.getDouble("posY");
+            velX = o.getDouble("velX");
+            velY = o.getDouble("velY");
+            distance = o.getDouble("distance");
+            if (velX < 0) {
+                sprite = projectile.getSpriteLeft();
+            } else if (velX > 0) {
+                sprite = projectile.getSpriteRight();
+            } else if (velY > 0) {
+                sprite = projectile.getSpriteUp();
+            } else {
+                sprite = projectile.getSpriteDown();
+            }
+        } catch (Exception e) {
+            Console.error("Failed to load Shot Projectile.");
+            return false;
+        }
         return true;
+    }
+
+    /**
+     * Loads save data into a ShotProjectile object.
+     * @param o The data to load
+     * @return The corresponding ShotProjectile object
+     */
+    public static ShotProjectile parseSaveObject(JSONObject o) {
+        try {
+            Projectile proj = DataManager.PROJECTILES.get(o.getString("projectile"));
+            return new ShotProjectile(proj, 0, 0, 0, 0);
+        } catch (Exception e) {
+            Console.error("Failed to create Shot Projectile.");
+            return null;
+        }
     }
 }

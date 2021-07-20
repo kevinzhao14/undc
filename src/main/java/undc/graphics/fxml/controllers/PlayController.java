@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.json.JSONException;
@@ -119,9 +120,15 @@ public class PlayController {
             box.getStyleClass().add("save-item");
             box.getChildren().addAll(name, date, mode);
 
-            box.setOnMousePressed(e -> {
+            box.setOnMouseClicked(e -> {
+                if (e.getButton() != MouseButton.PRIMARY) {
+                    return;
+                }
                 if (selected != null) {
                     selected.getStyleClass().remove("save-item-selected");
+                }
+                if (e.getClickCount() >= 2) {
+                    play();
                 }
                 box.getStyleClass().add("save-item-selected");
                 selected = box;
@@ -141,11 +148,21 @@ public class PlayController {
         Controller.setState(NewGameScreen.getInstance());
     }
 
+    /**
+     * Plays a saved game.
+     */
     public void play() {
         Audio.playAudio("button");
         if (selectedObj != null) {
             // load save data & start game
-            DataManager.getInstance().loadGame(selectedObj);
+            if (!DataManager.getInstance().loadGame(selectedObj)) {
+                return;
+            }
+            Controller.setState(GameScreen.getInstance());
+            GameScreen.getInstance().startLoaded();
+            if (Audio.getAudioClip("menu").isPlaying()) {
+                Audio.getAudioClip("menu").stop();
+            }
         }
     }
 

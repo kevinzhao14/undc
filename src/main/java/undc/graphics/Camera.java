@@ -1,6 +1,7 @@
 package undc.graphics;
 
 import org.json.JSONObject;
+import undc.command.Console;
 import undc.general.Savable;
 
 /**
@@ -41,6 +42,13 @@ public class Camera implements Savable {
 
     @Override
     public boolean parseSave(JSONObject o) {
+        try {
+            x = o.getDouble("x");
+            y = o.getDouble("y");
+        } catch (Exception e) {
+            Console.error("Failed to load camera.");
+            return false;
+        }
         return true;
     }
 }
