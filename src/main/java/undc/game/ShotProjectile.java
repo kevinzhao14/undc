@@ -213,7 +213,7 @@ public class ShotProjectile implements Movable, Savable {
     }
 
     @Override
-    public Object parseSave(JSONObject o) {
-        return null;
+    public boolean parseSave(JSONObject o) {
+        return true;
     }
 }

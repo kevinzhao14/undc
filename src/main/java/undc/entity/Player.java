@@ -3,7 +3,9 @@ package undc.entity;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import undc.command.Console;
 import undc.game.calc.Direction;
 import undc.game.Effect;
 import undc.inventory.Inventory;
@@ -195,6 +197,7 @@ public class Player extends Entity implements Savable {
     @Override
     public JSONObject saveObject() {
         JSONObject o = new JSONObject();
+        o.put("maxHealth", maxHealth);
         o.put("health", health);
         o.put("posX", posX);
         o.put("posY", posY);
@@ -214,13 +217,45 @@ public class Player extends Entity implements Savable {
         o.put("direction", direction.toString());
         o.put("level", level);
         o.put("xp", xp);
-        o.put("class", "Player");
         return o;
     }
 
     @Override
-    public Object parseSave(JSONObject o) {
-        return null;
+    public boolean parseSave(JSONObject o) {
+        try {
+            maxHealth = o.getInt("maxHealth");
+            health = o.getDouble("health");
+            posX = o.getDouble("posX");
+            posY = o.getDouble("posY");
+            attackCooldown = o.getDouble("attackCooldown");
+
+            gold = o.getInt("gold");
+            monstersKilled = o.getInt("monstersKilled");
+            totalDamageDealt = o.getDouble("totalDamageDealt");
+            totalItemsConsumed = o.getInt("totalItemsConsumed");
+            JSONArray eff = o.getJSONArray("effects");
+            for (int i = 0; i < eff.length(); i++) {
+                Effect e = Effect.parseSaveObject(eff.getJSONObject(i));
+                if (e == null) {
+                    return false;
+                }
+                if (!e.parseSave(eff.getJSONObject(i))) {
+                    return false;
+                }
+                effects.add(e);
+            }
+            if (!inventory.parseSave(o.getJSONObject("inventory"))) {
+                return false;
+            }
+            selected = o.getInt("selected");
+            direction = Direction.valueOf(o.getString("direction"));
+            level = o.getInt("level");
+            xp = o.getInt("xp");
+        } catch (Exception e) {
+            Console.error("Failed to load player data.");
+            return false;
+        }
+        return true;
     }
 
     public double getWalkCooldown() {

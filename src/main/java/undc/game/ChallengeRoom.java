@@ -76,7 +76,7 @@ public class ChallengeRoom extends Room {
     }
 
     @Override
-    public Object parseSave(JSONObject o) {
+    public boolean parseSave(JSONObject o) {
         return super.parseSave(o);
     }
 }

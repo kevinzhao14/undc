@@ -1,6 +1,8 @@
 package undc.game;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+import undc.command.Console;
 import undc.general.Savable;
 
 /**
@@ -51,7 +53,25 @@ public class Effect implements Savable {
     }
 
     @Override
-    public Object parseSave(JSONObject o) {
-        return null;
+    public boolean parseSave(JSONObject o) {
+        try {
+
+        } catch (Exception e) {
+            Console.error("Failed to load effect data.");
+            return false;
+        }
+        return true;
+    }
+
+    public static Effect parseSaveObject(JSONObject o) {
+        try {
+            EffectType type = EffectType.valueOf(o.getString("type"));
+            double amount = o.getDouble("amount");
+            double duration = o.getDouble("duration");
+            return new Effect(type, amount, duration);
+        } catch (Exception e) {
+            Console.error("Failed to create Effect.");
+            return null;
+        }
     }
 }

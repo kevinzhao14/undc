@@ -1,6 +1,8 @@
 package undc.inventory;
 
 import org.json.JSONObject;
+import undc.command.Console;
+import undc.command.DataManager;
 import undc.items.Item;
 import undc.general.Savable;
 
@@ -55,7 +57,15 @@ public class InventoryItem implements Savable {
     }
 
     @Override
-    public Object parseSave(JSONObject o) {
-        return null;
+    public boolean parseSave(JSONObject o) {
+        try {
+            item = DataManager.ITEMS.get(o.getString("item"));
+            quantity = o.getInt("quantity");
+            infinite = o.getBoolean("infinite");
+        } catch (Exception e) {
+            Console.error("Failed to load InventoryItem.");
+            return false;
+        }
+        return true;
     }
 }

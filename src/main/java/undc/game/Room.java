@@ -2,6 +2,7 @@ package undc.game;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import undc.command.Console;
 import undc.entity.Entity;
 import undc.general.Savable;
 
@@ -12,8 +13,8 @@ import java.util.ArrayList;
  */
 public class Room implements Savable {
     private final int id;
-    private final int height;
     private final int width;
+    private final int height;
     private final ArrayList<Obstacle> obstacles;
     private final ArrayList<DroppedItem> droppedItems;
     private final ArrayList<ShotProjectile> projectiles;
@@ -203,8 +204,30 @@ public class Room implements Savable {
     }
 
     @Override
-    public Object parseSave(JSONObject o) {
-        return null;
+    public boolean parseSave(JSONObject o) {
+        return true;
+    }
+
+    public static Room parseSaveObject(JSONObject o) {
+        try {
+            int id = o.getInt("id");
+            int width = o.getInt("width");
+            int height = o.getInt("height");
+            RoomType type = RoomType.valueOf(o.getString("type"));
+            ArrayList<Floor> floors = new ArrayList<>();
+            JSONArray floorsObj = o.getJSONArray("floors");
+            for (int i = 0; i < floorsObj.length(); i++) {
+                Floor f = Floor.parseSaveObject(floorsObj.getJSONObject(i));
+                if (f == null) {
+                    return null;
+                }
+                floors.add(f);
+            }
+            return new Room(id, width, height, 0, 0, type, floors);
+        } catch (Exception e) {
+            Console.error("Failed to create room.");
+            return null;
+        }
     }
 
     public ArrayList<Floor> getFloors() {

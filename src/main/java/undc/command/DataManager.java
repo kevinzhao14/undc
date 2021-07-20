@@ -5,8 +5,12 @@ import javafx.scene.media.AudioClip;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import undc.entity.Player;
+import undc.game.GameController;
 import undc.general.Audio;
 import undc.game.Difficulty;
+import undc.general.Savable;
+import undc.graphics.GameScreen;
 import undc.items.Item;
 import undc.entity.Monster;
 import undc.game.Obstacle;
@@ -25,7 +29,7 @@ import java.util.HashMap;
 /**
  * Class for storing and handling all session data.
  */
-public class DataManager {
+public class DataManager implements Savable {
 
     public static final HashMap<String, Projectile> PROJECTILES = new HashMap<>();
 
@@ -174,6 +178,39 @@ public class DataManager {
             return false;
         }
         return true;
+    }
+
+    public boolean loadGame(JSONObject o) {
+        // load game
+        GameScreen.resetInstance();
+        GameScreen.getInstance().parseSave(o.getJSONObject("game"));
+
+        // load data
+        parseSave(o.getJSONObject("data"));
+
+        // load game controller
+        GameController.resetInstance();
+        GameController.getInstance().parseSave(o.getJSONObject("gamedata"));
+
+        // parse vars
+        Vars.parseSave(o.getJSONObject("vars"));
+
+        return true;
+    }
+
+    @Override
+    public JSONObject saveObject() {
+        JSONObject o = new JSONObject();
+        o.put("difficulty", difficulty.toString());
+        o.put("weapon", weapon.getId());
+        o.put("name", name);
+        o.put("unlockedAmmo", unlockedAmmo);
+        return o;
+    }
+
+    @Override
+    public boolean parseSave(JSONObject o) {
+        return false;
     }
 
     /**

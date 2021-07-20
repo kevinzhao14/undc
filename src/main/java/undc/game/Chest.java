@@ -43,7 +43,7 @@ public class Chest extends Obstacle implements Interactable {
     }
 
     @Override
-    public Object parseSave(JSONObject o) {
+    public boolean parseSave(JSONObject o) {
         return super.parseSave(o);
     }
 }

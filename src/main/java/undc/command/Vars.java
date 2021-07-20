@@ -300,4 +300,8 @@ public class Vars {
 
         return o;
     }
+
+    public static boolean parseSave(JSONObject o) {
+        return true;
+    }
 }

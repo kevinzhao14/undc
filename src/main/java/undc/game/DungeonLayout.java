@@ -2,7 +2,10 @@ package undc.game;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import undc.command.Console;
 import undc.general.Savable;
+
+import java.util.ArrayList;
 
 /**
  * Class implementation of the DungeonLayout class. DungeonLayout will
@@ -10,9 +13,9 @@ import undc.general.Savable;
  * which compose the game map.
  */
 public class DungeonLayout implements Savable {
-    private final Room startingRoom;
-    private final Room exitRoom;
-    private final Room[][] grid;
+    private Room startingRoom;
+    private Room exitRoom;
+    private Room[][] grid;
 
     /**
      * Constructor for initializing starting and ending Rooms in Dungeon map.
@@ -50,6 +53,17 @@ public class DungeonLayout implements Savable {
         return this.grid;
     }
 
+    public Room get(int id) {
+        for (Room[] row : grid) {
+            for (Room r : row) {
+                if (r != null && r.getId() == id) {
+                    return r;
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     public JSONObject saveObject() {
         JSONObject o = new JSONObject();
@@ -68,7 +82,37 @@ public class DungeonLayout implements Savable {
     }
 
     @Override
-    public Object parseSave(JSONObject o) {
-        return null;
+    public boolean parseSave(JSONObject o) {
+        try {
+            JSONArray gridObj = o.getJSONArray("grid");
+            if (gridObj.length() == 0) {
+                grid = new Room[0][0];
+            } else {
+                grid = new Room[gridObj.length()][gridObj.getJSONArray(0).length()];
+                for (int i = 0; i < gridObj.length(); i++) {
+                    JSONArray row = gridObj.getJSONArray(i);
+                    for (int j = 0; j < row.length(); j++) {
+                        if (row.get(j) instanceof String) {
+                            grid[i][j] = null;
+                        } else {
+                            Room r = Room.parseSaveObject(row.getJSONObject(j));
+                            if (r == null) {
+                                return false;
+                            }
+                            if (!r.parseSave(row.getJSONObject(j))) {
+                                return false;
+                            }
+                            grid[i][j] = r;
+                        }
+                    }
+                }
+            }
+            startingRoom = get(o.getInt("start"));
+            exitRoom = get(o.getInt("exit"));
+        } catch (Exception e) {
+            Console.error("Failed to load Dungeon Layout.");
+            return false;
+        }
+        return true;
     }
 }

@@ -9,7 +9,9 @@ import javafx.scene.layout.VBox;
 import org.json.JSONException;
 import org.json.JSONObject;
 import undc.command.Console;
+import undc.command.DataManager;
 import undc.general.Controller;
+import undc.graphics.GameScreen;
 import undc.graphics.HomeScreen;
 import undc.graphics.NewGameScreen;
 import undc.general.Audio;
@@ -141,6 +143,10 @@ public class PlayController {
 
     public void play() {
         Audio.playAudio("button");
+        if (selectedObj != null) {
+            // load save data & start game
+            DataManager.getInstance().loadGame(selectedObj);
+        }
     }
 
     public void edit() {

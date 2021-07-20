@@ -39,8 +39,8 @@ public class NPC extends Entity implements Interactable {
     }
 
     @Override
-    public Object parseSave(JSONObject o) {
-        return null;
+    public boolean parseSave(JSONObject o) {
+        return true;
     }
 
     public String getName() {

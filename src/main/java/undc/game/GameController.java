@@ -479,10 +479,10 @@ public class GameController implements Savable {
      */
     public void save() {
         JSONObject saveObj = new JSONObject();
-        saveObj.put("entities/player", player.saveObject());
         saveObj.put("gamedata", saveObject());
         saveObj.put("game", getScreen().saveObject());
         saveObj.put("vars", Vars.saveObject());
+        saveObj.put("data", DataManager.getInstance().saveObject());
 
         saveObj.put("name", DataManager.getInstance().getName());
         String mode = getScreen().getMode().toString().toLowerCase();
@@ -519,8 +519,8 @@ public class GameController implements Savable {
     }
 
     @Override
-    public Object parseSave(JSONObject o) {
-        return null;
+    public boolean parseSave(JSONObject o) {
+        return true;
     }
 
     public Camera getCamera() {

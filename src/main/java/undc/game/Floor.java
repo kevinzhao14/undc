@@ -1,6 +1,7 @@
 package undc.game;
 
 import org.json.JSONObject;
+import undc.command.Console;
 import undc.general.Movable;
 import undc.general.Savable;
 
@@ -72,8 +73,22 @@ public class Floor implements Movable, Savable {
     }
 
     @Override
-    public Object parseSave(JSONObject o) {
-        return null;
+    public boolean parseSave(JSONObject o) {
+        return true;
+    }
+
+    public static Floor parseSaveObject(JSONObject o) {
+        try {
+            String id = o.getString("id");
+            double x = o.getDouble("x");
+            double y = o.getDouble("y");
+            int width = o.getInt("width");
+            int height = o.getInt("height");
+            return new Floor(id, width, height, x, y);
+        } catch (Exception e) {
+            Console.error("Failed to create floor.");
+            return null;
+        }
     }
 
     public String getId() {

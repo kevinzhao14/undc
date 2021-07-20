@@ -43,7 +43,7 @@ public class Door extends Obstacle {
     }
 
     @Override
-    public Object parseSave(JSONObject o) {
+    public boolean parseSave(JSONObject o) {
         return super.parseSave(o);
     }
 }

@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import org.json.JSONException;
 import org.json.JSONObject;
 import undc.command.Console;
 import undc.entity.Entity;
@@ -643,20 +644,32 @@ public class GameScreen extends GameState implements Savable {
     @Override
     public JSONObject saveObject() {
         JSONObject o = new JSONObject();
+        o.put("player", player.saveObject());
         o.put("layout", dungeonLayout.saveObject());
         o.put("room", room.getId());
         o.put("mode", mode.toString());
-        DataManager dm = DataManager.getInstance();
-        o.put("difficulty", dm.getDifficulty().toString());
-        o.put("weapon", dm.getWeapon().getId());
-        o.put("name", dm.getName());
-        o.put("unlockedAmmo", dm.isUnlockedAmmo());
         return o;
     }
 
     @Override
-    public Object parseSave(JSONObject o) {
-        return null;
+    public boolean parseSave(JSONObject o) {
+        try {
+            mode = GameMode.valueOf(o.getString("mode"));
+            newGame(mode);
+
+            // load data
+            if (!player.parseSave(o.getJSONObject("player"))) {
+                return false;
+            }
+            if (!dungeonLayout.parseSave(o.getJSONObject("layout"))) {
+                return false;
+            }
+            room = dungeonLayout.get(o.getInt("room"));
+        } catch (Exception e) {
+            Console.error("Failed to load Game data.");
+            return false;
+        }
+        return true;
     }
 
     public RenderTimer getTimer() {

@@ -13,8 +13,8 @@ import java.util.Iterator;
  * Is used by other classes to access items that the player possesses.
  */
 public class Inventory implements Iterable<InventoryItem>, Savable {
-    private final int rows;
-    private final int columns;
+    private int rows;
+    private int columns;
     private InventoryItem[][] items;
     private int size;
     private GraphicalInventory graphicalInventory;
@@ -224,7 +224,7 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
             JSONArray row = new JSONArray();
             for (InventoryItem invitem : irow) {
                 if (invitem == null) {
-                    row.put("");
+                    row.put("null");
                 } else {
                     row.put(invitem.saveObject());
                 }
@@ -236,8 +236,32 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
     }
 
     @Override
-    public Object parseSave(JSONObject o) {
-        return null;
+    public boolean parseSave(JSONObject o) {
+        try {
+            rows = o.getInt("rows");
+            columns = o.getInt("columns");
+            size = o.getInt("size");
+            JSONArray itms = o.getJSONArray("items");
+            items = new InventoryItem[rows][columns];
+            for (int i = 0; i < itms.length(); i++) {
+                JSONArray row = itms.getJSONArray(i);
+                for (int j = 0; j < row.length(); j++) {
+                    if (row.get(j) instanceof String) {
+                        items[i][j] = null;
+                    } else {
+                        items[i][j] = new InventoryItem(null, 0);
+                        if (!items[i][j].parseSave(row.getJSONObject(j))) {
+                            Console.error("Failed to load inventory item.");
+                            return false;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Console.error("Failed to load Inventory.");
+            return false;
+        }
+        return true;
     }
 
     /**
