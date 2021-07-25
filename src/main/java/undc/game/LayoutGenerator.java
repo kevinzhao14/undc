@@ -28,34 +28,29 @@ import java.util.Random;
  * Class that generates Layout of the Rooms.
  */
 public class LayoutGenerator {
-    private static final int GRID_WIDTH = 15;
-    private static final int GRID_HEIGHT = 15;
-    public static final int ROOM_WIDTH = 576;
-    public static final int ROOM_HEIGHT = 384;
-    private static final int SANDBOX_WIDTH = 1000;
-    private static final int SANDBOX_HEIGHT = 1000;
-
     public static final SpriteGroup DOORS = new SpriteGroup(
         new Image("textures/room/doors/left.png"),
         new Image("textures/room/doors/top.png"),
         new Image("textures/room/doors/right.png"),
         new Image("textures/room/doors/bottom.png")
     );
-
     public static final SpriteGroup DOORS_BLOCKED = new SpriteGroup(
         new Image("textures/room/doors/left-blocked.png"),
         new Image("textures/room/doors/top-blocked.png"),
         new Image("textures/room/doors/right-blocked.png"),
         new Image("textures/room/doors/bottom-blocked.png")
     );
-
     public static final Image DOOR_EXIT = new Image("textures/room/doors/top-portal.png");
-
     public static final int DOOR_SIZE = 64;
+    public static final int ROOM_WIDTH = 576;
+    public static final int ROOM_HEIGHT = 384;
 
+    private static final int GRID_WIDTH = 15;
+    private static final int GRID_HEIGHT = 15;
+    private static final int SANDBOX_WIDTH = 1000;
+    private static final int SANDBOX_HEIGHT = 1000;
     private static final int PATH_MIN = 1;
     private static final int PATH_MAX = 3;
-
     private static final double CHALLENGE_ODDS = 0.1;
 
     private final Inventory cr1Rewards;
@@ -66,10 +61,10 @@ public class LayoutGenerator {
     private ChallengeRoom cr1;
     private ChallengeRoom cr2;
     private int challengeCount;
-    private boolean exitPlaced;
+    private int roomId;
     private int[] exitCoords;
     private Room[][] roomGrid;
-    private int roomId;
+    private boolean exitPlaced;
 
     /**
      * Creates the rewards for the challenge rooms.
@@ -133,8 +128,8 @@ public class LayoutGenerator {
         cr2 = new ChallengeRoom(roomId++, ROOM_WIDTH, ROOM_HEIGHT, 100, 100, cr2Rewards,
                 generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
 
-        setMonsters(cr1);
-        setMonsters(cr2);
+        generateMonsters(cr1);
+        generateMonsters(cr2);
 
         challengeCount = 0;
         exitPlaced = false;
@@ -259,7 +254,7 @@ public class LayoutGenerator {
         //create origin room
         Room r = new Room(roomId++, ROOM_WIDTH, ROOM_HEIGHT, 100, 100, RoomType.EMPTYROOM,
                 generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
-        setMonsters(r);
+        generateMonsters(r);
         generateObstacles(r);
         roomGrid[x][y] = r;
 
@@ -347,7 +342,7 @@ public class LayoutGenerator {
             }
             Room r = new Room(roomId++, ROOM_WIDTH, ROOM_HEIGHT, 100, 100, RoomType.EMPTYROOM,
                     generateFloors(ROOM_WIDTH, ROOM_HEIGHT));
-            setMonsters(r);
+            generateMonsters(r);
             generateObstacles(r);
             grid[nx][ny] = r;
 
@@ -386,7 +381,7 @@ public class LayoutGenerator {
      * Adds monsters to a room.
      * @param room the room to add the monsters to
      */
-    private void setMonsters(Room room) {
+    private void generateMonsters(Room room) {
         int min = Vars.i("sv_monsters_min");
         int max = Vars.i("sv_monsters_max");
         int numMonsters = (int) (Math.random() * (max - min + 1)) +  min;

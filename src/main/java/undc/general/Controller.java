@@ -54,6 +54,10 @@ public class Controller extends Application {
         });
     }
 
+    public static GameState getState() {
+        return instance.state;
+    }
+
     /**
      * Used to change the GameState, updating the Scene.
      *
@@ -63,10 +67,6 @@ public class Controller extends Application {
         instance.state = state;
         instance.stage.setScene(state.getScene());
         setFullscreen();
-    }
-
-    public static GameState getState() {
-        return instance.state;
     }
 
     public static void quit() {

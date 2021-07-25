@@ -31,10 +31,6 @@ public class Chest extends Obstacle implements Interactable {
         return true;
     }
 
-    public Inventory getContents() {
-        return contents;
-    }
-
     @Override
     public JSONObject saveObject() {
         JSONObject o = super.saveObject();

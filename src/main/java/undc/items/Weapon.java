@@ -34,6 +34,7 @@ public class Weapon extends Item {
         return damage;
     }
 
+    @Override
     public void use() {
 
     }

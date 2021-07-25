@@ -54,7 +54,6 @@ public class GameScreen extends GameState implements Savable {
     private Player player;
     private Room previous;
     private Room room;
-
     private Canvas canvas;
     private GraphicalInventory playerInv;
     private Hud hud;
@@ -204,69 +203,6 @@ public class GameScreen extends GameState implements Savable {
     }
 
     /**
-     * Loads in changes to the hud.
-     */
-    public void updateHud() {
-        hud.update();
-    }
-
-    public Hud getHud() {
-        return hud;
-    }
-
-    /**
-     * Makes the player.
-     */
-    private void createPlayer() {
-        player = new Player(Vars.i("sv_player_health"), 1, DataManager.getInstance().getWeapon());
-        player.setDirection(Direction.SOUTH);
-
-        // sandbox inventory
-        if (mode == GameMode.SANDBOX) {
-            int count = 0;
-            for (Map.Entry<String, Item> i : DataManager.ITEMS.entrySet()) {
-                if (i.getValue().isSpawnable()) {
-                    count++;
-                }
-            }
-            Inventory inv = new Inventory((int) Math.ceil(count / 5.0) + 1, 5);
-            int row = 1;
-            int col = 0;
-            for (Map.Entry<String, Item> i : DataManager.ITEMS.entrySet()) {
-                if (!i.getValue().isSpawnable()) {
-                    continue;
-                }
-                InventoryItem item = new InventoryItem(i.getValue(), 1);
-                item.setInfinite(true);
-                inv.add(item, row, col);
-                col++;
-                if (col == 5) {
-                    row++;
-                    col = 0;
-                }
-            }
-            player.setInventory(inv);
-        }
-    }
-
-    /**
-     * Makes the hud.
-     */
-    private void createHud() {
-        hud = new Hud(player);
-        createInventory();
-    }
-
-    public DungeonLayout getLayout() {
-        //For testing purposes
-        return this.dungeonLayout;
-    }
-
-    public boolean isInventoryOpen() {
-        return playerInv.isVisible();
-    }
-
-    /**
      * Handles the transition between room changes.
      * @param pane Pane that will fade out of view
      */
@@ -325,17 +261,54 @@ public class GameScreen extends GameState implements Savable {
     }
 
     /**
-     * Toggles the visibiility of the console.
+     * Makes the hud.
      */
-    public void toggleConsole() {
-        StackPane root = (StackPane) scene.getRoot();
-        if (!consoleOpen) {
-            Pane console = Console.getScene();
-            root.getChildren().add(console);
-        } else {
-            root.getChildren().remove(root.getChildren().size() - 1);
+    private void createHud() {
+        hud = new Hud(player);
+        createInventory();
+    }
+
+    public Hud getHud() {
+        return hud;
+    }
+
+    public void updateHud() {
+        hud.update();
+    }
+
+    /**
+     * Makes the player.
+     */
+    private void createPlayer() {
+        player = new Player(Vars.i("sv_player_health"), 1, DataManager.getInstance().getWeapon());
+        player.setDirection(Direction.SOUTH);
+
+        // sandbox inventory
+        if (mode == GameMode.SANDBOX) {
+            int count = 0;
+            for (Map.Entry<String, Item> i : DataManager.ITEMS.entrySet()) {
+                if (i.getValue().isSpawnable()) {
+                    count++;
+                }
+            }
+            Inventory inv = new Inventory((int) Math.ceil(count / 5.0) + 1, 5);
+            int row = 1;
+            int col = 0;
+            for (Map.Entry<String, Item> i : DataManager.ITEMS.entrySet()) {
+                if (!i.getValue().isSpawnable()) {
+                    continue;
+                }
+                InventoryItem item = new InventoryItem(i.getValue(), 1);
+                item.setInfinite(true);
+                inv.add(item, row, col);
+                col++;
+                if (col == 5) {
+                    row++;
+                    col = 0;
+                }
+            }
+            player.setInventory(inv);
         }
-        consoleOpen = !consoleOpen;
     }
 
     /**
@@ -496,6 +469,33 @@ public class GameScreen extends GameState implements Savable {
         pause.setVisible(!pause.isVisible());
     }
 
+    public void createInventory() {
+        playerInv = player.getInventory().getGraphicalInventory();
+        hud.getHud().getChildren().add(playerInv.getRoot());
+    }
+
+    public void toggleInventory() {
+        playerInv.toggle();
+    }
+
+    public boolean isInventoryOpen() {
+        return playerInv.isVisible();
+    }
+
+    /**
+     * Toggles the visibiility of the console.
+     */
+    public void toggleConsole() {
+        StackPane root = (StackPane) scene.getRoot();
+        if (!consoleOpen) {
+            Pane console = Console.getScene();
+            root.getChildren().add(console);
+        } else {
+            root.getChildren().remove(root.getChildren().size() - 1);
+        }
+        consoleOpen = !consoleOpen;
+    }
+
     /**
      * Returns the game to the state right after player leaves InitPlayerConfigScreen
      * and enters first room. The DungeonLayout remains the same, all visited rooms
@@ -507,7 +507,7 @@ public class GameScreen extends GameState implements Savable {
         //set all monsters in visited rooms to max health
         for (Room[] roomRow : dungeonLayout.getGrid()) {
             for (Room room : roomRow) {
-                if (room != null && room.wasVisited()) {
+                if (room != null && room.visited()) {
                     room.setVisited(false);
                     room.getObstacles().clear();
                     room.getDroppedItems().clear();
@@ -534,15 +534,6 @@ public class GameScreen extends GameState implements Savable {
 
         //go to starting room
         start();
-    }
-
-    public void createInventory() {
-        playerInv = player.getInventory().getGraphicalInventory();
-        hud.getHud().getChildren().add(playerInv.getRoot());
-    }
-
-    public void toggleInventory() {
-        playerInv.toggle();
     }
 
     /**
@@ -643,6 +634,11 @@ public class GameScreen extends GameState implements Savable {
 
     public GameMode getMode() {
         return mode;
+    }
+
+    public DungeonLayout getLayout() {
+        //For testing purposes
+        return this.dungeonLayout;
     }
 
     @Override

@@ -12,16 +12,16 @@ import undc.graphics.SpriteGroup;
  */
 
 public abstract class Entity implements Movable, Savable {
+    protected int height;
+    protected int width;
     protected int maxHealth;
     protected double health;
     protected double attack;
-    protected Image sprite;
-    protected int height;
-    protected int width;
     protected double posX;
     protected double posY;
     protected double attackCooldown;
     protected boolean invulnerable;
+    protected Image sprite;
 
     /**
      * Constructor.
@@ -31,13 +31,13 @@ public abstract class Entity implements Movable, Savable {
      * @param width Width of the entity
      * @param sprite The sprite of the entity (URL)
      */
-    public Entity(int maxHealth, double attack, int width, int height, String sprite) {
+    public Entity(int maxHealth, double attack, int width, int height, Image sprite) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.attack = attack;
         this.width = width;
         this.height = height;
-        this.sprite = (sprite == null) ? null : new Image(sprite);
+        this.sprite = sprite;
         invulnerable = false;
     }
 
@@ -75,6 +75,17 @@ public abstract class Entity implements Movable, Savable {
         return this.health;
     }
 
+    /**
+     * Sets the health of the Entity.
+     * @param newHealth New health of the Entity
+     */
+    public void setHealth(double newHealth) {
+        if (newHealth < 0 || newHealth > this.maxHealth) {
+            throw new IllegalArgumentException("Invalid new health");
+        }
+        this.health = newHealth;
+    }
+
     public double getAttack() {
         return this.attack;
     }
@@ -95,29 +106,18 @@ public abstract class Entity implements Movable, Savable {
     }
 
     @Override
-    public double getY() {
-        return this.posY;
-    }
-
-    @Override
     public void setX(double newX) {
         this.posX = newX;
     }
 
     @Override
-    public void setY(double newY) {
-        this.posY = newY;
+    public double getY() {
+        return this.posY;
     }
 
-    /**
-     * Sets the health of the Entity.
-     * @param newHealth New health of the Entity
-     */
-    public void setHealth(double newHealth) {
-        if (newHealth < 0 || newHealth > this.maxHealth) {
-            throw new IllegalArgumentException("Invalid new health");
-        }
-        this.health = newHealth;
+    @Override
+    public void setY(double newY) {
+        this.posY = newY;
     }
 
     public double getAttackCooldown() {
@@ -128,16 +128,12 @@ public abstract class Entity implements Movable, Savable {
         this.attackCooldown = attackCooldown;
     }
 
-    public void setSprite(Image sprite) {
-        this.sprite = sprite;
-    }
-
     public Image getSprite() {
         return sprite;
     }
 
-    public boolean isInvulnerable() {
-        return invulnerable;
+    public void setSprite(Image sprite) {
+        this.sprite = sprite;
     }
 
     public String toString() {

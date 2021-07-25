@@ -64,8 +64,18 @@ public class Obstacle implements Movable, Savable {
     }
 
     @Override
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    @Override
     public double getY() {
         return this.y;
+    }
+
+    @Override
+    public void setY(double y) {
+        this.y = y;
     }
 
     @Override
@@ -76,16 +86,6 @@ public class Obstacle implements Movable, Savable {
     @Override
     public int getWidth() {
         return this.width;
-    }
-
-    @Override
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    @Override
-    public void setY(double y) {
-        this.y = y;
     }
 
     public ObstacleType getType() {
@@ -102,6 +102,10 @@ public class Obstacle implements Movable, Savable {
 
     public void setSprite(Image sprite) {
         this.sprite = sprite;
+    }
+
+    public String toString() {
+        return "Type: " + type + " | Dim: " + width + ", " + height;
     }
 
     @Override
@@ -208,9 +212,5 @@ public class Obstacle implements Movable, Savable {
             return null;
         }
         return obs;
-    }
-
-    public String toString() {
-        return "Type: " + type + " | Dim: " + width + ", " + height;
     }
 }

@@ -12,12 +12,10 @@ import javafx.application.Platform;
  */
 public class RangedWeapon extends Weapon {
     private WeaponAmmo weaponAmmo;
-
     //reload time in seconds
     private double reloadTime;
     //seconds between shots
     private double fireRate;
-
     //statuses
     private boolean isReloading;
     private double delay;
@@ -40,14 +38,14 @@ public class RangedWeapon extends Weapon {
     /**
      * Method used to start reloading the weapon.
      */
-    public void reload() {
+    public void startReload() {
         if (weaponAmmo.getRemaining() >= weaponAmmo.getSize()) {
             return;
         }
         isReloading = true;
         delay = reloadTime * 1000;
         if (reloadTime == 0) {
-            finishReloading();
+            finishReload();
         }
         Platform.runLater(() -> ((GameScreen) Controller.getState()).updateHud());
     }
@@ -55,7 +53,7 @@ public class RangedWeapon extends Weapon {
     /**
      * Method used at the conclusion of reloading to fill the ammo capacity.
      */
-    public void finishReloading() {
+    public void finishReload() {
         int change = weaponAmmo.getSize() - weaponAmmo.getRemaining();
         weaponAmmo.setRemaining(weaponAmmo.getSize());
         weaponAmmo.setBackupRemaining(weaponAmmo.getBackupRemaining() - change);

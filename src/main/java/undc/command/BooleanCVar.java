@@ -5,6 +5,7 @@ package undc.command;
  */
 public class BooleanCVar extends CVar {
     private final boolean def;
+
     private boolean value;
 
     /**
@@ -26,19 +27,8 @@ public class BooleanCVar extends CVar {
         this(name, nick, def, rc, true);
     }
 
-
     public boolean getVal() {
         return value;
-    }
-
-    @Override
-    public String value() {
-        return getVal() + "";
-    }
-
-    @Override
-    public String defValue() {
-        return def + "";
     }
 
     @Override
@@ -59,6 +49,16 @@ public class BooleanCVar extends CVar {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String value() {
+        return getVal() + "";
+    }
+
+    @Override
+    public String defValue() {
+        return def + "";
     }
 
     @Override

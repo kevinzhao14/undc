@@ -29,25 +29,16 @@ import java.util.HashMap;
  * Class for storing and handling all session data.
  */
 public class DataManager implements Savable {
-
     public static final HashMap<String, Projectile> PROJECTILES = new HashMap<>();
-
     public static final HashMap<String, Item> ITEMS = new HashMap<>();
-
     public static final HashMap<String, Obstacle> OBSTACLES = new HashMap<>();
-
     public static final HashMap<String, Monster> MONSTERS = new HashMap<>();
-
     public static final HashMap<String, Audio> SOUNDS = new HashMap<>();
-
     public static final HashMap<String, Image> FLOORS = new HashMap<>();
-
     public static final int FLOOR_SIZE = 64;
-
     public static final String EXPLOSION = "textures/boom.gif";
 
     private static DataManager instance;
-
     private static Key exitKey;
     private static Weapon[] startingWeapons;
     private static Monster finalBoss;
@@ -56,7 +47,7 @@ public class DataManager implements Savable {
     private Weapon weapon;
     private String name = "Example";
     private File saveFile;
-    private boolean unlockedAmmo = false;
+    private boolean unlockedAmmo;
 
     /**
      * Basic constructor for creating a DataManager.
@@ -64,6 +55,7 @@ public class DataManager implements Savable {
     private DataManager() {
         difficulty = null;
         weapon = null;
+        unlockedAmmo = false;
         load();
     }
 
@@ -76,6 +68,18 @@ public class DataManager implements Savable {
             instance = new DataManager();
         }
         return instance;
+    }
+
+    public static Key getExitKey() {
+        return exitKey;
+    }
+
+    public static Weapon[] getStartingWeapons() {
+        return startingWeapons;
+    }
+
+    public static Monster getFinalBoss() {
+        return finalBoss;
     }
 
     public boolean isUnlockedAmmo() {
@@ -91,10 +95,9 @@ public class DataManager implements Savable {
      * @param name Username of the player
      * @param difficulty Difficulty level selected by the player
      * @param weapon Starting weapon selected by the player.
-     * @return Returns true if data is valid and saved successfully. Otherwise, false
      * @throws IllegalArgumentException Throws Exception if any field is invalid.
      */
-    public boolean newGame(String name, Difficulty difficulty, Weapon weapon) {
+    public void newGame(String name, Difficulty difficulty, Weapon weapon) {
         //Checks for empty/whitespace-only username
         if (name == null || name.replaceAll("\\s", "").length() == 0) {
             throw new IllegalArgumentException("Username cannot be empty.");
@@ -130,7 +133,6 @@ public class DataManager implements Savable {
         this.name = name.replaceAll("\\s{2,}", " ").trim();
         setDifficulty(difficulty);
         this.weapon = weapon.copy();
-        return true;
     }
 
     /**
@@ -241,26 +243,6 @@ public class DataManager implements Savable {
         return difficulty;
     }
 
-    public static Key getExitKey() {
-        return exitKey;
-    }
-
-    public static Weapon[] getStartingWeapons() {
-        return startingWeapons;
-    }
-
-    public static Monster getFinalBoss() {
-        return finalBoss;
-    }
-
-    public Weapon getWeapon() {
-        return weapon;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     /**
      * Setter for the difficulty. Changes sv_modifier appropriately.
      * @param difficulty Difficulty to change to
@@ -274,6 +256,14 @@ public class DataManager implements Savable {
             modifier = Vars.d("sv_modifier_hard");
         }
         Vars.find("sv_modifier").setVal(modifier + "", true);
+    }
+
+    public Weapon getWeapon() {
+        return weapon;
+    }
+
+    public String getName() {
+        return name;
     }
 
     /**

@@ -5,6 +5,7 @@ package undc.game.calc;
  */
 public class Move {
     private final Coords pos;
+
     private double delay;
 
     public Move(Coords pos, double delay) {

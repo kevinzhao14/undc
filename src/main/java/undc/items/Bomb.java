@@ -60,15 +60,11 @@ public class Bomb extends Item {
 
         //start fuse
         Audio.playAudio("fuse");
-        timer.livefuse = fuse;
+        timer.livefuse = fuse * 1000;
     }
 
     public double getDamage() {
         return this.damage;
-    }
-
-    public void setDamage(double damage) {
-        this.damage = damage;
     }
 
     public double getRadius() {

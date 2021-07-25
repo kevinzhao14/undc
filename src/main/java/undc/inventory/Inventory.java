@@ -14,30 +14,23 @@ import java.util.Iterator;
  */
 public class Inventory implements Iterable<InventoryItem>, Savable {
     private final int rows;
-    private final int columns;
-    private InventoryItem[][] items;
+    private final int cols;
+    private final InventoryItem[][] items;
+
     private int size;
     private GraphicalInventory graphicalInventory;
 
     /**
      * Makes a 2D array with specific rows and columns that represents an inventor.
-     * @param r number of rows in the 2D array
-     * @param c number of columns in the 2D array
+     * @param rows number of rows in the 2D array
+     * @param cols number of columns in the 2D array
      */
-    public Inventory(int r, int c) {
-        this.rows = r;
-        this.columns = c;
-        items = new InventoryItem[rows][columns];
+    public Inventory(int rows, int cols) {
+        this.rows = rows;
+        this.cols = cols;
+        items = new InventoryItem[this.rows][this.cols];
         size = 0;
         graphicalInventory = new GraphicalInventory(this);
-    }
-
-    public void add(Item item, int quantity) {
-        add(new InventoryItem(item, quantity));
-    }
-
-    public void add(Item item) {
-        add(item, 1);
     }
 
     /**
@@ -52,13 +45,21 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
             return;
         }
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
+            for (int j = 0; j < cols; j++) {
                 if (items[i][j] == null) {
                     add(item, i, j);
                     return;
                 }
             }
         }
+    }
+
+    public void add(Item item, int quantity) {
+        add(new InventoryItem(item, quantity));
+    }
+
+    public void add(Item item) {
+        add(item, 1);
     }
 
     /**
@@ -90,7 +91,7 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
             return false;
         }
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
+            for (int j = 0; j < cols; j++) {
                 if (items[i][j] == null) {
                     continue;
                 }
@@ -120,7 +121,7 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
             return false;
         }
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
+            for (int j = 0; j < cols; j++) {
                 if (items[i][j] == null) {
                     continue;
                 }
@@ -138,26 +139,9 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
      * Shifts each row of items up by 1.
      */
     public void rotate() {
-        InventoryItem[] firstrow = items[0];
+        InventoryItem[] firstRow = items[0];
         System.arraycopy(items, 1, items, 0, items.length - 1);
-        items[items.length - 1] = firstrow;
-    }
-
-    /**
-     * Creates a list of all the InventoryItems in the inventory array.
-     * @return InventoryItem[] that is the list of items in the array
-     */
-    public InventoryItem[] getItemsList() {
-        InventoryItem[] list = new InventoryItem[size];
-        int c = 0;
-        for (InventoryItem[] row : items) {
-            for (InventoryItem i : row) {
-                if (i != null) {
-                    list[c++] = i;
-                }
-            }
-        }
-        return list;
+        items[items.length - 1] = firstRow;
     }
 
     /**
@@ -177,19 +161,15 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
     }
 
     public boolean full() {
-        return size >= rows * columns;
+        return size >= rows * cols;
     }
 
     public InventoryItem[][] getItems() {
         return items;
     }
 
-    public void setItems(InventoryItem[][] items) {
-        this.items = items;
-    }
-
     public int getCols() {
-        return columns;
+        return cols;
     }
 
     public int getRows() {
@@ -217,7 +197,7 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
     public JSONObject saveObject() {
         JSONObject o = new JSONObject();
         o.put("rows", rows);
-        o.put("columns", columns);
+        o.put("columns", cols);
         o.put("size", size);
         JSONArray items = new JSONArray();
         for (InventoryItem[] irow : this.items) {
@@ -281,9 +261,10 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
      * Inner class that handles iterating through the 2D array items.
      */
     public static class InventoryIterator implements Iterator<InventoryItem> {
+        private final InventoryItem[][] items;
+
         private int row;
         private int col;
-        private final InventoryItem[][] items;
 
         /**
          * Constructor that sets up the iterator to begin iterating from row and column 0 through the 2D array items.

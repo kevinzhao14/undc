@@ -92,6 +92,14 @@ public class Audio {
         return audio;
     }
 
+    public static AudioClip getAudioClip(String id) {
+        return DataManager.SOUNDS.get(id).getClip();
+    }
+
+    public static Audio getAudio(String id) {
+        return DataManager.SOUNDS.get(id);
+    }
+
     public String getId() {
         return id;
     }
@@ -100,21 +108,8 @@ public class Audio {
         return clip;
     }
 
-    /**
-     * Gets an AudioClip from the SOUNDS HashMap.
-     * @param id String key of the value in SOUNDS
-     * @return AudioClip value in SOUNDS
-     */
-    public static AudioClip getAudioClip(String id) {
-        return DataManager.SOUNDS.get(id).getClip();
-    }
-
     public String getType() {
         return type;
-    }
-
-    public static Audio getAudio(String id) {
-        return DataManager.SOUNDS.get(id);
     }
 
     public boolean isIndefinite() {

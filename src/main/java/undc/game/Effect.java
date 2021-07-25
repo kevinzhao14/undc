@@ -11,6 +11,7 @@ public class Effect implements Savable {
     private final EffectType type;
     //amount of effect per occurence
     private final double amount;
+
     //seconds per occurence
     private double duration;
 

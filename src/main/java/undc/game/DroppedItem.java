@@ -34,8 +34,9 @@ public class DroppedItem implements Movable, Savable {
         this.height = h;
     }
 
-    public DroppedItem(Item item) {
-        this(item, 0.0, 0.0, 0, 0);
+    @Override
+    public double getX() {
+        return x;
     }
 
     @Override
@@ -44,30 +45,13 @@ public class DroppedItem implements Movable, Savable {
     }
 
     @Override
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public void setWidth(int w) {
-        this.width = w;
-    }
-
-    public void setHeight(int h) {
-        this.height = h;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    @Override
-    public double getX() {
-        return x;
-    }
-
-    @Override
     public double getY() {
         return y;
+    }
+
+    @Override
+    public void setY(double y) {
+        this.y = y;
     }
 
     @Override
@@ -78,6 +62,10 @@ public class DroppedItem implements Movable, Savable {
     @Override
     public int getHeight() {
         return height;
+    }
+
+    public Item getItem() {
+        return item;
     }
 
     @Override

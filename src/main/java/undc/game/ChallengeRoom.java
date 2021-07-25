@@ -10,8 +10,9 @@ import java.util.ArrayList;
  * Class that handles the construction of a room of heightened difficulty called a ChallengeRoom.
  */
 public class ChallengeRoom extends Room {
-    private boolean completed;
     private final Inventory rewards;
+
+    private boolean completed;
 
     /**
      * Constructor for defining all Room features except Door layouts.

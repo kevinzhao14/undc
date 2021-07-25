@@ -71,26 +71,29 @@ public class DraggableNode {
         private final ArrayList<Node> dragNodes = new ArrayList<>();
         private final ArrayList<Listener> dragListeners = new ArrayList<>();
 
-        private double lastMouseX = 0;
-        private double lastMouseY = 0;
-        private boolean dragging = false;
+        private double lastMouseX;
+        private double lastMouseY;
+        private boolean dragging;
 
         /**
          * Constructor for DraggableObject. Clicking & dragging on eventNode drags the dragNodes.
          * @param eventNode Node that initiates the drag
          * @param dragNodes All the nodes to be dragged
          */
-        DraggableObject(Node eventNode, Node... dragNodes) {
+        private DraggableObject(Node eventNode, Node... dragNodes) {
+            this.lastMouseX = 0;
+            this.lastMouseY = 0;
+            this.dragging = false;
             this.eventNode = eventNode;
             this.dragNodes.addAll(Arrays.asList(dragNodes));
             this.eventNode.addEventHandler(MouseEvent.ANY, this);
         }
 
-        DraggableObject(Node node) {
+        private DraggableObject(Node node) {
             this(node, node);
         }
 
-        public final boolean addListener(Listener listener) {
+        public boolean addListener(Listener listener) {
             return this.dragListeners.add(listener);
         }
 

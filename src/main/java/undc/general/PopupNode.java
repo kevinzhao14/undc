@@ -62,12 +62,12 @@ public class PopupNode {
         private final Node eventNode;
         private final ArrayList<Node> popupNodes = new ArrayList<>();
         private final ArrayList<Listener> popupListeners = new ArrayList<>();
-
-        private double lastMouseX = 0;
-        private double lastMouseY = 0;
         private final int offsetX;
         private final int offsetY;
-        private boolean showing = false;
+
+        private double lastMouseX;
+        private double lastMouseY;
+        private boolean showing;
 
         /**
          * Creates a PopupObject.
@@ -77,6 +77,9 @@ public class PopupNode {
          * @param popupNodes Node(s) that will popup
          */
         PopupObject(int offsetX, int offsetY, Node eventNode, Node... popupNodes) {
+            this.lastMouseX = 0;
+            this.lastMouseY = 0;
+            this.showing = false;
             this.offsetX = offsetX;
             this.offsetY = offsetY;
             this.eventNode = eventNode;

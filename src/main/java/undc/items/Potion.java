@@ -17,24 +17,13 @@ public class Potion extends Item {
     private PotionType type;
     private double modifier;
 
-    private Potion() {
-
-    }
-
-    /**
-     * Creates a copy of the potion.
-     * @return Potion that is the copy
-     */
+    @Override
     public Potion copy() {
         Potion potion = new Potion();
         copy(potion);
         potion.type = this.type;
         potion.modifier = this.modifier;
         return potion;
-    }
-
-    public PotionType getType() {
-        return type;
     }
 
     /**
@@ -76,6 +65,7 @@ public class Potion extends Item {
      * unless they are already at max health. If it's a damage potion, damage all monsters
      * in twice the normal attack radius by potion modifier.
      */
+    @Override
     public void use() {
         if (!(Controller.getState() instanceof GameScreen)) {
             return;

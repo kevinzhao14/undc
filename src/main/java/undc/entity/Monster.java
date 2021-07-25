@@ -151,9 +151,9 @@ public class Monster extends Entity {
     }
 
     /**
-     * Handles dropping items fo the player to receive upon killing a monster.
+     * Handles dropping items for the player to receive upon killing a monster.
      */
-    public void dropItems() {
+    private void dropItems() {
         if (DataManager.ITEMS.size() == 0 && type != MonsterType.FINALBOSS) {
             Console.error("No items available to drop.");
             return;
@@ -214,11 +214,6 @@ public class Monster extends Entity {
         return speed;
     }
 
-    public String toString() {
-        return "ID: " + id + " | Name: " + name + " | Type: " + type + " | Speed: " + speed + " | Attack: "
-                + attack + " " + attackSpeed + " " + super.toString();
-    }
-
     public ArrayList<Move> getMoveQueue() {
         return moveQueue;
     }
@@ -237,6 +232,15 @@ public class Monster extends Entity {
 
     public void setOpacity(double opacity) {
         this.opacity = opacity;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String toString() {
+        return "ID: " + id + " | Name: " + name + " | Type: " + type + " | Speed: " + speed + " | Attack: "
+                + attack + " " + attackSpeed + " " + super.toString();
     }
 
     @Override
@@ -356,9 +360,5 @@ public class Monster extends Entity {
             return null;
         }
         return monster;
-    }
-
-    public String getId() {
-        return id;
     }
 }

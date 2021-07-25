@@ -40,9 +40,9 @@ public class ResizableNode {
         private final ArrayList<Region> resizeNodes = new ArrayList<>();
         private final ResizeDirection direction;
 
-        private double lastMouseX = 0;
-        private double lastMouseY = 0;
-        private boolean resizing = false;
+        private double lastMouseX;
+        private double lastMouseY;
+        private boolean resizing;
 
         /**
          * Constructor for a ResizableObject. eventNode initiates the resize, while resizeNodes are the nodes that
@@ -52,6 +52,9 @@ public class ResizableNode {
          * @param resizeNodes The nodes that are to be resized
          */
         ResizableObject(final Node eventNode, ResizeDirection direction, final Region[] resizeNodes) {
+            this.lastMouseX = 0;
+            this.lastMouseY = 0;
+            this.resizing = false;
             this.eventNode = eventNode;
             this.direction = direction;
             this.resizeNodes.addAll(Arrays.asList(resizeNodes));

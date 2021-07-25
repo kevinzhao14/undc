@@ -16,7 +16,6 @@ import java.net.URL;
 public class HomeScreen extends GameState {
     private static HomeScreen instance;
 
-
     /**
      * HomeScreen constructor which also sets the start, settings, and exit button functionality.
      * @param width  the width of the window

@@ -195,7 +195,7 @@
       "stackSize": 10,
       "damage": 50,
       "radius": 100,
-      "fuse": 3000,
+      "fuse": 3,
       "droppable": true
     },
     {

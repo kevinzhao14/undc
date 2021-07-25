@@ -60,6 +60,22 @@ public class Room implements Savable {
         this.entities = new ArrayList<>();
     }
 
+    public Door getTopDoor() {
+        return this.topDoor;
+    }
+
+    public Door getBottomDoor() {
+        return this.bottomDoor;
+    }
+
+    public Door getRightDoor() {
+        return this.rightDoor;
+    }
+
+    public Door getLeftDoor() {
+        return this.leftDoor;
+    }
+
     public void setTopDoor(Door d) {
         this.topDoor = d;
     }
@@ -74,6 +90,10 @@ public class Room implements Savable {
 
     public void setLeftDoor(Door d) {
         this.leftDoor = d;
+    }
+
+    public boolean visited() {
+        return this.visited;
     }
 
     public void setVisited(boolean status) {
@@ -108,26 +128,6 @@ public class Room implements Savable {
         this.startY = startY;
     }
 
-    public Door getTopDoor() {
-        return this.topDoor;
-    }
-
-    public Door getBottomDoor() {
-        return this.bottomDoor;
-    }
-
-    public Door getRightDoor() {
-        return this.rightDoor;
-    }
-
-    public Door getLeftDoor() {
-        return this.leftDoor;
-    }
-
-    public boolean wasVisited() {
-        return this.visited;
-    }
-
     public RoomType getType() {
         return this.type;
     }
@@ -146,6 +146,14 @@ public class Room implements Savable {
 
     public ArrayList<ShotProjectile> getProjectiles() {
         return projectiles;
+    }
+
+    public ArrayList<Floor> getFloors() {
+        return floors;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override
@@ -334,10 +342,6 @@ public class Room implements Savable {
         }
     }
 
-    public ArrayList<Floor> getFloors() {
-        return floors;
-    }
-
     /**
      * Gets a list of all the doors in the room.
      * @return Returns all the doors
@@ -357,9 +361,5 @@ public class Room implements Savable {
             doors.add(rightDoor);
         }
         return doors;
-    }
-
-    public int getId() {
-        return id;
     }
 }

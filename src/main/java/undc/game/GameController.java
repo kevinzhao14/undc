@@ -14,6 +14,7 @@ import javafx.scene.image.Image;
 import undc.general.Audio;
 import undc.general.Config;
 import undc.command.Vars;
+import undc.graphics.SpriteGroup;
 import undc.items.Ammunition;
 import undc.items.Bomb;
 import undc.game.calc.Collision;
@@ -107,6 +108,24 @@ public class GameController implements Savable {
         player.setX(room.getStartX());
         player.setY(room.getStartY());
 
+        setupScene();
+    }
+
+    /**
+     * Starts the game after a save is loaded.
+     * @param room Room to load into
+     * @param player Player to load
+     */
+    public void startLoaded(Room room, Player player) {
+        this.player = player;
+        this.room = room;
+        setupScene();
+    }
+
+    /**
+     * Sets up the scene.
+     */
+    private void setupScene() {
         //set the current room & scene
         setRoom(room);
         Scene scene = getScreen().getScene();
@@ -120,24 +139,48 @@ public class GameController implements Savable {
     }
 
     /**
-     * Starts the game after a save is loaded.
-     * @param room Room to load into
-     * @param player Player to load
+     * Pauses/resumes the game.
      */
-    public void startLoaded(Room room, Player player) {
-        this.player = player;
-        this.room = room;
+    public void pause() {
+        if (isRunning) {
+            if (Vars.DEBUG) {
+                Console.print("Game has been paused");
+                Console.print("Average Server FPS in " + ticks + " ticks: " + round(1000.0 / totalTime * ticks));
+            }
+            timer.cancel();
+            getScreen().getTimer().stop();
+        } else {
+            if (Vars.DEBUG) {
+                Console.print("Game has been resumed");
+            }
+            startTimer();
+            getScreen().getTimer().start();
+        }
+        if (!isRunning && isStopped) {
+            isStopped = false;
+        }
+        isRunning = !isRunning;
+    }
 
-        //set the current room & scene
-        setRoom(room);
-        Scene scene = getScreen().getScene();
+    /**
+     * Stops the game.
+     */
+    public void stop() {
+        isRunning = true;
+        pause();
+        isStopped = true;
+        if (Vars.DEBUG) {
+            Console.print("Game has been stopped.");
+        }
+    }
 
-        //Handle key events
-        scene.setOnKeyPressed(e -> handleKey(Config.keyStringify(e.getCode()), true));
-        scene.setOnKeyReleased(e -> handleKey(Config.keyStringify(e.getCode()), false));
-        scene.setOnMousePressed(e -> handleKey(Config.mbStringify(e.getButton()), true));
-        scene.setOnMouseReleased(e -> handleKey(Config.mbStringify(e.getButton()), false));
-        scene.setOnScroll(e -> handleKey(Config.scrollStringify(e.getDeltaY()), false));
+    /**
+     * Starts the game timer/clock.
+     */
+    private void startTimer() {
+        timer = new Timer();
+        runner = new GameRunner();
+        timer.schedule(runner, 0, 1000 / Vars.i("fps"));
     }
 
     /**
@@ -199,120 +242,6 @@ public class GameController implements Savable {
         states.put("stopframe", false);
         ticks = 0;
         totalTime = 0;
-    }
-
-    /**
-     * Pauses/resumes the game.
-     */
-    public void pause() {
-        if (isRunning) {
-            if (Vars.DEBUG) {
-                Console.print("Game has been paused");
-                Console.print("Average Server FPS in " + ticks + " ticks: " + round(1000.0 / totalTime * ticks));
-            }
-            timer.cancel();
-            getScreen().getTimer().stop();
-        } else {
-            if (Vars.DEBUG) {
-                Console.print("Game has been resumed");
-            }
-            startTimer();
-            getScreen().getTimer().start();
-        }
-        if (!isRunning && isStopped) {
-            isStopped = false;
-        }
-        isRunning = !isRunning;
-    }
-
-    /**
-     * Stops the game.
-     */
-    public void stop() {
-        isRunning = true;
-        pause();
-        isStopped = true;
-        if (Vars.DEBUG) {
-            Console.print("Game has been stopped.");
-        }
-    }
-
-    /**
-     * Puts a dropped item into the room relative to the player's position.
-     * @param item Item to drop
-     * @param quantity int amount of item to drop
-     */
-    public void give(Item item, int quantity) {
-        if (item == null) {
-            Console.error("Item cannot be null.");
-            return;
-        }
-        if (quantity < 1 || quantity > item.getMaxStackSize()) {
-            Console.error("Invalid quantity.");
-            return;
-        }
-        for (int i = 0; i < quantity; i++) {
-            double x = player.getX() + player.getWidth() / 2.0;
-            double y = player.getY() + player.getHeight() / 2.0;
-            Image sprite = item.getSprite();
-            x -= sprite.getWidth() / 2;
-            y -= sprite.getHeight() / 2;
-
-            DroppedItem di = new DroppedItem(item, x, y, (int) sprite.getWidth(), (int) sprite.getHeight());
-            room.getDroppedItems().add(di);
-        }
-        refresh();
-    }
-
-    /**
-     * Adds a monster or obstacle into a room.
-     * @param ent Moveable entity that is being added
-     * @param x int x-cord to spawn it to
-     * @param y int y-cord to spawn it to
-     */
-    public void spawn(Movable ent, int x, int y) {
-        if (ent == null) {
-            Console.error("Invalid entity to spawn.");
-            return;
-        }
-        if (x < 0 || x + ent.getWidth() > room.getWidth()) {
-            Console.error("Invalid x value.");
-            return;
-        }
-        if (y < 0 || y + ent.getHeight() > room.getHeight()) {
-            Console.error("Invalid y value.");
-            return;
-        }
-        if (ent instanceof Monster) {
-            Monster m = (Monster) ent;
-            m.setX(x);
-            m.setY(y);
-            room.getEntities().add(m);
-        } else if (ent instanceof Obstacle) {
-            Obstacle o = (Obstacle) ent;
-            o.setX(x);
-            o.setY(y);
-            room.getObstacles().add(o);
-        }
-        refresh();
-    }
-
-    public void drop(Item item) {
-        runner.drop(item);
-    }
-
-    public void dropAt(Item item, double x, double y) {
-        runner.dropAt(item, x, y);
-    }
-
-    /**
-     * Starts the game timer/clock.
-     */
-    private void startTimer() {
-        refresh();
-        timer = new Timer();
-        runner = new GameRunner();
-        timer.schedule(runner, 0, 1000 / Vars.i("fps"));
     }
 
     /**
@@ -390,11 +319,11 @@ public class GameController implements Savable {
                 states.put("usePress", isPress);
                 break;
             case "nextinv":
-                player.moveRight();
+                player.selectNext();
                 getScreen().updateHud();
                 break;
             case "previnv":
-                player.moveLeft();
+                player.selectPrev();
                 getScreen().updateHud();
                 break;
             case "drop":
@@ -409,7 +338,7 @@ public class GameController implements Savable {
             case "reload":
                 Item item = player.getItemSelected() != null ? player.getItemSelected().getItem() : null;
                 if (item instanceof RangedWeapon) {
-                    ((RangedWeapon) item).reload();
+                    ((RangedWeapon) item).startReload();
                 }
                 break;
             case "slot1": case "slot2": case "slot3": case "slot4": case "slot5":
@@ -465,6 +394,72 @@ public class GameController implements Savable {
     }
 
     /**
+     * Puts a dropped item into the room relative to the player's position.
+     * @param item Item to drop
+     * @param quantity int amount of item to drop
+     */
+    public void give(Item item, int quantity) {
+        if (item == null) {
+            Console.error("Item cannot be null.");
+            return;
+        }
+        if (quantity < 1 || quantity > item.getMaxStackSize()) {
+            Console.error("Invalid quantity.");
+            return;
+        }
+        for (int i = 0; i < quantity; i++) {
+            double x = player.getX() + player.getWidth() / 2.0;
+            double y = player.getY() + player.getHeight() / 2.0;
+            Image sprite = item.getSprite();
+            x -= sprite.getWidth() / 2;
+            y -= sprite.getHeight() / 2;
+
+            DroppedItem di = new DroppedItem(item, x, y, (int) sprite.getWidth(), (int) sprite.getHeight());
+            room.getDroppedItems().add(di);
+        }
+    }
+
+    /**
+     * Adds a monster or obstacle into a room.
+     * @param ent Moveable entity that is being added
+     * @param x int x-cord to spawn it to
+     * @param y int y-cord to spawn it to
+     */
+    public void spawn(Movable ent, int x, int y) {
+        if (ent == null) {
+            Console.error("Invalid entity to spawn.");
+            return;
+        }
+        if (x < 0 || x + ent.getWidth() > room.getWidth()) {
+            Console.error("Invalid x value.");
+            return;
+        }
+        if (y < 0 || y + ent.getHeight() > room.getHeight()) {
+            Console.error("Invalid y value.");
+            return;
+        }
+        if (ent instanceof Monster) {
+            Monster m = (Monster) ent;
+            m.setX(x);
+            m.setY(y);
+            room.getEntities().add(m);
+        } else if (ent instanceof Obstacle) {
+            Obstacle o = (Obstacle) ent;
+            o.setX(x);
+            o.setY(y);
+            room.getObstacles().add(o);
+        }
+    }
+
+    public void drop(Item item) {
+        runner.drop(item);
+    }
+
+    public void dropAt(Item item, double x, double y) {
+        runner.dropAt(item, x, y);
+    }
+
+    /**
      * Rounds a number to (precision) digits.
      * @param number Number to round
      * @return Returns the rounded number.
@@ -491,8 +486,8 @@ public class GameController implements Savable {
         return 1000.0 / Vars.i("sv_tickrate");
     }
 
-    public boolean isRunning() {
-        return isRunning;
+    public Camera getCamera() {
+        return camera;
     }
 
     /**
@@ -565,10 +560,6 @@ public class GameController implements Savable {
         return true;
     }
 
-    public Camera getCamera() {
-        return camera;
-    }
-
     /**
      * Class that is used to calculate stuff on each tick.
      */
@@ -623,9 +614,6 @@ public class GameController implements Savable {
 
             //manage player status effects
             managePlayerEffects();
-
-            //draw the frame
-            refresh();
 
             long endTime = System.nanoTime();
             double execTime = round((endTime - startTime) / 1000000.0); //in milliseconds
@@ -850,7 +838,7 @@ public class GameController implements Savable {
                 RangedWeapon weapon = (RangedWeapon) item;
                 weapon.setDelay(Math.max(0, weapon.getDelay() - tickTime()));
                 if (weapon.isReloading() && weapon.getDelay() == 0) {
-                    weapon.finishReloading();
+                    weapon.finishReload();
                 }
             }
         }
@@ -945,7 +933,7 @@ public class GameController implements Savable {
 
                 //check for ammo
                 if (weaponAmmo.getRemaining() <= 0 && !weapon.isReloading()) {
-                    weapon.reload();
+                    weapon.startReload();
                     return;
                 }
 
@@ -966,14 +954,6 @@ public class GameController implements Savable {
                 Direction dir = player.getDirection();
                 double x = player.getX() + player.getWidth() / 2.0;
                 double y = player.getY() + player.getHeight();
-                Image sprite = weaponAmmo.getProjectile().getSpriteLeft();
-                if (dir == Direction.NORTH) {
-                    sprite = weaponAmmo.getProjectile().getSpriteUp();
-                } else if (dir == Direction.EAST) {
-                    sprite = weaponAmmo.getProjectile().getSpriteRight();
-                } else if (dir == Direction.SOUTH) {
-                    sprite = weaponAmmo.getProjectile().getSpriteDown();
-                }
                 int height = weaponAmmo.getProjectile().getHeight();
                 int width = weaponAmmo.getProjectile().getWidth();
                 if (dir == Direction.WEST) {
@@ -997,6 +977,9 @@ public class GameController implements Savable {
                 double speed = weaponAmmo.getProjectile().getSpeed();
                 double velX = dir == Direction.WEST ? -speed : (dir == Direction.EAST ? speed : 0);
                 double velY = dir == Direction.NORTH ? speed : (dir == Direction.SOUTH ? -speed : 0);
+
+                SpriteGroup sprites = weaponAmmo.getProjectile().getSprites();
+                Image sprite = sprites.get(dir);
 
                 //create projectile
                 ShotProjectile sp = new ShotProjectile(weaponAmmo.getProjectile(), x, y, velX, velY);
@@ -1294,7 +1277,7 @@ public class GameController implements Savable {
                 }
 
                 //check if not visited & if there are still monsters
-                if (!newRoom.wasVisited()) {
+                if (!newRoom.visited()) {
                     for (Entity e : room.getEntities()) {
                         if (e instanceof Monster && e.getHealth() > 0) {
                             return false;
@@ -1427,7 +1410,7 @@ public class GameController implements Savable {
 
             //moving vertically
             if (x0 == x1 && y0 != y1) {
-                eq.setVertical(x0);
+                eq = new Equation(m, x0, true);
             }
             return eq;
         }
@@ -1527,8 +1510,6 @@ public class GameController implements Savable {
 
                     //go to game over screen if player has died
                     if (player.getHealth() == 0) {
-                        //use run later to prevent any thread issues
-                        refresh();
                         gameOver();
                         return true;
                     }

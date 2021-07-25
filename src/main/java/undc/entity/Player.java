@@ -36,18 +36,18 @@ public class Player extends Entity implements Savable {
         new Image("entities/player/player-walk-down.gif")
     );
 
-    private int gold;
-    private int monstersKilled;
-    private double totalDamageDealt;
-    private int totalItemsConsumed;
     private final ArrayList<Effect> effects;
 
+    private int gold;
+    private int monstersKilled;
+    private int totalItemsConsumed;
+    private int level;
+    private int xp;
+    private double totalDamageDealt;
+    private double walkCooldown;
     private Inventory inventory;
     private int selected;
     private Direction direction;
-    private int level;
-    private int xp;
-    private double walkCooldown;
 
     /**
      * Creates a Player object.
@@ -73,32 +73,36 @@ public class Player extends Entity implements Savable {
         return this.gold;
     }
 
-    public int getMonstersKilled() {
-        return monstersKilled;
-    }
-
-    public double getTotalDamageDealt() {
-        return totalDamageDealt;
-    }
-
-    public int getTotalItemsConsumed() {
-        return totalItemsConsumed;
-    }
-
     public void setGold(int gold) {
         this.gold = gold;
+    }
+
+    public int getMonstersKilled() {
+        return monstersKilled;
     }
 
     public void addMonsterKilled() {
         monstersKilled++;
     }
 
+    public double getTotalDamageDealt() {
+        return totalDamageDealt;
+    }
+
     public void addDamageDealt(double amt) {
         totalDamageDealt += amt;
     }
 
+    public int getTotalItemsConsumed() {
+        return totalItemsConsumed;
+    }
+
     public void addItemConsumed() {
         totalItemsConsumed++;
+    }
+
+    public Direction getDirection() {
+        return direction;
     }
 
     public void setDirection(Direction dir, boolean moving) {
@@ -126,20 +130,16 @@ public class Player extends Entity implements Savable {
         return inventory.getItems()[0][selected];
     }
 
-    public void moveRight() {
+    public void selectNext() {
         this.selected = (this.selected + 1) % inventory.getCols();
     }
 
-    public void moveLeft() {
+    public void selectPrev() {
         this.selected = (this.selected - 1 + inventory.getCols()) % inventory.getCols();
     }
 
     public void select(int selected) {
         this.selected = selected % inventory.getCols();
-    }
-
-    public Direction getDirection() {
-        return direction;
     }
 
     public ArrayList<Effect> getEffects() {
@@ -161,6 +161,14 @@ public class Player extends Entity implements Savable {
         super.setHealth(newHealth);
     }
 
+    public int getLevel() {
+        return level;
+    }
+
+    public int getXp() {
+        return xp;
+    }
+
     /**
      * Adds XP to the player.
      * @param amt The amount of xp to add
@@ -176,14 +184,6 @@ public class Player extends Entity implements Savable {
         Platform.runLater(() -> GameScreen.getInstance().updateHud());
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public int getXp() {
-        return xp;
-    }
-
     /**
      * Calculates how much xp is needed to level up from a specific level.
      * @param level Level to check
@@ -191,6 +191,14 @@ public class Player extends Entity implements Savable {
      */
     public static int xpNeeded(int level) {
         return (int) Math.pow(level, 1.8) + 100;
+    }
+
+    public double getWalkCooldown() {
+        return walkCooldown;
+    }
+
+    public void setWalkCooldown(double walkCooldown) {
+        this.walkCooldown = walkCooldown;
     }
 
     @Override
@@ -259,13 +267,5 @@ public class Player extends Entity implements Savable {
             return false;
         }
         return true;
-    }
-
-    public double getWalkCooldown() {
-        return walkCooldown;
-    }
-
-    public void setWalkCooldown(double walkCooldown) {
-        this.walkCooldown = walkCooldown;
     }
 }

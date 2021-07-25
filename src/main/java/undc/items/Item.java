@@ -37,10 +37,6 @@ public abstract class Item {
 
     public abstract void use();
 
-    public void setName(String itemName) {
-        name = itemName;
-    }
-
     public Image getSprite() {
         return sprite;
     }

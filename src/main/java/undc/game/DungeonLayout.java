@@ -28,26 +28,14 @@ public class DungeonLayout implements Savable {
         this.grid = grid;
     }
 
-    /**
-     * Getter method for accessing starting Room of Dungeon map.
-     * @return the starting Room of the Dungeon map
-     */
     public Room getStartingRoom() {
         return this.startingRoom;
     }
 
-    /**
-     * Getter method of accessing final/exit Room of Dungeon map.
-     * @return the final/exit Room of the Dungeon map
-     */
     public Room getExitRoom() {
         return this.exitRoom;
     }
 
-    /**
-     * Getter method of accessing the grid of rooms of the Dungeon map.
-     * @return the grid of rooms of the Dungeon map
-     */
     public Room[][] getGrid() {
         return this.grid;
     }

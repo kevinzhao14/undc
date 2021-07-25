@@ -6,10 +6,11 @@ import undc.general.Movable;
  * Represents a dummy entity/movable object used in imiatating an object's position.
  */
 public class Dummy implements Movable {
-    private double x;
-    private double y;
     private final int width;
     private final int height;
+
+    private double x;
+    private double y;
 
     /**
      * Creates a Dummy object.

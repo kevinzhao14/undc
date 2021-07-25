@@ -1,6 +1,5 @@
 package undc.graphics.fxml.controllers;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -35,16 +34,9 @@ public class ControlsController extends SettingsPageController {
     private Button activeButton; // currently active button
 
     /**
-     * Constructor for controls settings UI. Delays the runtime to properly display the page.
-     */
-    public ControlsController() {
-        Platform.runLater(this::load);
-    }
-
-    /**
      * Fills buttons with current key mapping for each control.
      */
-    private void load() {
+    public void initialize() {
         HashMap<String, String> temp = new HashMap<>();
         Config.getInstance().getMapUnmodifiable().forEach((k, v) -> temp.put(v, k.toUpperCase()));
 
@@ -182,7 +174,7 @@ public class ControlsController extends SettingsPageController {
     public void resetSettings() {
         resetHandlers();
         Config.getInstance().resetKeys();
-        load();
+        initialize();
         SettingsScreen.getInstance().showPopup(this);
     }
 }

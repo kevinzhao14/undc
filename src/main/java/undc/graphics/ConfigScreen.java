@@ -123,13 +123,12 @@ public class ConfigScreen extends GameState {
                     ? null : Difficulty.valueOf(selectedDifficulty.getText());
 
             try {
-                if (DataManager.getInstance().newGame(playerName, difficultyRef, weaponRef)) {
-                    GameScreen.resetInstance();
-                    GameScreen gameScreen = GameScreen.getInstance();
-                    gameScreen.newGame(GameScreen.GameMode.STORY);
-                    Controller.setState(gameScreen);
-                    gameScreen.start();
-                }
+                DataManager.getInstance().newGame(playerName, difficultyRef, weaponRef))
+                GameScreen.resetInstance();
+                GameScreen gameScreen = GameScreen.getInstance();
+                gameScreen.newGame(GameScreen.GameMode.STORY);
+                Controller.setState(gameScreen);
+                gameScreen.start();
             } catch (IllegalArgumentException iae) {
                 iae.printStackTrace();
                 Alert alert = new Alert(AlertType.ERROR, iae.getMessage());

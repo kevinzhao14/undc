@@ -2,12 +2,14 @@ package undc.game;
 
 import org.json.JSONObject;
 import undc.command.Console;
+import undc.game.calc.Direction;
 import undc.general.Controller;
 import undc.command.DataManager;
 import undc.entity.Entity;
 import undc.entity.Monster;
 import undc.entity.Player;
 import undc.general.Movable;
+import undc.graphics.SpriteGroup;
 import undc.items.Projectile;
 import undc.general.Savable;
 import undc.graphics.GameScreen;
@@ -27,8 +29,8 @@ public class ShotProjectile implements Movable, Savable {
     private final Projectile projectile;
     private final int width;
     private final int height;
-    private Image sprite;
 
+    private Image sprite;
     private double posX;
     private double posY;
     private double velX;
@@ -187,12 +189,12 @@ public class ShotProjectile implements Movable, Savable {
         return velY;
     }
 
-    public void setSprite(Image sprite) {
-        this.sprite = sprite;
-    }
-
     public Image getSprite() {
         return sprite;
+    }
+
+    public void setSprite(Image sprite) {
+        this.sprite = sprite;
     }
 
     public Projectile getProjectile() {
@@ -219,14 +221,15 @@ public class ShotProjectile implements Movable, Savable {
             velX = o.getDouble("velX");
             velY = o.getDouble("velY");
             distance = o.getDouble("distance");
+            SpriteGroup sprites = projectile.getSprites();
             if (velX < 0) {
-                sprite = projectile.getSpriteLeft();
+                sprite = sprites.get(Direction.WEST);
             } else if (velX > 0) {
-                sprite = projectile.getSpriteRight();
+                sprite = sprites.get(Direction.EAST);
             } else if (velY > 0) {
-                sprite = projectile.getSpriteUp();
+                sprite = sprites.get(Direction.NORTH);
             } else {
-                sprite = projectile.getSpriteDown();
+                sprite = sprites.get(Direction.SOUTH);
             }
         } catch (Exception e) {
             Console.error("Failed to load Shot Projectile.");

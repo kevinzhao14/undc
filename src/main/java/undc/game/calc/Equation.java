@@ -5,23 +5,23 @@ package undc.game.calc;
  */
 public class Equation {
     private final double slope;
-    private double intercept;
-    private boolean vertical;
+    private final double intercept;
+    private final boolean vertical;
 
     /**
      * Constructor for the equation of a line, thus it has a slope and an y-intercept.
      * @param slope double that is the slope of the line
      * @param intercept double that is the line's y-intercept
+     * @param vertical Whether the equation is a vertical line
      */
-    public Equation(double slope, double intercept) {
+    public Equation(double slope, double intercept, boolean vertical) {
         this.slope = slope;
         this.intercept = intercept;
-        vertical = false;
+        this.vertical = vertical;
     }
 
-    public void setVertical(double x) {
-        vertical = true;
-        intercept = x;
+    public Equation(double slope, double intercept) {
+        this(slope, intercept, false);
     }
 
     public double getSlope() {

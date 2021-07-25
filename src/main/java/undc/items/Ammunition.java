@@ -12,10 +12,6 @@ public class Ammunition extends Item {
     private int amount;
     private Projectile projectile;
 
-    private Ammunition() {
-
-    }
-
     @Override
     public Item copy() {
         Ammunition ammo = new Ammunition();

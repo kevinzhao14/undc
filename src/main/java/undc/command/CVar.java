@@ -6,6 +6,7 @@ package undc.command;
 public abstract class CVar {
     private String name;
     private String nick;
+
     protected boolean requireCheats;
     protected boolean modifiable;
 

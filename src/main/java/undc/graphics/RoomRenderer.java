@@ -34,7 +34,6 @@ public class RoomRenderer {
             new Image("textures/room/bottom.png"),
             new Image("textures/room/bottom-left.png")
     );
-
     private static final double WALL_SIZE = 64;
 
     private static double offsetX = 0;
@@ -358,11 +357,6 @@ public class RoomRenderer {
         gc.fillRect(x + percent * w - getPx(offsetX), y - getPx(offsetY), (1 - percent) * w, h);
     }
 
-    /**
-     * Converting coordinates from game units to pixels.
-     * @param coord the coordinate to convert
-     * @return the converted coordinate
-     */
     private static double getPx(double coord) {
         return (coord * Vars.d("gc_ppu"));
     }

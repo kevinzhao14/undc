@@ -5,7 +5,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import undc.command.Console;
-import undc.game.calc.Direction;
 import undc.graphics.SpriteGroup;
 
 /**
@@ -24,13 +23,8 @@ public class Projectile {
     private boolean splash;
     //projectile multi/splash range
     private double splashRange;
-
     private int height;
     private int width;
-
-    private Projectile() {
-
-    }
 
     /**
      * Creates a copy of the projectile.
@@ -76,20 +70,8 @@ public class Projectile {
         return splashRange;
     }
 
-    public Image getSpriteRight() {
-        return sprites.get(Direction.EAST);
-    }
-
-    public Image getSpriteLeft() {
-        return sprites.get(Direction.WEST);
-    }
-
-    public Image getSpriteUp() {
-        return sprites.get(Direction.NORTH);
-    }
-
-    public Image getSpriteDown() {
-        return sprites.get(Direction.SOUTH);
+    public SpriteGroup getSprites() {
+        return sprites;
     }
 
     public double getDamage() {
@@ -102,6 +84,15 @@ public class Projectile {
 
     public int getWidth() {
         return width;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String toString() {
+        return "ID: " + id + " | Name: " + name + " | Dmg: " + damage + " | Speed: " + speed + " | Range: " + range
+                + " | Splash: " + splash + " | sRange: " + splashRange;
     }
 
     /**
@@ -188,14 +179,5 @@ public class Projectile {
             return null;
         }
         return proj;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String toString() {
-        return "ID: " + id + " | Name: " + name + " | Dmg: " + damage + " | Speed: " + speed + " | Range: " + range
-                + " | Splash: " + splash + " | sRange: " + splashRange;
     }
 }

@@ -22,7 +22,6 @@ public class Command {
     private final String name;
     private final String desc;
     private final String format;
-
     private final CommandObj obj;
 
     /**
@@ -131,7 +130,7 @@ public class Command {
      */
 
     private static void test(String[] args) {
-
+        Console.print("Testing");
     }
 
     /**

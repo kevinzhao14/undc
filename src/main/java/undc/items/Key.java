@@ -6,10 +6,6 @@ import org.json.JSONObject;
  * Represents a Key object. Can be used to unlock/open doors that are locked.
  */
 public class Key extends Item {
-    private Key() {
-
-    }
-
     @Override
     public Item copy() {
         Key key = new Key();
@@ -17,7 +13,7 @@ public class Key extends Item {
         return key;
     }
 
-    //does nothing
+    @Override
     public void use() {
 
     }

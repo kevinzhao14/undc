@@ -40,6 +40,17 @@ public class NPC extends Entity implements Interactable {
     }
 
     @Override
+    public boolean interact() {
+        String line = dialogue.next();
+        if (!line.equals("")) {
+            Platform.runLater(() -> GameScreen.getInstance().getHud().setDialogue(name + ": " + line));
+        } else {
+            Platform.runLater(() -> GameScreen.getInstance().getHud().hideDialogue());
+        }
+        return true;
+    }
+
+    @Override
     public JSONObject saveObject() {
         JSONObject o = new JSONObject();
         o.put("width", width);
@@ -91,24 +102,5 @@ public class NPC extends Entity implements Interactable {
             Console.error("Failed to create NPC");
             return null;
         }
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Dialogue getDialogue() {
-        return dialogue;
-    }
-
-    @Override
-    public boolean interact() {
-        String line = dialogue.next();
-        if (!line.equals("")) {
-            Platform.runLater(() -> GameScreen.getInstance().getHud().setDialogue(name + ": " + line));
-        } else {
-            Platform.runLater(() -> GameScreen.getInstance().getHud().hideDialogue());
-        }
-        return true;
     }
 }

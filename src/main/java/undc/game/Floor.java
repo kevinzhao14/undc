@@ -61,6 +61,10 @@ public class Floor implements Movable, Savable {
         return width;
     }
 
+    public String getId() {
+        return id;
+    }
+
     @Override
     public JSONObject saveObject() {
         JSONObject o = new JSONObject();
@@ -94,9 +98,5 @@ public class Floor implements Movable, Savable {
             Console.error("Failed to create floor.");
             return null;
         }
-    }
-
-    public String getId() {
-        return id;
     }
 }

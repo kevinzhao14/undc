@@ -1,6 +1,5 @@
 package undc.graphics.fxml.controllers;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -37,19 +36,12 @@ public class PlayController {
     private VBox selected;
     private JSONObject selectedObj;
 
-    public PlayController() {
-        // populate saves box with all current saves
-        Platform.runLater(this::loadSaves);
-    }
-
-    public void initialize() {
-        savesGrid.setOnScroll(e -> savesScroll.setVvalue(savesScroll.getVvalue() - e.getDeltaY() * 0.0025));
-    }
-
     /**
      * Loads all of the saves in the saves folder into the vbox to display.
      */
-    private void loadSaves() {
+    public void initialize() {
+        savesGrid.setOnScroll(e -> savesScroll.setVvalue(savesScroll.getVvalue() - e.getDeltaY() * 0.0025));
+
         File dir = new File("saves");
         if (!dir.exists()) {
             return;

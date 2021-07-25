@@ -11,12 +11,10 @@ import undc.command.DataManager;
 public class WeaponAmmo {
     //type of ammo in use
     private Projectile projectile;
-
-    // 30 in mag / 90 ammo left
-    private int size;
-    private int remaining;
-    private int backupSize;
-    private int backupRemaining;
+    private int size; // capacity of a magazine
+    private int remaining; // remaining ammo in magazine
+    private int backupSize; // capacity of backup ammo
+    private int backupRemaining; // remaining backup ammo
 
     /**
      * Constructor.

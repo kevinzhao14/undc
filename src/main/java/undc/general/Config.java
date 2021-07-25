@@ -19,8 +19,6 @@ import java.util.Objects;
 
 /**
  * Class for managing and saving/loading user configuration data.
- * @version 1.0
- * @author Kevin Zhao
  */
 public class Config {
     public static Config instance;
@@ -42,7 +40,7 @@ public class Config {
      */
     public static Config getInstance() {
         if (instance == null) {
-            instance = new Config();
+            instance = new Config(new File("config/config.cfg"));
             //If save file exists, then load data from file
             if (instance.saveFile.exists() && !instance.saveFile.isDirectory()) {
                 instance.loadConfig(instance.saveFile.getPath());
@@ -52,13 +50,6 @@ public class Config {
             }
         }
         return instance;
-    }
-
-    /**
-     * Default Constructor for a Controls object. Sets save file to config/config.cfg.
-     */
-    public Config() {
-        this(new File("config/config.cfg"));
     }
 
     /**
@@ -197,14 +188,6 @@ public class Config {
         }
         Console.error("Could not find the control.");
         return "";
-    }
-
-    /**
-     * Prints the key mapping.
-     */
-    public void printMapping() {
-        Console.print("Printing size " + keyMap.size());
-        keyMap.forEach((k, v) -> Console.print(k + ", " + v));
     }
 
     /**

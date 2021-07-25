@@ -12,7 +12,6 @@ public class Coords {
         this.y = y;
     }
 
-
     public double getX() {
         return x;
     }

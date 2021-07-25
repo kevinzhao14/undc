@@ -31,7 +31,6 @@ public class GraphicalInventory extends Overlay {
     private final Inventory[] inventories;
     private final HBox[] rows;
     private final VBox container;
-
     private final VBox itemInfo;
     private final Label itemName;
     private final VBox description;
@@ -280,9 +279,7 @@ public class GraphicalInventory extends Overlay {
         }
     }
 
-    /**
-     * Makes inventory visible or not visible.
-     */
+    @Override
     public void toggle() {
         // update gui if it's about to show
         if (!root.isVisible()) {
@@ -334,7 +331,7 @@ public class GraphicalInventory extends Overlay {
             Bomb bomb = (Bomb) item;
             Label damage = new Label(bomb.getDamage() + " Damage");
             Label radius = new Label(bomb.getRadius() + " Radius");
-            Label fuse = new Label(((int) (bomb.getFuse() / 100) / 10) + "s Fuse");
+            Label fuse = new Label((Math.floor(bomb.getFuse() * 100) / 100.0) + "s Fuse");
 
             description.getChildren().addAll(damage, radius, fuse);
         }
