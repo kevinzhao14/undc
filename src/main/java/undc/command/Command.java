@@ -84,6 +84,7 @@ public class Command {
         commands.add(new Command("difficulty", "[difficulty]", "Sets the game's difficulty.", Command::difficulty));
         commands.add(new Command("fullscreen", "<true | false>", "Sets the game's fullscreen status.",
                 Command::fullscreen));
+        commands.add(new Command("kill", "", "Kills the player.", Command::kill));
 
         // player commands
         commands.add(new Command("gm_player_health", "[value]", "Returns or sets the value of the "
@@ -399,7 +400,7 @@ public class Command {
         } else {
             try {
                 int health = Integer.parseInt(args[0]);
-                if (health <= 0 || health > player.getMaxHealth()) {
+                if (health < 0 || health > player.getMaxHealth()) {
                     Console.error("Invalid value for player health.");
                     return;
                 }
@@ -509,10 +510,34 @@ public class Command {
         }
         if (args[0].equalsIgnoreCase("true")) {
             SAVED.add("fullscreen true");
+            Config.getInstance().save();
         } else if (args[0].equalsIgnoreCase("false")) {
             SAVED.remove("fullscreen true");
+            Config.getInstance().save();
         }
         Vars.set("gc_fullscreen", args[0]);
         Controller.setFullscreen();
+    }
+
+    /**
+     * Kills the player.
+     * @param args Arguments
+     */
+    private static void kill(String[] args) {
+        if (!Vars.CHEATS) {
+            Console.error("Cheats are disabled.");
+            return;
+        }
+        if (!(Controller.getState() instanceof  GameScreen)) {
+            Console.error("No active game.");
+            return;
+        }
+        Player player = GameScreen.getInstance().getPlayer();
+        if (player == null) {
+            Console.error("No player.");
+            return;
+        }
+        player.setHealth(0);
+        GameScreen.getInstance().updateHud();
     }
 }

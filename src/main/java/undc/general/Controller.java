@@ -1,6 +1,7 @@
 package undc.general;
 
 import javafx.application.Platform;
+import javafx.scene.input.KeyCombination;
 import undc.command.Console;
 import undc.command.DataManager;
 import undc.command.Vars;
@@ -79,5 +80,6 @@ public class Controller extends Application {
 
     public static void setFullscreen() {
         instance.stage.setFullScreen(Vars.b("gc_fullscreen"));
+        instance.stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
     }
 }

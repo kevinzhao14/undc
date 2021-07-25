@@ -123,7 +123,7 @@ public class ConfigScreen extends GameState {
                     ? null : Difficulty.valueOf(selectedDifficulty.getText());
 
             try {
-                DataManager.getInstance().newGame(playerName, difficultyRef, weaponRef))
+                DataManager.getInstance().newGame(playerName, difficultyRef, weaponRef);
                 GameScreen.resetInstance();
                 GameScreen gameScreen = GameScreen.getInstance();
                 gameScreen.newGame(GameScreen.GameMode.STORY);

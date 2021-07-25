@@ -7,6 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -233,11 +235,15 @@ public class Console {
             input.clear();
         });
 
-        input.setOnKeyPressed(e -> {
-            handleKey(Config.keyStringify(e.getCode()));
-            e.consume();
-        });
+        input.setOnKeyPressed(e -> handleKey(Config.keyStringify(e.getCode())));
         input.setOnKeyReleased(e -> genSuggestions());
+        // prevents pressing tab to switch to other buttons, locks it on the input
+        input.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.TAB) {
+                handleKey("TAB");
+                event.consume();
+            }
+        });
 
         // image/area used to resize the console
         ImageView resizeArea = new ImageView("icons/resizable.png");

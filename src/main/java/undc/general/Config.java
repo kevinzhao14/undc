@@ -141,6 +141,9 @@ public class Config {
             }
             // add changed vars
             for (CVar v : Vars.all()) {
+                if (v.getName().equals("cheats")) {
+                    continue;
+                }
                 if (v.isModifiable() && !v.requiresCheats() && !v.value().equals(v.defValue())) {
                     saveString.append(v.getName()).append(" ").append(v.value()).append("\n");
                 }

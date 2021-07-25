@@ -530,6 +530,7 @@ public class GameScreen extends GameState implements Savable {
         createPlayer();
         player.setInventory(inv);
         createHud();
+        createPauseMenu();
         drawRoom();
 
         //go to starting room

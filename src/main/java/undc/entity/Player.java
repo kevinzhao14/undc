@@ -151,9 +151,6 @@ public class Player extends Entity implements Savable {
      * @param newHealth New health of the Entity
      */
     public void setHealth(double newHealth) {
-        if (newHealth < health && Vars.b("gm_god")) {
-            return;
-        }
         if (newHealth < health) {
             Audio.playAudio("take_damage");
             GameScreen.getInstance().getHud().showOverlay();

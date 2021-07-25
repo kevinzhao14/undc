@@ -1,5 +1,6 @@
 package undc.game;
 
+import javafx.event.Event;
 import javafx.scene.Scene;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -131,11 +132,11 @@ public class GameController implements Savable {
         Scene scene = getScreen().getScene();
 
         //Handle key events
-        scene.setOnKeyPressed(e -> handleKey(Config.keyStringify(e.getCode()), true));
-        scene.setOnKeyReleased(e -> handleKey(Config.keyStringify(e.getCode()), false));
-        scene.setOnMousePressed(e -> handleKey(Config.mbStringify(e.getButton()), true));
-        scene.setOnMouseReleased(e -> handleKey(Config.mbStringify(e.getButton()), false));
-        scene.setOnScroll(e -> handleKey(Config.scrollStringify(e.getDeltaY()), false));
+        scene.setOnKeyPressed(e -> handleKey(Config.keyStringify(e.getCode()), true, e));
+        scene.setOnKeyReleased(e -> handleKey(Config.keyStringify(e.getCode()), false, e));
+        scene.setOnMousePressed(e -> handleKey(Config.mbStringify(e.getButton()), true, e));
+        scene.setOnMouseReleased(e -> handleKey(Config.mbStringify(e.getButton()), false, e));
+        scene.setOnScroll(e -> handleKey(Config.scrollStringify(e.getDeltaY()), false, e));
     }
 
     /**
@@ -249,7 +250,8 @@ public class GameController implements Savable {
      * @param key String of the key that was pressed
      * @param isPress Whether the event is a press or release event
      */
-    private void handleKey(String key, boolean isPress) {
+    private void handleKey(String key, boolean isPress, Event e) {
+        e.consume();
         String control = Config.getInstance().getControl(key);
         //movement keys
         if (control.equals("up") || control.equals("down") || control.equals("right") || control.equals("left")) {
@@ -614,6 +616,9 @@ public class GameController implements Savable {
 
             //manage player status effects
             managePlayerEffects();
+
+            //manage player status
+            managePlayer();
 
             long endTime = System.nanoTime();
             double execTime = round((endTime - startTime) / 1000000.0); //in milliseconds
@@ -1119,6 +1124,15 @@ public class GameController implements Savable {
                     player.getEffects().remove(i--);
                     Platform.runLater(() -> getScreen().updateHud());
                 }
+            }
+        }
+
+        /**
+         * Manages player status.
+         */
+        private void managePlayer() {
+            if (player.getHealth() <= 0) {
+                gameOver();
             }
         }
 
