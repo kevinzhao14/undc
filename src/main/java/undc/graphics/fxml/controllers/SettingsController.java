@@ -31,9 +31,9 @@ public class SettingsController {
     private Button lastButton;
 
     /**
-     * Default constructor that is called to load the settings page.
+     * Loads the settings page upon opening it.
      */
-    public SettingsController() {
+    public void initialize() {
         load();
         Platform.runLater(() -> show(video, videoButton));
     }
