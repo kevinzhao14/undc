@@ -86,6 +86,11 @@ public class GameScreen extends GameState implements Savable {
         instance = new GameScreen(Vars.i("gc_screen_width"), Vars.i("gc_screen_height"));
     }
 
+    public static void stopInstance() {
+        instance = null;
+        GameController.stopInstance();
+    }
+
     /**
      * Creates the game mode the player chooses to play.
      * @param mode GameMode the player selected
@@ -129,6 +134,10 @@ public class GameScreen extends GameState implements Savable {
         updateHud();
         GameController.resetInstance();
         getGame().start(dungeonLayout.getStartingRoom(), player);
+
+        // handlers to redraw frame on window resize so that the game fits
+        scene.widthProperty().addListener((obs, oldVal, newVal) -> timer.draw());
+        scene.heightProperty().addListener((obs, oldVal, newVal) -> timer.draw());
     }
 
     public void startLoaded() {
@@ -428,8 +437,8 @@ public class GameScreen extends GameState implements Savable {
         pause = new StackPane();
         final VBox box = new VBox(40);
 
-        Rectangle backdrop = new Rectangle(scene.getWidth(), scene.getHeight());
-        backdrop.setFill(Color.BLACK);
+        Pane background = new Pane();
+        background.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6)");
 
         Label pauseLabel = new Label("Paused");
         pauseLabel.setStyle("-fx-text-fill: white; -fx-font-family:VT323; -fx-font-size:50");
@@ -459,9 +468,9 @@ public class GameScreen extends GameState implements Savable {
 
         box.getChildren().addAll(pauseLabel, resumeButton, saveButton, exitButton);
         box.setAlignment(Pos.CENTER);
-        pause.getChildren().addAll(backdrop, box);
+        pause.getChildren().addAll(background, box);
         hud.getHud().getChildren().add(pause);
-        partialFadeIn(backdrop);
+        partialFadeIn(background);
         pause.setVisible(false);
     }
 
@@ -695,11 +704,15 @@ public class GameScreen extends GameState implements Savable {
 
         @Override
         public void handle(long now) {
-            RoomRenderer.drawFrame(canvas, room, player);
+            draw();
             long delta = now - lastFrameTime;
             lastFrameTime = now;
             double fps = 1d / delta;
             // System.out.println(fps * 1e9);
+        }
+
+        public void draw() {
+            RoomRenderer.drawFrame(canvas, room, player);
         }
     }
 }

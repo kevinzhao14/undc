@@ -82,8 +82,7 @@ public class Potion extends Item {
                 Audio.playAudio("potion");
 
                 // damage nearby monsters by potion modifier
-
-                double duration = 15 * 1000;
+                double duration = 5 * 1000;
 
                 //check for existing effect
                 for (Effect e : player.getEffects()) {

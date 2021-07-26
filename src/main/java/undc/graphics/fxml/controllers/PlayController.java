@@ -34,6 +34,7 @@ public class PlayController {
     private GridPane savesGrid;
 
     private VBox selected;
+    private File selectedFile;
     private JSONObject selectedObj;
 
     /**
@@ -47,7 +48,7 @@ public class PlayController {
             return;
         }
         if (!dir.isDirectory()) {
-            Console.error("Saves directory is not a directory.");
+            Console.error("Saves location is not a directory.");
             return;
         }
         File[] files = dir.listFiles();
@@ -125,6 +126,7 @@ public class PlayController {
                 box.getStyleClass().add("save-item-selected");
                 selected = box;
                 selectedObj = obj;
+                selectedFile = f;
             });
 
             saves.getChildren().add(box);
@@ -147,7 +149,7 @@ public class PlayController {
         Audio.playAudio("button");
         if (selectedObj != null) {
             // load save data & start game
-            if (!DataManager.getInstance().loadGame(selectedObj)) {
+            if (!DataManager.getInstance().loadGame(selectedObj, selectedFile)) {
                 return;
             }
             Controller.setState(GameScreen.getInstance());

@@ -5,6 +5,7 @@ import javafx.scene.input.KeyCombination;
 import undc.command.Console;
 import undc.command.DataManager;
 import undc.command.Vars;
+import undc.graphics.GameScreen;
 import undc.graphics.GameState;
 import undc.graphics.HomeScreen;
 import javafx.application.Application;
@@ -53,6 +54,10 @@ public class Controller extends Application {
             Console.print("...and " + (s.length - 5) + " more");
             e.printStackTrace();
         });
+    }
+
+    public void stop() {
+        GameScreen.stopInstance();
     }
 
     public static GameState getState() {

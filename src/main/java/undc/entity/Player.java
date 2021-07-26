@@ -150,12 +150,19 @@ public class Player extends Entity implements Savable {
      * Sets the entities health to the passed in value unless it is in god mode.
      * @param newHealth New health of the Entity
      */
-    public void setHealth(double newHealth) {
+    public void setHealth(double newHealth, boolean override) {
+        if (newHealth < health && Vars.b("gm_god") && !override) {
+            return;
+        }
         if (newHealth < health) {
             Audio.playAudio("take_damage");
             GameScreen.getInstance().getHud().showOverlay();
         }
         super.setHealth(newHealth);
+    }
+
+    public void setHealth(double newHealth) {
+        setHealth(newHealth, false);
     }
 
     public int getLevel() {

@@ -148,7 +148,7 @@ public class Command {
             String key = clean(args[0]);
             String control = Config.getInstance().getControl(key);
             if (control.equals("")) {
-                Console.error("Key is not bound.");
+                Console.print("Key is not bound.");
             } else {
                 Console.print(control);
             }
@@ -184,7 +184,7 @@ public class Command {
         if (args.length == 1) {
             CVar cvar = Vars.find(var);
             if (cvar == null) {
-                Console.error("CVar could not be found.");
+                Console.print("CVar could not be found.");
             } else {
                 Console.print(cvar.toString());
             }
@@ -404,7 +404,7 @@ public class Command {
                     Console.error("Invalid value for player health.");
                     return;
                 }
-                player.setHealth(health);
+                player.setHealth(health, true);
                 GameScreen.getInstance().updateHud();
                 Console.print("Player health set to " + health);
             } catch (NumberFormatException e) {
@@ -537,7 +537,7 @@ public class Command {
             Console.error("No player.");
             return;
         }
-        player.setHealth(0);
+        player.setHealth(0, true);
         GameScreen.getInstance().updateHud();
     }
 }

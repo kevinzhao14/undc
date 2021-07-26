@@ -186,7 +186,7 @@ public class DataManager implements Savable {
      * @param o Data to load
      * @return True on success, false on failure
      */
-    public boolean loadGame(JSONObject o) {
+    public boolean loadGame(JSONObject o, File file) {
         // load game
         GameScreen.resetInstance();
         if (!GameScreen.getInstance().parseSave(o.getJSONObject("game"))) {
@@ -208,6 +208,10 @@ public class DataManager implements Savable {
         if (!Vars.parseSave(o.getJSONObject("vars"))) {
             return false;
         }
+
+        saveFile = file;
+
+        // set save file data
         return true;
     }
 

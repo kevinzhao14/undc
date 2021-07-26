@@ -97,6 +97,16 @@ public class GameController implements Savable {
     }
 
     /**
+     * Stops and removes the instance.
+     */
+    public static void stopInstance() {
+        if (instance != null) {
+            instance.stop();
+        }
+        instance = null;
+    }
+
+    /**
      * Starts the game in the provided room.
      * @param room Room to start in
      */
