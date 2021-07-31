@@ -5,7 +5,6 @@ package undc.command;
  */
 public abstract class CVar {
     private String name;
-    private String nick;
 
     protected boolean requireCheats;
     protected boolean modifiable;
@@ -13,16 +12,14 @@ public abstract class CVar {
     /**
      * Standard constructor for a CVar.
      * @param name Name of the CVar
-     * @param nick Nickname of the CVar
      * @param requireCheats Whether the CVar requires cheats to modify
      */
-    public CVar(String name, String nick, boolean requireCheats) {
-        if (name == null || nick == null) {
+    public CVar(String name, boolean requireCheats) {
+        if (name == null) {
             Console.error("CVar name cannot be null");
             return;
         }
         this.name = name;
-        this.nick = nick;
         this.requireCheats = requireCheats;
         modifiable = true;
     }
@@ -43,10 +40,6 @@ public abstract class CVar {
 
     public String getName() {
         return name;
-    }
-
-    public String getNick() {
-        return nick;
     }
 
     public boolean isModifiable() {

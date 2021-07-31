@@ -210,8 +210,8 @@ public class Player extends Entity implements Savable {
         JSONObject o = new JSONObject();
         o.put("maxHealth", maxHealth);
         o.put("health", health);
-        o.put("posX", posX);
-        o.put("posY", posY);
+        o.put("posX", x);
+        o.put("posY", y);
         o.put("attackCooldown", attackCooldown);
 
         o.put("gold", gold);
@@ -236,8 +236,8 @@ public class Player extends Entity implements Savable {
         try {
             maxHealth = o.getInt("maxHealth");
             health = o.getDouble("health");
-            posX = o.getDouble("posX");
-            posY = o.getDouble("posY");
+            x = o.getDouble("posX");
+            y = o.getDouble("posY");
             attackCooldown = o.getDouble("attackCooldown");
 
             gold = o.getInt("gold");

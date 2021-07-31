@@ -30,62 +30,62 @@ public class Vars {
          */
 
         // Boolean CVars
-        BOOLEAN_VARS.add(new BooleanCVar("gm_god", "god", false, true, false));
-        BOOLEAN_VARS.add(new BooleanCVar("sv_infinite_ammo", "infiniteAmmo", false, true, true));
-        BOOLEAN_VARS.add(new BooleanCVar("gc_fullscreen", "fullscreen", false, false, false));
+        BOOLEAN_VARS.add(new BooleanCVar("gm_god", false, true, false));
+        BOOLEAN_VARS.add(new BooleanCVar("sv_infinite_ammo", false, true, true));
+        BOOLEAN_VARS.add(new BooleanCVar("gc_fullscreen", false, false, false));
 
         // Integer CVars
-        INT_VARS.add(new IntCVar("gc_screen_width", "screenWidth", 400, 7680, 1920, false));
-        INT_VARS.add(new IntCVar("gc_screen_height", "screenHeight", 200, 4320, 1080, false));
-        INT_VARS.add(new IntCVar("sv_tickrate", "fps", 10, 1000, 200));
-        INT_VARS.add(new IntCVar("sv_player_health", "playerHP", 1, 10000, 100));
-        INT_VARS.add(new IntCVar("sv_player_attack_range", "playerRange", 0, 1000, 20));
-        INT_VARS.add(new IntCVar("sv_inventory_rows", "invRows", 1, 100, 2));
-        INT_VARS.add(new IntCVar("sv_inventory_cols", "invCols", 1, 100, 5));
-        INT_VARS.add(new IntCVar("sv_monsters_min", "minMonsters", 0, 100, 1));
-        INT_VARS.add(new IntCVar("sv_monsters_max", "maxMonsters", 0, 100, 1));
-        INT_VARS.add(new IntCVar("sv_obstacles_min", "minObs", 0, 100, 2));
-        INT_VARS.add(new IntCVar("sv_obstacles_max", "maxObs", 0, 100, 5));
-        INT_VARS.add(new IntCVar("sv_itemdrop_min", "minDrop", 0, 100, 1));
-        INT_VARS.add(new IntCVar("sv_itemdrop_max", "maxDrop", 0, 100, 2));
-        INT_VARS.add(new IntCVar("ai_monster_move_range", "monsterMoveRange", 0, 100000, 300));
-        INT_VARS.add(new IntCVar("ai_boss_move_range", "bossMoveRange", 0, 100000, 600));
-        INT_VARS.add(new IntCVar("ai_monster_move_min", "monsterMoveMin", 0, 100000, 10));
-        INT_VARS.add(new IntCVar("ai_monster_attack_range", "monsterRange", 0, 1000, 10));
-        INT_VARS.add(new IntCVar("ai_monster_reaction_time", "monsterReact", 0, 10000, 300));
-        INT_VARS.add(new IntCVar("ai_boss_reaction_time", "bossReact", 0, 10000, 150));
-        INT_VARS.add(new IntCVar("gc_monster_fade_dur", "monsterFade", 0, 10000, 400, true, false));
-        INT_VARS.add(new IntCVar("gc_healthbar_height", "healthbarHeight", 0, 1000, 5, true, false));
-        INT_VARS.add(new IntCVar("sv_player_width", "playerWidth", 0, 100, 16, true, false));
-        INT_VARS.add(new IntCVar("sv_player_height", "playerHeight", 0, 100, 16, true, false));
-        INT_VARS.add(new IntCVar("sv_player_pickup_range", "playerPickup", 0, 1000, 20));
-        INT_VARS.add(new IntCVar("sv_precision", "precision", 0, 1000000, 10000, true, false));
-        INT_VARS.add(new IntCVar("sv_obstacle_gendist", "obsDist", 0, 1000, 64));
-        INT_VARS.add(new IntCVar("sv_acceleration", "accel", 0, 10000, 1000));
-        INT_VARS.add(new IntCVar("sv_max_velocity", "maxVel", 0, 1000, 100));
-        INT_VARS.add(new IntCVar("sv_friction", "friction", 0, 10000, 2000));
-        INT_VARS.add(new IntCVar("sv_dropitem_distance", "dropDist", 0, 1000, 30));
-        INT_VARS.add(new IntCVar("gc_explosion_maxwidth", "explosionWidth", 0, 1000, 75));
-        INT_VARS.add(new IntCVar("sv_interact_distance", "interactDist", 0, 1000, 30, true, false));
-        INT_VARS.add(new IntCVar("sv_monster_gold", "monsterGold", 0, 1000, 20));
-        INT_VARS.add(new IntCVar("sv_monster_xp", "monsterXp", 0, 1000, 10));
-        INT_VARS.add(new IntCVar("gc_camera_spacing_x", "camSpacing", 0, 1000, 150, true));
-        INT_VARS.add(new IntCVar("gc_camera_spacing_y", "camSpacing", 0, 1000, 100, true));
+        INT_VARS.add(new IntCVar("gc_screen_width", 400, 7680, 1920, false));
+        INT_VARS.add(new IntCVar("gc_screen_height", 200, 4320, 1080, false));
+        INT_VARS.add(new IntCVar("sv_tickrate", 10, 1000, 200));
+        INT_VARS.add(new IntCVar("sv_player_health", 1, 10000, 100));
+        INT_VARS.add(new IntCVar("sv_player_attack_range", 0, 1000, 20));
+        INT_VARS.add(new IntCVar("sv_inventory_rows", 1, 100, 2));
+        INT_VARS.add(new IntCVar("sv_inventory_cols", 1, 100, 5));
+        INT_VARS.add(new IntCVar("sv_monsters_min", 0, 100, 1));
+        INT_VARS.add(new IntCVar("sv_monsters_max", 0, 100, 1));
+        INT_VARS.add(new IntCVar("sv_obstacles_min", 0, 100, 2));
+        INT_VARS.add(new IntCVar("sv_obstacles_max", 0, 100, 5));
+        INT_VARS.add(new IntCVar("sv_itemdrop_min", 0, 100, 1));
+        INT_VARS.add(new IntCVar("sv_itemdrop_max", 0, 100, 2));
+        INT_VARS.add(new IntCVar("ai_monster_move_range", 0, 100000, 300));
+        INT_VARS.add(new IntCVar("ai_boss_move_range", 0, 100000, 600));
+        INT_VARS.add(new IntCVar("ai_monster_move_min", 0, 100000, 10));
+        INT_VARS.add(new IntCVar("ai_monster_attack_range", 0, 1000, 10));
+        INT_VARS.add(new IntCVar("ai_monster_reaction_time", 0, 10000, 300));
+        INT_VARS.add(new IntCVar("ai_boss_reaction_time", 0, 10000, 150));
+        INT_VARS.add(new IntCVar("gc_monster_fade_dur", 0, 10000, 400, true, false));
+        INT_VARS.add(new IntCVar("gc_healthbar_height", 0, 1000, 5, true, false));
+        INT_VARS.add(new IntCVar("sv_player_width", 0, 100, 16, true, false));
+        INT_VARS.add(new IntCVar("sv_player_height", 0, 100, 16, true, false));
+        INT_VARS.add(new IntCVar("sv_player_pickup_range", 0, 1000, 20));
+        INT_VARS.add(new IntCVar("sv_precision", 0, 1000000, 10000, true, false));
+        INT_VARS.add(new IntCVar("sv_obstacle_gendist", 0, 1000, 64));
+        INT_VARS.add(new IntCVar("sv_acceleration", 0, 10000, 1000));
+        INT_VARS.add(new IntCVar("sv_max_velocity", 0, 1000, 100));
+        INT_VARS.add(new IntCVar("sv_friction", 0, 10000, 2000));
+        INT_VARS.add(new IntCVar("sv_dropitem_distance", 0, 1000, 30));
+        INT_VARS.add(new IntCVar("gc_explosion_maxwidth", 0, 1000, 75));
+        INT_VARS.add(new IntCVar("sv_interact_distance", 0, 1000, 30, true, false));
+        INT_VARS.add(new IntCVar("sv_monster_gold", 0, 1000, 20));
+        INT_VARS.add(new IntCVar("sv_monster_xp", 0, 1000, 10));
+        INT_VARS.add(new IntCVar("gc_camera_spacing_x", 0, 1000, 150, true));
+        INT_VARS.add(new IntCVar("gc_camera_spacing_y", 0, 1000, 100, true));
 
         // Double CVars
-        DOUBLE_VARS.add(new DoubleCVar("gc_ppu", "ppu", 0, 100, 1.5, true, false));
-        DOUBLE_VARS.add(new DoubleCVar("sv_self_damage_modifier", "selfDamageMod", 0, 10, 0.75));
-        DOUBLE_VARS.add(new DoubleCVar("sv_fist_damage", "fistDamage", 0, 100, 1));
-        DOUBLE_VARS.add(new DoubleCVar("sv_fist_cooldown", "fistCooldown", 0, 10, 0.5));
-        DOUBLE_VARS.add(new DoubleCVar("sv_walk_cooldown", "walkCooldown", 0, 10, 0.5));
-        DOUBLE_VARS.add(new DoubleCVar("gc_dropitem_scale", "dropScale", 0, 10, 0.75, true, false));
-        DOUBLE_VARS.add(new DoubleCVar("sv_modifier", "modifier", 0, 10, 1, true, false));
-        DOUBLE_VARS.add(new DoubleCVar("sv_modifier_medium", "modMed", 0, 10, 1.5, true, false));
-        DOUBLE_VARS.add(new DoubleCVar("sv_modifier_hard", "modHard", 0, 10, 2, true, false));
-        DOUBLE_VARS.add(new DoubleCVar("gc_effect_scale", "effectScale", 0, 10, 1.5));
-        DOUBLE_VARS.add(new DoubleCVar("volume", "volume", 0, 1, 0.5, false));
-        DOUBLE_VARS.add(new DoubleCVar("cl_effects_volume", "volume", 0, 1, 0.5, false));
-        DOUBLE_VARS.add(new DoubleCVar("cl_music_volume", "volume", 0, 1, 0.5, false));
+        DOUBLE_VARS.add(new DoubleCVar("gc_ppu", 0, 100, 1.5, true, false));
+        DOUBLE_VARS.add(new DoubleCVar("sv_self_damage_modifier", 0, 10, 0.75));
+        DOUBLE_VARS.add(new DoubleCVar("sv_fist_damage", 0, 100, 1));
+        DOUBLE_VARS.add(new DoubleCVar("sv_fist_cooldown", 0, 10, 0.5));
+        DOUBLE_VARS.add(new DoubleCVar("sv_walk_cooldown", 0, 10, 0.5));
+        DOUBLE_VARS.add(new DoubleCVar("gc_dropitem_scale", 0, 10, 0.75, true, false));
+        DOUBLE_VARS.add(new DoubleCVar("sv_modifier", 0, 10, 1, true, false));
+        DOUBLE_VARS.add(new DoubleCVar("sv_modifier_medium", 0, 10, 1.5, true, false));
+        DOUBLE_VARS.add(new DoubleCVar("sv_modifier_hard", 0, 10, 2, true, false));
+        DOUBLE_VARS.add(new DoubleCVar("gc_effect_scale", 0, 10, 1.5));
+        DOUBLE_VARS.add(new DoubleCVar("volume", 0, 1, 0.5, false));
+        DOUBLE_VARS.add(new DoubleCVar("cl_effects_volume", 0, 1, 0.5, false));
+        DOUBLE_VARS.add(new DoubleCVar("cl_music_volume", 0, 1, 0.5, false));
     }
 
     /**
@@ -98,7 +98,7 @@ public class Vars {
             if (v == null) {
                 continue;
             }
-            if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
+            if (v.getName().equalsIgnoreCase(var)) {
                 return v.getVal();
             }
         }
@@ -121,7 +121,7 @@ public class Vars {
             if (v == null) {
                 continue;
             }
-            if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
+            if (v.getName().equalsIgnoreCase(var)) {
                 return v.getVal();
             }
         }
@@ -139,7 +139,7 @@ public class Vars {
             if (v == null) {
                 continue;
             }
-            if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
+            if (v.getName().equalsIgnoreCase(var)) {
                 return v.getVal();
             }
         }
@@ -157,7 +157,7 @@ public class Vars {
             if (v == null) {
                 continue;
             }
-            if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
+            if (v.getName().equalsIgnoreCase(var)) {
                 return v.getVal();
             }
         }
@@ -188,16 +188,16 @@ public class Vars {
     public static CVar find(String var) {
         // check for static variables
         if (var.equalsIgnoreCase("debug")) {
-            BooleanCVar temp = new BooleanCVar("debug", "debug", false, false);
+            BooleanCVar temp = new BooleanCVar("debug", false, false);
             temp.setVal("" + DEBUG);
             return temp;
         } else if (var.equalsIgnoreCase("cheats")) {
-            BooleanCVar temp = new BooleanCVar("cheats", "cheats", false, false);
+            BooleanCVar temp = new BooleanCVar("cheats", false, false);
             temp.setVal("" + CHEATS);
             return temp;
         }
         for (CVar v : all()) {
-            if (v.getName().equalsIgnoreCase(var) || v.getNick().equalsIgnoreCase(var)) {
+            if (v.getName().equalsIgnoreCase(var)) {
                 return v;
             }
         }

@@ -18,6 +18,9 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import undc.game.calc.Direction;
+import undc.general.AVL;
+
+import java.util.ArrayList;
 
 
 /**
@@ -35,6 +38,7 @@ public class RoomRenderer {
             new Image("textures/room/bottom-left.png")
     );
     private static final double WALL_SIZE = 64;
+    private static final AVL<RenderObject> PIPE = new AVL<>();
 
     private static double offsetX = 0;
     private static double offsetY = 0;
@@ -113,8 +117,8 @@ public class RoomRenderer {
                 Image sprite = DataManager.FLOORS.get(f.getId());
                 sw = w / f.getWidth() * sprite.getWidth();
                 sh = h / f.getHeight() * sprite.getHeight();
-                drawImg(sprite, sw, sh, getPx(w), getPx(h), getPx(f.getX()),
-                        getPx(getY(f.getY(), h)));
+                PIPE.add(new RenderObject(sprite, sw, sh, getPx(w), getPx(h), getPx(f.getX()),
+                        getPx(getY(f.getY(), h)), f.getZ()));
             }
         }
 
@@ -126,7 +130,7 @@ public class RoomRenderer {
             y = Math.floor(Math.max(offsetY, 0) / WALL_SIZE) * WALL_SIZE;
             // keep drawing until the walls hit the room's wall or should not be visible
             while (y < room.getHeight() && y - offsetY < getUnits(c.getHeight())) {
-                drawWall(Direction.WEST, 0, y);
+                drawWall(Direction.WEST, 0, y, -100);
                 y += WALL_SIZE;
             }
         }
@@ -134,7 +138,7 @@ public class RoomRenderer {
         if (offsetX + c.getWidth() > room.getWidth()) {
             y = Math.floor(Math.max(offsetY, 0) / WALL_SIZE) * WALL_SIZE;
             while (y < room.getHeight() && y - offsetY < getUnits(c.getHeight())) {
-                drawWall(Direction.EAST, 0, y);
+                drawWall(Direction.EAST, 0, y, -100);
                 y += WALL_SIZE;
             }
         }
@@ -142,7 +146,7 @@ public class RoomRenderer {
         if (offsetY < 0) {
             x = Math.floor(Math.max(offsetX, 0) / WALL_SIZE) * WALL_SIZE;
             while (x < room.getWidth() && x - offsetX < getUnits(c.getWidth())) {
-                drawWall(Direction.NORTH, x, 0);
+                drawWall(Direction.NORTH, x, 0, -1000);
                 x += WALL_SIZE;
             }
         }
@@ -152,32 +156,34 @@ public class RoomRenderer {
         // if the bottom-left corner should be visible, then draw it
         // if the left wall is showing & the bottom wall is showing
         if (offsetX < 0 && offsetY + c.getHeight() > room.getHeight()) {
-            drawImg(WALLS.get(Direction.SOUTHWEST), size, size, -size, getPx(getY(-WALL_SIZE + 16, WALL_SIZE)));
+            PIPE.add(new RenderObject(WALLS.get(Direction.SOUTHWEST), size, size, -size,
+                    getPx(getY(-WALL_SIZE + 16, WALL_SIZE)), 1000));
         }
         // top left
         if (offsetX < 0 && offsetY < 0) {
-            drawImg(WALLS.get(Direction.NORTHWEST), size, size, -size, getPx(getY(room.getHeight(), WALL_SIZE)));
+            PIPE.add(new RenderObject(WALLS.get(Direction.NORTHWEST), size, size, -size,
+                    getPx(getY(room.getHeight(), WALL_SIZE)), -1000));
         }
         // top right
         if (offsetX + c.getWidth() > room.getWidth() && offsetY < 0) {
-            drawImg(WALLS.get(Direction.NORTHEAST), size, size, getPx(room.getWidth()),
-                    getPx(getY(room.getHeight(), WALL_SIZE)));
+            PIPE.add(new RenderObject(WALLS.get(Direction.NORTHEAST), size, size, getPx(room.getWidth()),
+                    getPx(getY(room.getHeight(), WALL_SIZE)), -1000));
         }
         // bottom right
         if (offsetX + c.getWidth() > room.getWidth() && offsetY + c.getHeight() > room.getHeight()) {
-            drawImg(WALLS.get(Direction.SOUTHEAST), size, size, getPx(room.getWidth()),
-                    getPx(getY(-WALL_SIZE + 16, WALL_SIZE)));
+            PIPE.add(new RenderObject(WALLS.get(Direction.SOUTHEAST), size, size, getPx(room.getWidth()),
+                    getPx(getY(-WALL_SIZE + 16, WALL_SIZE)), 1000));
         }
 
         // doors
         if (room.getTopDoor() != null) {
-            drawDoor(room.getTopDoor(), Direction.NORTH);
+            drawDoor(room.getTopDoor(), Direction.NORTH, -1000);
         }
         if (room.getRightDoor() != null) {
-            drawDoor(room.getRightDoor(), Direction.EAST);
+            drawDoor(room.getRightDoor(), Direction.EAST, 0);
         }
         if (room.getLeftDoor() != null) {
-            drawDoor(room.getLeftDoor(), Direction.WEST);
+            drawDoor(room.getLeftDoor(), Direction.WEST, 0);
         }
 
         //draw obstacles
@@ -191,21 +197,26 @@ public class RoomRenderer {
                 w = getPx(obstacle.getWidth());
                 h = getPx(obstacle.getHeight());
                 img = obstacle.getSprite();
-                drawImg(img, w, h, x, y);
+                PIPE.add(new RenderObject(img, w, h, x, y, obstacle.getZ()));
             }
         }
         if (room.getEntities() != null) {
+            double hbh = Vars.i("gc_healthbar_height");
             for (Entity e : room.getEntities()) {
                 if (e.getHealth() > 0 || (e instanceof Monster && ((Monster) e).getOpacity() > 0)) {
                     h = getPx(e.getHeight());
                     w = getPx(e.getWidth());
                     x = getPx(e.getX());
                     y = getPx(getY(e.getY(), e.getHeight()));
+                    RenderObject o = new RenderObject(e.getSprite(), w, h, x, y, e.getZ());
                     if (e instanceof Monster) {
                         Monster m = (Monster) e;
-                        gc.setGlobalAlpha(m.getOpacity());
-                        double hbh = Vars.i("gc_healthbar_height");
-                        drawHealthbar(w, hbh, x, y - hbh - 10, e.getHealth() / e.getMaxHealth());
+                        o.opacity = ((Monster) e).getOpacity();
+
+                        // draw healthbar
+                        PIPE.add(new RenderObject(e.getHealth() / e.getMaxHealth(), w, hbh, x, y - hbh - 10, 200));
+
+                        // update opacity
                         if (m.getOpacity() < 1) {
                             double newOpacity = m.getOpacity() - (1000.0 / Vars.i("gc_monster_fade_dur")
                                     / Vars.i("sv_tickrate"));
@@ -214,11 +225,10 @@ public class RoomRenderer {
                             m.setOpacity(newOpacity);
                         }
                     }
-                    drawImg(e.getSprite(), w, h, x, y);
+                    PIPE.add(o);
                 }
             }
         }
-        gc.setGlobalAlpha(1);
         if (room.getDroppedItems() != null) {
             for (DroppedItem item : room.getDroppedItems()) {
                 double scale = Vars.d("gc_dropitem_scale");
@@ -227,7 +237,7 @@ public class RoomRenderer {
                 x = getPx(item.getX() + item.getWidth() * (1 - scale) / 2);
                 y = getPx(getY(item.getY(), item.getHeight()) + item.getHeight() * (1 - scale) / 2);
                 img = item.getItem().getSprite();
-                drawImg(img, w, h, x, y);
+                PIPE.add(new RenderObject(img, w, h, x, y, item.getZ()));
             }
         }
         //draw projectiles
@@ -237,7 +247,7 @@ public class RoomRenderer {
             x = getPx(p.getX());
             y = getPx(getY(p.getY(), p.getHeight()));
             img = p.getSprite();
-            drawImg(img, w, h, x, y);
+            PIPE.add(new RenderObject(img, w, h, x, y, p.getZ()));
         }
 
         //draw player
@@ -247,7 +257,7 @@ public class RoomRenderer {
             h = getPx(player.getHeight() * 2);
             w = getPx(player.getWidth());
             img = player.getSprite();
-            drawImg(img, w, h, x, y);
+            PIPE.add(new RenderObject(img, w, h, x, y, player.getZ()));
 
             // move camera if necessary
             int spacing = Vars.i("gc_camera_spacing_x");
@@ -270,21 +280,27 @@ public class RoomRenderer {
         if (offsetY + c.getHeight() > room.getHeight()) {
             x = Math.floor(Math.max(offsetX, 0) / WALL_SIZE) * WALL_SIZE;
             while (x < room.getWidth() && x - offsetX < getUnits(c.getWidth())) {
-                drawWall(Direction.SOUTH, x, 0);
+                drawWall(Direction.SOUTH, x, 0, 1000);
                 x += WALL_SIZE;
             }
         }
         if (room.getBottomDoor() != null) {
-            drawDoor(room.getBottomDoor(), Direction.SOUTH);
+            drawDoor(room.getBottomDoor(), Direction.SOUTH, 1000);
         }
-    }
 
-    private static void drawImg(Image img, double w, double h, double x, double y) {
-        gc.drawImage(img, x - getPx(offsetX), y - getPx(offsetY), w, h);
-    }
-
-    private static void drawImg(Image img, double sw, double sh, double dw, double dh, double dx, double dy) {
-        gc.drawImage(img, 0, 0, sw, sh, dx - getPx(offsetX), dy - getPx(offsetY), dw, dh);
+        // render items in order of pipe
+        ArrayList<RenderObject> list = PIPE.inOrder();
+        for (RenderObject o : list) {
+            if (o.type == RenderType.IMAGE) {
+                gc.setGlobalAlpha(o.opacity);
+                drawImg(o.image, o.width, o.height, o.x, o.y);
+            } else if (o.type == RenderType.PARTIAL_IMAGE) {
+                drawImg(o.image, o.sourceWidth, o.sourceHeight, o.width, o.height, o.x, o.y);
+            } else if (o.type == RenderType.HEALTHBAR) {
+                drawHealthbar(o.width, o.height, o.x, o.y, o.percent);
+            }
+        }
+        PIPE.clear();
     }
 
     /**
@@ -292,11 +308,11 @@ public class RoomRenderer {
      * @param door Door to draw
      * @param dir Orientation of the door
      */
-    private static void drawDoor(Door door, Direction dir) {
+    private static void drawDoor(Door door, Direction dir, double z) {
         int x = dir == Direction.WEST ? -1 : (dir == Direction.EAST ? 1 : 0);
         int y = dir == Direction.SOUTH ? 15 : (dir == Direction.NORTH ? 1 : 0);
-        drawImg(door.getSprite(), getPx(door.getWidth()), getPx(door.getHeight()), getPx(door.getX() + x),
-                getPx(getY(door.getY() + y, door.getHeight())));
+        PIPE.add(new RenderObject(door.getSprite(), getPx(door.getWidth()), getPx(door.getHeight()),
+                getPx(door.getX() + x), getPx(getY(door.getY() + y, door.getHeight())), z));
     }
 
     /**
@@ -305,7 +321,7 @@ public class RoomRenderer {
      * @param x X position of the wall
      * @param y Y position of the wall
      */
-    private static void drawWall(Direction dir, double x, double y) {
+    private static void drawWall(Direction dir, double x, double y, double z) {
         // data variables
         double size = getPx(WALL_SIZE);
         double w = WALL_SIZE;
@@ -338,7 +354,15 @@ public class RoomRenderer {
             dx = getPx(x);
             dy = getPx(getY(dir == Direction.SOUTH ? -WALL_SIZE + 16 : room.getHeight(), WALL_SIZE));
         }
-        drawImg(sprite, sw, sh, dw, dh, dx, dy);
+        PIPE.add(new RenderObject(sprite, sw, sh, dw, dh, dx, dy, z));
+    }
+
+    private static void drawImg(Image img, double w, double h, double x, double y) {
+        gc.drawImage(img, x - getPx(offsetX), y - getPx(offsetY), w, h);
+    }
+
+    private static void drawImg(Image img, double sw, double sh, double dw, double dh, double dx, double dy) {
+        gc.drawImage(img, 0, 0, sw, sh, dx - getPx(offsetX), dy - getPx(offsetY), dw, dh);
     }
 
     /**
@@ -367,5 +391,87 @@ public class RoomRenderer {
 
     private static double getY(double y, double h) {
         return room.getHeight() - y - h;
+    }
+
+    enum RenderType {
+        IMAGE, HEALTHBAR, PARTIAL_IMAGE
+    }
+
+    static class RenderObject implements Comparable<RenderObject> {
+        RenderType type;
+        Image image;
+        double width;
+        double height;
+        double x;
+        double y;
+        double z;
+
+        double percent;
+        double sourceWidth;
+        double sourceHeight;
+        double opacity;
+
+        /**
+         * Constructor for an image-based RenderObject.
+         * @param image Image to render
+         * @param width Width of the object
+         * @param height Height of the object
+         * @param x X coordinate of the object
+         * @param y Y coordinate of the object
+         * @param z Z coordinate of the object
+         */
+        public RenderObject(Image image, double width, double height, double x, double y, double z) {
+            this.type = RenderType.IMAGE;
+            this.image = image;
+            this.width = width;
+            this.height = height;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.opacity = 1;
+        }
+
+        /**
+         * Constructor for a healthbar-based RenderObject.
+         * @param percent Percentage of the healthbar
+         * @param width Width of the object
+         * @param height Height of the object
+         * @param x X coordinate of the object
+         * @param y Y coordinate of the object
+         * @param z Z coordinate of the object
+         */
+        public RenderObject(double percent, double width, double height, double x, double y, double z) {
+            this(null, width, height, x, y, z);
+            this.type = RenderType.HEALTHBAR;
+            this.percent = percent;
+        }
+
+        /**
+         * Constructor for a partial image-based RenderObject.
+         * @param image Image to render
+         * @param sourceWidth Width of the source rectangle
+         * @param sourceHeight Height of the source rectangle
+         * @param width Width of the object
+         * @param height Height of the object
+         * @param x X coordinate of the object
+         * @param y Y coordinate of the object
+         * @param z Z coordinate of the object
+         */
+        public RenderObject(Image image, double sourceWidth, double sourceHeight, double width, double height,
+                            double x, double y, double z) {
+            this(image, width, height, x, y, z);
+            this.type = RenderType.PARTIAL_IMAGE;
+            this.sourceWidth = sourceWidth;
+            this.sourceHeight = sourceHeight;
+        }
+
+        @Override
+        public int compareTo(RenderObject o) {
+            if (this.z != o.z) {
+                return (int) Math.round(this.z - o.z);
+            } else {
+                return (int) Math.round(this.y - o.y);
+            }
+        }
     }
 }

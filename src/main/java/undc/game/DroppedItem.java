@@ -4,19 +4,13 @@ import org.json.JSONObject;
 import undc.command.Console;
 import undc.command.DataManager;
 import undc.items.Item;
-import undc.general.Movable;
 import undc.general.Savable;
 
 /**
  * Class that handles items dropped from a player's inventory.
  */
-public class DroppedItem implements Movable, Savable {
+public class DroppedItem extends GameObject implements Savable {
     private final Item item;
-
-    private double x;
-    private double y;
-    private int width;
-    private int height;
 
     /**
      * Constructor for an item that is dropped, taking in its location, height, and width.
@@ -30,38 +24,9 @@ public class DroppedItem implements Movable, Savable {
         this.item = item;
         this.x = x;
         this.y = y;
+        this.z = -100;
         this.width = w;
         this.height = h;
-    }
-
-    @Override
-    public double getX() {
-        return x;
-    }
-
-    @Override
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    @Override
-    public double getY() {
-        return y;
-    }
-
-    @Override
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    @Override
-    public int getWidth() {
-        return width;
-    }
-
-    @Override
-    public int getHeight() {
-        return height;
     }
 
     public Item getItem() {

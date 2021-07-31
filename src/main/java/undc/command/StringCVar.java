@@ -10,12 +10,11 @@ public class StringCVar extends CVar {
     /**
      * Constructor for a StringCVar.
      * @param name Name of the CVar
-     * @param nick Nickname of the CVar
      * @param def Default value of the CVar
      * @param rc Whether the CVar requires cheats to modify. Defaults to true
      */
-    public StringCVar(String name, String nick, String def, boolean rc) {
-        super(name, nick, rc);
+    public StringCVar(String name, String def, boolean rc) {
+        super(name, rc);
         if (def == null) {
             Console.error("CVar cannot be null");
             return;

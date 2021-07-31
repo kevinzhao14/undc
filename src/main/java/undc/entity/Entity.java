@@ -3,7 +3,7 @@ package undc.entity;
 import javafx.scene.image.Image;
 import org.json.JSONObject;
 import undc.command.Console;
-import undc.general.Movable;
+import undc.game.GameObject;
 import undc.general.Savable;
 import undc.graphics.SpriteGroup;
 
@@ -11,14 +11,10 @@ import undc.graphics.SpriteGroup;
  * Representation of an Entity object. Entities are objects that are "alive" and can interact with things in the game.
  */
 
-public abstract class Entity implements Movable, Savable {
-    protected int height;
-    protected int width;
+public abstract class Entity extends GameObject implements Savable {
     protected int maxHealth;
     protected double health;
     protected double attack;
-    protected double posX;
-    protected double posY;
     protected double attackCooldown;
     protected boolean invulnerable;
     protected Image sprite;
@@ -45,8 +41,8 @@ public abstract class Entity implements Movable, Savable {
      * Constructor used by some children.
      */
     protected Entity() {
-        posX = 0;
-        posY = 0;
+        x = 0;
+        y = 0;
         attackCooldown = 0;
         sprite = SpriteGroup.NONE;
     }
@@ -61,8 +57,8 @@ public abstract class Entity implements Movable, Savable {
         copy.attack = this.attack;
         copy.height = this.height;
         copy.width = this.width;
-        copy.posX = this.posX;
-        copy.posY = this.posY;
+        copy.x = this.x;
+        copy.y = this.y;
         copy.attackCooldown = 0;
         copy.sprite = this.sprite;
     }
@@ -90,36 +86,6 @@ public abstract class Entity implements Movable, Savable {
         return this.attack;
     }
 
-    @Override
-    public int getHeight() {
-        return this.height;
-    }
-
-    @Override
-    public int getWidth() {
-        return this.width;
-    }
-
-    @Override
-    public double getX() {
-        return this.posX;
-    }
-
-    @Override
-    public void setX(double newX) {
-        this.posX = newX;
-    }
-
-    @Override
-    public double getY() {
-        return this.posY;
-    }
-
-    @Override
-    public void setY(double newY) {
-        this.posY = newY;
-    }
-
     public double getAttackCooldown() {
         return attackCooldown;
     }
@@ -137,7 +103,7 @@ public abstract class Entity implements Movable, Savable {
     }
 
     public String toString() {
-        return "HP: " + health + "/" + maxHealth + " | Pos: " + posX + ", " + posY + " | Size: "
+        return "HP: " + health + "/" + maxHealth + " | Pos: " + x + ", " + y + " | Size: "
                 + height + ", " + width;
     }
 

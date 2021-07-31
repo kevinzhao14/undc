@@ -2,18 +2,13 @@ package undc.game;
 
 import org.json.JSONObject;
 import undc.command.Console;
-import undc.general.Movable;
 import undc.general.Savable;
 
 /**
  * Represents a floor tile.
  */
-public class Floor implements Movable, Savable {
+public class Floor extends GameObject implements Savable {
     private final String id;
-    private final double x;
-    private final double y;
-    private final int width;
-    private final int height;
 
     /**
      * Constructor.
@@ -29,36 +24,7 @@ public class Floor implements Movable, Savable {
         this.height = height;
         this.x = x;
         this.y = y;
-    }
-
-    @Override
-    public double getX() {
-        return x;
-    }
-
-    @Override
-    public void setX(double x) {
-
-    }
-
-    @Override
-    public double getY() {
-        return y;
-    }
-
-    @Override
-    public void setY(double y) {
-
-    }
-
-    @Override
-    public int getHeight() {
-        return height;
-    }
-
-    @Override
-    public int getWidth() {
-        return width;
+        this.z = -1000;
     }
 
     public String getId() {

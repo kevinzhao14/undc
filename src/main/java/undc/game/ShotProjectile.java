@@ -8,7 +8,6 @@ import undc.command.DataManager;
 import undc.entity.Entity;
 import undc.entity.Monster;
 import undc.entity.Player;
-import undc.general.Movable;
 import undc.graphics.SpriteGroup;
 import undc.items.Projectile;
 import undc.general.Savable;
@@ -25,14 +24,10 @@ import java.util.TimerTask;
  * Class that creates a Projectile that has been fired from a RangedWeapon, called a ShotProjectile. Handles its
  * creation, animation, and functionality.
  */
-public class ShotProjectile implements Movable, Savable {
+public class ShotProjectile extends GameObject implements Savable {
     private final Projectile projectile;
-    private final int width;
-    private final int height;
 
     private Image sprite;
-    private double posX;
-    private double posY;
     private double velX;
     private double velY;
     private double distance;
@@ -40,15 +35,15 @@ public class ShotProjectile implements Movable, Savable {
     /**
      * Constructor a ShotProjectile object.
      * @param projectile Projectile that is shot
-     * @param posX double x-cord of projectile
-     * @param posY double y-cord of projectile
+     * @param x double x-cord of projectile
+     * @param y double y-cord of projectile
      * @param velX double x-velocity of projectile
      * @param velY double y-velocity of projectile
      */
-    public ShotProjectile(Projectile projectile, double posX, double posY, double velX, double velY) {
+    public ShotProjectile(Projectile projectile, double x, double y, double velX, double velY) {
         this.projectile = projectile;
-        this.posX = posX;
-        this.posY = posY;
+        this.x = x;
+        this.y = y;
         this.velX = velX;
         this.velY = velY;
         this.height = projectile.getHeight();
@@ -61,7 +56,7 @@ public class ShotProjectile implements Movable, Savable {
      * @param m Movable object to get x and y coords from
      * @param width int width of explosion
      */
-    public static void addExplosion(Room room, Movable m, int width) {
+    public static void addExplosion(Room room, GameObject m, int width) {
         if (width > Vars.i("gc_explosion_maxwidth")) {
             width = Vars.i("gc_explosion_maxwidth");
         }
@@ -110,8 +105,8 @@ public class ShotProjectile implements Movable, Savable {
                     continue;
                 }
                 //calculate distance
-                double distX = (t.getX() + t.getWidth() / 2.0) - (posX + width / 2.0);
-                double distY = (t.getY() + t.getHeight() / 2.0) - (posY + height / 2.0);
+                double distX = (t.getX() + t.getWidth() / 2.0) - (x + width / 2.0);
+                double distY = (t.getY() + t.getHeight() / 2.0) - (y + height / 2.0);
                 double dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
                 //if in range of the blast
                 if (dist <= projectile.getSplashRange()) {
@@ -119,8 +114,8 @@ public class ShotProjectile implements Movable, Savable {
                 }
             }
             //attack player
-            double distX = Math.pow(posX - player.getX() + player.getWidth() / 2.0, 2);
-            double distY = Math.pow(posY - player.getY() + player.getHeight() / 2.0, 2);
+            double distX = Math.pow(x - player.getX() + player.getWidth() / 2.0, 2);
+            double distY = Math.pow(y - player.getY() + player.getHeight() / 2.0, 2);
             double dist = Math.sqrt(distX + distY);
             if (dist <= projectile.getSplashRange()) {
                 player.setHealth(Math.max(0, player.getHealth() - projectile.getDamage()
@@ -141,36 +136,6 @@ public class ShotProjectile implements Movable, Savable {
 
     public void hit() {
         hit(null);
-    }
-
-    @Override
-    public double getX() {
-        return this.posX;
-    }
-
-    @Override
-    public void setX(double x) {
-        this.posX = x;
-    }
-
-    @Override
-    public double getY() {
-        return this.posY;
-    }
-
-    @Override
-    public void setY(double y) {
-        this.posY = y;
-    }
-
-    @Override
-    public int getHeight() {
-        return this.height;
-    }
-
-    @Override
-    public int getWidth() {
-        return this.width;
     }
 
     public double getDistance() {
@@ -205,8 +170,8 @@ public class ShotProjectile implements Movable, Savable {
     public JSONObject saveObject() {
         JSONObject o = new JSONObject();
         o.put("projectile", projectile.getId());
-        o.put("posX", posX);
-        o.put("posY", posY);
+        o.put("posX", x);
+        o.put("posY", y);
         o.put("velX", velX);
         o.put("velY", velY);
         o.put("distance", distance);
@@ -216,8 +181,8 @@ public class ShotProjectile implements Movable, Savable {
     @Override
     public boolean parseSave(JSONObject o) {
         try {
-            posX = o.getDouble("posX");
-            posY = o.getDouble("posY");
+            x = o.getDouble("posX");
+            y = o.getDouble("posY");
             velX = o.getDouble("velX");
             velY = o.getDouble("velY");
             distance = o.getDouble("distance");

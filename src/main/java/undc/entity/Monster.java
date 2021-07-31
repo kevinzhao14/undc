@@ -70,7 +70,7 @@ public class Monster extends Entity {
      */
     public void attackMonster(double damageAmount) {
         if (this.getHealth() <= 0) {
-            Console.error("Cannont attack slain monster.");
+            Console.error("Cannot attack slain monster.");
             return;
         }
         if (!(Controller.getState() instanceof GameScreen)) {
@@ -144,8 +144,8 @@ public class Monster extends Entity {
      * @param posY int y-chord to reset player to
      */
     public void revive(int posX, int posY) {
-        this.posX = posX;
-        this.posY = posY;
+        this.x = posX;
+        this.y = posY;
         health = maxHealth;
         opacity = 1;
     }
@@ -168,8 +168,8 @@ public class Monster extends Entity {
             Audio.playAudio("boss_defeat");
             Item key = DataManager.getExitKey();
             Image sprite = key.getSprite();
-            double x = posX + width / 2.0 - sprite.getWidth() / 2;
-            double y = posY + height / 2.0 - sprite.getHeight() / 2;
+            double x = this.x + width / 2.0 - sprite.getWidth() / 2;
+            double y = this.y + height / 2.0 - sprite.getHeight() / 2;
             gc.dropAt(key, x, y);
             return;
         }
@@ -248,8 +248,8 @@ public class Monster extends Entity {
         JSONObject o = new JSONObject();
         o.put("id", id);
         o.put("health", health);
-        o.put("posX", posX);
-        o.put("posY", posY);
+        o.put("posX", x);
+        o.put("posY", y);
         o.put("attackCooldown", attackCooldown);
         o.put("reaction", reaction);
         o.put("opacity", opacity);
@@ -261,8 +261,8 @@ public class Monster extends Entity {
     public boolean parseSave(JSONObject o) {
         try {
             health = o.getDouble("health");
-            posX = o.getDouble("posX");
-            posY = o.getDouble("posY");
+            x = o.getDouble("posX");
+            y = o.getDouble("posY");
             attackCooldown = o.getDouble("attackCooldown");
             reaction = o.getDouble("reaction");
             opacity = o.getDouble("opacity");

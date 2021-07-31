@@ -167,21 +167,27 @@ public class LayoutGenerator {
         for (int i = 1; i < GRID_WIDTH - 1; i++) {
             for (int j = 1; j < GRID_HEIGHT - 1; j++) {
                 if (roomGrid[i][j] != null && roomGrid[i][j].getType() != RoomType.EXITROOM) {
+                    Door d;
                     if (roomGrid[i + 1][j] != null) {
-                        roomGrid[i][j].setRightDoor(new Door(Direction.EAST, ROOM_WIDTH - 1,
-                                (ROOM_HEIGHT - DOOR_SIZE) / 2.0, DOOR_SIZE, DOOR_SIZE, roomGrid[i + 1][j]));
+                        d = new Door(Direction.EAST, ROOM_WIDTH - 1, (ROOM_HEIGHT - DOOR_SIZE) / 2.0, DOOR_SIZE,
+                                DOOR_SIZE, roomGrid[i + 1][j]);
+                        roomGrid[i][j].setRightDoor(d);
                     }
                     if (roomGrid[i - 1][j] != null) {
-                        roomGrid[i][j].setLeftDoor(new Door(Direction.WEST, -DOOR_SIZE + 1,
-                                (ROOM_HEIGHT - DOOR_SIZE) / 2.0, DOOR_SIZE, DOOR_SIZE, roomGrid[i - 1][j]));
+                        d = new Door(Direction.WEST, -DOOR_SIZE + 1, (ROOM_HEIGHT - DOOR_SIZE) / 2.0, DOOR_SIZE,
+                                DOOR_SIZE, roomGrid[i - 1][j]);
+                        roomGrid[i][j].setLeftDoor(d);
                     }
                     if (roomGrid[i][j + 1] != null) {
-                        roomGrid[i][j].setBottomDoor(new Door(Direction.SOUTH, (ROOM_WIDTH - DOOR_SIZE) / 2.0,
-                                -DOOR_SIZE + 1, DOOR_SIZE, DOOR_SIZE, roomGrid[i][j + 1]));
+                        d = new Door(Direction.SOUTH, (ROOM_WIDTH - DOOR_SIZE) / 2.0, -DOOR_SIZE + 1, DOOR_SIZE,
+                                DOOR_SIZE, roomGrid[i][j + 1]);
+                        d.setZ(100);
+                        roomGrid[i][j].setBottomDoor(d);
                     }
                     if (roomGrid[i][j - 1] != null) {
-                        roomGrid[i][j].setTopDoor(new Door(Direction.NORTH, (ROOM_WIDTH - DOOR_SIZE) / 2.0,
-                                ROOM_HEIGHT - 1, DOOR_SIZE, DOOR_SIZE, roomGrid[i][j - 1]));
+                        d = new Door(Direction.NORTH, (ROOM_WIDTH - DOOR_SIZE) / 2.0, ROOM_HEIGHT - 1, DOOR_SIZE,
+                                DOOR_SIZE, roomGrid[i][j - 1]);
+                        roomGrid[i][j].setTopDoor(d);
                     }
                 }
             }

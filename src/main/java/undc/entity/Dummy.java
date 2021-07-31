@@ -1,17 +1,11 @@
 package undc.entity;
 
-import undc.general.Movable;
+import undc.game.GameObject;
 
 /**
  * Represents a dummy entity/movable object used in imiatating an object's position.
  */
-public class Dummy implements Movable {
-    private final int width;
-    private final int height;
-
-    private double x;
-    private double y;
-
+public class Dummy extends GameObject {
     /**
      * Creates a Dummy object.
      * @param x X position
@@ -24,35 +18,5 @@ public class Dummy implements Movable {
         this.y = y;
         this.width = w;
         this.height = h;
-    }
-
-    @Override
-    public double getX() {
-        return x;
-    }
-
-    @Override
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    @Override
-    public double getY() {
-        return y;
-    }
-
-    @Override
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    @Override
-    public int getHeight() {
-        return height;
-    }
-
-    @Override
-    public int getWidth() {
-        return width;
     }
 }

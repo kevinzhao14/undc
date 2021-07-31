@@ -29,7 +29,6 @@ import undc.inventory.InventoryItem;
 import undc.items.Item;
 import undc.entity.Monster;
 import undc.entity.MonsterType;
-import undc.general.Movable;
 import undc.game.calc.Move;
 import undc.entity.Player;
 import undc.items.RangedWeapon;
@@ -191,7 +190,7 @@ public class GameController implements Savable {
     private void startTimer() {
         timer = new Timer();
         runner = new GameRunner();
-        timer.schedule(runner, 0, 1000 / Vars.i("fps"));
+        timer.schedule(runner, 0, 1000 / Vars.i("sv_tickrate"));
     }
 
     /**
@@ -437,7 +436,7 @@ public class GameController implements Savable {
      * @param x int x-cord to spawn it to
      * @param y int y-cord to spawn it to
      */
-    public void spawn(Movable ent, int x, int y) {
+    public void spawn(GameObject ent, int x, int y) {
         if (ent == null) {
             Console.error("Invalid entity to spawn.");
             return;
@@ -478,12 +477,6 @@ public class GameController implements Savable {
      */
     private double round(double number) {
         return Math.round(number * Vars.i("sv_precision")) / (double) Vars.i("sv_precision");
-    }
-
-    /**
-     * Shortcut to refresh/draw the frame.
-     */
-    private void refresh() {
     }
 
     /**
@@ -787,9 +780,9 @@ public class GameController implements Savable {
                 // check what player is facing & close enough to
                 for (Object o : check) {
                     // player is facing the obstacle & it is interactable & it is in range
-                    if (o instanceof Interactable && o instanceof Movable
-                            && directionOf(player, (Movable) o).contains(player.getDirection())
-                            && distance(player, (Movable) o) < Vars.i("sv_interact_distance")) {
+                    if (o instanceof Interactable && o instanceof GameObject
+                            && directionOf(player, (GameObject) o).contains(player.getDirection())
+                            && distance(player, (GameObject) o) < Vars.i("sv_interact_distance")) {
                         ((Interactable) o).interact();
                         states.put("interact", false);
                         return;
@@ -927,7 +920,7 @@ public class GameController implements Savable {
                 }
                 player.setAttackCooldown(1000 * cooldown);
                 for (Entity e : room.getEntities()) {
-                    if (e instanceof Monster) {
+                    if (e instanceof Monster && e.getHealth() > 0) {
                         double dist = distance(player, e);
                         if (dist <= Vars.i("sv_player_attack_range")) {
                             ((Monster) e).attackMonster(modifier * damage);
@@ -1172,7 +1165,7 @@ public class GameController implements Savable {
          * @param newPos New coordinates of object m's movmement
          * @return Whether object o is in range of object m's movement
          */
-        private boolean inRange(Movable o, Movable m, Coords newPos) {
+        private boolean inRange(GameObject o, GameObject m, Coords newPos) {
             /* Checks if the object is in range of the player's movement
              *          _________
              *          |[]     |
@@ -1205,7 +1198,7 @@ public class GameController implements Savable {
          * @param obj Object to check
          * @return Returns the direction obj is to origin
          */
-        private ArrayList<Direction> directionOf(Movable origin, Movable obj) {
+        private ArrayList<Direction> directionOf(GameObject origin, GameObject obj) {
             ArrayList<Direction> dirs = new ArrayList<>();
             if (obj.getX() <= origin.getX()) {
                 dirs.add(Direction.WEST);
@@ -1230,7 +1223,7 @@ public class GameController implements Savable {
          * @param <T> Type of object to check
          * @return Returns with the collision data of the collision, with null values if no collision
          */
-        private <T extends Movable> Collision<T> checkCollisions(T[] list, Movable m, Coords newPos) {
+        private <T extends GameObject> Collision<T> checkCollisions(T[] list, GameObject m, Coords newPos) {
             double x = m.getX();
             double y = m.getY();
             double newX = newPos.getX();
@@ -1351,7 +1344,7 @@ public class GameController implements Savable {
          * @param moveRight Whether mo is moving right or left
          * @return The coordinates of the intersection point
          */
-        private Coords getIntersect(Movable o, Movable mo, Equation eq, boolean moveUp, boolean moveRight) {
+        private Coords getIntersect(GameObject o, GameObject mo, Equation eq, boolean moveUp, boolean moveRight) {
             /* Calculate x-coordinate intersection point on the y-axis
              *
              *          v obstacle
@@ -1445,7 +1438,7 @@ public class GameController implements Savable {
          * @param b Second object to check
          * @return Returns the distance between the two objects
          */
-        private double distance(Movable a, Movable b) {
+        private double distance(GameObject a, GameObject b) {
             double distX = (a.getX() + a.getWidth() / 2.0) - (b.getX() + b.getWidth() / 2.0);
             double distY = (a.getY() + a.getHeight() / 2.0) - (b.getY() + b.getHeight() / 2.0);
             return round(Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2)));
@@ -1457,7 +1450,7 @@ public class GameController implements Savable {
          * @param b Second object to check
          * @return Angle of the distance between the two objects
          */
-        private double angle(Movable a, Movable b) {
+        private double angle(GameObject a, GameObject b) {
             double distX = (a.getX() + a.getWidth() / 2.0) - (b.getX() + b.getWidth() / 2.0);
             double distY = (a.getY() + a.getHeight() / 2.0) - (b.getY() + b.getHeight() / 2.0);
             return Math.atan2(distY, distX);

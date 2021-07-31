@@ -5,18 +5,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import undc.command.Console;
 import undc.command.DataManager;
-import undc.general.Movable;
 import undc.general.Savable;
+
 
 /**
  * Represents an Obstacle object. Obstacles are physical, static objects in the game that entities can interact with.
  */
-public class Obstacle implements Movable, Savable {
+public class Obstacle extends GameObject implements Savable {
     private String id;
-    private double x;
-    private double y;
-    private int height;
-    private int width;
     private ObstacleType type;
     private Image sprite;
 
@@ -56,36 +52,6 @@ public class Obstacle implements Movable, Savable {
         o.type = this.type;
         o.sprite = this.sprite;
         return o;
-    }
-
-    @Override
-    public double getX() {
-        return this.x;
-    }
-
-    @Override
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    @Override
-    public double getY() {
-        return this.y;
-    }
-
-    @Override
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    @Override
-    public int getHeight() {
-        return this.height;
-    }
-
-    @Override
-    public int getWidth() {
-        return this.width;
     }
 
     public ObstacleType getType() {

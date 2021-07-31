@@ -13,14 +13,13 @@ public class DoubleCVar extends CVar {
     /**
      * Constructor for a DoubleCVar.
      * @param name Name of the CVar
-     * @param nick Nickname of the CVar
      * @param min Minimum value of the CVar
      * @param max Maximum value of the CVar
      * @param def Default value of the CVar
      * @param rc Whether the CVar requires cheats. Defaults to true
      */
-    public DoubleCVar(String name, String nick, double min, double max, double def, boolean rc) {
-        super(name, nick, rc);
+    public DoubleCVar(String name, double min, double max, double def, boolean rc) {
+        super(name, rc);
         if (min > max) {
             Console.error("Minimum cannot be greater than the maximum");
             return;
@@ -35,12 +34,12 @@ public class DoubleCVar extends CVar {
         this.value = def;
     }
 
-    public DoubleCVar(String name, String nick, double min, double max, double def) {
-        this(name, nick, min, max, def, true);
+    public DoubleCVar(String name, double min, double max, double def) {
+        this(name, min, max, def, true);
     }
 
-    public DoubleCVar(String name, String nick, double min, double max, double def, boolean rc, boolean modifiable) {
-        this(name, nick, min, max, def, rc);
+    public DoubleCVar(String name, double min, double max, double def, boolean rc, boolean modifiable) {
+        this(name, min, max, def, rc);
         this.modifiable = modifiable;
     }
 

@@ -26,8 +26,8 @@ public class NPC extends Entity implements Interactable {
      */
     public NPC(int width, int height, double x, double y, Image sprite, String name, Dialogue dialogue) {
         super(100, 0, width, height, null);
-        this.posX = x;
-        this.posY = y;
+        this.x = x;
+        this.y = y;
         this.sprite = sprite;
         this.invulnerable = true;
         this.name = name;
@@ -55,8 +55,8 @@ public class NPC extends Entity implements Interactable {
         JSONObject o = new JSONObject();
         o.put("width", width);
         o.put("height", height);
-        o.put("posX", posX);
-        o.put("posY", posY);
+        o.put("posX", x);
+        o.put("posY", y);
         String[] spriteArr = sprite.getUrl().split("/");
         o.put("sprite", spriteArr[spriteArr.length - 1]);
         o.put("name", name);
@@ -72,8 +72,8 @@ public class NPC extends Entity implements Interactable {
             health = 100;
             width = o.getInt("width");
             height = o.getInt("height");
-            posX = o.getDouble("posX");
-            posY = o.getDouble("posY");
+            x = o.getDouble("posX");
+            y = o.getDouble("posY");
             setSprite(new Image("entities/npcs/" + o.getString("sprite")));
         } catch (Exception e) {
             Console.error("Failed to load NPC.");

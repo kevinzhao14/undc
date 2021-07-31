@@ -11,20 +11,19 @@ public class BooleanCVar extends CVar {
     /**
      * Constructor for a BooleanCVar.
      * @param name Name of the CVar
-     * @param nick Nickname of the CVar
      * @param def Default value of the CVar
      * @param rc Whether the CVar requires cheats to modify. Defaults to true
      * @param modifiable Whether the CVar is modifiable. Defaults to true
      */
-    public BooleanCVar(String name, String nick, boolean def, boolean rc, boolean modifiable) {
-        super(name, nick, rc);
+    public BooleanCVar(String name, boolean def, boolean rc, boolean modifiable) {
+        super(name, rc);
         this.def = def;
         this.value = def;
         this.modifiable = modifiable;
     }
 
-    public BooleanCVar(String name, String nick, boolean def, boolean rc) {
-        this(name, nick, def, rc, true);
+    public BooleanCVar(String name, boolean def, boolean rc) {
+        this(name, def, rc, true);
     }
 
     public boolean getVal() {

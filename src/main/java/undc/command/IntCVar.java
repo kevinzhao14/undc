@@ -13,14 +13,13 @@ public class IntCVar extends CVar {
     /**
      * Constructor for an IntCVar.
      * @param name Name of the CVar
-     * @param nick Nickname of the CVar
      * @param min Minimum value of the CVar
      * @param max Maximum value of the CVar
      * @param def Default value of the CVar
      * @param rc Whether the CVar requires cheats. Defaults to true
      */
-    public IntCVar(String name, String nick, int min, int max, int def, boolean rc) {
-        super(name, nick, rc);
+    public IntCVar(String name, int min, int max, int def, boolean rc) {
+        super(name, rc);
         if (min > max) {
             Console.error("Minimum cannot be greater than the maximum");
             return;
@@ -35,12 +34,12 @@ public class IntCVar extends CVar {
         this.value = def;
     }
 
-    public IntCVar(String name, String nick, int min, int max, int def) {
-        this(name, nick, min, max, def, true);
+    public IntCVar(String name, int min, int max, int def) {
+        this(name, min, max, def, true);
     }
 
-    public IntCVar(String name, String nick, int min, int max, int def, boolean rc, boolean modifiable) {
-        this(name, nick, min, max, def, rc);
+    public IntCVar(String name, int min, int max, int def, boolean rc, boolean modifiable) {
+        this(name, min, max, def, rc);
         this.modifiable = modifiable;
     }
 
