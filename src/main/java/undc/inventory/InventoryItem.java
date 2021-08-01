@@ -7,20 +7,29 @@ import undc.items.Item;
 import undc.general.Savable;
 
 /**
- * Class that handles Items that have quantities.
+ * Class that handles Item storage in an Inventory.
  */
 public class InventoryItem implements Savable {
-    private Item item;
+    private String item;
     private int quantity;
     private boolean infinite;
 
-    public InventoryItem(Item i, int q) {
-        this.item = i;
-        this.quantity = q;
+    /**
+     * Constructor.
+     * @param item Item
+     * @param quantity Quantity
+     */
+    public InventoryItem(String item, int quantity) {
+        if (DataManager.ITEMS.get(item) == null) {
+            Console.error("Invalid item.");
+            return;
+        }
+        this.item = item;
+        this.quantity = quantity;
     }
 
     public Item getItem() {
-        return item;
+        return DataManager.ITEMS.get(item);
     }
 
     public int getQuantity() {
@@ -46,7 +55,7 @@ public class InventoryItem implements Savable {
     @Override
     public JSONObject saveObject() {
         JSONObject o = new JSONObject();
-        o.put("item", item.getId());
+        o.put("item", item);
         o.put("quantity", quantity);
         o.put("infinite", infinite);
         return o;
@@ -55,7 +64,11 @@ public class InventoryItem implements Savable {
     @Override
     public boolean parseSave(JSONObject o) {
         try {
-            item = DataManager.ITEMS.get(o.getString("item"));
+            item = o.getString("item");
+            if (DataManager.ITEMS.get(item) == null) {
+                Console.error("Invalid item.");
+                return false;
+            }
             quantity = o.getInt("quantity");
             infinite = o.getBoolean("infinite");
         } catch (Exception e) {

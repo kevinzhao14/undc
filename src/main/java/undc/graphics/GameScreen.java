@@ -165,8 +165,7 @@ public class GameScreen extends GameState implements Savable {
         room.setVisited(true);
 
         //fade out old room
-        Pane root = (Pane) scene.getRoot();
-        if (root.getChildren().size() > 0) {
+        if (previous != null) {
             fadeOut(main);
         } else {
             createRoom();
@@ -307,7 +306,7 @@ public class GameScreen extends GameState implements Savable {
                 if (!i.getValue().isSpawnable()) {
                     continue;
                 }
-                InventoryItem item = new InventoryItem(i.getValue(), 1);
+                InventoryItem item = new InventoryItem(i.getKey(), 1);
                 item.setInfinite(true);
                 inv.add(item, row, col);
                 col++;

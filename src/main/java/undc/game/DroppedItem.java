@@ -10,7 +10,7 @@ import undc.general.Savable;
  * Class that handles items dropped from a player's inventory.
  */
 public class DroppedItem extends GameObject implements Savable {
-    private final Item item;
+    private final String item;
 
     /**
      * Constructor for an item that is dropped, taking in its location, height, and width.
@@ -20,7 +20,12 @@ public class DroppedItem extends GameObject implements Savable {
      * @param w int width of the item
      * @param h int height fo the item
      */
-    public DroppedItem(Item item, double x, double y, int w, int h) {
+    public DroppedItem(String item, double x, double y, int w, int h) {
+        if (DataManager.ITEMS.get(item) == null) {
+            Console.error("Invalid item.");
+            this.item = "";
+            return;
+        }
         this.item = item;
         this.x = x;
         this.y = y;
@@ -30,13 +35,13 @@ public class DroppedItem extends GameObject implements Savable {
     }
 
     public Item getItem() {
-        return item;
+        return DataManager.ITEMS.get(item);
     }
 
     @Override
     public JSONObject saveObject() {
         JSONObject o = new JSONObject();
-        o.put("item", item.getId());
+        o.put("item", item);
         o.put("x", x);
         o.put("y", y);
         o.put("width", width);
@@ -65,8 +70,7 @@ public class DroppedItem extends GameObject implements Savable {
      */
     public static DroppedItem parseSaveObject(JSONObject o) {
         try {
-            Item item = DataManager.ITEMS.get(o.getString("item"));
-            return new DroppedItem(item, 0, 0, 0, 0);
+            return new DroppedItem(o.getString("item"), 0, 0, 0, 0);
         } catch (Exception e) {
             Console.error("Failed to create Dropped Item.");
             return null;

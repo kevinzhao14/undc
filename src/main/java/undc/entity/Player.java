@@ -59,7 +59,9 @@ public class Player extends Entity implements Savable {
         super(maxHealth, attack, Vars.i("sv_player_width"), Vars.i("sv_player_height"), null);
         this.gold = 0;
         this.inventory = new Inventory(Vars.i("sv_inventory_rows"), Vars.i("sv_inventory_cols"));
-        inventory.add(weapon);
+        if (weapon != null) {
+            inventory.add(weapon);
+        }
         monstersKilled = 0;
         totalDamageDealt = 0.0;
         totalItemsConsumed = 0;

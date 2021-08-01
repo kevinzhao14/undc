@@ -55,7 +55,7 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
     }
 
     public void add(Item item, int quantity) {
-        add(new InventoryItem(item, quantity));
+        add(new InventoryItem(item.getId(), quantity));
     }
 
     public void add(Item item) {

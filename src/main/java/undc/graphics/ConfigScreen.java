@@ -59,7 +59,10 @@ public class ConfigScreen extends GameState {
         ToggleGroup weaponGroup = new ToggleGroup();
         ArrayList<RadioButton> weaponButtons = new ArrayList<>(DataManager.getStartingWeapons().length);
         for (int i = 0; i < DataManager.getStartingWeapons().length; i++) {
-            weaponButtons.add(new RadioButton(DataManager.getStartingWeapons()[i].getName()));
+            Weapon w = DataManager.getStartingWeapons()[i];
+            RadioButton button = new RadioButton(w.getName());
+            button.setId(w.getId());
+            weaponButtons.add(button);
             weaponButtons.get(i).setToggleGroup(weaponGroup);
         }
 
@@ -107,13 +110,13 @@ public class ConfigScreen extends GameState {
             String playerName = playerNameEntry.getText();
             RadioButton selectedDifficulty = (RadioButton) difficultyGroup.getSelectedToggle();
             RadioButton selectedWeapon = (RadioButton) weaponGroup.getSelectedToggle();
-            String weaponName = (selectedWeapon == null) ? null : selectedWeapon.getText();
+            String weaponId = (selectedWeapon == null) ? null : selectedWeapon.getId();
 
             Weapon weaponRef = null;
             Difficulty difficultyRef;
 
             for (Weapon w : DataManager.getStartingWeapons()) {
-                if (w.getName().equals(weaponName)) {
+                if (w.getId().equals(weaponId)) {
                     weaponRef = w;
                     break;
                 }

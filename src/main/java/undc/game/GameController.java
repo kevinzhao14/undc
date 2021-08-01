@@ -425,7 +425,7 @@ public class GameController implements Savable {
             x -= sprite.getWidth() / 2;
             y -= sprite.getHeight() / 2;
 
-            DroppedItem di = new DroppedItem(item, x, y, (int) sprite.getWidth(), (int) sprite.getHeight());
+            DroppedItem di = new DroppedItem(item.getId(), x, y, (int) sprite.getWidth(), (int) sprite.getHeight());
             room.getDroppedItems().add(di);
         }
     }
@@ -824,7 +824,7 @@ public class GameController implements Savable {
             x = check.getX();
             y = check.getY();
 
-            DroppedItem di = new DroppedItem(item, x, y, width, height);
+            DroppedItem di = new DroppedItem(item.getId(), x, y, width, height);
             room.getDroppedItems().add(di);
             Platform.runLater(() -> getScreen().updateHud());
         }
@@ -1261,6 +1261,10 @@ public class GameController implements Savable {
             return new Collision<>();
         }
 
+        private <T extends GameObject> Collision<T> checkCollisions(ArrayList<T> list, GameObject m, Coords newPos) {
+            return checkCollisions(list.toArray((T[]) new GameObject[0]), m, newPos);
+        }
+
         /**
          * Checks if the player has entered a door. If so, teleport player.
          * @param newPos New coordinates of the player's movement
@@ -1497,17 +1501,30 @@ public class GameController implements Savable {
             }
 
             if (d <= range && d >= Vars.i("ai_monster_move_min")) {
-                //move monster towards player
-                double angle = angle(md, player) - Math.PI;
-                double speed = m.getSpeed() / Vars.i("sv_tickrate");
-                double newPosX = mPosX + round(Math.cos(angle) * speed);
-                double newPosY = mPosY + round(Math.sin(angle) * speed);
+                int counter = 0;
+                int dir = Math.random() < 0.1 ? 1 : -1;
+                Collision<Obstacle> obs;
+                Coords newPos;
+                do {
+                    //move monster towards player
+                    double angle = angle(md, player) - Math.PI + (dir * counter * Math.PI / 4);
+                    double speed = m.getSpeed() / Vars.i("sv_tickrate");
+                    double newPosX = mPosX + round(Math.cos(angle) * speed);
+                    double newPosY = mPosY + round(Math.sin(angle) * speed);
 
-                //check collisions with obstacles
-                Coords newPos = checkPos(new Coords(round(newPosX), round(newPosY)), m.getWidth(), m.getHeight());
+                    //check collisions with obstacles
+                    newPos = checkPos(new Coords(round(newPosX), round(newPosY)), m.getWidth(), m.getHeight());
+
+                    obs = checkCollisions(room.getObstacles(), m, newPos);
+                    counter++;
+                } while (obs.getCollider() != null && counter < 8);
+
+                if (obs.getCollider() != null) {
+                    return false;
+                }
 
                 //add to queue
-                Move moveItem = new Move(newPos, reactTime);
+                Move moveItem = new Move(obs.getCollisionPoint() == null ? newPos : obs.getCollisionPoint(), reactTime);
                 m.getMoveQueue().add(moveItem);
             }
             d = distance(m, player);
