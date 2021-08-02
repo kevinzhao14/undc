@@ -84,7 +84,6 @@ public class AudioController extends SettingsPageController {
 
     public void activeTextField(MouseEvent e) {
         active = ((Control) e.getSource()).getId();
-        System.out.println(active);
     }
 
     /**

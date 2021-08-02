@@ -21,8 +21,24 @@ public class ResizableNode {
      * @param direction Direction the eventNode should be allowed to resize
      * @param resizeNodes The nodes that are to be resized
      */
-    public static void add(Node eventNode, ResizeDirection direction, Region... resizeNodes) {
-        LIST.add(new ResizableObject(eventNode, direction, resizeNodes));
+    public static ResizableObject add(Node eventNode, ResizeDirection direction, Region... resizeNodes) {
+        ResizableObject o = new ResizableObject(eventNode, direction, resizeNodes);
+        LIST.add(o);
+        return o;
+    }
+
+    /**
+     * Listener events.
+     */
+    public enum Event {
+        START, RESIZE, END
+    }
+
+    /**
+     * Listens for resize events.
+     */
+    public interface Listener {
+        void accept(MouseEvent mouseEvent, Event dragEvent);
     }
 
     /**
@@ -35,9 +51,10 @@ public class ResizableNode {
     /**
      * Class that actually makes a Region resizable and handles resizing.
      */
-    private static final class ResizableObject implements EventHandler<MouseEvent> {
+    public static final class ResizableObject implements EventHandler<MouseEvent> {
         private final Node eventNode;
         private final ArrayList<Region> resizeNodes = new ArrayList<>();
+        private final ArrayList<Listener> listeners = new ArrayList<>();
         private final ResizeDirection direction;
 
         private double lastMouseX;
@@ -61,6 +78,14 @@ public class ResizableNode {
             this.eventNode.addEventHandler(MouseEvent.ANY, this);
         }
 
+        public boolean addListener(Listener listener) {
+            return this.listeners.add(listener);
+        }
+
+        public void remove() {
+            eventNode.removeEventHandler(MouseEvent.ANY, this);
+        }
+
         @Override
         public void handle(MouseEvent event) {
             // press event to start resizing
@@ -71,6 +96,9 @@ public class ResizableNode {
                     this.lastMouseY = event.getSceneY();
                     event.consume();
                     this.resizing = true;
+                    for (Listener listener : this.listeners) {
+                        listener.accept(event, Event.START);
+                    }
                 }
             } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                 // resize the node
@@ -81,15 +109,21 @@ public class ResizableNode {
 
                     // translate every node based on the mouse move
                     for (final Region dragNode : this.resizeNodes) {
-                        final double initialWidth = dragNode.getPrefWidth();
-                        final double initialHeight = dragNode.getPrefHeight();
+                        double newWidth = dragNode.getPrefWidth() + deltaX;
+                        double newHeight = dragNode.getPrefHeight() + deltaY;
                         if (direction == ResizeDirection.HORIZONTAL || direction == ResizeDirection.ALL
                                 || direction == ResizeDirection.H_DRAGV) {
-                            dragNode.setPrefWidth(initialWidth + deltaX);
+                            if (newWidth < dragNode.getMinWidth()) {
+                                newWidth = dragNode.getMinWidth();
+                            }
+                            dragNode.setPrefWidth(newWidth);
                         }
                         if (direction == ResizeDirection.VERTICAL || direction == ResizeDirection.ALL
                                 || direction == ResizeDirection.V_DRAGH) {
-                            dragNode.setPrefHeight(initialHeight + deltaY);
+                            if (newHeight < dragNode.getMinHeight()) {
+                                newHeight = dragNode.getMinHeight();
+                            }
+                            dragNode.setPrefHeight(newHeight);
                         }
                         if (direction == ResizeDirection.H_DRAGV) {
                             dragNode.setTranslateY(dragNode.getTranslateY() + deltaY);
@@ -103,6 +137,10 @@ public class ResizableNode {
                     this.lastMouseX = event.getSceneX();
                     this.lastMouseY = event.getSceneY();
 
+                    for (Listener listener : this.listeners) {
+                        listener.accept(event, Event.RESIZE);
+                    }
+
                     event.consume();
                 }
             } else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
@@ -110,6 +148,9 @@ public class ResizableNode {
                 if (this.resizing) {
                     event.consume();
                     this.resizing = false;
+                    for (Listener listener : this.listeners) {
+                        listener.accept(event, Event.END);
+                    }
                 }
             }
         }

@@ -273,14 +273,25 @@ public class Console {
         suggestBox = new VBox();
         suggestBox.setId("suggestions");
         suggestBox.setPrefWidth(WIDTH - 25);
+        suggestBox.setMinWidth(WIDTH / 2.0 - 25);
         suggestBox.setTranslateX(OFF_X + 10);
         suggestBox.setTranslateY(HEIGHT + OFF_Y - 17);
         suggestBox.setVisible(false);
 
-        DraggableNode.add(box, box, suggestBox);
-        ResizableNode.add(resizeArea, ResizableNode.ResizeDirection.ALL, box);
+        DraggableNode.add(box, suggestBox, box);
+        ResizableNode.ResizableObject obj = ResizableNode.add(resizeArea, ResizableNode.ResizeDirection.ALL, box);
         // create a new resize handler to resize suggestions horizontally but move vertically
-        ResizableNode.add(resizeArea, ResizableNode.ResizeDirection.H_DRAGV, suggestBox);
+        ResizableNode.add(resizeArea, ResizableNode.ResizeDirection.HORIZONTAL, suggestBox);
+        DraggableNode.DraggableObject sug =
+                DraggableNode.add(resizeArea, DraggableNode.DragDirection.VERTICAL, false, suggestBox);
+        obj.addListener((me, de) -> {
+            if (de == ResizableNode.Event.RESIZE) {
+                if (box.getHeight() <= box.getMinHeight()) {
+                    sug.stop();
+                }
+            }
+        });
+
 
         scene.getChildren().addAll(box, suggestBox);
         scene.getStylesheets().add("styles/console.css");

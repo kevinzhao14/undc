@@ -183,7 +183,7 @@ public class GraphicalInventory extends Overlay {
                     obj.addListener((m, e) -> {
                         // on the start of the drag, move the sprite of the item into a pane so that it is not behind
                         // any of the inventory cells.
-                        if (e == DraggableNode.Event.DragStart) {
+                        if (e == DraggableNode.Event.START) {
                             Bounds bounds = image.localToScene(image.getBoundsInLocal());
                             double x = bounds.getMinX();
                             double y = bounds.getMinY();
@@ -197,7 +197,7 @@ public class GraphicalInventory extends Overlay {
                             // within the bounds of a cell, move it to that cell as long as its empty. If its center is
                             // outside of the entire inventory GUI, drop it in-game. Otherwise, put it back to where it
                             // started.
-                        } else if (e == DraggableNode.Event.DragEnd) {
+                        } else if (e == DraggableNode.Event.END) {
                             // loop through all of the cells to see where it is over.
                             for (int i1 = 0; i1 < rows.length; i1++) {
                                 HBox hbox = rows[i1];
