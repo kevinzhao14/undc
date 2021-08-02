@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import undc.command.Console;
 import undc.entity.Entity;
+import undc.game.calc.Vector;
 import undc.general.Controller;
 import undc.command.DataManager;
 import undc.graphics.Camera;
@@ -1443,9 +1444,10 @@ public class GameController implements Savable {
          * @return Returns the distance between the two objects
          */
         private double distance(GameObject a, GameObject b) {
-            double distX = (a.getX() + a.getWidth() / 2.0) - (b.getX() + b.getWidth() / 2.0);
-            double distY = (a.getY() + a.getHeight() / 2.0) - (b.getY() + b.getHeight() / 2.0);
-            return round(Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2)));
+            Vector v = shortestVector(a, b);
+            Coords ac = v.getStart();
+            Coords bc = v.getEnd();
+            return round(Math.sqrt(Math.pow(ac.getX() - bc.getX(), 2) + Math.pow(ac.getY() - bc.getY(), 2)));
         }
 
         /**
@@ -1455,9 +1457,47 @@ public class GameController implements Savable {
          * @return Angle of the distance between the two objects
          */
         private double angle(GameObject a, GameObject b) {
-            double distX = (a.getX() + a.getWidth() / 2.0) - (b.getX() + b.getWidth() / 2.0);
-            double distY = (a.getY() + a.getHeight() / 2.0) - (b.getY() + b.getHeight() / 2.0);
-            return Math.atan2(distY, distX);
+            Vector v = shortestVector(a, b);
+            Coords ac = v.getStart();
+            Coords bc = v.getEnd();
+            return Math.atan2(ac.getY() - bc.getY(), ac.getX() - bc.getX());
+        }
+
+        /**
+         * Finds the shortest vector between two objects.
+         * @param a First object
+         * @param b Second object
+         * @return Returns a vector with the shortest distance
+         */
+        private Vector shortestVector(GameObject a, GameObject b) {
+            double ax;
+            double ay;
+            double bx;
+            double by;
+
+            if (b.getX() + b.getWidth() <= a.getX()) {
+                ax = a.getX();
+                bx = b.getX() + b.getWidth();
+            } else if (b.getX() >= a.getX() + a.getWidth()) {
+                ax = a.getX() + a.getWidth();
+                bx = b.getX();
+            } else {
+                bx = b.getX();
+                ax = bx;
+            }
+
+            if (b.getY() + b.getHeight() <= a.getY()) {
+                ay = a.getY();
+                by = b.getY() + b.getHeight();
+            } else if (b.getY() >= a.getY() + a.getHeight()) {
+                ay = a.getY() + a.getHeight();
+                by = b.getY();
+            } else {
+                by = b.getY();
+                ay = by;
+            }
+
+            return new Vector(new Coords(ax, ay), new Coords(bx, by));
         }
 
         /**

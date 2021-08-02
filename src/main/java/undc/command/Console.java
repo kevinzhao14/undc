@@ -89,34 +89,45 @@ public class Console {
     }
 
     /**
-     * Runs a command.
-     * @param command Command to run
-     * @param echo Whether to print the command to the console
+     * Runs a command(s).
+     * @param input Command to run
+     * @param echo Whether to print the input to the console
      * @param muted Whether to suppress all console outputs
      */
-    public static void run(String command, boolean echo, boolean muted) {
+    public static void run(String input, boolean echo, boolean muted) {
         // remove extra whitespaces
-        command = command.replaceAll("\\s{2,}", " ").trim();
+        input = input.replaceAll("\\s{2,}", " ").trim();
 
         if (echo) {
-            print(PREFIX + command);
+            print(PREFIX + input);
         }
         Console.muted = muted;
 
-        // get the arguments of the command
-        String[] cmd = command.split(" ");
-        String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
-
-        // search for the command
-        for (Command c : COMMANDS) {
-            if (c.getName().equalsIgnoreCase(cmd[0])) {
-                c.run(args);
-                Console.muted = false;
-                return;
+        // multiple commands
+        String[] commands = input.split(";");
+        commandLoop:
+        for (String command : commands) {
+            command = command.replaceAll("\\s{2,}", " ").trim();
+            if (command.equals("")) {
+                continue;
             }
+
+            // get the arguments of the input
+            String[] cmd = command.split(" ");
+            String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
+
+            // search for the input
+            for (Command c : COMMANDS) {
+                if (c.getName().equalsIgnoreCase(cmd[0])) {
+                    c.run(args);
+                    Console.muted = false;
+                    continue commandLoop;
+                }
+            }
+            // no command found
+            error("Invalid command '" + cmd[0] + "'");
         }
-        // no command found
-        error("Invalid command.");
+
         Console.muted = false;
     }
 
@@ -226,6 +237,9 @@ public class Console {
         input.setId("input");
 
         input.setOnAction((e) -> {
+            if (input.getText().trim().equals("")) {
+                return;
+            }
             commandPos = 0;
             // add the command to the history if it's not the same as the previous command, to prevent clogging
             if (COMMAND_HISTORY.size() == 0 || !input.getText().equalsIgnoreCase(COMMAND_HISTORY.get(0))) {

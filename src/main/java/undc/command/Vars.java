@@ -58,7 +58,7 @@ public class Vars {
         INT_VARS.add(new IntCVar("gc_healthbar_height", 0, 1000, 5, true, false));
         INT_VARS.add(new IntCVar("sv_player_width", 0, 100, 16, true, false));
         INT_VARS.add(new IntCVar("sv_player_height", 0, 100, 16, true, false));
-        INT_VARS.add(new IntCVar("sv_player_pickup_range", 0, 1000, 20));
+        INT_VARS.add(new IntCVar("sv_player_pickup_range", 0, 1000, 5));
         INT_VARS.add(new IntCVar("sv_precision", 0, 1000000, 10000, true, false));
         INT_VARS.add(new IntCVar("sv_obstacle_gendist", 0, 1000, 64));
         INT_VARS.add(new IntCVar("sv_acceleration", 0, 10000, 1000));

@@ -64,14 +64,16 @@ public class Config {
 
             //loop through each line in the file.
             while (line != null) {
-                //check command validity and act
-                Console.run(line, false, true);
+                if (!line.trim().split(" ")[0].equals("run")) {
+                    //check command validity and act
+                    Console.run(line, false, true);
+                }
 
                 //next line
                 line = loader.readLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Console.error("Failed to load config.");
         }
     }
 

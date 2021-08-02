@@ -11,6 +11,10 @@ import undc.entity.Monster;
 import undc.game.Obstacle;
 import undc.entity.Player;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -85,6 +89,8 @@ public class Command {
         commands.add(new Command("fullscreen", "<true | false>", "Sets the game's fullscreen status.",
                 Command::fullscreen));
         commands.add(new Command("kill", "", "Kills the player.", Command::kill));
+        commands.add(new Command("run", "<file>", "Runs a config file.", Command::runFile));
+        commands.add(new Command("zoom", "[level]", "Toggles zoom.", Command::zoom));
 
         // player commands
         commands.add(new Command("gm_player_health", "[value]", "Returns or sets the value of the "
@@ -539,5 +545,105 @@ public class Command {
         }
         player.setHealth(0, true);
         GameScreen.getInstance().updateHud();
+    }
+
+    /**
+     * Runs a file's commands.
+     * @param args Arguments
+     */
+    private static void runFile(String[] args) {
+        if (args.length != 1) {
+            Console.error("Invalid arguments for run.");
+            return;
+        }
+        File file = new File("config/" + args[0] + ".cfg");
+        if (file.isDirectory()) {
+            Console.error("Cannot run a directory.");
+            return;
+        }
+        if (!file.exists()) {
+            Console.error("File does not exist.");
+            return;
+        }
+
+        // run file
+        try {
+            //file reader for reading the save file line by line
+            BufferedReader loader = new BufferedReader(new FileReader(file));
+            String line = loader.readLine();
+
+            //loop through each line in the file.
+            while (line != null) {
+                if (!line.trim().split(" ")[0].equals("run")) {
+                    //check command validity and act
+                    Console.run(line);
+                }
+
+                //next line
+                line = loader.readLine();
+            }
+        } catch (IOException e) {
+            Console.error("Failed to run.");
+        }
+    }
+
+    /**
+     * Sets the zoom of the game.
+     * @param args Arguments
+     */
+    private static void zoom(String[] args) {
+        if (!(args.length == 0 || args.length == 1)) {
+            Console.error("Invalid arguments for zoom.");
+            return;
+        }
+        if (args.length == 0) {
+            Console.print("Current zoom is " + (Vars.d("gc_ppu") * 100) + "%");
+        } else {
+            try {
+                int level = Integer.parseInt(args[0]);
+                switch (level) {
+                    case 1:
+                        Vars.set("gc_ppu", 0.5);
+                        break;
+                    case 2:
+                        Vars.set("gc_ppu", 0.75);
+                        break;
+                    case 3:
+                        Vars.set("gc_ppu", 1);
+                        break;
+                    case 4:
+                        Vars.set("gc_ppu", 1.5);
+                        break;
+                    case 5:
+                        Vars.set("gc_ppu", 2);
+                        break;
+                    default:
+                        Console.error("Invalid value for zoom level.");
+                        return;
+                }
+                // render game
+                if (Controller.getState() instanceof GameScreen) {
+                    GameScreen.getInstance().getTimer().draw();
+                }
+
+                // save zoom level
+                for (int i = 0; i < SAVED.size(); i++) {
+                    String s = SAVED.get(i);
+                    if (s.startsWith("zoom")) {
+                        System.out.println("remove " + s);
+                        SAVED.remove(i);
+                        i--;
+                    }
+                }
+                if (level != 4) {
+                    System.out.println("save");
+                    SAVED.add("zoom " + level);
+                }
+                Config.getInstance().save();
+                Console.print("Set zoom to " + (Vars.d("gc_ppu") * 100) + "%");
+            } catch (NumberFormatException e) {
+                Console.error("Invalid value for zoom.");
+            }
+        }
     }
 }
