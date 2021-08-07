@@ -1,4 +1,4 @@
-package undc.game;
+package undc.game.objects;
 
 import org.json.JSONObject;
 import undc.command.Console;

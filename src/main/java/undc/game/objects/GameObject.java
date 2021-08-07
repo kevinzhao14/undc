@@ -1,4 +1,4 @@
-package undc.game;
+package undc.game.objects;
 
 /**
  * Interface containing getters and setters for movement in game.

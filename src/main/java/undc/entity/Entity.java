@@ -3,7 +3,7 @@ package undc.entity;
 import javafx.scene.image.Image;
 import org.json.JSONObject;
 import undc.command.Console;
-import undc.game.GameObject;
+import undc.game.objects.GameObject;
 import undc.general.Savable;
 import undc.graphics.SpriteGroup;
 

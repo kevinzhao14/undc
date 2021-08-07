@@ -12,7 +12,7 @@ import undc.general.Savable;
 import undc.graphics.GameScreen;
 import undc.items.Item;
 import undc.entity.Monster;
-import undc.game.Obstacle;
+import undc.game.objects.Obstacle;
 import undc.items.Projectile;
 import undc.items.Weapon;
 import undc.items.Key;

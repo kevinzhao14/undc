@@ -204,8 +204,18 @@ public class Hud {
             ImageView image = new ImageView(item.getSprite());
             image.setFitHeight(50);
             image.setFitWidth(50);
-            if (box.getChildren().size() == 0 || !box.getChildren().get(0).equals(image)) {
-                box.getChildren().clear();
+
+            box.getChildren().clear();
+            if (inv[i].getQuantity() > 1) {
+                VBox quantityContainer = new VBox();
+                Label quantity = new Label(inv[i].getQuantity() + "");
+                quantityContainer.getStyleClass().add("item-quantity");
+                quantityContainer.getChildren().add(quantity);
+
+                StackPane container = new StackPane();
+                container.getChildren().addAll(quantityContainer, image);
+                box.getChildren().add(container);
+            } else {
                 box.getChildren().add(image);
             }
         }

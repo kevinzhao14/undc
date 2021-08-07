@@ -156,10 +156,6 @@ public class GraphicalInventory extends Overlay {
                     image.setFitWidth(60);
                     image.setFitHeight(60);
 
-                    if (square.getChildren().size() != 0 && square.getChildren().get(0).equals(image)) {
-                        return;
-                    }
-
                     square.getChildren().clear();
                     // quantity label
                     if (item.getQuantity() > 1) {
@@ -248,13 +244,15 @@ public class GraphicalInventory extends Overlay {
                             Bounds ib = container.sceneToLocal(image.localToScene(image.getBoundsInLocal()));
                             double x = ib.getMinX() + image.getFitWidth() / 2;
                             double y = ib.getMinY() + image.getFitHeight() / 2;
+                            // drop item
                             if (!container.contains(x, y) && !item.isInfinite()) {
                                 if (!inv.remove(item)) {
                                     Console.error("Failed to remove item to drop.");
                                     return;
                                 }
-                                GameController.getInstance().drop(item.getItem());
+                                GameController.getInstance().drop(item.getItem(), item.getQuantity());
                                 GameScreen.getInstance().updateHud();
+                                GameScreen.getInstance().getTimer().draw();
                             } else {
                                 // put it back to original spot
                                 square.getChildren().add(image);

@@ -1,4 +1,4 @@
-package undc.game;
+package undc.game.objects;
 
 /**
  * Enumeration for the different type of obstacles.

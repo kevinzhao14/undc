@@ -1,7 +1,8 @@
-package undc.game;
+package undc.game.objects;
 
 import org.json.JSONObject;
 import undc.command.Console;
+import undc.game.Room;
 import undc.game.calc.Direction;
 import undc.general.Controller;
 import undc.command.DataManager;

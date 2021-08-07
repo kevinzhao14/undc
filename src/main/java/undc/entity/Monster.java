@@ -124,11 +124,7 @@ public class Monster extends Entity {
                         if (item.getItem().equals(DataManager.ITEMS.get("rocket_launcher"))) {
                             DataManager.getInstance().setUnlockedAmmo(true);
                         }
-                        for (int i = 0; i < item.getQuantity(); i++) {
-                            double x = player.getX() + player.getWidth() / 2.0;
-                            double y = player.getY() + player.getHeight() / 2.0;
-                            GameController.getInstance().dropAt(item.getItem(), x, y);
-                        }
+                        GameController.getInstance().give(item.getItem(), item.getQuantity());
                     }
                 }
             }

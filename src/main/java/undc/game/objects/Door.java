@@ -1,8 +1,10 @@
-package undc.game;
+package undc.game.objects;
 
 import javafx.scene.image.Image;
 import org.json.JSONObject;
 import undc.command.Console;
+import undc.game.LayoutGenerator;
+import undc.game.Room;
 import undc.game.calc.Direction;
 import undc.graphics.GameScreen;
 

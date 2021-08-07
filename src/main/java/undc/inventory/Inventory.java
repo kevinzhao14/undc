@@ -37,29 +37,47 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
      * Adds an inventory item to the first available spot in the array.
      * @param item InventoryItem to be added to the inventory
      */
-    public void add(InventoryItem item) {
+    public boolean add(InventoryItem item) {
         if (item == null) {
-            return;
+            return false;
         }
         if (full()) {
-            return;
+            return false;
+        }
+        for (InventoryItem it : this) {
+            if (it == null) {
+                continue;
+            }
+            // if item exists and is not max stack, add to that
+            int max = it.getItem().getMaxStackSize();
+            if (it.getItem().equals(item.getItem()) && it.getQuantity() < max) {
+                int total = it.getQuantity() + item.getQuantity();
+                if (total > max) {
+                    it.setQuantity(max);
+                    item.setQuantity(total - max);
+                } else {
+                    it.setQuantity(total);
+                    return true;
+                }
+            }
         }
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 if (items[i][j] == null) {
                     add(item, i, j);
-                    return;
+                    return true;
                 }
             }
         }
+        return false;
     }
 
-    public void add(Item item, int quantity) {
-        add(new InventoryItem(item.getId(), quantity));
+    public boolean add(Item item, int quantity) {
+        return add(new InventoryItem(item.getId(), quantity));
     }
 
-    public void add(Item item) {
-        add(item, 1);
+    public boolean add(Item item) {
+        return add(item, 1);
     }
 
     /**

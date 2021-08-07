@@ -1,8 +1,9 @@
-package undc.game;
+package undc.game.objects;
 
 import org.json.JSONObject;
 import undc.command.Console;
 import undc.command.DataManager;
+import undc.command.Vars;
 import undc.items.Item;
 import undc.general.Savable;
 
@@ -12,6 +13,9 @@ import undc.general.Savable;
 public class DroppedItem extends GameObject implements Savable {
     private final String item;
 
+    private int quantity;
+    private double cooldown;
+
     /**
      * Constructor for an item that is dropped, taking in its location, height, and width.
      * @param item Item that is dropped
@@ -20,7 +24,7 @@ public class DroppedItem extends GameObject implements Savable {
      * @param w int width of the item
      * @param h int height fo the item
      */
-    public DroppedItem(String item, double x, double y, int w, int h) {
+    public DroppedItem(String item, int quantity, double x, double y, int w, int h) {
         if (DataManager.ITEMS.get(item) == null) {
             Console.error("Invalid item.");
             this.item = "";
@@ -32,10 +36,23 @@ public class DroppedItem extends GameObject implements Savable {
         this.z = -100;
         this.width = w;
         this.height = h;
+        this.quantity = quantity;
+    }
+
+    public DroppedItem(String item, double x, double y, int w, int h) {
+        this(item, 1, x, y, w, h);
     }
 
     public Item getItem() {
         return DataManager.ITEMS.get(item);
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     @Override
@@ -75,5 +92,17 @@ public class DroppedItem extends GameObject implements Savable {
             Console.error("Failed to create Dropped Item.");
             return null;
         }
+    }
+
+    public double getCooldown() {
+        return cooldown;
+    }
+
+    public void setCooldown(double cooldown) {
+        this.cooldown = cooldown;
+    }
+
+    public void setCooldown() {
+        this.cooldown = Vars.i("sv_pickup_cooldown");
     }
 }

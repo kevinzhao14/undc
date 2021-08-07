@@ -71,6 +71,9 @@ public class Vars {
         INT_VARS.add(new IntCVar("sv_monster_xp", 0, 1000, 10));
         INT_VARS.add(new IntCVar("gc_camera_spacing_x", 0, 1000, 150, true));
         INT_VARS.add(new IntCVar("gc_camera_spacing_y", 0, 1000, 100, true));
+        INT_VARS.add(new IntCVar("sv_droppeditem_combine_range", 0, 100, 5, true));
+        INT_VARS.add(new IntCVar("sv_droppeditem_max_quantity", 1, 1000, 10, true));
+        INT_VARS.add(new IntCVar("sv_pickup_cooldown", 0, 10000, 1000, true));
 
         // Double CVars
         DOUBLE_VARS.add(new DoubleCVar("gc_ppu", 0, 100, 1.5, true, false));

@@ -57,7 +57,7 @@
     -fx-alignment: bottom-center;
     -fx-spacing: 10px;
 }
-#hotbar VBox {
+#hotbar > VBox {
     -fx-pref-width: 60px;
     -fx-pref-height: 60px;
     -fx-background-color: #aaa;
@@ -65,8 +65,17 @@
     -fx-border-width: 2px;
     -fx-alignment: center;
 }
-#hotbar VBox.hotbar-selected {
+#hotbar > VBox.hotbar-selected {
     -fx-border-color: #fafafa;
+}
+.item-quantity {
+    -fx-alignment: bottom-right;
+}
+.item-quantity Label {
+    -fx-font-size: 1.5em;
+    -fx-text-fill: #fafafa;
+    -fx-padding: 0 3px 0 0;
+    -fx-translate-y: 3px;
 }
 #ammo {
     -fx-alignment: bottom-right;

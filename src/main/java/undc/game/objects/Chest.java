@@ -1,9 +1,10 @@
-package undc.game;
+package undc.game.objects;
 
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import org.json.JSONObject;
 import undc.command.Console;
+import undc.game.GameController;
 import undc.general.Audio;
 import undc.general.Interactable;
 import undc.inventory.Inventory;

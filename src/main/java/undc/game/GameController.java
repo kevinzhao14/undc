@@ -7,6 +7,14 @@ import org.json.JSONObject;
 import undc.command.Console;
 import undc.entity.Entity;
 import undc.game.calc.Vector;
+import undc.game.objects.Door;
+import undc.game.objects.DroppedItem;
+import undc.game.objects.ExitDoor;
+import undc.game.objects.GameObject;
+import undc.game.objects.Obstacle;
+import undc.game.objects.ObstacleItem;
+import undc.game.objects.ObstacleType;
+import undc.game.objects.ShotProjectile;
 import undc.general.Controller;
 import undc.command.DataManager;
 import undc.graphics.Camera;
@@ -415,20 +423,19 @@ public class GameController implements Savable {
             Console.error("Item cannot be null.");
             return;
         }
-        if (quantity < 1 || quantity > item.getMaxStackSize()) {
+        if (quantity < 1 || quantity > 100) {
             Console.error("Invalid quantity.");
             return;
         }
-        for (int i = 0; i < quantity; i++) {
-            double x = player.getX() + player.getWidth() / 2.0;
-            double y = player.getY() + player.getHeight() / 2.0;
-            Image sprite = item.getSprite();
-            x -= sprite.getWidth() / 2;
-            y -= sprite.getHeight() / 2;
+        double x = player.getX() + player.getWidth() / 2.0;
+        double y = player.getY() + player.getHeight() / 2.0;
+        Image sprite = item.getSprite();
+        x -= sprite.getWidth() / 2;
+        y -= sprite.getHeight() / 2;
 
-            DroppedItem di = new DroppedItem(item.getId(), x, y, (int) sprite.getWidth(), (int) sprite.getHeight());
-            room.getDroppedItems().add(di);
-        }
+        runner.dropAt(item, quantity, x, y, false);
+        runner.run();
+        getScreen().updateHud();
     }
 
     /**
@@ -463,8 +470,12 @@ public class GameController implements Savable {
         }
     }
 
+    public void drop(Item item, int quantity) {
+        runner.drop(item, quantity);
+    }
+
     public void drop(Item item) {
-        runner.drop(item);
+        drop(item, 1);
     }
 
     public void dropAt(Item item, double x, double y) {
@@ -688,6 +699,9 @@ public class GameController implements Savable {
             droploop:
             for (int i = 0; i < room.getDroppedItems().size(); i++) {
                 DroppedItem d = room.getDroppedItems().get(i);
+                if (d.getCooldown() > 0) {
+                    continue;
+                }
                 double dist = distance(player, d);
                 //pick up item
                 if (dist <= Vars.i("sv_player_pickup_range")) {
@@ -721,27 +735,40 @@ public class GameController implements Savable {
                         continue;
                     }
 
-                    //check for item existing in inventory
+
+                    // check for item existing in inventory
                     for (InventoryItem item : player.getInventory()) {
                         if (item != null) {
-                            //if item exists and is not max stack
+                            // if item exists and is not max stack
                             if (item.getItem().equals(d.getItem()) && item.getQuantity()
                                     < item.getItem().getMaxStackSize()) {
-                                item.setQuantity(item.getQuantity() + 1);
-                                room.getDroppedItems().remove(i);
-                                i--;
                                 itemPickedUp = true;
-                                continue droploop;
+                                int total = item.getQuantity() + d.getQuantity();
+                                if (total > item.getItem().getMaxStackSize()) {
+                                    item.setQuantity(item.getItem().getMaxStackSize());
+                                    d.setQuantity(total - item.getItem().getMaxStackSize());
+                                } else {
+                                    item.setQuantity(total);
+                                    room.getDroppedItems().remove(i);
+                                    i--;
+                                    continue droploop;
+                                }
                             }
                         }
                     }
-                    //not in inventory or inventory items are full
-                    if (!player.getInventory().full()) {
-                        player.getInventory().add(d.getItem());
-                        //remove dropped item
+                    // not in inventory or inventory items are full
+                    while (d.getQuantity() > 0) {
+                        if (player.getInventory().add(d.getItem())) {
+                            d.setQuantity(d.getQuantity() - 1);
+                            itemPickedUp = true;
+                        } else {
+                            break;
+                        }
+                    }
+                    if (d.getQuantity() <= 0) {
+                        // remove dropped item
                         room.getDroppedItems().remove(i);
                         i--;
-                        itemPickedUp = true;
                     }
                 }
             }
@@ -767,7 +794,7 @@ public class GameController implements Savable {
                     return;
                 }
             }
-            drop(currentItem.getItem());
+            drop(currentItem.getItem(), 1);
         }
 
         /**
@@ -796,7 +823,7 @@ public class GameController implements Savable {
          * Places an item removed from the player's inventory into the room.
          * @param item Item to remove and drop into room
          */
-        private void drop(Item item) {
+        private void drop(Item item, int quantity) {
             int d = Vars.i("sv_dropitem_distance");
             //get player center
             double x = player.getX() + player.getWidth() / 2.0;
@@ -807,7 +834,7 @@ public class GameController implements Savable {
             y += dir == Direction.SOUTH ? -d : (dir == Direction.NORTH ? d : 0);
             x -= itemSprite.getWidth() / 2;
             y -= itemSprite.getHeight() / 2;
-            dropAt(item, x, y);
+            dropAt(item, quantity, x, y, true);
         }
 
         /**
@@ -816,7 +843,7 @@ public class GameController implements Savable {
          * @param x X position
          * @param y Y position
          */
-        private void dropAt(Item item, double x, double y) {
+        private void dropAt(Item item, int quantity, double x, double y, boolean setCooldown) {
             int width = (int) item.getSprite().getWidth();
             int height = (int) item.getSprite().getHeight();
 
@@ -825,29 +852,72 @@ public class GameController implements Savable {
             x = check.getX();
             y = check.getY();
 
-            DroppedItem di = new DroppedItem(item.getId(), x, y, width, height);
-            room.getDroppedItems().add(di);
+            Dummy dummy = new Dummy(x, y, width, height);
+
+            // check for nearby items to combine with
+            int max = Vars.i("sv_droppeditem_max_quantity");
+            int range = Vars.i("sv_droppeditem_combine_range");
+            for (DroppedItem i : room.getDroppedItems()) {
+                if (i.getItem().equals(item) && i.getQuantity() < max && distance(i, dummy) <= range) {
+                    int total = i.getQuantity() + quantity;
+
+                    if (total > max) {
+                        i.setQuantity(max);
+                        quantity = total - max;
+                    } else {
+                        i.setQuantity(total);
+                        quantity = 0;
+                    }
+                    if (setCooldown) {
+                        i.setCooldown();
+                    }
+                }
+            }
+
+            // create new dropped items
+            while (quantity > 0) {
+                int amt = Math.min(quantity, max);
+                quantity -= amt;
+
+                DroppedItem di = new DroppedItem(item.getId(), amt, x, y, width, height);
+                if (setCooldown) {
+                    di.setCooldown();
+                }
+                room.getDroppedItems().add(di);
+            }
             Platform.runLater(() -> getScreen().updateHud());
+        }
+
+        private void dropAt(Item item, double x, double y) {
+            dropAt(item, 1, x, y, true);
         }
 
         /**
          * Manages all cooldowns.
          */
         private void manageCooldowns() {
-            //lower player attack cooldown
+            double time = tickTime();
+            // lower player attack cooldown
             if (player.getAttackCooldown() > 0) {
-                player.setAttackCooldown(Math.max(0.0, player.getAttackCooldown() - tickTime()));
+                player.setAttackCooldown(Math.max(0, player.getAttackCooldown() - time));
             }
             if (player.getWalkCooldown() > 0) {
-                player.setWalkCooldown(Math.max(0.0, player.getWalkCooldown() - tickTime()));
+                player.setWalkCooldown(Math.max(0, player.getWalkCooldown() - time));
             }
-            //lower held weapon delay if rangedweapon
+            // lower held weapon delay if rangedweapon
             Item item = player.getItemSelected() != null ? player.getItemSelected().getItem() : null;
             if (item instanceof RangedWeapon && ((RangedWeapon) item).getDelay() > 0) {
                 RangedWeapon weapon = (RangedWeapon) item;
-                weapon.setDelay(Math.max(0, weapon.getDelay() - tickTime()));
+                weapon.setDelay(Math.max(0, weapon.getDelay() - time));
                 if (weapon.isReloading() && weapon.getDelay() == 0) {
                     weapon.finishReload();
+                }
+            }
+
+            // dropped item cooldowns
+            for (DroppedItem i : room.getDroppedItems()) {
+                if (i.getCooldown() > 0) {
+                    i.setCooldown(Math.max(0, i.getCooldown() - time));
                 }
             }
         }

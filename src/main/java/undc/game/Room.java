@@ -4,6 +4,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import undc.command.Console;
 import undc.entity.Entity;
+import undc.game.objects.Door;
+import undc.game.objects.DroppedItem;
+import undc.game.objects.Floor;
+import undc.game.objects.Obstacle;
+import undc.game.objects.ShotProjectile;
 import undc.general.Savable;
 
 import java.util.ArrayList;

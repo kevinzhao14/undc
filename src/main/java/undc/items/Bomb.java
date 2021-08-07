@@ -5,8 +5,8 @@ import org.json.JSONObject;
 import undc.command.Console;
 import undc.general.Controller;
 import undc.entity.Player;
-import undc.game.ObstacleItem;
-import undc.game.ObstacleType;
+import undc.game.objects.ObstacleItem;
+import undc.game.objects.ObstacleType;
 import undc.graphics.GameScreen;
 import undc.general.Audio;
 

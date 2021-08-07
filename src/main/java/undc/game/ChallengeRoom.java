@@ -1,6 +1,8 @@
 package undc.game;
 
 import org.json.JSONObject;
+import undc.game.objects.Door;
+import undc.game.objects.Floor;
 import undc.general.Audio;
 import undc.inventory.Inventory;
 

@@ -1,6 +1,6 @@
 package undc.entity;
 
-import undc.game.GameObject;
+import undc.game.objects.GameObject;
 
 /**
  * Represents a dummy entity/movable object used in imiatating an object's position.

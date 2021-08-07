@@ -1,4 +1,4 @@
-package undc.game;
+package undc.game.objects;
 
 import javafx.scene.image.Image;
 import org.json.JSONObject;

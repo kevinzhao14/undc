@@ -8,7 +8,7 @@ import undc.graphics.HomeScreen;
 import undc.general.Config;
 import undc.items.Item;
 import undc.entity.Monster;
-import undc.game.Obstacle;
+import undc.game.objects.Obstacle;
 import undc.entity.Player;
 
 import java.io.BufferedReader;
@@ -630,13 +630,11 @@ public class Command {
                 for (int i = 0; i < SAVED.size(); i++) {
                     String s = SAVED.get(i);
                     if (s.startsWith("zoom")) {
-                        System.out.println("remove " + s);
                         SAVED.remove(i);
                         i--;
                     }
                 }
                 if (level != 4) {
-                    System.out.println("save");
                     SAVED.add("zoom " + level);
                 }
                 Config.getInstance().save();
