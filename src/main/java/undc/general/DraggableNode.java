@@ -3,6 +3,7 @@ package undc.general;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import undc.command.Vars;
 
@@ -125,6 +126,9 @@ public class DraggableNode {
 
         @Override
         public final void handle(MouseEvent event) {
+            if (event.getButton() != MouseButton.PRIMARY) {
+                return;
+            }
             // press event to start dragging
             if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
                 // if the click event happens on the node, then we set the mouse's current position and begin dragging.

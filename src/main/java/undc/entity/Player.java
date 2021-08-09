@@ -129,7 +129,7 @@ public class Player extends Entity implements Savable {
     }
 
     public InventoryItem getItemSelected() {
-        return inventory.getItems()[0][selected];
+        return inventory.get(0, selected);
     }
 
     public void selectNext() {

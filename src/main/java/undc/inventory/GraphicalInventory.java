@@ -132,7 +132,7 @@ public class GraphicalInventory extends Overlay {
         for (Inventory inv : inventories) {
             // access inventory item and put its sprite in the graphical inventory
             for (int i = 0; i < inv.getRows(); i++) {
-                InventoryItem[] row = inv.getItems()[i];
+                InventoryItem[] row = inv.getRow(i);
                 HBox box = rows[i + offset];
                 if (box.getChildren().size() != row.length) {
                     Console.error("Invalid inventory.");
@@ -175,7 +175,9 @@ public class GraphicalInventory extends Overlay {
                     DraggableNode.remove(square);
                     DraggableNode.DraggableObject obj = DraggableNode.add(square, image);
 
-                    // drop event handler
+                    /*
+                     * Drop event handling
+                     */
                     obj.addListener((m, e) -> {
                         // on the start of the drag, move the sprite of the item into a pane so that it is not behind
                         // any of the inventory cells.
@@ -195,6 +197,7 @@ public class GraphicalInventory extends Overlay {
                             // started.
                         } else if (e == DraggableNode.Event.END) {
                             // loop through all of the cells to see where it is over.
+                            invloop:
                             for (int i1 = 0; i1 < rows.length; i1++) {
                                 HBox hbox = rows[i1];
                                 for (int j1 = 0; j1 < hbox.getChildren().size(); j1++) {
@@ -204,39 +207,58 @@ public class GraphicalInventory extends Overlay {
                                     double x = ib.getMinX() + image.getFitWidth() / 2;
                                     double y = ib.getMinY() + image.getFitHeight() / 2;
 
-                                    // if the cell VBox contains the mouse's coordinates & the cell is empty, then move
-                                    // the item to that cell.
-                                    if (vbox.contains(x, y) && vbox.getChildren().size() == 0) {
-                                        // move graphically
-                                        vbox.getChildren().add(image);
-                                        image.setTranslateX(0);
-                                        image.setTranslateY(0);
-                                        root.getChildren().remove(root.getChildren().size() - 1);
-
-                                        inv.remove(item);
-
-                                        // move in the Inventory. make sure to find which inventory the item goes to.
+                                    // if the cell VBox contains the mouse's coordinates, check
+                                    if (vbox.contains(x, y)) {
                                         int rowcount = i1;
+                                        Inventory inv2 = inventories[0];
+                                        int row2 = 0;
                                         for (Inventory inv1 : inventories) {
                                             rowcount -= inv1.getRows();
                                             if (rowcount < 0) {
-                                                inv1.add(item, rowcount + inv1.getRows(), j1);
+                                                inv2 = inv1;
+                                                row2 = rowcount + inv1.getRows();
                                                 break;
                                             }
                                         }
+                                        InventoryItem slot = inv2.get(row2, j1);
 
-                                        // update the gui and relationships.
-                                        update();
+                                        // if the cell is empty, then put the item into that cell
+                                        if (slot == null) {
+                                            // move graphically
+                                            vbox.getChildren().add(image);
+                                            image.setTranslateX(0);
+                                            image.setTranslateY(0);
+                                            root.getChildren().remove(root.getChildren().size() - 1);
 
-                                        // show the item info popup
-                                        populateInfoBox(item);
-                                        itemInfo.setVisible(true);
-                                        itemInfo.setTranslateX(m.getSceneX() + 25);
-                                        itemInfo.setTranslateY(m.getSceneY() + 25);
+                                            inv.remove(item);
 
-                                        // update hotbar
-                                        GameScreen.getInstance().updateHud();
-                                        return;
+                                            // move in the Inventory. make sure to find which inventory the item goes to
+                                            inv2.add(item, row2, j1);
+
+                                            // update the gui and relationships.
+                                            update();
+
+                                            // show the item info popup
+                                            populateInfoBox(item);
+                                            itemInfo.setVisible(true);
+                                            itemInfo.setTranslateX(m.getSceneX() + 25);
+                                            itemInfo.setTranslateY(m.getSceneY() + 25);
+
+                                            // update hotbar
+                                            GameScreen.getInstance().updateHud();
+
+                                            return;
+
+                                            // if the items are equal and the slot is not full, add to that slot
+                                        } else if (slot.getItem().equals(item.getItem())
+                                                && slot.getQuantity() < slot.getItem().getMaxStackSize()) {
+                                            int total = slot.getQuantity() + item.getQuantity();
+                                            if (total > slot.getItem().getMaxStackSize()) {
+                                                slot.setQuantity(slot.getItem().getMaxStackSize());
+                                                item.setQuantity(total - slot.getQuantity());
+                                            }
+                                            break invloop;
+                                        }
                                     }
                                 }
                             }

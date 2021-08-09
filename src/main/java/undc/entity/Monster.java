@@ -90,6 +90,13 @@ public class Monster extends Entity {
 
         // Give gold to player after slaying a monster
         if (health == 0) {
+            if (type == MonsterType.FINALBOSS) {
+                if (Audio.getAudioClip("final_boss_music").isPlaying()) {
+                    Audio.getAudioClip("final_boss_music").stop();
+                }
+                Audio.playAudio("boss_defeat");
+            }
+
             // give gold
             screen.getPlayer().setGold(screen.getPlayer().getGold() + Vars.i("sv_monster_gold"));
 
@@ -117,7 +124,6 @@ public class Monster extends Entity {
                 if (allDead) {
                     ((ChallengeRoom) screen.getRoom()).openDoors();
                     ((ChallengeRoom) screen.getRoom()).setCompleted(true);
-                    Player player = screen.getPlayer();
 
                     // drop items
                     for (InventoryItem item : ((ChallengeRoom) screen.getRoom()).getRewards()) {
@@ -158,10 +164,6 @@ public class Monster extends Entity {
 
         // Drop final boss key
         if (type == MonsterType.FINALBOSS) {
-            if (Audio.getAudioClip("final_boss_music").isPlaying()) {
-                Audio.getAudioClip("final_boss_music").stop();
-            }
-            Audio.playAudio("boss_defeat");
             Item key = DataManager.getExitKey();
             Image sprite = key.getSprite();
             double x = this.x + width / 2.0 - sprite.getWidth() / 2;

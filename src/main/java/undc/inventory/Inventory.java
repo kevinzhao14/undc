@@ -178,12 +178,16 @@ public class Inventory implements Iterable<InventoryItem>, Savable {
         return false;
     }
 
-    public boolean full() {
-        return size >= rows * cols;
+    public InventoryItem get(int row, int col) {
+        return items[row][col];
     }
 
-    public InventoryItem[][] getItems() {
-        return items;
+    public InventoryItem[] getRow(int row) {
+        return items[row];
+    }
+
+    public boolean full() {
+        return size >= rows * cols;
     }
 
     public int getCols() {

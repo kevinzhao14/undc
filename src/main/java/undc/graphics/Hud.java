@@ -183,7 +183,7 @@ public class Hud {
         xpBarText.setText("Level " + player.getLevel());
 
         // update hotbar
-        InventoryItem[] inv = player.getInventory().getItems()[0];
+        InventoryItem[] inv = player.getInventory().getRow(0);
         for (int i = 0; i < inv.length; i++) {
             Node node = hotbar.getChildren().get(i);
             if (!(node instanceof VBox)) {
