@@ -4,6 +4,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -30,7 +31,7 @@ public class GraphicalInventory extends Overlay {
 
     private final Inventory[] inventories;
     private final HBox[] rows;
-    private final VBox container;
+    private final VBox invContainer;
     private final VBox itemInfo;
     private final Label itemName;
     private final VBox description;
@@ -45,12 +46,12 @@ public class GraphicalInventory extends Overlay {
         HBox parent = new HBox();
         parent.setId("parent");
 
-        container = new VBox();
-        container.setId("container");
+        invContainer = new VBox();
+        invContainer.setId("container");
 
         Label title = new Label(titleText);
         title.setId("title");
-        container.getChildren().add(title);
+        invContainer.getChildren().add(title);
 
         int rownum = 0;
         for (Inventory i : inventories) {
@@ -64,7 +65,7 @@ public class GraphicalInventory extends Overlay {
             if (offset > 0) {
                 HBox spacer = new HBox();
                 spacer.getStyleClass().add("inv-spacer");
-                container.getChildren().add(spacer);
+                invContainer.getChildren().add(spacer);
             }
             for (int i = 0; i < inv.getRows(); i++) {
                 HBox row = new HBox();
@@ -75,12 +76,12 @@ public class GraphicalInventory extends Overlay {
                     row.getChildren().add(temp);
                 }
                 rows[i + offset] = row;
-                container.getChildren().add(row);
+                invContainer.getChildren().add(row);
             }
             offset += inv.getRows();
         }
 
-        parent.getChildren().addAll(container);
+        parent.getChildren().addAll(invContainer);
         root.getChildren().add(parent);
         root.getStylesheets().add("styles/inventory.css");
 
@@ -158,37 +159,53 @@ public class GraphicalInventory extends Overlay {
 
                     square.getChildren().clear();
                     // quantity label
-                    if (item.getQuantity() > 1) {
-                        VBox quantityContainer = new VBox();
-                        Label quantity = new Label(item.getQuantity() + "");
-                        quantityContainer.getStyleClass().add("item-quantity");
-                        quantityContainer.getChildren().add(quantity);
-
-                        StackPane container = new StackPane();
-                        container.getChildren().addAll(quantityContainer, image);
-                        square.getChildren().add(container);
-                    } else {
-                        square.getChildren().add(image);
-                    }
+                    StackPane container = createQuantity(item, image);
+                    square.getChildren().add(container);
 
                     // making inventory draggable
                     DraggableNode.remove(square);
-                    DraggableNode.DraggableObject obj = DraggableNode.add(square, image);
+                    DraggableNode.DraggableObject obj = DraggableNode.add(square, container);
 
                     /*
                      * Drop event handling
                      */
                     obj.addListener((m, e) -> {
+                        boolean single = m.getButton() == MouseButton.SECONDARY && item.getQuantity() > 1;
                         // on the start of the drag, move the sprite of the item into a pane so that it is not behind
                         // any of the inventory cells.
                         if (e == DraggableNode.Event.START) {
-                            Bounds bounds = image.localToScene(image.getBoundsInLocal());
+                            Bounds bounds = container.localToScene(container.getBoundsInLocal());
+                            if (single) {
+                                ImageView tempImage = new ImageView(image.getImage());
+                                tempImage.setSmooth(false);
+                                tempImage.setFitWidth(60);
+                                tempImage.setFitHeight(60);
+                                item.setQuantity(item.getQuantity() - 1);
+                                StackPane tempContainer = createQuantity(item, tempImage);
+                                item.setQuantity(item.getQuantity() + 1);
+                                square.getChildren().add(tempContainer);
+
+                                // lower quantity display
+                                Node qc = container.getChildren().get(0);
+                                if (!(qc instanceof VBox)) {
+                                    Console.error("Invalid quantity container.");
+                                    return;
+                                }
+                                VBox qc2 = (VBox) qc;
+                                Node q = qc2.getChildren().get(0);
+                                if (!(q instanceof Label)) {
+                                    Console.error("Invalid quantity label.");
+                                    return;
+                                }
+                                Label q2 = (Label) q;
+                                q2.setText("");
+                            }
                             double x = bounds.getMinX();
                             double y = bounds.getMinY();
                             Pane pane = new Pane();
-                            pane.getChildren().add(image);
-                            image.setX(x);
-                            image.setY(y);
+                            pane.getChildren().add(container);
+                            container.setTranslateX(x);
+                            container.setTranslateY(y);
                             root.getChildren().add(pane);
 
                             // at the end of the drag, ie the drop, check where the item was dropped. If its center is
@@ -197,7 +214,6 @@ public class GraphicalInventory extends Overlay {
                             // started.
                         } else if (e == DraggableNode.Event.END) {
                             // loop through all of the cells to see where it is over.
-                            invloop:
                             for (int i1 = 0; i1 < rows.length; i1++) {
                                 HBox hbox = rows[i1];
                                 for (int j1 = 0; j1 < hbox.getChildren().size(); j1++) {
@@ -230,10 +246,46 @@ public class GraphicalInventory extends Overlay {
                                             image.setTranslateY(0);
                                             root.getChildren().remove(root.getChildren().size() - 1);
 
-                                            inv.remove(item);
+                                            if (!single) {
+                                                inv.remove(item);
+                                            }
 
                                             // move in the Inventory. make sure to find which inventory the item goes to
-                                            inv2.add(item, row2, j1);
+                                            if (single) {
+                                                // add new item of quantity 1
+                                                inv2.add(new InventoryItem(item.getItem().getId(), 1), row2, j1);
+                                                item.setQuantity(item.getQuantity() - 1);
+                                            } else {
+                                                inv2.add(item, row2, j1);
+                                            }
+                                            // update the gui and relationships.
+                                            update();
+
+                                            // show the item info popup
+                                            populateInfoBox(item);
+                                            itemInfo.setVisible(true);
+                                            itemInfo.setTranslateX(m.getSceneX() + 25);
+                                            itemInfo.setTranslateY(m.getSceneY() + 25);
+
+                                            // update hotbar
+                                            GameScreen.getInstance().updateHud();
+                                            return;
+
+                                            // if the items are equal and the slot is not full, add to that slot
+                                        } else if (slot != item && slot.getItem().equals(item.getItem())
+                                                && slot.getQuantity() < slot.getItem().getMaxStackSize()) {
+                                            int total = slot.getQuantity() + (single ? 1 : item.getQuantity());
+                                            if (total > slot.getItem().getMaxStackSize()) {
+                                                slot.setQuantity(slot.getItem().getMaxStackSize());
+                                                item.setQuantity(total - slot.getQuantity());
+                                            } else {
+                                                slot.setQuantity(total);
+                                                if (!single) {
+                                                    inv.remove(item);
+                                                } else {
+                                                    item.setQuantity(item.getQuantity() - 1);
+                                                }
+                                            }
 
                                             // update the gui and relationships.
                                             update();
@@ -246,40 +298,33 @@ public class GraphicalInventory extends Overlay {
 
                                             // update hotbar
                                             GameScreen.getInstance().updateHud();
-
+                                            root.getChildren().remove(root.getChildren().size() - 1);
+                                            update();
                                             return;
-
-                                            // if the items are equal and the slot is not full, add to that slot
-                                        } else if (slot.getItem().equals(item.getItem())
-                                                && slot.getQuantity() < slot.getItem().getMaxStackSize()) {
-                                            int total = slot.getQuantity() + item.getQuantity();
-                                            if (total > slot.getItem().getMaxStackSize()) {
-                                                slot.setQuantity(slot.getItem().getMaxStackSize());
-                                                item.setQuantity(total - slot.getQuantity());
-                                            }
-                                            break invloop;
                                         }
                                     }
                                 }
                             }
                             // not put in a spot, check if it's outside of the container to drop
-                            Bounds ib = container.sceneToLocal(image.localToScene(image.getBoundsInLocal()));
-                            double x = ib.getMinX() + image.getFitWidth() / 2;
-                            double y = ib.getMinY() + image.getFitHeight() / 2;
+                            Bounds ib = invContainer.sceneToLocal(image.localToScene(image.getBoundsInLocal()));
+                            double x = ib.getMinX() + container.getWidth() / 2;
+                            double y = ib.getMinY() + container.getHeight() / 2;
                             // drop item
-                            if (!container.contains(x, y) && !item.isInfinite()) {
-                                if (!inv.remove(item)) {
+                            if (!invContainer.contains(x, y) && !item.isInfinite()) {
+                                if (single) {
+                                    item.setQuantity(item.getQuantity() - 1);
+                                } else if (!inv.remove(item)) {
                                     Console.error("Failed to remove item to drop.");
                                     return;
                                 }
-                                GameController.getInstance().drop(item.getItem(), item.getQuantity());
+                                GameController.getInstance().drop(item.getItem(), (single ? 1 : item.getQuantity()));
                                 GameScreen.getInstance().updateHud();
                                 GameScreen.getInstance().getTimer().draw();
                             } else {
                                 // put it back to original spot
-                                square.getChildren().add(image);
-                                image.setTranslateX(0);
-                                image.setTranslateY(0);
+                                square.getChildren().add(container);
+                                container.setTranslateX(0);
+                                container.setTranslateY(0);
                             }
                             root.getChildren().remove(root.getChildren().size() - 1);
                             update();
@@ -360,5 +405,26 @@ public class GraphicalInventory extends Overlay {
             Label infinite = new Label("Infinite");
             description.getChildren().add(infinite);
         }
+    }
+
+    /**
+     * Creates a quantity pane for an item.
+     * @param item Item to create quantity as
+     * @param image Image to display
+     * @return Returns the pane
+     */
+    private StackPane createQuantity(InventoryItem item, ImageView image) {
+        VBox quantityContainer = new VBox();
+        Label quantity = new Label(item.getQuantity() + "");
+        if (item.getQuantity() == 1) {
+            quantity.setText("");
+        }
+        quantityContainer.getStyleClass().add("item-quantity");
+        quantityContainer.getChildren().add(quantity);
+
+        StackPane container = new StackPane();
+        container.getChildren().addAll(quantityContainer, image);
+
+        return container;
     }
 }

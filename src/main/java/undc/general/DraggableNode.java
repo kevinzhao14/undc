@@ -126,7 +126,7 @@ public class DraggableNode {
 
         @Override
         public final void handle(MouseEvent event) {
-            if (event.getButton() != MouseButton.PRIMARY) {
+            if (event.getButton() != MouseButton.PRIMARY && event.getButton() != MouseButton.SECONDARY) {
                 return;
             }
             // press event to start dragging
